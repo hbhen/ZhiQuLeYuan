@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/tb_toy_add"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/arrow_left" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:text="玩具"
+            android:textColor="#000000"
+            android:textSize="60px" />
+    </android.support.v7.widget.Toolbar>
+
+    <RelativeLayout
+        android:id="@+id/rl_toy_add"
+        android:layout_width="wrap_content"
+        android:layout_height="160px"
+
+        android:layout_below="@id/tb_toy_add"
+        android:layout_centerHorizontal="true">
+
+        <ImageView
+            android:id="@+id/iv_toy_add_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/ic_launcher" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/iv_toy_add_img"
+            android:text="正正"
+            android:textColor="#000000" />
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:id="@+id/ll_toy_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rl_toy_add"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="80dp"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:gravity="center"
+            android:text="您还没有绑定任何玩具哦!"
+            android:textColor="#8f8f8f"
+            android:textSize="16sp"
+
+            />
+
+        <View
+            android:layout_width="608px"
+            android:layout_height="1px"
+            android:layout_marginTop="60px" />
+
+        <!--<TextView-->
+        <!--android:layout_marginTop="60px"-->
+        <!--android:layout_gravity="center_horizontal"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="识别照片二维码添加玩具" />-->
+
+        <!--<view-->
+        <!--android:layout_width="608px"-->
+        <!--android:layout_height="1px"-->
+        <!--android:layout_marginTop="60px" />-->
+
+        <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="center_horizontal"-->
+        <!--android:layout_marginTop="60px"-->
+        <!--android:text="输入账号添加玩具" />-->
+
+        <!--<view-->
+        <!--android:layout_width="608px"-->
+        <!--android:layout_height="1px"-->
+        <!--android:layout_marginTop="60px" />-->
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_toy_add_boldtext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ll_toy_add"
+        android:layout_marginTop="38dp"
+        android:clickable="true"
+        android:gravity="center"
+        android:text="扫描二维码添加玩具"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <RelativeLayout
+        android:clickable="true"
+        android:id="@+id/rl_toy_add_goshopping"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_toy_add_boldtext"
+        android:layout_marginTop="146dp">
+
+        <ImageView
+            android:id="@+id/iv_toy_add_shoppingmall"
+            android:layout_width="13dp"
+            android:layout_height="23dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="8dp"
+            android:src="@drawable/arrow_right" />
+
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@id/iv_toy_add_shoppingmall"
+            android:text="去商场选购玩具"
+            android:textColor="#ff4511"
+            android:textSize="16sp" />
+
+
+    </RelativeLayout>
+</RelativeLayout>
