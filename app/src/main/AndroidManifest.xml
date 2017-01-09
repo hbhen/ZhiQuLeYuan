@@ -38,7 +38,7 @@
         <activity android:name=".activity.ActivityLogin"/>
         <activity android:name=".activity.QrCodeScanActivity"/>
         <activity android:name=".activity.ManagerToyActivity"/>
-        <activity android:name=".activity.MyToyActivity"/>
+        <activity android:name=".fragment.MyToyFragment"/>
 
         <meta-data
             android:name="com.google.android.gms.version"
