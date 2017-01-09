@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ZhiQuLeYuan</string>
+    <!--这里添加的是我们在布局文件里设置的text的内容,格式是:属性+实际内容-->
+
 </resources>

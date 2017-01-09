@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.tongyuan.android.zhiquleyuan.holder.DiscoveryGridHolder;
 import com.tongyuan.android.zhiquleyuan.R;
-import com.tongyuan.android.zhiquleyuan.util.ToastUtil;
+import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
 /**
  * Created by android on 2016/12/21.

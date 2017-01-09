@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tongyuan.android.zhiquleyuan">
+          package="com.tongyuan.android.zhiquleyuan">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -18,21 +18,23 @@
             android:name="design_height"
             android:value="1920"></meta-data>
 
-        <activity android:name=".activity.MainActivity"></activity>
-        <activity android:name=".activity.SplashActivity">
+        <activity android:name=".activity.MainActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".activity.MyBabyActivity" />
-        <activity android:name=".activity.AboutActivity" />
-        <activity android:name=".activity.MyUpdateActivity" />
-        <activity android:name=".activity.MyPlayActivity" />
-        <activity android:name=".activity.MyPushActivity" />
-        <activity android:name=".activity.MyCollectionActivity" />
-        <activity android:name=".activity.MySuggestionActivity" />
+        <activity android:name=".activity.SplashActivity">
+
+        </activity>
+        <activity android:name=".activity.MyBabyActivity"/>
+        <activity android:name=".activity.AboutActivity"/>
+        <activity android:name=".activity.MyUpdateActivity"/>
+        <activity android:name=".activity.MyPlayActivity"/>
+        <activity android:name=".activity.MyPushActivity"/>
+        <activity android:name=".activity.MyCollectionActivity"/>
+        <activity android:name=".activity.MySuggestionActivity"/>
         <activity android:name=".activity.ActivityLogin"/>
         <activity android:name=".activity.QrCodeScanActivity"/>
         <activity android:name=".activity.ManagerToyActivity"/>
@@ -40,7 +42,7 @@
 
         <meta-data
             android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
+            android:value="@integer/google_play_services_version"/>
     </application>
 
 </manifest>
