@@ -11,32 +11,38 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
+import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
-import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
+import com.tongyuan.android.zhiquleyuan.bean.BabyInfoRequestBean;
+import com.tongyuan.android.zhiquleyuan.bean.BabyInfoResultBean;
+import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
+import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.Utils;
 import com.tongyuan.android.zhiquleyuan.view.ChangeDatePopwindow;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cz.msebera.android.httpclient.Header;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by android on 2016/12/23.
@@ -48,24 +54,37 @@ public class MyBabyActivity extends AppCompatActivity {
     protected static final int TAKE_PICTURE = 1;
     private static final int CROP_SMALL_PICTURE = 2;
 
+
     @Bind(R.id.tb_addbatyinfo)
     Toolbar mTbAddbatyinfo;
     @Bind(R.id.iv_addbabyinfo)
     ImageView mIvAddbabyinfo;
     @Bind(R.id.et_addbabyinfo)
     EditText mEtAddbabyinfo;
-    @Bind(R.id.ll_addbabyinfo)
-    LinearLayout mLlAddbabyinfo;
+    @Bind(R.id.rg_addbabyinfo)
+    RadioGroup mRgAddbabyinfo;
+    @Bind(R.id.radioButtonBoy)
+    RadioButton mRadioButtonBoy;
+    @Bind(R.id.radiobuttonGirls)
+    RadioButton mRadioButtonGirls;
+
     @Bind(R.id.tv_addbabyinfo_hint_up)
     TextView mTvAddbabyinfoHintUp;
     @Bind(R.id.tv_addbabyinfo_hint_down)
     TextView mTvAddbabyinfoHintDown;
-    @Bind(R.id.bt_activity_addbabyinfo_confirm)
-    Button mBtActivityAddbabyinfoConfirm;
     @Bind(R.id.tv_activity_addbabyinfo_date)
     TextView mTvActivityAddbabyinfoDate;
+    @Bind(R.id.bt_activity_addbabyinfo_confirm)
+    Button mBtActivityAddbabyinfoConfirm;
+
     private Uri mTempUri;
     private ChangeDatePopwindow mChangeDatePopwindow;
+    private String mBabyID;
+    private String[] mBirthday;
+    private boolean mBoyChecked = true;
+    private int mBirthday1;
+    private String mDatetime;
+    private String mTimedate;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -73,43 +92,108 @@ public class MyBabyActivity extends AppCompatActivity {
         setContentView(R.layout.activity_addbabyinfo);
         ButterKnife.bind(this);
 
+
     }
 
-    @OnClick({R.id.iv_addbabyinfo, R.id.et_addbabyinfo, R.id.ll_addbabyinfo,
+    @OnClick({R.id.iv_addbabyinfo, R.id.et_addbabyinfo, R.id.rg_addbabyinfo,
             R.id.tv_activity_addbabyinfo_date, R.id.bt_activity_addbabyinfo_confirm})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_addbabyinfo:
+                //拿到宝宝的头像
                 showChoosePicDialog();
                 break;
             case R.id.et_addbabyinfo:
+                //添加宝宝的姓名或者说是宝宝的ID
+//                mBabyID = mEtAddbabyinfo.getText().toString().trim();
                 break;
-            case R.id.ll_addbabyinfo:
+            case R.id.radioButtonBoy:
+                //宝宝的性别选择(男), 如果选中,就给定一个值,
+//                boolean boyHasChecked;
+
+
+                break;
+            case R.id.radiobuttonGirls:
+                //宝宝的性别选择(女)
+
                 break;
             case R.id.tv_activity_addbabyinfo_date:
-                selectDate();
+                mBirthday = selectDate();
                 break;
             case R.id.bt_activity_addbabyinfo_confirm:
+                //确认键,将头像,宝宝的姓名(babyID),性别,出生年月日上传到服务器
+                String babyID = mEtAddbabyinfo.getText().toString().trim();
+                String phoneNum = SPUtils.getString(this, "phoneNum", "");
+                String babyToken = SPUtils.getString(this, "TOKEN", "");
+                Date date = new Date();
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+                String time = simpleDateFormat.format(date);
+                confirmInfo(phoneNum, time, babyToken, babyID);
                 break;
             default:
                 break;
         }
     }
 
+    private void confirmInfo(String phoneNum, String time, final String token, String babyID) {
+        mBoyChecked = mRadioButtonBoy.isChecked();
+        String sex = mBoyChecked ? "M" : "F";
+
+//        Date date1=new Date(mDatetime);
+//        SimpleDateFormat si=new SimpleDateFormat("yyyyMMddHHmmssSSS");
+//        String formatdate = si.format(date1);
+//        Log.i("111", "confirmInfo: "+formatdate);
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        AllInterface allInterface = retrofit.create(AllInterface.class);
+        BabyInfoRequestBean.BODYBean babyInfoBody = new BabyInfoRequestBean.BODYBean("BABY", "0", babyID, "", mTimedate, sex);
+        BabyInfoRequestBean babyInfoRequestBean = new BabyInfoRequestBean("REQ", "INFO", phoneNum, time, babyInfoBody, "", token, "1");
+
+        Gson gson = new Gson();
+        String babyInfoRequestJson = gson.toJson(babyInfoRequestBean);
+        Call<BabyInfoResultBean> babyInfoResult = allInterface.getBabyInfoResult(babyInfoRequestJson);
+        babyInfoResult.enqueue(new Callback<BabyInfoResultBean>() {
+            @Override
+            public void onResponse(Call<BabyInfoResultBean> call, Response<BabyInfoResultBean> response) {
+                Log.i("111", "token====" + token);
+                Log.i("111", "onResponse: ======================" + response.body().toString());
+            }
+
+            @Override
+            public void onFailure(Call<BabyInfoResultBean> call, Throwable t) {
+
+            }
+        });
+    }
+
     private String[] selectDate() {
         final String[] str = new String[10];
         mChangeDatePopwindow = new ChangeDatePopwindow(this);
-        mChangeDatePopwindow.setDate("2017","1","1");
-        mChangeDatePopwindow.showAtLocation(mTvActivityAddbabyinfoDate, Gravity.BOTTOM,0,0);
+        mChangeDatePopwindow.setDate("2017", "01", "01");
+        mChangeDatePopwindow.showAtLocation(mTvActivityAddbabyinfoDate, Gravity.BOTTOM, 0, 0);
         mChangeDatePopwindow.setBirthdayListener(new ChangeDatePopwindow.OnBirthListener() {
             @Override
             public void onClick(String year, String month, String day) {
-                Toast.makeText(MyBabyActivity.this,year + "-" + month + "-" + day,Toast.LENGTH_LONG).show();
+                Toast.makeText(MyBabyActivity.this, year + " " + month + " " + day, Toast.LENGTH_LONG).show();
                 StringBuilder sb = new StringBuilder();
-                sb.append(year.substring(0, year.length() - 1)).append("-").append(month.substring(0, day.length() - 1)).append("-").append(day);
-                str[0] = year + "-" + month + "-" + day;
+//                sb.append(year.substring(0, year.length() - 1)).append("-").append(month.substring(0, day.length() - 1)).append("-").append(day);
+                sb.append(year.substring(0, year.length() - 1)).append(month.substring(0, day.length() - 1)).append(day.substring(0, day.length() - 1));
+                str[0] = year + "" + month + "" + day;
+                mDatetime = year + month + day;
+                Log.i("111", "sb=========: " + sb);
+                Log.i("111", "mDatetime=========: " + mDatetime);
+                Log.i("111", "str[0]=========: " + str[0]);
+
                 str[1] = sb.toString();
-                mTvActivityAddbabyinfoDate.setText(year + "-" + month + "-" + day);
+                Log.i("111", "str[1]=========: " + str[1]);
+                //对mDatetime去进行筛选,剔除里面的年月日,拼接成日期,然后在integer.parse
+
+
+                mTvActivityAddbabyinfoDate.setText(year + " " + month + " " + day);
+                mTimedate = sb + "0000000";
+                Log.i("111", "timedate: " + mTimedate);
             }
         });
         return str;
@@ -196,25 +280,28 @@ public class MyBabyActivity extends AppCompatActivity {
     }
 
     private void uploadPic(Bitmap photo) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        photo.compress(Bitmap.CompressFormat.PNG, 60, stream);
-        byte[] bytes = stream.toByteArray();
-        String img = new String(Base64.encode(bytes, Base64.DEFAULT));
-        AsyncHttpClient client = new AsyncHttpClient();
-        RequestParams params = new RequestParams();
-
-        params.add("img", img);
-        client.post("http://120.27.41.179:8081/", params, new AsyncHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                ToastUtil.showToast(getApplicationContext(), "上传成功");
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                ToastUtil.showToast(getApplicationContext(), "上传失败");
-            }
-        });
+        //用retrofit上传头像
+//        Retrofit retrofit=new Retrofit.Builder().build()
+//                .baseUrl("http://120.27.41.179:8081/");
+//        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//        photo.compress(Bitmap.CompressFormat.PNG, 60, stream);
+//        byte[] bytes = stream.toByteArray();
+//        String img = new String(Base64.encode(bytes, Base64.DEFAULT));
+//        AsyncHttpClient client = new AsyncHttpClient();
+//        RequestParams params = new RequestParams();
+//
+//        params.add("img", img);
+//        client.post("http://120.27.41.179:8081/", params, new AsyncHttpResponseHandler() {
+//            @Override
+//            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+//                ToastUtil.showToast(getApplicationContext(), "上传成功");
+//            }
+//
+//            @Override
+//            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+//                ToastUtil.showToast(getApplicationContext(), "上传失败");
+//            }
+//        });
     }
 
 

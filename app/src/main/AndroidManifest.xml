@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
           package="com.tongyuan.android.zhiquleyuan">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.FLASHLIGHT"/>
+
     <application
+        android:name="android.support.multidex.MultiDexApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:replace="icon,label,theme">
+
         <meta-data
             android:name="design_width"
             android:value="1080"></meta-data>
@@ -36,9 +43,14 @@
         <activity android:name=".activity.MyCollectionActivity"/>
         <activity android:name=".activity.MySuggestionActivity"/>
         <activity android:name=".activity.ActivityLogin"/>
-        <activity android:name=".activity.QrCodeScanActivity"/>
         <activity android:name=".activity.ManagerToyActivity"/>
-        <activity android:name=".fragment.MyToyFragment"/>
+        <activity android:name=".activity.BabyInfoListActivity"/>
+        <activity android:name=".zxing.app.CaptureActivity"/>
+        <activity android:name=".activity.DiscoverySecondCategoryDetailsActivity"/>
+        <activity android:name=".activity.DiscoverySecondCategoryActivity"/>
+        <activity android:name=".activity.NoDisturbActivity"/>
+        <activity android:name=".activity.SetupWlanActivity"/>
+        <!--<activity android:name=".fragment.MyToyFragment"/>-->
 
         <meta-data
             android:name="com.google.android.gms.version"

@@ -117,7 +117,7 @@
         android:layout_below="@id/rl_play_details_title"
         android:layout_gravity="center_horizontal"
         android:scaleType="fitXY"
-        android:src="@mipmap/ic_launcher" />
+        android:src="@mipmap/test" />
     <!--<com.tongyuan.android.zhiquleyuan.view.DiscView-->
         <!--android:id="@+id/dv_playing_details"-->
         <!--android:layout_width="wrap_content"-->

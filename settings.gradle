@@ -1,2 +1,2 @@
-include ':app'
+include ':app', ':sdktest_android', ':meetingSdkDemo', ':whitePad', ':outInterFace'
 include ':library'

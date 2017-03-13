@@ -2,6 +2,9 @@ package com.tongyuan.android.zhiquleyuan.http;
 
 import android.os.Handler;
 
+import com.tongyuan.android.zhiquleyuan.interf.MyRequestCallback;
+import com.tongyuan.android.zhiquleyuan.interf.MyRequestManager;
+
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f1f1f1">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/tb_nodisturb"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/arrow_left" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:text="免打扰设置"
+            android:textColor="#000000"
+            android:textSize="60px" />
+    </android.support.v7.widget.Toolbar>
+
+    <RelativeLayout
+        android:id="@+id/rl_nodisturb_first"
+        android:layout_width="match_parent"
+        android:layout_height="160px"
+        android:layout_below="@id/tb_nodisturb"
+        android:background="#ffffff"
+        android:gravity="center"
+        android:paddingLeft="30px"
+        android:paddingRight="30px">
+
+        <TextView
+            android:id="@+id/tv_nodisturb_first"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="时间的设置,用到三级联动,现在还不会" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_nodisturb_first"
+            android:text="每天" />
+
+        <Button
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="开关" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_nodisturb_second"
+        android:layout_marginTop="30px"
+        android:layout_width="match_parent"
+        android:layout_height="160px"
+        android:layout_below="@id/rl_nodisturb_first"
+        android:background="#ffffff"
+        android:gravity="center"
+        android:paddingLeft="30px"
+        android:paddingRight="30px">
+
+        <TextView
+            android:id="@+id/tv_nodisturb_second"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="时间的设置,用到三级联动,现在还不会" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_nodisturb_second"
+            android:text="每天" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="开关" />
+
+    </RelativeLayout>
+    <ImageView
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30px"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rl_nodisturb_second"
+        android:src="@drawable/toy_add_pressed_160"/>
+
+</RelativeLayout>

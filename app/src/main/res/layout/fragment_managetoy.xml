@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/tb_managetoy"
@@ -16,7 +16,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:src="@drawable/arrow_left" />
+                android:src="@drawable/arrow_left"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -25,15 +25,8 @@
                 android:layout_gravity="center"
                 android:text="玩具管理"
                 android:textColor="#000000"
-                android:textSize="60px" />
+                android:textSize="18sp"/>
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="30px"
-                android:src="@drawable/audio_48" />
         </RelativeLayout>
 
 
@@ -46,31 +39,30 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/tb_managetoy"
-        android:layout_marginTop="22dp">
+        android:layout_marginTop="10dp">
 
         <LinearLayout
             android:id="@+id/iv_managetoy"
-            android:layout_width="440px"
-            android:layout_height="731px"
+            android:layout_width="153dp"
+            android:layout_height="247dp"
             android:layout_alignParentLeft="true"
-            android:layout_marginLeft="30px"
-            android:background="#ff4511"
             android:orientation="vertical"
-            android:paddingLeft="20px"
-            android:paddingRight="20px"
-            android:paddingTop="20px">
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="10dp">
 
             <ImageView
-                android:layout_width="400px"
-                android:layout_height="600px"
-                android:src="@mipmap/ic_launcher" />
+                android:layout_width="133dp"
+                android:layout_height="200dp"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/test"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="fill_parent"
                 android:layout_gravity="center_vertical"
-                android:paddingBottom="30px"
-                android:paddingTop="30px">
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp">
 
                 <ImageView
                     android:id="@+id/iv_call_signal"
@@ -78,34 +70,34 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/toy_signal_2" />
+                    android:src="@drawable/toy_signal_2"/>
 
                 <ImageView
                     android:id="@+id/iv_call_buttery"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="40px"
+                    android:layout_marginRight="10dp"
                     android:layout_toLeftOf="@id/iv_call_signal"
-                    android:src="@drawable/toy_battery_6" />
+                    android:src="@drawable/toy_battery_6"/>
 
                 <ImageView
                     android:id="@+id/iv_call_mic"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="40px"
+                    android:layout_marginRight="10dp"
                     android:layout_toLeftOf="@id/iv_call_buttery"
-                    android:src="@drawable/toy_recording_prohibit" />
+                    android:src="@drawable/toy_recording_prohibit"/>
 
                 <ImageView
                     android:id="@+id/iv_call_camera"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="40px"
+                    android:layout_marginRight="10dp"
                     android:layout_toLeftOf="@id/iv_call_mic"
-                    android:src="@drawable/toy_webcam_prohibit" />
+                    android:src="@drawable/toy_webcam_prohibit"/>
 
 
             </RelativeLayout>
@@ -114,9 +106,9 @@
         <LinearLayout
             android:id="@+id/ll_manangetoy"
             android:layout_width="wrap_content"
-            android:layout_height="731px"
-            android:layout_marginLeft="30px"
-            android:layout_marginRight="30px"
+            android:layout_height="247dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:layout_toRightOf="@id/iv_managetoy"
             android:orientation="vertical">
 
@@ -129,14 +121,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="玩具型号:"
-                    android:textSize="48px" />
+                    android:textSize="16sp"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="XIII56"
                     android:textColor="#ff4511"
-                    android:textSize="48px" />
+                    android:textSize="16sp"/>
             </LinearLayout>
 
             <LinearLayout
@@ -148,20 +140,21 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="激活时间::"
-                    android:textSize="48px" />
+                    android:textSize="16sp"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="2016/19/20"
                     android:textColor="#ff4511"
-                    android:textSize="48px" />
+                    android:textSize="16sp"/>
             </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="X型号玩具有聚酯塑胶集合,包含金属及小配件,建议3岁以下在家长监护下玩乐.X型机器人可沟通交流,远程监控" />
+                android:text="X型号玩具有聚酯塑胶集合,包含金属及小配件,建议3岁以下在家长监护下玩乐.X型机器人可沟通交流,远程监控"
+                android:textSize="14sp"/>
 
 
         </LinearLayout>
@@ -174,14 +167,16 @@
             android:orientation="horizontal">
 
             <Button
-                android:layout_width="275px"
-                android:layout_height="134px"
-                android:text="设置网络" />
+                android:id="@+id/bt_fragment_managetoy_setupwlan"
+                android:layout_width="96dp"
+                android:layout_height="44dp"
+                android:text="设置网络"/>
 
             <Button
-                android:layout_width="275px"
-                android:layout_height="134px"
-                android:text="设置免打扰" />
+                android:id="@+id/bt_fragment_managetoy_nodisturb"
+                android:layout_width="96dp"
+                android:layout_height="44dp"
+                android:text="设置免打扰"/>
         </LinearLayout>
 
     </RelativeLayout>
@@ -195,19 +190,22 @@
         android:background="#ffffff">
 
         <TextView
+            android:id="@+id/tv_frament_managetoy_manager"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="30px"
-            android:layout_marginTop="30px"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
             android:gravity="center_horizontal"
-            android:text="设置管理员" />
+            android:text="设置管理员"/>
 
-        <TextView
-            android:layout_width="wrap_content"
+        <GridView
+            android:id="@+id/gridview_fragment_managetoy"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="正正:XIII56" />
-
+            android:layout_marginTop="70dp"
+            android:numColumns="5"/>
+        <!--缺少一个管理员的标志,暂时还不会加-->
     </RelativeLayout>
 
     <FrameLayout
@@ -215,12 +213,31 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/rl_managetoy_up"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="30px">
+        android:layout_marginTop="10dp">
 
-        <ImageView
-            android:layout_width="160px"
-            android:layout_height="160px"
-            android:src="@mipmap/ic_launcher" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:weightSum="1">
+
+            <ImageView
+                android:id="@+id/iv_fragment_managetoy_babyhead"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:src="@mipmap/test"/>
+
+            <TextView
+                android:id="@+id/tv_fragment_managetoy_babyname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textSize="16sp"
+                android:text="正正"/>
+        </LinearLayout>
+
     </FrameLayout>
+
 
 </RelativeLayout>

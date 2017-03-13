@@ -74,11 +74,11 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
             android:src="@drawable/myplay_ico_26_3x" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_marginTop="75dp"/>
     </RelativeLayout>
 
-    <View
-        android:layout_width="0dp"
-        android:layout_height="3dp"
-        android:layout_marginTop="75dp"
-        android:layout_weight="1" />
+
 </LinearLayout>

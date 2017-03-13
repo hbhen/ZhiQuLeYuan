@@ -1,38 +1,41 @@
 package com.tongyuan.android.zhiquleyuan.adapter;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tongyuan.android.zhiquleyuan.holder.DiscoveryGridHolder;
+import com.bumptech.glide.Glide;
 import com.tongyuan.android.zhiquleyuan.R;
-import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
+import com.tongyuan.android.zhiquleyuan.holder.DiscoveryGridHolder;
+
+import java.util.ArrayList;
 
 /**
  * Created by android on 2016/12/21.
  */
-public class DiscoveryGridAdapter extends BaseAdapter implements AdapterView.OnItemClickListener {
+public class DiscoveryGridAdapter extends BaseAdapter {
     private LayoutInflater inflater;
     private Context context;
-    private View convertView;
-    int[] pic=new int[]{};
-    String[] text=new String[]{};
+    ArrayList listImg = new ArrayList();
+    ArrayList listName = new ArrayList();
+    ArrayList listId = new ArrayList();
 
-    public DiscoveryGridAdapter(Context context,int[] pic,String[] text) {
+    public DiscoveryGridAdapter(Context context, ArrayList listImg, ArrayList listId, ArrayList listName) {//看看以后能不能把这些数据封装到一个list里面!
         this.context = context;
-        this.pic=pic;
-        this.text=text;
+        this.listImg = listImg;
+        this.listId = listId;
+        this.listName = listName;
     }
 
     @Override
     public int getCount() {
-        return text.length;
+        return listImg.size();
     }
 
     @Override
@@ -44,47 +47,10 @@ public class DiscoveryGridAdapter extends BaseAdapter implements AdapterView.OnI
     public long getItemId(int position) {
         return position;
     }
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-        switch (position) {
-            case 0:
-                Log.w("11", "onItemClick: _____________________");
-                System.out.print("111111111111111111111111111");
-                ToastUtil.showToast(context, "儿童歌谣");
-                break;
-            case 1:
-                ToastUtil.showToast(context, "国学经典");
-                break;
-            case 2:
-                ToastUtil.showToast(context, "生活百科");
-                break;
-            case 3:
-                ToastUtil.showToast(context, "英语启蒙");
-                break;
-            case 4:
-                ToastUtil.showToast(context, "中国民乐");
-                break;
-            case 5:
-                ToastUtil.showToast(context, "西方古典");
-                break;
-            case 6:
-                ToastUtil.showToast(context, "摇篮曲");
-                break;
-            case 7:
-                ToastUtil.showToast(context, "胎教音乐");
-                break;
-            case 8:
-                ToastUtil.showToast(context, "人格培养");
-                break;
-            default:
-                break;
-        }
-    }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        DiscoveryGridHolder holder = null;
-
+        DiscoveryGridHolder holder;
         if (convertView == null) {
             inflater = LayoutInflater.from(context);
             convertView = inflater.inflate(R.layout.item_discovery_gridview, null);
@@ -95,11 +61,10 @@ public class DiscoveryGridAdapter extends BaseAdapter implements AdapterView.OnI
         } else {
             holder = (DiscoveryGridHolder) convertView.getTag();
         }
-        //设置数据,这是写死的数据,以后还要获取网络上来的数据
-        holder.iv.setImageResource(pic[position]);
-        holder.tv.setText(text[position]);
+        Uri parse = Uri.parse(listImg.get(position).toString());
+        Log.i("111111", "parse: " + parse);
+        Glide.with(context).load(parse).into(holder.iv);
+        holder.tv.setText(listName.get(position).toString());
         return convertView;
     }
-
-
 }
