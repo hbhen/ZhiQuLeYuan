@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:background="#f1f1f1f1">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/tb_toy_details"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:background="#f1f1f1">
 
         <ImageView
@@ -25,99 +29,34 @@
     </android.support.v7.widget.Toolbar>
 
     <RelativeLayout
-        android:layout_marginTop="10dp"
         android:id="@+id/rl_toy_details"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tb_toy_details"
+        android:layout_below="@+id/tb_toy_details"
+        android:layout_marginTop="8dp"
         android:background="#f1f1f1">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:src="@mipmap/ic_launcher"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="5dp"
-                android:text="正正"
-                android:textColor="#000000"
-                android:textSize="16sp"/>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="30px"
-                android:layout_marginTop="30px"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="玩具型号:"
-                    android:textColor="#000000"
-                    android:textSize="16sp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="XIII56"
-                    android:textColor="#ff4511"
-                    android:textSize="16sp"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="激活时间:"
-                    android:textColor="#000000"
-                    android:textSize="16sp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="2016/19/20"
-                    android:textColor="#ff4511"
-                    android:textSize="16sp"/>
-
-            </LinearLayout>
-
-
-        </LinearLayout>
         <!--玩具图片的布局-->
         <RelativeLayout
             android:id="@+id/iv_toy_details_rightimg"
             android:layout_width="158dp"
             android:layout_height="247dp"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="30px">
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="10dp"
+            android:background="#ffffff">
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/iv_fragment_toy_details_toyimg"
+                android:layout_width="148dp"
+                android:layout_height="210dp"
+                android:layout_centerHorizontal="true"
+                android:scaleType="centerCrop"
                 android:src="@mipmap/test"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
+                android:layout_alignRight="@id/iv_fragment_toy_details_toyimg"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -158,38 +97,129 @@
             </RelativeLayout>
         </RelativeLayout>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/iv_toy_details_rightimg"
-            android:layout_alignParentLeft="true"
+        <RelativeLayout
 
-            android:layout_centerHorizontal="true"
-            android:layout_marginLeft="30px">
+            android:layout_width="186dp"
+            android:layout_height="247dp"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/iv_toy_details_rightimg"
+            android:layout_toRightOf="@+id/iv_toy_details_rightimg"
+            android:paddingLeft="10dp">
 
             <ImageView
-                android:id="@+id/iv_toy_details_call"
-                android:layout_width="86dp"
-                android:layout_height="44dp"
-                android:background="#48CB5E"
+                android:id="@+id/iv_fragment_toy_details_babyImg"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal"
                 android:src="@mipmap/ic_launcher"/>
 
             <TextView
-                android:id="@+id/tv_toy_details_manager"
-                android:layout_width="86dp"
-                android:layout_height="44dp"
-                android:background="#ffffff"
-                android:gravity="center"
-                android:text="玩具管理"
+                android:id="@+id/tv_fragment_toy_details_babyName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/iv_fragment_toy_details_babyImg"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="3dp"
+                android:text="正正"
                 android:textColor="#000000"
                 android:textSize="16sp"/>
-        </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_fragment_toy_details_toytype"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_fragment_toy_details_babyName"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="玩具型号:"
+                    android:textColor="#000000"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:id="@+id/tv_fragment_toy_details_toytype"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="XIII56"
+                    android:textColor="#ff4511"
+                    android:textSize="16sp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_fragment_toy_details_acttime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/ll_fragment_toy_details_toytype"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="激活时间:"
+                    android:textColor="#000000"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:id="@+id/tv_fragment_toy_details_acttime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2016/19/20"
+                    android:textColor="#ff4511"
+                    android:textSize="16sp"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_fragment_toy_details_unbind"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/ll_fragment_toy_details_acttime"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="20dp"
+                android:text="玩具解除绑定"
+                android:textColor="#ff4511"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true">
+
+
+                <TextView
+                    android:id="@+id/tv_toy_details_manager"
+                    android:layout_width="90dp"
+                    android:layout_height="44dp"
+                    android:background="#ffffff"
+                    android:gravity="center"
+                    android:text="玩具管理"
+                    android:textColor="#000000"
+                    android:textSize="16sp"/>
+
+                <ImageView
+                    android:id="@+id/iv_toy_details_call"
+                    android:layout_width="90dp"
+                    android:layout_height="44dp"
+                    android:background="#48CB5E"
+                    android:src="@mipmap/ic_launcher"/>
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+
     </RelativeLayout>
     <!--这里有一个需求,如果有人给玩具推送东西,当前正在播放,那么就显示这个textview,如果当前没有播放,则隐藏这个view,并且设置上边距30px-->
     <TextView
         android:id="@+id/tv_toy_details_playing"
         android:layout_width="match_parent"
-        android:layout_height="164px"
+        android:layout_height="38dp"
         android:layout_below="@id/rl_toy_details"
         android:background="#f1f1f1"
         android:gravity="center_vertical"
@@ -200,77 +230,97 @@
         android:textSize="16sp"/>
     <!--这里要添加推荐的内容,在代码里动态的添加推荐内容的item布局-->
     <!--这个布局的显示在点击某个东西的时候弹出,需要动画,可见不可见-->
-    <RelativeLayout
+    <FrameLayout
+        android:id="@+id/fl_fragment_toy_details_playcontrol"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:layout_below="@id/tv_toy_details_playing">
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rl_toy_details"
+        android:layout_marginTop="39dp"
+        android:visibility="gone">
 
         <RelativeLayout
-            android:id="@+id/rl_toy_details_control"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp">
+            android:layout_height="216dp"
+            android:layout_below="@id/tv_toy_details_playing"
+            android:background="#ffffff">
+
+            <RelativeLayout
+                android:id="@+id/rl_toy_details_control"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp">
+
+                <LinearLayout
+                    android:id="@+id/ll_toy_details_control"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/play_before_pressed_104"/>
+
+                    <!--要外层的的边框换成彩色的,并且有转动的动画-->
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="82dp"
+                        android:layout_marginRight="82dp"
+                        android:src="@drawable/play_stop_pressed240"/>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/play_after_pressed_104"/>
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:src="@drawable/arrow_left"/>
+            </RelativeLayout>
 
             <LinearLayout
-                android:id="@+id/ll_toy_details_control"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/rl_toy_details_control"
                 android:layout_centerHorizontal="true"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:gravity="center">
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/play_before_pressed_104"/>
+                    android:src="@drawable/volume_small_reduction_pressed"/>
 
-                <!--要外层的的边框换成彩色的,并且有转动的动画-->
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="82dp"
-                    android:layout_marginRight="82dp"
-                    android:src="@drawable/play_stop_pressed240"/>
+                <SeekBar
+                    android:layout_width="200dp"
+                    android:layout_height="2dp"/>
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/play_after_pressed_104"/>
+                    android:src="@drawable/volume_big_add_pressed"/>
+
             </LinearLayout>
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
-                android:src="@drawable/arrow_left"/>
+
         </RelativeLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/rl_toy_details_control"
-            android:layout_centerHorizontal="true"
-            android:gravity="center">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/volume_small_reduction_pressed"/>
-
-            <SeekBar
-                android:layout_width="200dp"
-                android:layout_height="2dp"/>
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/volume_big_add_pressed"/>
-
-        </LinearLayout>
+    </FrameLayout>
+    <!--把这个分出去 ,另外创建一个fragment,因为这里有两个fragment的切换-->
 
 
-    </RelativeLayout>
+    <ListView
+        android:id="@+id/lv_fragment_toy_details_recommand"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rl_toy_details"
+        android:layout_marginTop="39dp"/>
+
 
 </RelativeLayout>

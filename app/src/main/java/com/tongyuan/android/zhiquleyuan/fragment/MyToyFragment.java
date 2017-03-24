@@ -27,25 +27,40 @@ public class MyToyFragment extends Fragment {
 
     @Bind(R.id.tb_toy_details)
     Toolbar mTbToyDetails;
+
     @Bind(R.id.iv_toy_details_rightimg)
     RelativeLayout mIvToyDetailsRightimg;
+
     @Bind(R.id.iv_toy_details_call)
     ImageView mIvToyDetailsCall;
+
     @Bind(R.id.tv_toy_details_manager)
     TextView mTvToyDetailsManager;
+
     @Bind(R.id.rl_toy_details)
     RelativeLayout mRlToyDetails;
+
     @Bind(R.id.tv_toy_details_playing)
     TextView mTvToyDetailsPlaying;
+
     @Bind(R.id.ll_toy_details_control)
     LinearLayout mLlToyDetailsControl;
+
     @Bind(R.id.rl_toy_details_control)
     RelativeLayout mRlToyDetailsControl;
+
     private View mRootView;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Bundle arguments = getArguments();
+        String toyimg = arguments.getString("toyimg");
+        String toycode = arguments.getString("toycode");
+        String acttime = arguments.getString("acttime");
+        String ownername = arguments.getString("ownername");
+
+
         mRootView = inflater.inflate(R.layout.fragment_toy_details, null);
         ButterKnife.bind(this, mRootView);
         return mRootView;
@@ -63,10 +78,10 @@ public class MyToyFragment extends Fragment {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_toy_details_call:
-                ToastUtil.showToast(getActivity(),"1");
+                ToastUtil.showToast(getActivity(), "1");
                 break;
             case R.id.tv_toy_details_manager:
-                ToastUtil.showToast(getActivity(),"2");
+                ToastUtil.showToast(getActivity(), "2");
                 break;
         }
     }
