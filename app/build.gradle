@@ -51,8 +51,9 @@ dependencies {
     compile project(':meetingSdkDemo')
     compile project(':library')
     compile files('libs/zxing.jar')
-    compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.1.3'
+    compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.3'
     //鸿洋viewpager引用 用于玩具的selector
     compile 'com.zhy:magic-viewpager:1.0.1'
     compile 'org.greenrobot:eventbus:3.0.0'
+    compile 'com.daimajia.swipelayout:library:1.2.0@aar'
 }

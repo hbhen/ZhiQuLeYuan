@@ -13,10 +13,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
+import com.tongyuan.android.zhiquleyuan.bean.AddToyResultBean;
+import com.tongyuan.android.zhiquleyuan.bean.QueryToyResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoREQBean;
 import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoRESBean;
 import com.tongyuan.android.zhiquleyuan.event.AddToyMessageEvent;
@@ -33,6 +36,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -58,13 +62,14 @@ public class ToySelectorFragment extends Fragment {
     ArrayList<String> babyImg = new ArrayList<String>();
     ArrayList<String> toyId = new ArrayList<String>();
     ArrayList<String> toyCode = new ArrayList<String>();
+    SingleToyInfoRESBean body;
+//    List<Response<SingleToyInfoRESBean>> responseList;
+//    String mToycode = new String();//唯一标识
+//    String mActtime = new String();
+//    String mToyimg = new String();
+//    String mOwnername = new String();
 
-    String mToycode = new String();//唯一标识
-    String mActtime = new String();
-    String mToyimg = new String();
-    String mOwnername = new String();
-
-    public Bundle bundle = new Bundle();
+    private ImageView mImageView;
 
     @Nullable
     @Override
@@ -110,113 +115,61 @@ public class ToySelectorFragment extends Fragment {
 
         mViewpagetToy.setPageMargin(20);
         mViewpagetToy.setOffscreenPageLimit(3);
+
+
         mViewpagetToy.setAdapter(mPagerAdapter = new PagerAdapter() {
 
-
+            //TODO 这个地方写的有问题,既然给了position,那么就直接引用position即可.要改正
             @Override
             public Object instantiateItem(ViewGroup container, final int position) {
-                ImageView imageView = new ImageView(getActivity());
-                imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-                for (int i = 0; i < toyImg.size(); i++) {
+                mImageView = new ImageView(getActivity());
+                mImageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                Glide.with(getActivity()).load(toyImg.get(position)).asBitmap().into(mImageView);
 
-                    Glide.with(getActivity()).load(toyImg.get(i).toString()).asBitmap().into(imageView);
+                container.addView(mImageView);
 
-                }
 
-                container.addView(imageView);
-
-                imageView.setOnClickListener(new View.OnClickListener() {
+                mImageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         /*
                         * 这里点击不同的图片都要进入toydetailsfragment里面,但是传递的数据是不一样的,intent bundle
                         * 需要传递的参数:1,玩具的图片; 2,玩具的型号; 3,玩具激活的时间; 4,玩具的状态
+                        * 根据position来判断进入的是哪个玩具
                         * */
+
+                        //TODO 从这里开始要处理数据!
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
                         String time = simpleDateFormat.format(new Date());
-                        //TODO 从这里开始要处理数据!
-                        switch (position) {
-                            case 0:
-                                //点击0 item的时候,查询该玩具的信息 ,把有用的数据传递到MyToyFrgment去,查询的方法,每个图片点击的时候都要用,所以,写成一个公共方法
-                                ToastUtil.showToast(getActivity(), "点击的是" + position);
 
-                                String toyid0 = toyId.get(0);
-                                String toycode0 = toyCode.get(0);
-                                SPUtils.putString(getActivity(), "toycode0", toycode0);
+                        String toyid = toyId.get(position);
+                        Log.i(TAG, "onClick:toyid " + toyid);
+                        String toycode = toyCode.get(position);
+                        Log.i(TAG, "onClick:toycode " + toycode);
 
-                                QuerySingleToyInfo(toyid0, toycode0, time);
-                                new Handler().postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        bundle.putString("toyimg", mToyimg);
-                                        Log.d(TAG, "mToyimg149: " + mToyimg);
-                                        bundle.putString("toycode", mToycode);
-                                        Log.d(TAG, "mmToycode149: " + mToycode);
+                        QuerySingleToyInfo(toyid, toycode, time);
 
-                                        bundle.putString("acttime", mActtime);
-                                        bundle.putString("ownername", mOwnername);
 
-                                        toyDetailsFragment.setArguments(bundle);
-
-                                        FragmentManager fragmentManager0 = getFragmentManager();
-                                        FragmentTransaction transaction0 = fragmentManager0.beginTransaction();
-                                        transaction0.replace(R.id.fl_fragmentcontainer, toyDetailsFragment);
-                                        transaction0.commit();
-                                    }
-                                }, 300);
-
-//                                EventBus.getDefault().postSticky(new SelectorToMyToyMessageEvent(a));
-
-                                break;
-                            case 1:
-                                ToastUtil.showToast(getContext(), "点击的是" + position);
-                                String toyid1 = toyId.get(1);
-                                String toycode1 = toyCode.get(1);
-                                SPUtils.putString(getActivity(), "toycode1", toycode1);
-                                QuerySingleToyInfo(toyid1, toycode1, time);
-                                new Handler().postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        bundle.putString("toycode", mToycode);
-                                        bundle.putString("toyimg", mToyimg);
-                                        bundle.putString("acttime", mActtime);
-                                        bundle.putString("ownername", mOwnername);
-                                        toyDetailsFragment.setArguments(bundle);
-                                        FragmentManager fragmentManager1 = getFragmentManager();
-                                        FragmentTransaction transaction1 = fragmentManager1.beginTransaction();
-                                        transaction1.replace(R.id.fl_fragmentcontainer, toyDetailsFragment);
-                                        transaction1.commit();
-                                    }
-                                }, 300);
-
-                                break;
-                            case 2:
-                                ToastUtil.showToast(getContext(), "点击的是" + position);
-                                String toyid2 = toyId.get(2);
-                                String toycode2 = toyCode.get(2);
-                                SPUtils.putString(getActivity(), "toycode2", toycode2);
-                                QuerySingleToyInfo(toyid2, toycode2, time);
-                                new Handler().postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        bundle.putString("toycode", mToycode);
-                                        bundle.putString("toyimg", mToyimg);
-                                        bundle.putString("acttime", mActtime);
-                                        bundle.putString("ownername", mOwnername);
-                                        toyDetailsFragment.setArguments(bundle);
-                                        FragmentManager fragmentManager1 = getFragmentManager();
-                                        FragmentTransaction transaction1 = fragmentManager1.beginTransaction();
-                                        transaction1.replace(R.id.fl_fragmentcontainer, toyDetailsFragment);
-                                        transaction1.commit();
-                                    }
-                                }, 300);
-                                break;
-
-                        }
+                        Toast.makeText(getActivity(), "当前position" + position, Toast.LENGTH_SHORT).show();
+                        Log.i(TAG, "onClick: toyid1" + toyid);
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                Bundle bundle = new Bundle();
+                                bundle.putParcelable("response", body.getBODY());
+                                bundle.putString("babyimg", babyImg.get(position));
+                                Log.i(TAG, "run:---- "+babyImg.get(position));
+                                toyDetailsFragment.setArguments(bundle);
+                                FragmentManager fragmentManager = getFragmentManager();
+                                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                                transaction.replace(R.id.fl_fragmentcontainer, toyDetailsFragment);
+                                transaction.commit();
+                            }
+                        }, 300);
                     }
-
                 });
-                return imageView;
+
+                return mImageView;
             }
 
             @Override
@@ -241,16 +194,6 @@ public class ToySelectorFragment extends Fragment {
         });
         mViewpagetToy.setPageTransformer(true, new ScaleInTransformer());
         mViewpagetToy.setCurrentItem(1);
-        mViewpagetToy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentManager fragmentManager = getFragmentManager();
-                FragmentTransaction transaction = fragmentManager.beginTransaction();
-                transaction.replace(R.id.fl_fragmentcontainer, toyDetailsFragment);
-                transaction.commit();
-                ToastUtil.showToast(getActivity(), "点击的是玩具");
-            }
-        });
     }
 
     private void QuerySingleToyInfo(String toyid, String toycode, String time) {
@@ -259,7 +202,8 @@ public class ToySelectorFragment extends Fragment {
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
         SingleToyInfoREQBean.BODYBean bodyBean = new SingleToyInfoREQBean.BODYBean(toyid, toycode);
-        SingleToyInfoREQBean singleToyInfoREQBean = new SingleToyInfoREQBean("REQ", "QTOY", SPUtils.getString(getActivity(), "phoneNum", ""), time, bodyBean, "", SPUtils.getString(getActivity(), "TOKEN", ""), "1");
+        SingleToyInfoREQBean singleToyInfoREQBean = new SingleToyInfoREQBean("REQ", "QTOY", SPUtils.getString(getActivity(), "phoneNum", ""), time,
+                bodyBean, "", SPUtils.getString(getActivity(), "TOKEN", ""), "1");
 
         Gson gson = new Gson();
         String s = gson.toJson(singleToyInfoREQBean);
@@ -267,18 +211,20 @@ public class ToySelectorFragment extends Fragment {
         singleToyInfoResult.enqueue(new Callback<SingleToyInfoRESBean>() {
             @Override
             public void onResponse(Call<SingleToyInfoRESBean> call, Response<SingleToyInfoRESBean> response) {
-                if (response != null && !response.body().getCODE().equals(0)) {
-                    String toycode = response.body().getBODY().getCODE();
-                    Log.i(TAG, "toycode:235 " + toycode);
-                    String acttime = response.body().getBODY().getACTTIME();
-                    String toyimg = response.body().getBODY().getIMG();
-                    String ownername = response.body().getBODY().getOWNERNAME();
+                if (response != null && response.body().getCODE().equals("0")) {
+//                    String toycode = response.body().getBODY().getCODE();
+//                    Log.i(TAG, "toycode:235 " + toycode);
+//                    String acttime = response.body().getBODY().getACTTIME();
+//                    String toyimg = response.body().getBODY().getIMG();
+//                    String ownername = response.body().getBODY().getOWNERNAME();
+//
+//                    mToycode = toycode;
+//                    Log.i(TAG, "mToycode241: " + mToycode);
+//                    mActtime = acttime;
+//                    mToyimg = toyimg;
+//                    mOwnername = ownername;
+                    body = response.body();
 
-                    mToycode = toycode;
-                    Log.i(TAG, "mToycode241: " + mToycode);
-                    mActtime = acttime;
-                    mToyimg = toyimg;
-                    mOwnername = ownername;
 
                 } else {
                     ToastUtil.showToast(getActivity(), "Response为空,请检查网络");
@@ -294,7 +240,7 @@ public class ToySelectorFragment extends Fragment {
     }
 
     /**
-     * 思路:在这个页面,要去两个地方的数据,
+     * 思路:在这个页面,要取两个地方的数据,
      * 一/是从mainactivity传过来的mList数据,从list拿到所有的1,玩具的图片2,宝宝的头像3,其他需要的信息.
      * 二/从addtoyfragment传过来的,二维码扫描后的结果,这个结果就是一个code,qrcode在addtoyfragment里面
      * 处理过后,拿到里面的信息,比如toyid,类别,激活状态等等.addtoyfragment处理完数据以后,再通过eventbus传到
@@ -308,8 +254,10 @@ public class ToySelectorFragment extends Fragment {
         //从mainactivity传过来的lst数据,
         Log.i(TAG, "messageEventToy.mQueryBabyListResults: " + messageEventToy.mQueryBabyListResults.get(1).toString());
         Log.i(TAG, "messageEventToy.mQueryBabyListResults: " + messageEventToy.mQueryBabyListResults.size());
-        ToastUtil.showToast(getActivity(), messageEventToy.mQueryBabyListResults.get(0).toString());
+//        ToastUtil.showToast(getActivity(), messageEventToy.mQueryBabyListResults.get(0).toString());
         //1.储存传递过来的数据用list,map,数组?看要求
+        List<QueryToyResultBean.BODYBean.LSTBean> listResults = messageEventToy.mQueryBabyListResults;
+
         for (int i = 0; i < messageEventToy.mQueryBabyListResults.size(); i++) {
 
             String imgBaby = messageEventToy.mQueryBabyListResults.get(i).getBABYIMG();
@@ -327,7 +275,6 @@ public class ToySelectorFragment extends Fragment {
         }
 
         Log.i(TAG, "babyImg=====" + babyImg);
-
         Log.i(TAG, "babyImg=====" + toyImg);
 
     }
@@ -335,6 +282,12 @@ public class ToySelectorFragment extends Fragment {
     //获取从ToyAddFragment传过来的response数据.
     @Subscribe(threadMode = ThreadMode.POSTING, sticky = true)
     public void onGetToyAddMessage(AddToyMessageEvent addToyMessageEvent) {
+        Response<AddToyResultBean> addToyResultBeanResponse = addToyMessageEvent.mAddToyResultBeanResponse;
+
+        //拿到从ToyAddFragment传过来的response数据
+        List<Response<AddToyResultBean>> responseList = new ArrayList<>();
+
+
         String img = addToyMessageEvent.mAddToyResultBeanResponse.body().getBODY().getIMG();
         String id = addToyMessageEvent.mAddToyResultBeanResponse.body().getBODY().getID();
         String code = addToyMessageEvent.mAddToyResultBeanResponse.body().getCODE();
@@ -345,8 +298,6 @@ public class ToySelectorFragment extends Fragment {
                 toyImg.add(img);
             }
         }
-
-
     }
 
     @Override

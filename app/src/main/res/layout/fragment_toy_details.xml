@@ -45,6 +45,7 @@
             android:background="#ffffff">
 
             <ImageView
+                android:layout_marginTop="10dp"
                 android:id="@+id/iv_fragment_toy_details_toyimg"
                 android:layout_width="148dp"
                 android:layout_height="210dp"
@@ -175,6 +176,7 @@
             </LinearLayout>
 
             <TextView
+                android:textSize="19sp"
                 android:id="@+id/tv_fragment_toy_details_unbind"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

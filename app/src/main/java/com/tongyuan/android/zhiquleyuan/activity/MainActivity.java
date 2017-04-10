@@ -2,6 +2,7 @@ package com.tongyuan.android.zhiquleyuan.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -76,7 +77,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         initView();
         initData();
         initFragment();
-//        XRequest.initXRequest(MainActivity.this);
         rb_discovery.setOnClickListener(this);
         rb_recoding.setOnClickListener(this);
         rb_toy.setOnClickListener(this);
@@ -93,7 +93,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         Log.i(TAG, "initData: token" + mMainToken);
         mMainphoneNum = SPUtils.getString(this, "phoneNum", "");
         mList = new ArrayList<QueryToyResultBean.BODYBean.LSTBean>();
-        chargeHasToy();
+
     }
 
     @Override
@@ -158,33 +158,37 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 否则进入无玩具页面,要求添加页面  待添加完玩具以后,再把玩具的图片和id,绑定的宝宝信息,传到selectToy页面,并展示
                 * */
                 //1,查询玩具
-
+                chargeHasToy();
                 if (!mMainToken.equals("")) {
-                    boolean hasToy = mList.size() == 0 ?  true:false ;
-                    Log.i(TAG, "ssssssss: " + mList.size());
-                    Log.i(TAG, "hasToy: " + hasToy);
-                    String acttime = mList.get(0).getACTTIME();
-                    Log.i(TAG, "run: imggggg  " + acttime);
-                    String img = mList.get(0).getIMG();
-                    Log.i(TAG, "run: imggggg  " + img);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            boolean hasToy = mList.size() == 0 ? true : false;
+                            Log.i(TAG, "ssssssss: " + mList.size());
+//                    Log.i(TAG, "hasToy: " + hasToy);
+//                    String acttime = mList.get(0).getACTTIME();
+//                    Log.i(TAG, "run: imggggg  " + acttime);
+//                    String img = mList.get(0).getIMG();
+//                    Log.i(TAG, "run: imggggg  " + img);
 
-                    //如果当前用户玩具,则进入添加玩具页面
-                    if (hasToy==true) {
-                        FragmentTransaction ft3 = getSupportFragmentManager().beginTransaction();
-                        ft3.replace(R.id.fl_fragmentcontainer, toyAddFragment);
-                        ft3.commit();
-                    } else {
-                        //否则走玩具选择页面
-                        EventBus.getDefault().postSticky(new MessageEventToy(mList));
-                        FragmentManager supportFragmentManager = getSupportFragmentManager();
-                        FragmentTransaction ft32 = supportFragmentManager.beginTransaction();
-                        ft32.replace(R.id.fl_fragmentcontainer, mToySelectorFragment);
-                        ft32.commit();
-//                        ft3.replace(R.id.fl_fragmentcontainer, toyDetailsFragment);玩具选择页
-                        //正常的逻辑是走扫描二维码的界面,为了调节视频,先跳转到玩具通话页面
-//                    ft3.replace(R.id.fl_fragmentcontainer, toyAddFragment);
-
-                    }
+                            //如果当前用户玩具,则进入添加玩具页面
+                            if (hasToy == true) {
+                                FragmentTransaction ft3 = getSupportFragmentManager().beginTransaction();
+                                ft3.replace(R.id.fl_fragmentcontainer, toyAddFragment);
+                                ft3.commit();
+                            } else {
+                                //否则走玩具选择页面
+                                EventBus.getDefault().postSticky(new MessageEventToy(mList));
+                                FragmentManager supportFragmentManager = getSupportFragmentManager();
+                                FragmentTransaction ft32 = supportFragmentManager.beginTransaction();
+                                ft32.replace(R.id.fl_fragmentcontainer, mToySelectorFragment);
+                                ft32.commit();
+                                //ft3.replace(R.id.fl_fragmentcontainer, toyDetailsFragment);玩具选择页
+                                // 正常的逻辑是走扫描二维码的界面,为了调节视频,先跳转到玩具通话页面
+                                // ft3.replace(R.id.fl_fragmentcontainer, toyAddFragment);
+                            }
+                        }
+                    }, 300);
                 } else {
                     Intent intent = new Intent();
                     intent.setClass(getApplicationContext(), ActivityLogin.class);
@@ -221,7 +225,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         QueryToyInterface queryToyInterface = retrofit1.create(QueryToyInterface.class);
 
         QueryToyRequestBean.BODYBean queryToyRequestBody = new QueryToyRequestBean.BODYBean("0", "", "", "-1", "1");
-        QueryToyRequestBean queryToyRequestBean = new QueryToyRequestBean("REQ", "QRYTOYS", mMainphoneNum, mCurrentTime, queryToyRequestBody, "", mMainToken, "1");
+        QueryToyRequestBean queryToyRequestBean = new QueryToyRequestBean("REQ", "QRYTOYS", mMainphoneNum, mCurrentTime, queryToyRequestBody, "",
+                mMainToken, "1");
 
         Gson mainGson = new Gson();
         String queryToyjson = mainGson.toJson(queryToyRequestBean);
@@ -232,17 +237,15 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
             @Override
             public void onResponse(Call<QueryToyResultBean> call, Response<QueryToyResultBean> response) {
+                //只有list有想要的数据,所以只传list就行
                 List<QueryToyResultBean.BODYBean.LSTBean> lst = response.body().getBODY().getLST();
                 mList = lst;
-                if (mList != null) {
-                    Log.i(TAG, "mLst: " + mList.toString());
-//                Log.i(TAG, "mLst`: " + body.toString());
-//                Log.i(TAG, "onResponse: " + response.body().toString());
-                    Log.i(TAG, "onResponse: " + response.body().getBODY().getLST());
+                if (!mList.isEmpty()) {
+                    Log.i(TAG, "mLst: " + mList.size());
+                    Log.i(TAG, "onResponse:  lst " + response.body().getBODY().getLST());
 
                 } else {
                     ToastUtil.showToast(getApplicationContext(), "mList---为空,请检查Lst");
-
                 }
             }
 
@@ -252,9 +255,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             }
         });
     }
-
-
-
 }
 
 

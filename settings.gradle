@@ -1,2 +1,2 @@
-include ':app', ':sdktest_android', ':meetingSdkDemo', ':whitePad', ':outInterFace'
+include ':app', ':sdktest_android', ':meetingSdkDemo', ':whitePad', ':outInterFace','DragSortListViewLibrary', 'swiperefreshscrolllistview'
 include ':library'

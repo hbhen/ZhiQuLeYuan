@@ -9,11 +9,13 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/DragSortListViewLibrary" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/library" />
             <option value="$PROJECT_DIR$/meetingSdkDemo" />
             <option value="$PROJECT_DIR$/outInterFace" />
             <option value="$PROJECT_DIR$/sdktest_android" />
+            <option value="$PROJECT_DIR$/swiperefreshscrolllistview" />
             <option value="$PROJECT_DIR$/whitePad" />
           </set>
         </option>

@@ -134,7 +134,7 @@ public class DiscoveryListViewAdapter extends BaseAdapter {
         }
         switch (type) {
             case TYPE_ONE:
-                disHolder1.iv_title.setImageResource(R.mipmap.ic_launcher);
+//                disHolder1.iv_title.setImageResource(R.mipmap.ic_launcher);
                 disHolder1.tv_title.setText("推荐内容");
                 disHolder1.iv_desc.setImageResource(R.mipmap.ic_launcher);
                 disHolder1.tv_desc_title.setText("TED-Ed原创课程");
