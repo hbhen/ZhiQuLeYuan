@@ -3,9 +3,11 @@ package com.tongyuan.android.zhiquleyuan.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -62,6 +64,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private String mMainToken;
     private String mMainphoneNum;
     public List<QueryToyResultBean.BODYBean.LSTBean> mList;
+    public static boolean isLogin = false;
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -117,6 +120,98 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
     }
 
+    private void showFragment(Fragment f, String name) {
+
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        List<Fragment> fragmentList = fragmentManager.getFragments();
+        if (fragmentList != null) {
+
+            for (Fragment fragment : fragmentManager.getFragments()) {
+                transaction.hide(fragment);
+            }
+        }
+        if (f.isAdded()) {
+
+            transaction.show(f);
+        } else {
+            transaction.add(R.id.fl_fragmentcontainer, f).show(f);
+        }
+
+        if (!TextUtils.isEmpty(name)) {
+            //TODO xiangrangshei baocun zai stack limian panduan yixia
+//            if (name.equals(discoveryFragment)){
+//                transaction.addToBackStack(name);
+//            }else{
+//
+//            transaction.addToBackStack(null);
+//            }
+//            transaction.addToBackStack(null);
+//            if (currentFragment==mToySelectorFragment && f==toyAddFragment) {
+//                transaction.addToBackStack(null);
+//            }
+        }
+        transaction.commitAllowingStateLoss();
+    }
+
+//    public void showFragment(Fragment to, String name) {
+//
+//        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+////        ft = ft.hide(from);
+////        ft.setCustomAnimations(R.anim.base_slide_right_in, R.anim.base_slide_right_out,
+////                R.anim.base_slide_right_in, R.anim.base_slide_right_out);
+//        if (to.isAdded()) {
+//            Fragment f = getSupportFragmentManager().findFragmentById(R.id.fl_fragmentcontainer);
+//            if (f == null) {
+//                ft.show(to);
+//            } else {
+//                ft = ft.replace(R.id.fl_fragmentcontainer, to).show(to);
+//            }
+//        } else {
+//            ft = ft.add(R.id.fl_fragmentcontainer, to).show(to);
+//        }
+//        if (!TextUtils.isEmpty(name)) {
+//            ft.addToBackStack(name);
+//        }
+//
+//        ft.commitAllowingStateLoss();
+//    }
+
+    private Fragment currentFragment;
+
+    public void showFragment(String name) {
+        if (name.equals(DiscoveryFragment.class.getSimpleName())) {
+            showFragment(discoveryFragment, name);
+            currentFragment = discoveryFragment;
+        } else if (name.equals(RecodingFragment.class.getSimpleName())) {
+            showFragment(recodingFragment, name);
+            currentFragment = recodingFragment;
+        } else if (name.equals(ToyAddFragment.class.getSimpleName())) {
+            showFragment(toyAddFragment, name);
+            currentFragment = toyAddFragment;
+        } else if (name.equals(ToySelectorFragment.class.getSimpleName())) {
+            showFragment(mToySelectorFragment, name);
+            currentFragment = mToySelectorFragment;
+        } else if (name.equals(HistoryFragment.class.getSimpleName())) {
+            showFragment(historyFragment, name);
+            currentFragment = historyFragment;
+        } else if (name.equals(MineFragment.class.getSimpleName())) {
+            showFragment(mineFragment, name);
+            currentFragment = mineFragment;
+        } else if (name.equals(ToyDetailsFragment.class.getSimpleName())) {
+            showFragment(toyDetailsFragment, name);
+            currentFragment = toyDetailsFragment;
+        }
+
+    }
+
+    public ToyDetailsFragment getToyDetailsFragment() {
+
+        return toyDetailsFragment;
+
+    }
+
 
     private void initFragment() {
         //添加五个Fragment对象添加进来
@@ -128,29 +223,32 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         mineFragment = new MineFragment();
         toyDetailsFragment = new ToyDetailsFragment();
 
-        fragmentManager = getSupportFragmentManager();
-        beginTransaction = fragmentManager.beginTransaction();
-        beginTransaction.replace(R.id.fl_fragmentcontainer, discoveryFragment);
-
-
-        beginTransaction.commit();
-
-
+//        fragmentManager = getSupportFragmentManager();
+//        beginTransaction = fragmentManager.beginTransaction();
+//        beginTransaction.replace(R.id.fl_fragmentcontainer, discoveryFragment);
+//
+//
+//        beginTransaction.commit();
+//        discoveryFragment.showFragment(discoveryFragment, "discoveryFragment", R.id.fl_fragmentcontainer);
+        showFragment(DiscoveryFragment.class.getSimpleName());
     }
+
 
     @Override
     public void onClick(View view) {
         int id = view.getId();
         switch (id) {
             case R.id.rb_discovery:
-                FragmentTransaction ft1 = getSupportFragmentManager().beginTransaction();
-                ft1.replace(R.id.fl_fragmentcontainer, discoveryFragment);
-                ft1.commit();
+//                FragmentTransaction ft1 = getSupportFragmentManager().beginTransaction();
+//                ft1.replace(R.id.fl_fragmentcontainer, discoveryFragment);
+//                ft1.commit();
+                showFragment(DiscoveryFragment.class.getSimpleName());
                 break;
             case R.id.rb_recoding:
-                FragmentTransaction ft2 = getSupportFragmentManager().beginTransaction();
-                ft2.replace(R.id.fl_fragmentcontainer, recodingFragment);
-                ft2.commit();
+//                FragmentTransaction ft2 = getSupportFragmentManager().beginTransaction();
+//                ft2.replace(R.id.fl_fragmentcontainer, recodingFragment);
+//                ft2.commit();
+                showFragment(RecodingFragment.class.getSimpleName());
                 break;
             case R.id.rb_toy:
                 /*
@@ -173,16 +271,21 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
                             //如果当前用户玩具,则进入添加玩具页面
                             if (hasToy == true) {
-                                FragmentTransaction ft3 = getSupportFragmentManager().beginTransaction();
-                                ft3.replace(R.id.fl_fragmentcontainer, toyAddFragment);
-                                ft3.commit();
+//                                FragmentTransaction ft3 = getSupportFragmentManager().beginTransaction();
+//                                ft3.replace(R.id.fl_fragmentcontainer, toyAddFragment);
+//                                ft3.commit();
+                                showFragment(ToyAddFragment.class.getSimpleName());
                             } else {
                                 //否则走玩具选择页面
                                 EventBus.getDefault().postSticky(new MessageEventToy(mList));
-                                FragmentManager supportFragmentManager = getSupportFragmentManager();
-                                FragmentTransaction ft32 = supportFragmentManager.beginTransaction();
-                                ft32.replace(R.id.fl_fragmentcontainer, mToySelectorFragment);
-                                ft32.commit();
+//                                FragmentManager supportFragmentManager = getSupportFragmentManager();
+//                                FragmentTransaction ft32 = supportFragmentManager.beginTransaction();
+//                                ft32.replace(R.id.fl_fragmentcontainer, mToySelectorFragment);
+
+//                                ft32.commit();
+                                Log.i("111111", "mList.size=" + mList.size());
+                                showFragment(ToySelectorFragment.class.getSimpleName());
+//                                EventBus.getDefault().post(new MessageEventToy(mList));
                                 //ft3.replace(R.id.fl_fragmentcontainer, toyDetailsFragment);玩具选择页
                                 // 正常的逻辑是走扫描二维码的界面,为了调节视频,先跳转到玩具通话页面
                                 // ft3.replace(R.id.fl_fragmentcontainer, toyAddFragment);
@@ -197,20 +300,26 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 }
                 break;
             case R.id.rb_history:
-                FragmentTransaction ft4 = getSupportFragmentManager().beginTransaction();
-                ft4.replace(R.id.fl_fragmentcontainer, historyFragment);
-                ft4.commit();
+                if (!mMainToken.equals("")) {
+//                FragmentTransaction ft4 = getSupportFragmentManager().beginTransaction();
+//                ft4.replace(R.id.fl_fragmentcontainer, historyFragment);
+//                ft4.commit();
+                    showFragment(HistoryFragment.class.getSimpleName());
+                } else {
+                    ToastUtil.showToast(this, "当前未登录,请登录后查看");
+                }
                 break;
             case R.id.rb_mine:
-                FragmentTransaction ft5 = getSupportFragmentManager().beginTransaction();
-                ft5.replace(R.id.fl_fragmentcontainer, mineFragment);
+//                FragmentTransaction ft5 = getSupportFragmentManager().beginTransaction();
+//                ft5.replace(R.id.fl_fragmentcontainer, mineFragment);
 //                ft5.show(mineFragment);
 //                ft5.hide(recodingFragment);
 //                ft5.hide(toyFragment);
 //                ft5.hide(toyAddFragment);
 //                ft5.hide(historyFragment);
 //                ft5.hide(discoveryFragment);
-                ft5.commit();
+//                ft5.commit();
+                showFragment(MineFragment.class.getSimpleName());
                 break;
 
         }
@@ -240,7 +349,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 //只有list有想要的数据,所以只传list就行
                 List<QueryToyResultBean.BODYBean.LSTBean> lst = response.body().getBODY().getLST();
                 mList = lst;
-                if (!mList.isEmpty()) {
+                if (mList != null && !mList.isEmpty()) {
                     Log.i(TAG, "mLst: " + mList.size());
                     Log.i(TAG, "onResponse:  lst " + response.body().getBODY().getLST());
 

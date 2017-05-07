@@ -22,6 +22,7 @@
             android:orientation="vertical">
 
             <ImageView
+
                 android:layout_width="25.9dp"
                 android:layout_height="25.9dp"
                 android:layout_gravity="center_horizontal"
@@ -43,6 +44,7 @@
             android:orientation="vertical">
 
             <ImageView
+
                 android:layout_width="25.9dp"
                 android:layout_height="25.9dp"
                 android:layout_gravity="center_horizontal"
@@ -124,6 +126,7 @@
         android:layout_above="@id/ll_bottom"/>
 
     <FrameLayout
+        android:id="@+id/fl_activity_main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

@@ -233,12 +233,26 @@
                     android:text="设置管理员"
                     android:textColor="#000000"
                     android:textSize="16sp"/>
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/recyclerview_fragment_managetoy"
+                <!--recyclerview-->
+                <!--<android.support.v7.widget.RecyclerView-->
+                    <!--android:id="@+id/recyclerview_fragment_managetoy"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_marginTop="70dp"/>-->
+                <com.tongyuan.android.zhiquleyuan.view.MyGridView
+                    android:layout_marginTop="70dp"
+                    android:id="@+id/mygrid"
+                    android:columnWidth="60dp"
+                    android:gravity="center"
+                    android:horizontalSpacing="10dp"
+                    android:padding="10dp"
+                    android:stretchMode="columnWidth"
+                    android:verticalSpacing="10dp"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="70dp"/>
+                    android:layout_height="match_parent">
+
+                </com.tongyuan.android.zhiquleyuan.view.MyGridView>
+
             </RelativeLayout>
 
             <FrameLayout

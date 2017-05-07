@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="80dp">
+                android:layout_width="match_parent"
+                android:layout_height="80dp">
 
     <com.daimajia.swipe.SwipeLayout
         android:id="@+id/sample1"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true">
+
         <LinearLayout
             android:id="@+id/bottom_wrapper"
             android:layout_width="80dp"
@@ -23,16 +24,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:textSize="18sp"
                 android:background="@android:color/holo_red_dark"
                 android:gravity="center"
                 android:text="删除"
-                android:textColor="@android:color/white"/>
+                android:textColor="@android:color/white"
+                android:textSize="18sp"/>
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
             <LinearLayout
 
                 android:layout_width="140dp"
@@ -46,7 +49,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="10dp"
                     android:text="0710"
-                    android:textSize="24sp" />
+                    android:textSize="24sp"/>
 
 
                 <ImageView
@@ -55,13 +58,13 @@
                     android:layout_height="60dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="13dp"
-                    android:src="@drawable/my_call_ico_60_3x" />
+                    android:src="@drawable/my_call_ico_60_3x"/>
             </LinearLayout>
 
             <RelativeLayout
-                android:layout_gravity="center_vertical"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical">
 
                 <TextView
                     android:id="@+id/tv_item_history_title"
@@ -69,29 +72,29 @@
                     android:layout_height="wrap_content"
                     android:text="X-III2型"
                     android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"/>
 
                 <LinearLayout
-                    android:layout_marginTop="10dp"
-                    android:layout_below="@id/tv_item_history_title"
-                    android:orientation="horizontal"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_item_history_title"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="通话时长"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"/>
 
                     <TextView
                         android:id="@+id/tv_itemt_history_desc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="36:00"
                         android:layout_marginLeft="5dp"
+                        android:text="36:00"
                         android:textColor="#ff4511"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"/>
                 </LinearLayout>
 
 
@@ -102,7 +105,8 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="10dp"
-                    android:src="@drawable/myplay_ico_26_3x" />
+                    android:src="@drawable/myplay_ico_26_3x"/>
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="3dp"
@@ -111,9 +115,7 @@
         </LinearLayout>
 
 
-
     </com.daimajia.swipe.SwipeLayout>
-
 
 
 </RelativeLayout>

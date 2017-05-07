@@ -3,9 +3,6 @@ package com.tongyuan.android.zhiquleyuan.fragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -18,8 +15,9 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
+import com.tongyuan.android.zhiquleyuan.activity.MainActivity;
+import com.tongyuan.android.zhiquleyuan.base.BaseFragment;
 import com.tongyuan.android.zhiquleyuan.bean.AddToyResultBean;
-import com.tongyuan.android.zhiquleyuan.bean.QueryToyResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoREQBean;
 import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoRESBean;
 import com.tongyuan.android.zhiquleyuan.event.AddToyMessageEvent;
@@ -48,7 +46,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by android on 2016/12/3.
  */
 
-public class ToySelectorFragment extends Fragment {
+public class ToySelectorFragment extends BaseFragment {
     public static final String TOYDETAILS = "toydetails";
     private View toyRoot;
     private ImageView mSelectImageview;
@@ -57,6 +55,7 @@ public class ToySelectorFragment extends Fragment {
     private PagerAdapter mPagerAdapter;
     private ImageView mImageview_fragment_toy_addtoy;
     private static final String TAG = "222222";
+//    private ToyAddFragment toyAddFragment = new ToyAddFragment();
 
     ArrayList<String> toyImg = new ArrayList<String>();
     ArrayList<String> babyImg = new ArrayList<String>();
@@ -94,14 +93,15 @@ public class ToySelectorFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        final ToyDetailsFragment toyDetailsFragment = new ToyDetailsFragment();
+//        final ToyDetailsFragment toyDetailsFragment = new ToyDetailsFragment();
         mImageview_fragment_toy_addtoy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentManager fragmentManager = getFragmentManager();
-                FragmentTransaction transaction = fragmentManager.beginTransaction();
-                transaction.replace(R.id.fl_fragmentcontainer, new ToyAddFragment());
-                transaction.commit();
+//                FragmentManager fragmentManager = getFragmentManager();
+//                FragmentTransaction transaction = fragmentManager.beginTransaction();
+//                transaction.replace(R.id.fl_fragmentcontainer, new ToyAddFragment());
+//                transaction.commit();
+                showFragment(ToyAddFragment.class.getSimpleName());
             }
         });
         //不知道点击头像要跳到哪里,先添加一个点击事件吧
@@ -117,18 +117,15 @@ public class ToySelectorFragment extends Fragment {
         mViewpagetToy.setOffscreenPageLimit(3);
 
 
+        Log.i("111111", "new MyPagerAdapter....");
         mViewpagetToy.setAdapter(mPagerAdapter = new PagerAdapter() {
-
-            //TODO 这个地方写的有问题,既然给了position,那么就直接引用position即可.要改正
             @Override
             public Object instantiateItem(ViewGroup container, final int position) {
                 mImageView = new ImageView(getActivity());
                 mImageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                Log.i("111111", "instaniateItem " + toyImg.get(position));
                 Glide.with(getActivity()).load(toyImg.get(position)).asBitmap().into(mImageView);
-
                 container.addView(mImageView);
-
-
                 mImageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -144,6 +141,7 @@ public class ToySelectorFragment extends Fragment {
 
                         String toyid = toyId.get(position);
                         Log.i(TAG, "onClick:toyid " + toyid);
+                        SPUtils.putString(getActivity(), "toyidtopush", toyid);
                         String toycode = toyCode.get(position);
                         Log.i(TAG, "onClick:toycode " + toycode);
 
@@ -158,19 +156,26 @@ public class ToySelectorFragment extends Fragment {
                                 Bundle bundle = new Bundle();
                                 bundle.putParcelable("response", body.getBODY());
                                 bundle.putString("babyimg", babyImg.get(position));
-                                Log.i(TAG, "run:---- "+babyImg.get(position));
-                                toyDetailsFragment.setArguments(bundle);
-                                FragmentManager fragmentManager = getFragmentManager();
-                                FragmentTransaction transaction = fragmentManager.beginTransaction();
-                                transaction.replace(R.id.fl_fragmentcontainer, toyDetailsFragment);
-                                transaction.commit();
+//                                Log.i(TAG, "run:---- " + babyImg.get(position));
+//                                toyDetailsFragment.setArguments(bundle);
+
+                                MainActivity mainActivity = (MainActivity) getActivity();
+                                mainActivity.getToyDetailsFragment().setArguments(bundle);
+                                showFragment(ToyDetailsFragment.class.getSimpleName());
+//                                FragmentManager fragmentManager = getFragmentManager();
+//                                FragmentTransaction transaction = fragmentManager.beginTransaction();
+//                                transaction.replace(R.id.fl_fragmentcontainer, toyDetailsFragment);
+//                                transaction.commit();
+
                             }
                         }, 300);
                     }
                 });
 
+
                 return mImageView;
             }
+
 
             @Override
             public void notifyDataSetChanged() {
@@ -192,10 +197,13 @@ public class ToySelectorFragment extends Fragment {
                 return view == (View) object;
             }
         });
+        Log.i("111111", "mPagerAdapter=" + mPagerAdapter);
         mViewpagetToy.setPageTransformer(true, new ScaleInTransformer());
         mViewpagetToy.setCurrentItem(1);
     }
 
+
+    //查询单个玩具的信息
     private void QuerySingleToyInfo(String toyid, String toycode, String time) {
         Retrofit retrofit = new Retrofit.Builder().baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -225,7 +233,6 @@ public class ToySelectorFragment extends Fragment {
 //                    mOwnername = ownername;
                     body = response.body();
 
-
                 } else {
                     ToastUtil.showToast(getActivity(), "Response为空,请检查网络");
                     Log.d(TAG, "onResponse: 为空,请检查网络");
@@ -252,12 +259,17 @@ public class ToySelectorFragment extends Fragment {
     @Subscribe(threadMode = ThreadMode.POSTING, sticky = true)
     public void onToyMessage(MessageEventToy messageEventToy) {
         //从mainactivity传过来的lst数据,
-        Log.i(TAG, "messageEventToy.mQueryBabyListResults: " + messageEventToy.mQueryBabyListResults.get(1).toString());
-        Log.i(TAG, "messageEventToy.mQueryBabyListResults: " + messageEventToy.mQueryBabyListResults.size());
+//        Log.i(TAG, "messageEventToy.mQueryBabyListResults: " + messageEventToy.mQueryBabyListResults.get(1).1toString());
+//        Log.i(TAG, "messageEventToy.mQueryBabyListResults: " + messageEventToy.mQueryBabyListResults.size());
 //        ToastUtil.showToast(getActivity(), messageEventToy.mQueryBabyListResults.get(0).toString());
         //1.储存传递过来的数据用list,map,数组?看要求
-        List<QueryToyResultBean.BODYBean.LSTBean> listResults = messageEventToy.mQueryBabyListResults;
+//        List<QueryToyResultBean.BODYBean.LSTBean> listResults = messageEventToy.mQueryBabyListResults;
 
+        babyImg.clear();
+        toyId.clear();
+        toyImg.clear();
+        toyId.clear();
+        toyCode.clear();
         for (int i = 0; i < messageEventToy.mQueryBabyListResults.size(); i++) {
 
             String imgBaby = messageEventToy.mQueryBabyListResults.get(i).getBABYIMG();
@@ -273,31 +285,43 @@ public class ToySelectorFragment extends Fragment {
             toyId.add(idToy);
             toyCode.add(code);
         }
-
+        mPagerAdapter.notifyDataSetChanged();
         Log.i(TAG, "babyImg=====" + babyImg);
-        Log.i(TAG, "babyImg=====" + toyImg);
+        Log.i(TAG, "toyImg size=====" + toyImg.size());
 
     }
 
     //获取从ToyAddFragment传过来的response数据.
-    @Subscribe(threadMode = ThreadMode.POSTING, sticky = true)
+    @Subscribe(threadMode = ThreadMode.POSTING, sticky = false)
     public void onGetToyAddMessage(AddToyMessageEvent addToyMessageEvent) {
         Response<AddToyResultBean> addToyResultBeanResponse = addToyMessageEvent.mAddToyResultBeanResponse;
 
         //拿到从ToyAddFragment传过来的response数据
         List<Response<AddToyResultBean>> responseList = new ArrayList<>();
 
-
         String img = addToyMessageEvent.mAddToyResultBeanResponse.body().getBODY().getIMG();
         String id = addToyMessageEvent.mAddToyResultBeanResponse.body().getBODY().getID();
         String code = addToyMessageEvent.mAddToyResultBeanResponse.body().getCODE();
-
+//        String code = addToyMessageEvent.mAddToyResultBeanResponse.body().getBABYIMG();
+//        String imgBaby = addToyMessageEvent.mAddToyResultBeanResponse.body().getBODY().get;
+        Log.i("111111", "onGetToyAddMessage: " + toyId.size());
         //这里应该做个判断,判断当前的list里面有没有这个玩具,有就不添加
+        boolean isAdd = true;
         for (int i = 0; i < toyId.size(); i++) {
-            if (!toyId.get(i).equals(id)) {
-                toyImg.add(img);
+            if (toyId.get(i).equals(id)) {
+                isAdd = false;
             }
         }
+        if (isAdd) {
+            toyImg.add(img);
+            toyId.add(id);
+            toyCode.add(code);
+//            babyImg.add(imgBaby);
+        }
+//        Log.i("111111", Thread.currentThread().getName() + " mPagerAdapre" + mPagerAdapter);
+        Log.i("111111", " toyId.size2" + toyId.size());
+        if (mPagerAdapter != null)
+            mPagerAdapter.notifyDataSetChanged();
     }
 
     @Override

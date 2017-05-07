@@ -81,18 +81,30 @@ public class MyBabyActivity extends AppCompatActivity {
     private ChangeDatePopwindow mChangeDatePopwindow;
     private String mBabyID;
     private String[] mBirthday;
-    private boolean mBoyChecked = true;
+
     private int mBirthday1;
     private String mDatetime;
     private String mTimedate;
+    private Intent uriIntent;
+    private String sex;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_addbabyinfo);
         ButterKnife.bind(this);
-
-
+        mRgAddbabyinfo.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId){
+                    case R.id.radioButtonBoy:
+                        sex="M";
+                        break;
+                    case R.id.radiobuttonGirls:
+                        sex="W";
+                }
+            }
+        });
     }
 
     @OnClick({R.id.iv_addbabyinfo, R.id.et_addbabyinfo, R.id.rg_addbabyinfo,
@@ -105,18 +117,16 @@ public class MyBabyActivity extends AppCompatActivity {
                 break;
             case R.id.et_addbabyinfo:
                 //添加宝宝的姓名或者说是宝宝的ID
-//                mBabyID = mEtAddbabyinfo.getText().toString().trim();
+                mBabyID = mEtAddbabyinfo.getText().toString().trim();
                 break;
-            case R.id.radioButtonBoy:
-                //宝宝的性别选择(男), 如果选中,就给定一个值,
-//                boolean boyHasChecked;
-
-
-                break;
-            case R.id.radiobuttonGirls:
-                //宝宝的性别选择(女)
-
-                break;
+//            case R.id.radioButtonBoy:
+//                //宝宝的性别选择(男), 如果选中,就给定一个值
+//                    sex = "M";
+//                break;
+//            case R.id.radiobuttonGirls:
+//                //宝宝的性别选择(女)
+//                    sex = "W";
+//                break;
             case R.id.tv_activity_addbabyinfo_date:
                 mBirthday = selectDate();
                 break;
@@ -125,19 +135,35 @@ public class MyBabyActivity extends AppCompatActivity {
                 String babyID = mEtAddbabyinfo.getText().toString().trim();
                 String phoneNum = SPUtils.getString(this, "phoneNum", "");
                 String babyToken = SPUtils.getString(this, "TOKEN", "");
+                Log.i("111", "babyID" + babyID);
+                Log.i("111", "phoneNum" + phoneNum);
+                Log.i("111", "babyToken" + babyToken);
                 Date date = new Date();
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
                 String time = simpleDateFormat.format(date);
-                confirmInfo(phoneNum, time, babyToken, babyID);
+                uploadPic(uriIntent);
+//                if (sex.equals("") |babyID.equals("") | phoneNum.equals("") | babyToken.equals("")) {
+//                    ToastUtil.showToast(this, "您有未完成的信息,请填完以后再点击");
+//                    return;
+//                } else {
+                confirmInfo(phoneNum, time, babyToken, babyID, sex);
+//                }
+
                 break;
             default:
                 break;
         }
     }
 
-    private void confirmInfo(String phoneNum, String time, final String token, String babyID) {
-        mBoyChecked = mRadioButtonBoy.isChecked();
-        String sex = mBoyChecked ? "M" : "F";
+    private void uploadPic(Intent uriIntent) {
+        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        AllInterface allInterface = retrofit.create(AllInterface.class);
+    }
+
+    //上传宝宝的信息
+    private void confirmInfo(String phoneNum, String time, final String token, String babyID, String sex) {
 
 //        Date date1=new Date(mDatetime);
 //        SimpleDateFormat si=new SimpleDateFormat("yyyyMMddHHmmssSSS");
@@ -148,17 +174,22 @@ public class MyBabyActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
-        BabyInfoRequestBean.BODYBean babyInfoBody = new BabyInfoRequestBean.BODYBean("BABY", "0", babyID, "", mTimedate, sex);
+        BabyInfoRequestBean.BODYBean babyInfoBody = new BabyInfoRequestBean.BODYBean("BABY", time, babyID, babyID, mTimedate, sex);
         BabyInfoRequestBean babyInfoRequestBean = new BabyInfoRequestBean("REQ", "INFO", phoneNum, time, babyInfoBody, "", token, "1");
 
         Gson gson = new Gson();
-        String babyInfoRequestJson = gson.toJson(babyInfoRequestBean);
-        Call<BabyInfoResultBean> babyInfoResult = allInterface.getBabyInfoResult(babyInfoRequestJson);
-        babyInfoResult.enqueue(new Callback<BabyInfoResultBean>() {
+        String s = gson.toJson(babyInfoRequestBean);
+        Call<BabyInfoResultBean> babyInfoResultBeanCall = allInterface.sendBabyInfoResult(s);
+//        Call<BabyInfoResultBean> babyInfoResultBeanCall = allInterface.sendBabyInfoResult(babyInfoRequestBean);
+        babyInfoResultBeanCall.enqueue(new Callback<BabyInfoResultBean>() {
             @Override
             public void onResponse(Call<BabyInfoResultBean> call, Response<BabyInfoResultBean> response) {
                 Log.i("111", "token====" + token);
                 Log.i("111", "onResponse: ======================" + response.body().toString());
+                Log.i("1111", "onResponse: " + response.body().toString());
+//                Intent intent =new Intent();
+//                intent.setClass(getApplicationContext(),BabyInfoListActivity.class);
+
             }
 
             @Override
@@ -166,6 +197,20 @@ public class MyBabyActivity extends AppCompatActivity {
 
             }
         });
+//        babyInfoResult.enqueue(new Callback<BabyInfoResultBean>() {
+//            @Override
+//            public void onResponse(Call<BabyInfoResultBean> call, Response<BabyInfoResultBean> response) {
+//                Log.i("111", "token====" + token);
+//                Log.i("111", "onResponse: ======================" + response.body().toString());
+//                Log.i("1111", "onResponse: " + response.body().toString());
+//
+//            }
+//
+//            @Override
+//            public void onFailure(Call<BabyInfoResultBean> call, Throwable t) {
+//                ToastUtil.showToast(getApplicationContext(),"失败了");
+//            }
+//        });
     }
 
     private String[] selectDate() {
@@ -179,7 +224,8 @@ public class MyBabyActivity extends AppCompatActivity {
                 Toast.makeText(MyBabyActivity.this, year + " " + month + " " + day, Toast.LENGTH_LONG).show();
                 StringBuilder sb = new StringBuilder();
 //                sb.append(year.substring(0, year.length() - 1)).append("-").append(month.substring(0, day.length() - 1)).append("-").append(day);
-                sb.append(year.substring(0, year.length() - 1)).append(month.substring(0, day.length() - 1)).append(day.substring(0, day.length() - 1));
+                sb.append(year.substring(0, year.length() - 1)).append(month.substring(0, day.length() - 1)).append(day.substring(0, day.length() -
+                        1));
                 str[0] = year + "" + month + "" + day;
                 mDatetime = year + month + day;
                 Log.i("111", "sb=========: " + sb);
@@ -228,6 +274,7 @@ public class MyBabyActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        uriIntent = data;
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case TAKE_PICTURE:
@@ -275,12 +322,12 @@ public class MyBabyActivity extends AppCompatActivity {
             mIvAddbabyinfo.setImageBitmap(photo);
 
             //把头像,上传到服务器
-            uploadPic(photo);
+            //uploadPic(photo);
         }
     }
 
-    private void uploadPic(Bitmap photo) {
-        //用retrofit上传头像
+    //private void uploadPic(Bitmap photo) {
+    //用retrofit上传头像
 //        Retrofit retrofit=new Retrofit.Builder().build()
 //                .baseUrl("http://120.27.41.179:8081/");
 //        ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -302,7 +349,7 @@ public class MyBabyActivity extends AppCompatActivity {
 //                ToastUtil.showToast(getApplicationContext(), "上传失败");
 //            }
 //        });
-    }
+    //}
 
 
 }

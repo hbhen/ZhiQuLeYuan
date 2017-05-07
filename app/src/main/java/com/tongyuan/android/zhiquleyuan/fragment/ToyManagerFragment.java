@@ -7,8 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +17,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.activity.NoDisturbActivity;
@@ -31,6 +28,7 @@ import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoRESBean;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
+import com.tongyuan.android.zhiquleyuan.view.MyGridView;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -47,7 +45,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 //TODO 从上一个页面传过来的数据,设置到页面的各个控件上.  玩具解除绑定,点击以后应该弹出的是宝宝的列表,然后选择,确定,提交网络请求,解除成功.
 public class ToyManagerFragment extends Fragment implements View.OnClickListener {
-    private final String TAG = "tmf111111";
+    private final String TAG = "111";
     private Button mBt_fragment_managetoy_setupwlan;
     private Button mBt_fragment_managetoy_nodisturb;
     private TextView mTv_frament_managetoy_manager;
@@ -56,16 +54,23 @@ public class ToyManagerFragment extends Fragment implements View.OnClickListener
     private TextView mTv_fragment_managetoy_toytype;
     private TextView mTv_fragment_managetoy_desc;
     private TextView mTv_fragment_managetoy_acttime;
-    private RecyclerView mRecyclerview_fragment_managetoy;
+    //    private RecyclerView mRecyclerview_fragment_managetoy;
     private ImageView mBabyImg;
     private TextView mBabyName;
+    private MyGridView mMygrid;
+    boolean removeState = false;//定义删除状态
+    private SingleToyInfoRESBean.BODYBean mResponse;
+    private String mToken;
+    private String mPhoneNum;
+    private String mTime;
+    private String mToyId;
+    private String mToyCode;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable
             Bundle savedInstanceState) {
         View fragment_manageToy = inflater.inflate(R.layout.fragment_managetoy, null);
-//        fragment_manageToy.findViewById(R.id.)
         mBt_fragment_managetoy_setupwlan = (Button) fragment_manageToy.findViewById(R.id.bt_fragment_managetoy_setupwlan);
         mBt_fragment_managetoy_nodisturb = (Button) fragment_manageToy.findViewById(R.id.bt_fragment_managetoy_nodisturb);
         mTv_frament_managetoy_manager = (TextView) fragment_manageToy.findViewById(R.id.tv_frament_managetoy_manager);
@@ -75,7 +80,8 @@ public class ToyManagerFragment extends Fragment implements View.OnClickListener
         mTv_fragment_managetoy_toytype = (TextView) fragment_manageToy.findViewById(R.id.tv_fragment_managetoy_toytype);
         mTv_fragment_managetoy_desc = (TextView) fragment_manageToy.findViewById(R.id.tv_fragment_managetoy_desc);
         mTv_fragment_managetoy_acttime = (TextView) fragment_manageToy.findViewById(R.id.tv_fragment_managetoy_acttime);
-        mRecyclerview_fragment_managetoy = (RecyclerView) fragment_manageToy.findViewById(R.id.recyclerview_fragment_managetoy);
+//        mRecyclerview_fragment_managetoy = (RecyclerView) fragment_manageToy.findViewById(R.id.recyclerview_fragment_managetoy);
+        mMygrid = (MyGridView) fragment_manageToy.findViewById(R.id.mygrid);
         mBabyImg = (ImageView) fragment_manageToy.findViewById(R.id.iv_fragment_managetoy_babyhead);
         mBabyName = (TextView) fragment_manageToy.findViewById(R.id.tv_fragment_managetoy_babyname);
         initData();
@@ -84,20 +90,22 @@ public class ToyManagerFragment extends Fragment implements View.OnClickListener
     }
 
     private void initData() {
-        String token = SPUtils.getString(getActivity(), "TOKEN", "");
-        String phoneNum = SPUtils.getString(getActivity(), "phoneNum", "");
+        mToken = SPUtils.getString(getActivity(), "TOKEN", "");
+        mPhoneNum = SPUtils.getString(getActivity(), "phoneNum", "");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-        String time = simpleDateFormat.format(new Date());
+        mTime = simpleDateFormat.format(new Date());
 
 
         Bundle arguments = getArguments();
-        SingleToyInfoRESBean.BODYBean response = arguments.getParcelable("response");
-        String toyId = response.getID();
-        String toyCode = response.getCODE();
+        //singletoyinfo
+        mResponse = arguments.getParcelable("response");
+
+        mToyId = mResponse.getID();
+        mToyCode = mResponse.getCODE();
         String acttime = arguments.getString("acttime");
-        String img = response.getIMG();
+        String img = mResponse.getIMG();
         String babyimg = arguments.getString("babyimg");
-        mTv_fragment_managetoy_toytype.setText(response.getCODE());
+        mTv_fragment_managetoy_toytype.setText(mResponse.getCODE());
         mTv_fragment_managetoy_acttime.setText(acttime);
 
         //玩具图片
@@ -115,11 +123,11 @@ public class ToyManagerFragment extends Fragment implements View.OnClickListener
 
         });
         //获取成员信息,需要传什么参数,去访问哪个接口  3.4.48接口
-        getToyManager(time, token, phoneNum, toyId, toyCode);
+        getToyMember(mTime, mToken, mPhoneNum, mToyId, mToyCode);
         Log.i(TAG, "initData:toyimg ");
     }
 
-    private void getToyManager(String time, String token, String phoneNum, String toyId, final String toyCode) {
+    private void getToyMember(String time, String token, String phoneNum, String toyId, final String toyCode) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -129,40 +137,26 @@ public class ToyManagerFragment extends Fragment implements View.OnClickListener
         QueryToyMemberReQBean queryToyMemberReQBean = new QueryToyMemberReQBean("REQ", "QTOYU", phoneNum, time, bodyBean, "", token, "1");
         Gson gson = new Gson();
         String params = gson.toJson(queryToyMemberReQBean);
-        Call<QueryToyMemberReSBean> queryToyMemberResult = allInterface.getQueryToyMemberResult(params);
+        Call<QueryToyMemberReSBean> queryToyMemberResult = allInterface.QUERY_TOY_MEMBER_RES_BEAN_CALL(params);
         queryToyMemberResult.enqueue(new Callback<QueryToyMemberReSBean>() {
             @Override
             public void onResponse(Call<QueryToyMemberReSBean> call, Response<QueryToyMemberReSBean> response) {
                 if (response != null) {
-                    ToastUtil.showToast(getContext(), "response" + response);
-                    Log.i(TAG, "onResponse: ++" + response);
-                    final List<QueryToyMemberReSBean.BODYBean.LSTBean> lst = response.body().getBODY().getLST();
-                    ToyMemberAdapter toyMemberAdapter = new ToyMemberAdapter(getActivity(), R.layout.manager_gridview_item, lst);
-                    mRecyclerview_fragment_managetoy.setLayoutManager(new GridLayoutManager(getActivity(), 5));
-                    mRecyclerview_fragment_managetoy.setAdapter(toyMemberAdapter);
-                    toyMemberAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                            ToastUtil.showToast(getActivity(),"当前点击的是:"+position);
-                        }
-                    });
-                    toyMemberAdapter.setOnItemLongClickListener(new BaseQuickAdapter.OnItemLongClickListener() {
-                        @Override
-                        public boolean onItemLongClick(BaseQuickAdapter adapter, View view, int position) {
-                            //不管长按的是哪个item,都让他显示所有的小减号,完成相关的操作以后,再全部消失;
-                            //长按一个item的时候,设置监听,让所有的item都显示或不显示减号
-                            ImageView remove = (ImageView) view.findViewById(R.id.iv_manager_gridview_item_remove);
-                                remove.setVisibility(View.VISIBLE);
+//                    ToastUtil.showToast(getActivity(), "response" + response);
+                    //玩具群成员
+                    Log.i(TAG, "onResponse:toymem ++" + response.body().toString());
 
-                            ToastUtil.showToast(getActivity(),"当前长摁的是:"+position);
-                            return true;
 
-                        }
-                    });
-//                    toyMemberAdapter.
+                    List<QueryToyMemberReSBean.BODYBean.LSTBean> lst = response.body().getBODY().getLST();
+                    Log.i("111111", "onResponse: "+lst.size());
+                    mMygrid.setNumColumns(5);
+                    final ToyMemberAdapter toyMemberAdapter = new ToyMemberAdapter(getActivity(), lst, mResponse);
+                    mMygrid.setAdapter(toyMemberAdapter);
 
                 } else {
+
                     Log.i(TAG, "onResponse: ++response为空");
+
                 }
             }
 
@@ -201,5 +195,13 @@ public class ToyManagerFragment extends Fragment implements View.OnClickListener
             default:
                 break;
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //刷新
+
+        getToyMember(mTime, mToken, mPhoneNum, mToyId, mToyCode);
     }
 }
