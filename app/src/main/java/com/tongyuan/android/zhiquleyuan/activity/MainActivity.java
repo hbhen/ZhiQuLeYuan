@@ -116,8 +116,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         rb_toy = (ImageView) findViewById(R.id.rb_toy);
         rb_history = (LinearLayout) findViewById(R.id.rb_history);
         rb_mine = (LinearLayout) findViewById(R.id.rb_mine);
-
-
     }
 
     private void showFragment(Fragment f, String name) {
@@ -306,7 +304,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 //                ft4.commit();
                     showFragment(HistoryFragment.class.getSimpleName());
                 } else {
-                    ToastUtil.showToast(this, "当前未登录,请登录后查看");
+                    ToastUtil.showToast(this, "当前未登录,请登录后查看");//然后要跳转到登录界面
                 }
                 break;
             case R.id.rb_mine:

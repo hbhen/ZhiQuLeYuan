@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="128dp"
+              android:orientation="horizontal"
+
+              android:layout_below="@id/tb_discovery_secondcategory"
+              android:padding="10dp">
+
+    <ImageView
+        android:id="@+id/iv_album_details_one"
+        android:layout_width="108dp"
+        android:layout_height="108dp"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/test"/>
+
+    <LinearLayout
+        android:id="@+id/rldetails_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@id/iv_album_details_one"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_album_details_one_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="小精豆童谣说唱专辑"
+            android:textColor="#000000"
+            android:textSize="16sp"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_details_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_album_details_one_title">
+
+            <TextView
+                android:textSize="12sp"
+                android:id="@+id/tv_album_details_one_des_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="主        播:"
+                />
+
+            <TextView
+                android:textSize="12sp"
+                android:id="@+id/tv_album_details_one_des_setname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/tv_album_details_one_des_name"
+                android:text="little dot"
+                android:textColor="#ff4511"
+                />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_details_times"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rl_details_name">
+
+            <TextView
+                android:textSize="12sp"
+                android:id="@+id/tv_album_details_one_des_times"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="播放次数:"
+                />
+
+            <TextView
+                android:textSize="12sp"
+                android:id="@+id/tv_album_details_one_des_settimes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/tv_album_details_one_des_times"
+                android:text="3258"
+                android:textColor="#ff4511"
+                />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_details_collection"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rl_details_times">
+
+            <TextView
+                android:textSize="12sp"
+                android:id="@+id/tv_album_details_one_des_collection"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="收        藏:"
+                />
+
+            <TextView
+                android:id="@+id/tv_album_details_one_des_setcollection"
+                android:textSize="12sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/tv_album_details_one_des_collection"
+                android:text="85"
+                android:textColor="#ff4511"
+                />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_details_category"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rl_details_collection">
+
+            <TextView
+                android:textSize="12sp"
+                android:id="@+id/tv_album_details_one_des_category"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="分        类:"
+                />
+
+            <TextView
+                android:id="@+id/tv_album_details_one_des_setcategory"
+                android:textSize="12sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/tv_album_details_one_des_category"
+                android:text="童谣"
+                android:textColor="#ff4511"
+                />
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/bt_item_album_details_one_subscribe"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rldetails_title"
+            android:layout_toRightOf="@id/iv_album_details_one"
+            android:background="#8EC245"
+            android:gravity="center"
+            android:text="专辑订阅"
+            android:textColor="#000000"
+            android:textSize="12sp"
+            />
+    </LinearLayout>
+
+
+</LinearLayout>

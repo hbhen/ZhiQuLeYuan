@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <include
+        android:id="@+id/header_discovery"
+        layout="@layout/home_title"/>
+
+    <!--<ScrollView-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent">-->
+
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:orientation="vertical">-->
+
+    <!--<android.support.v7.widget.RecyclerView-->
+    <!--android:id="@+id/rv_fragment_discovery_above"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:background="#ffffff">-->
+
+
+    <!--</android.support.v7.widget.RecyclerView>-->
+
+    <!--<android.support.v7.widget.RecyclerView-->
+    <!--android:id="@+id/rv_fragment_discovery_below"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_marginTop="10dp"-->
+    <!--android:background="#ffffff">-->
+
+    <!--</android.support.v7.widget.RecyclerView>-->
+    <!--</LinearLayout>-->
+    <!--</ScrollView>-->
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_gridview_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="目标未登录,请点击登录"
+                android:textColor="#ff4511"
+                android:textSize="12sp"
+                android:visibility="gone"/>
+
+            <com.tongyuan.android.zhiquleyuan.view.NoScrollGridView
+                android:id="@+id/gv_fragment_discovery"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:numColumns="3">
+
+            </com.tongyuan.android.zhiquleyuan.view.NoScrollGridView>
+
+
+            <com.tongyuan.android.zhiquleyuan.view.NoScrollListView
+                android:id="@+id/lv_fragment_discovery"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+            </com.tongyuan.android.zhiquleyuan.view.NoScrollListView>
+        </LinearLayout>
+    </ScrollView>
+
+
+</LinearLayout>

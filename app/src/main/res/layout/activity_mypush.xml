@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/tb_mypush"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#f5f5f5"
+        android:gravity="center">
+
+        <ImageView
+            android:layout_width="10dp"
+            android:layout_height="20dp"
+            android:src="@drawable/arrow_left"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:text="我的推送"
+            android:textColor="#000000"
+            android:textSize="18dp"
+            android:textStyle="bold"/>
+    </android.support.v7.widget.Toolbar>
+
+    <EditText
+        android:id="@+id/et_mycollection_mypush"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_below="@id/tb_mypush"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="#ffffff"
+        android:drawableRight="@drawable/search_38ico"
+        android:hint="世上只有爸爸好"
+        android:paddingLeft="5dp"
+        android:textSize="12dp"
+
+        />
+
+    <!--<android.support.v7.widget.RecyclerView-->
+    <!--android:id="@+id/rv_mypush"-->
+    <!--android:backgroundTint="#ffffff"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_below="@id/et_mycollection_mypush"-->
+    <!--android:layout_marginTop="10dp"-->
+    <!--android:background="#ffffff" >-->
+    <!--</android.support.v7.widget.RecyclerView>-->
+    <com.tongyuan.android.zhiquleyuan.swipe.refreshlib.AbListView
+        android:id="@+id/rv_mypush"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/et_mycollection_mypush"
+        android:layout_marginTop="10dp"
+        android:background="#ffffff"
+        android:listSelector="@color/transparent">
+    </com.tongyuan.android.zhiquleyuan.swipe.refreshlib.AbListView>
+
+
+</RelativeLayout>

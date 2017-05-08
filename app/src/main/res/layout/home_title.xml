@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="44dp"
+    android:background="#f1f1f1"
+    android:orientation="horizontal"
+    android:gravity="center"
+    tools:context="com.tongyuan.android.zhiquleyuan.activity.MainActivity">
+
+   <TextView
+
+       android:layout_marginLeft="10dp"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:text="玖悦童缘"
+       android:textSize="16dp"
+       android:textColor="#ff4511"
+       />
+
+    <EditText
+        android:layout_marginLeft="9dp"
+        android:id="@+id/et_home_title"
+        android:layout_width="242dp"
+        android:layout_height="wrap_content"
+        android:drawableRight="@drawable/search_38ico"
+        android:hint="世上只有爸爸好"
+        android:textSize="12dp"
+
+        />
+
+    <ImageView
+        android:layout_marginLeft="9dp"
+
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@drawable/audio_48"/>
+
+
+
+</LinearLayout>

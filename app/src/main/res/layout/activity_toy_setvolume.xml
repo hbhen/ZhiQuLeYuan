@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/tb_toy_setvolume"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/arrow_left" />
+
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:text="玩具音量初设页面"
+            android:textColor="#000000"
+            android:textSize="60px" />
+    </android.support.v7.widget.Toolbar>
+
+    <TextView
+        android:id="@+id/tv_toy_setvolume"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tb_toy_setvolume"
+        android:layout_marginLeft="40px"
+        android:layout_marginRight="40px"
+        android:layout_marginTop="60px"
+        android:maxLines="2"
+        android:text="点击播放按钮,记录合适宝宝倾听的音量数值,将做为您远程控制播放音量的参考."
+        android:textColor="#000000"
+        android:textSize="48px" />
+
+    <ImageView
+        android:id="@+id/iv_toy_setvolume"
+        android:layout_width="920px"
+        android:layout_height="293px"
+        android:layout_below="@id/tv_toy_setvolume"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="80px"
+        android:layout_marginRight="80px"
+        android:layout_marginTop="60px"
+        android:background="#ff4511"
+        android:src="@mipmap/ic_launcher" />
+
+    <SeekBar
+        android:id="@+id/sb_toy_setvolume"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/iv_toy_setvolume"
+        android:layout_marginTop="80px"
+        android:scrollbarSize="48px" />
+
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/sb_toy_setvolume"
+        android:layout_marginTop="30px"
+        android:src="@drawable/volume_small_pressed" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/sb_toy_setvolume"
+        android:layout_marginTop="30px"
+        android:src="@drawable/volume_big_pressed" />
+
+    <LinearLayout
+        android:id="@+id/rl_toy_setvoluem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/sb_toy_setvolume"
+        android:layout_marginTop="120px"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/iv_toy_setvolume_delete"
+            android:layout_width="160px"
+            android:layout_height="160px"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/toy_delete_perssed_160" />
+
+        <ImageView
+            android:layout_marginLeft="100px"
+            android:id="@+id/iv_toy_setvolume_play"
+            android:layout_width="240px"
+            android:layout_height="240px"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/play_pressed_240" />
+
+        <ImageView
+            android:layout_marginLeft="100px"
+            android:id="@+id/iv_toy_setvolume_add"
+            android:layout_width="160px"
+            android:layout_height="160px"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/toy_add_pressed_160" />
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rl_toy_setvoluem"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="60px"
+        android:id="@+id/iv_toy_setvolume_lock"
+        android:src="@drawable/volume_lock_perssed_160" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="确定"
+        android:textSize="48px"
+        android:textColor="#000000"
+        android:gravity="center"
+        android:background="#ffffff"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="60px"
+        android:layout_below="@id/iv_toy_setvolume_lock"/>
+
+
+</RelativeLayout>

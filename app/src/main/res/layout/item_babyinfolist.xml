@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+    <!--左右结构 linearlayout  左边是imagview,右边是relativelayout-->
+    <com.daimajia.swipe.SwipeLayout
+        android:id="@+id/Swipe_babyinfolist"
+        android:layout_width="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_height="60dp">
+        <!--<LinearLayout-->
+            <!--android:padding="10dp"-->
+            <!--android:id="@+id/ll_item_babyinfolist"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="80dp"-->
+            <!--android:orientation="horizontal">-->
+            <Button
+                android:id="@+id/swipe_babyinfolist_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:textSize="18sp"
+                android:background="@android:color/holo_red_dark"
+                android:gravity="center"
+                android:text="删除"
+                android:textColor="@android:color/white"/>
+
+
+        <!--右边的结构  其中右边的结构又分为title上,音量居右,性别等信息下-->
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <!--左边的结构-->
+
+            <ImageView
+                android:id="@+id/iv_item_babyinfolist"
+                android:layout_width="60dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_launcher"/>
+            <RelativeLayout
+                android:layout_toRightOf="@id/iv_item_babyinfolist"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/tv_title_item_babyinfolist"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="正正"
+                    android:textColor="#000000"
+                    android:textSize="16sp"/>
+                <!--音量等内容的布局-->
+                <LinearLayout
+                    android:layout_alignParentRight="true"
+                    android:id="@+id/ll_down_item_babyinfolist"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:layout_below="@id/tv_title_item_babyinfolist"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/babyvolume_3x"/>
+
+                    <TextView
+                        android:id="@+id/tv_item_babyinfolist_primarysound"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="初始音量"
+                        android:textSize="12sp"/>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/babyinvite_3x"/>
+
+                    <TextView
+                        android:id="@+id/tv_item_babyinfolist_invite"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="邀请"
+                        android:textSize="12sp"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_alignParentBottom="true"
+                    android:gravity="center_vertical"
+                    android:layout_below="@id/ll_down_item_babyinfolist"
+                    android:layout_width="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/babyinvite_3x"/>
+
+                    <TextView
+                        android:id="@+id/tv_item_babyinfolist_sexy"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="男"
+                        android:textSize="12sp"/>
+
+                    <ImageView
+                        android:layout_marginLeft="10dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/babybirthday_3x"/>
+
+                    <TextView
+                        android:id="@+id/tv_item_babyinfolist_birthday"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="2012/02/01"
+                        android:textSize="12sp"/>
+                </LinearLayout>
+            </RelativeLayout>
+
+        </RelativeLayout>
+       <!-- </LinearLayout>-->
+    </com.daimajia.swipe.SwipeLayout>
+
+
+
+</LinearLayout>

@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/tb_addtoyaccount_confirm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/arrow_left" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:text="添加玩具账号"
+            android:textColor="#000000"
+            android:textSize="60px" />
+    </android.support.v7.widget.Toolbar>
+
+    <RelativeLayout
+        android:id="@+id/rl_addtoyaccount_confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="160px"
+
+        android:layout_below="@id/tb_addtoyaccount_confirm"
+        android:layout_centerHorizontal="true">
+
+        <ImageView
+            android:id="@+id/iv_call_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/ic_launcher" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/iv_call_img"
+            android:text="正正"
+            android:textColor="#000000" />
+    </RelativeLayout>
+    <LinearLayout
+        android:layout_marginTop="30dp"
+        android:id="@+id/ll_addtoyaccount_confirm"
+        android:paddingLeft="30px"
+        android:paddingRight="30px"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@+id/rl_addtoyaccount_confirm"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="320px"
+                android:layout_height="320px"
+                android:src="@mipmap/ic_launcher" />
+
+            <TextView
+                android:textColor="#000000"
+                android:background="#ebebeb"
+                android:gravity="center"
+                android:layout_width="320px"
+                android:layout_height="80px"
+                android:text="X-2Ⅲ" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginLeft="30px"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="320px"
+                android:layout_height="320px"
+                android:src="@mipmap/ic_launcher" />
+
+            <TextView
+                android:textColor="#000000"
+                android:background="#ebebeb"
+                android:gravity="center"
+                android:layout_width="320px"
+                android:layout_height="80px"
+                android:text="X1-3Ⅱ2" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginLeft="30px"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="320px"
+                android:layout_height="320px"
+                android:src="@mipmap/ic_launcher" />
+
+            <TextView
+                android:textColor="#000000"
+                android:background="#ebebeb"
+                android:gravity="center"
+                android:layout_width="320px"
+                android:layout_height="80px"
+                android:text="X2-2Ⅱ4" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/et_addtoyaccount_confirm"
+        android:paddingLeft="30px"
+        android:paddingTop="30px"
+        android:layout_marginLeft="30px"
+        android:layout_marginTop="30px"
+        android:gravity="start"
+        android:textSize="48px"
+        android:textColor="#000000"
+        android:background="#ffffff"
+        android:layout_below="@id/ll_addtoyaccount_confirm"
+        android:layout_width="1020px"
+        android:layout_height="400px"
+        android:hint="我是正正爸,加..."/>
+    <Button
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="60px"
+        android:layout_below="@id/et_addtoyaccount_confirm"
+        android:layout_width="230px"
+        android:layout_height="120px"
+        android:text="确定"
+        android:background="#ffffff"
+        android:textSize="48px"
+        android:gravity="center"
+        android:textColor="#000000"/>
+
+
+
+    <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below=""-->
+        <!--android:layout_marginTop="240px"-->
+        <!--android:text="扫描二维码添加玩具" />-->
+</RelativeLayout>

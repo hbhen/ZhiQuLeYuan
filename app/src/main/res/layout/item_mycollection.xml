@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="81dp"
+    android:orientation="horizontal"
+    android:padding="10dp">
+
+    <ImageView
+        android:id="@+id/iv_item_mycollection"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@mipmap/ic_launcher" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_item_mycollection"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/iv_item_mycollection"
+            android:text="春天在哪里"
+            android:textColor="#000000"
+            android:textSize="16dp"
+            android:textStyle="bold" />
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/tv_item_mycollection"
+            android:layout_below="@id/tv_item_mycollection"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="14dp">
+
+            <TextView
+                android:id="@+id/tv_item_mycollection_times"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="播放次数"
+                android:textColor="#909090"
+                android:textSize="12dp" />
+
+            <TextView
+                android:id="@+id/tv_item_mycollection_detailstimes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="1dp"
+                android:layout_toRightOf="@id/tv_item_mycollection_times"
+                android:text="2"
+                android:textColor="#ff4511"
+                android:textSize="12dp" />
+
+            <TextView
+                android:id="@+id/tv_item_mycollection_category"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="40dp"
+                android:layout_toRightOf="@id/tv_item_mycollection_detailstimes"
+                android:text="所属品类"
+                android:textSize="12dp" />
+
+            <TextView
+                android:id="@+id/tv_item_mycollection_detailscategory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10px"
+                android:layout_toRightOf="@id/tv_item_mycollection_category"
+                android:text="童谣"
+                android:textColor="#ff4511"
+                android:textSize="12dp" />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center_vertical"
+        android:src="@drawable/play_pressed_240" />
+
+
+</LinearLayout>
