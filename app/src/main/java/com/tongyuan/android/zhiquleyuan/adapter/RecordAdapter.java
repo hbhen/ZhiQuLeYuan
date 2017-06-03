@@ -54,7 +54,6 @@ public class RecordAdapter extends BaseSwipeAdapter {
     @Override
     public View generateView(int position, ViewGroup parent) {
         return LayoutInflater.from(mContext).inflate(R.layout.item_recoding, parent, false);
-//        return null;
     }
 
     @Override
@@ -81,7 +80,6 @@ public class RecordAdapter extends BaseSwipeAdapter {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
         String time = simpleDateFormat.format(modifiedTime);
         lastModifyTime.setText(time);
-
         long durationLen = recordList.get(pos).length();
         String len = simpleDateFormat.format(durationLen);
         duration.setText(len);

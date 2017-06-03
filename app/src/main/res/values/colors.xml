@@ -25,6 +25,8 @@
     <color name="transparent">#00000000</color>
     <color name="viewfinder_laser">#ffcc0000</color> <!-- Android standard ICS color -->
     <color name="viewfinder_mask">#60000000</color>
+    <color name="redFont">#ff4511</color>
+    <color name="grayFont">#8f8f8f</color>
 
     <!--swiperefreshscrolllistview-->
     <color name="tips">#FF8E8E8E</color>

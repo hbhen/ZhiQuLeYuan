@@ -4,7 +4,10 @@ import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +16,7 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -29,10 +33,12 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
-import java.util.TimerTask;
+
+import static java.lang.System.currentTimeMillis;
 
 
 /**
@@ -79,7 +85,9 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
     private boolean isNotRecording = true;
     private boolean isRecording = false;
     private boolean isStartedAnimation = false;
-    private boolean isPlaying = false;
+    private boolean isRecordingPlaying = false;
+    private FrameLayout mBottomControl;
+    private MediaPlayer mMediaPlayer1;
 
 
     @Nullable
@@ -94,6 +102,7 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
     private View initView(LayoutInflater inflater) {
         View recordingRoot = inflater.inflate(R.layout.fragment_recoding, null);
         View itemRecordingHeader = inflater.inflate(R.layout.item_play_list_header, null);
+        mBottomControl = (FrameLayout) recordingRoot.findViewById(R.id.fl_fragment_recording_control);
         //录音布局
         mRecordingFrag = (RelativeLayout) recordingRoot.findViewById(R.id.rl_fragment_recording_recording);
         //录音完成布局
@@ -126,11 +135,19 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
 
         mTextview_startrecording = (TextView) recordingRoot.findViewById(R.id.tv_startrecording);
         recordList = new ArrayList<File>();
+        mMediaPlayer = new MediaPlayer();
 //        View mHeadview = inflater.inflate(R.layout.fragment_recoding_headerview, null);
 //        mHeadTitle = (TextView) mHeadview.findViewById(R.id.tv_recoding_title);
 
+        mhalder = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                Log.i("555555", "scan file over...");
+                showFile(recordList);
+            }
+        };
         return recordingRoot;
-
     }
 
 
@@ -138,7 +155,8 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initListener();
-        //展示本地的recording,没有就去网络获取
+
+        //TODO 展示本地的recording,没有就去网络获取
 
     }
 
@@ -152,7 +170,7 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
         mTryListener.setOnClickListener(this);
         mSaveRecording.setOnClickListener(this);
         mBackArrow.setOnClickListener(this);
-
+        mPlayStop.setOnClickListener(this);
     }
 
 
@@ -174,49 +192,42 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
                 break;
             //编辑
             case R.id.iv_fragent_recording_editor:
+                editRecordingFile();
                 ToastUtil.showToast(getContext(), "点击了editor");
                 break;
             //向下移动
             case R.id.iv_fragent_recording_down:
-
+                moveToBottom();
                 ToastUtil.showToast(getContext(), "点击了downaction");
                 break;
             //试听
             case R.id.iv_recoding_tool_trylistener:
                 //播放刚录完的音频,获得刚录完的音频的路劲
 
-                if (mMediaPlayer == null) {
-                    mMediaPlayer = new MediaPlayer();
-                }
-//                if (!mMediaPlayer.isPlaying()) {
-//                if (!isPlaying) {
-//                    //如果没有播放,就让他播放,并且变换播放的图片,隐藏相应的布局
-//                    mTryListener.setVisibility(View.INVISIBLE);
-//                    startPlayRecord();
-//                    isPlaying = true;
-//                    mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-//                        @Override
-//                        public void onCompletion(MediaPlayer mp) {
-//                            isPlaying = false;
-//                            stopAnimation();
-//                            mPlayStopCircle.setVisibility(View.INVISIBLE);
-//                            mPlayStop.setVisibility(View.INVISIBLE);
-//                        }
-//                    });
-//                    ToastUtil.showToast(getContext(), "开始试听");
-//                } else if (isPlaying == true) {
-//                    stopPlayRecord();
-//                    isPlaying = false;
-//                    ToastUtil.showToast(getContext(), "结束试听");
+//                if (mMediaPlayer == null) {
+//                    mMediaPlayer = new MediaPlayer();
 //                }
-//                } else {
-//                    stopPlayRecord();
-//                isPlaying = false;
-//                ToastUtil.showToast(getContext(), "结束试听");
-//                }
-                if (!isPlaying){
 
-                }
+                    Log.i("555555", "isplaying2: ");
+//                    isRecordingPlaying = true;
+                    mTryListener.setVisibility(View.INVISIBLE);
+                    startPlayRecord();
+                mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mediaPlayer) {
+                        isRecordingPlaying = false;
+                        stopAnimation();
+                        mPlayStopCircle.setVisibility(View.INVISIBLE);
+                        mPlayStop.setVisibility(View.INVISIBLE);
+
+                    }
+                });
+                break;
+            case R.id.iv_recoding_tool_trylistener_stop:
+                stopPlayRecord();
+                Log.i("555555", "isplaying1: ");
+//                    isRecordingPlaying = false;
+                ToastUtil.showToast(getContext(), "结束试听");
                 break;
             //重录
             case R.id.iv_recoding_tool_reRecording:
@@ -236,14 +247,41 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
                 mRecordingFrag.setVisibility(View.VISIBLE);
                 mCompleteFrag.setVisibility(View.INVISIBLE);
                 break;
-
             default:
                 break;
         }
     }
 
+    private void editRecordingFile() {
+        if (mRecordingComplete.getVisibility()==View.VISIBLE){
+
+        }else{
+
+        }
+    }
+
+    private void moveToBottom() {
+
+//        ObjectAnimator objectAnimator = new ObjectAnimator();
+//        int w = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+//        int h = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+//        Log.i("55555", "moveToBottom: +"+mControl);
+//        mControl.measure(w, h);
+//        float measuredHeight = mControl.getMeasuredHeight();
+//        float heightPixels = getResources().getDisplayMetrics().heightPixels;
+//        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mControl, "Y", heightPixels - measuredHeight, heightPixels);
+//        objectAnimator.setDuration(300);
+//        objectAnimator.start();
+        if (mBottomControl.getVisibility() == View.VISIBLE) {
+            mBottomControl.setVisibility(View.GONE);
+        } else {
+            mBottomControl.setVisibility(View.VISIBLE);
+        }
+    }
+
+
     private void SaveRecording() {
-        if (isPlaying == true) {
+        if (isRecordingPlaying) {
             stopPlayRecord();
         }
         recordList.add(mFile);
@@ -253,34 +291,41 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
     }
 
     private void reRecording() {
-        if (isPlaying == true) {
-            isPlaying = false;
+        if (isRecordingPlaying) {
             stopPlayRecord();
             mCompleteFrag.setVisibility(View.GONE);
             mRecordingFrag.setVisibility(View.VISIBLE);
+            isRecordingPlaying = false;
         }
         mCompleteFrag.setVisibility(View.GONE);
         mRecordingFrag.setVisibility(View.VISIBLE);
     }
 
+//    private boolean isPlaying = false;
     //播放录音
     private void startPlayRecord() {
 
-//        if (mMediaPlayer == null) {
-//            mMediaPlayer = new MediaPlayer();
-//        }
+        if (mMediaPlayer == null) {
+            mMediaPlayer = new MediaPlayer();
+        }
 
         try {
-            mMediaPlayer.reset();
-            mMediaPlayer.setDataSource(mFile.getAbsolutePath());
-            mMediaPlayer.prepare();
-            mMediaPlayer.start();
+           if(isRecordingPlaying) {
+               mMediaPlayer.start();
+           } else {
+               mMediaPlayer.reset();
+               mMediaPlayer.setDataSource(mFile.getAbsolutePath());
+               mMediaPlayer.prepare();
+               mMediaPlayer.start();
 
+           }
             mPlayStop.setVisibility(View.VISIBLE);
             mPlayStopCircle.setVisibility(View.VISIBLE);
+            isRecordingPlaying = true;
 
         } catch (IOException e) {
             e.printStackTrace();
+
         }
         startAnimation();
 
@@ -288,13 +333,7 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
 
     //停止播放录音
     private void stopPlayRecord() {
-
         mMediaPlayer.pause();
-
-//        mMediaPlayer.reset();
-
-//        mPlayStop.setVisibility(View.INVISIBLE);
-//        mTryListener.setVisibility(View.VISIBLE);
         stopAnimation();
     }
 
@@ -335,13 +374,15 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
         if (isNotRecording) {
             mRecordingButton.setImageResource(R.drawable.play_stop_240);
             try {
+                long l1 = System.currentTimeMillis();
+
                 mMediaRecorder = new MediaRecorder();
                 mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
                 mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
                 mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
 
                 String dir = Environment.getExternalStorageDirectory().getPath() + "/AAmart";
-                File file = new File(Environment.getExternalStorageDirectory().getPath() + "/AAmart");
+                File file = new File(dir);
                 if (!file.exists()) {
                     file.mkdirs();
                 }
@@ -352,7 +393,9 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
                 mMediaRecorder.setOutputFile(mFile.getAbsolutePath());
                 mMediaRecorder.prepare();
                 mMediaRecorder.start();
-//                startTimer();//时间计时
+                long l2 = System.currentTimeMillis();
+                Log.i("55555", "startRecoding: "+(l2-l1));
+                startTimer();//时间计时
 
                 isNotRecording = !isNotRecording;
                 ToastUtil.showToast(getActivity(), "开始录音");
@@ -360,7 +403,9 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
                 e.printStackTrace();
             }
         } else {
-
+            long end = System.currentTimeMillis();
+           long durat = end -l;
+            Log.i("555555", "haha: "+durat);
             //没有录音状态
             mRecordingButton.setImageResource(R.drawable.recording_pressed_240);
             mMediaRecorder.stop();
@@ -373,7 +418,7 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
             mRecordingDesc.setText(mFile.getName());
             long length = mFile.length();
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm:ss");
-            Date date = new Date(length);
+            Date date = new Date(durat);
             String duration = simpleDateFormat.format(date);
             mRecordingDuration.setText(duration);
             mCompleteFrag.setVisibility(View.VISIBLE);
@@ -384,24 +429,29 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
 
             //将文件展示到listview上面, 文件以list的形式保存起来
 
-
             isNotRecording = !isNotRecording;
             ToastUtil.showToast(getActivity(), "结束录音");
 
         }
     }
 
+    long l;
+
     private void startTimer() {
-        stopTimer();
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                updateTimer();
-            }
+        l = currentTimeMillis();
+        Timer timer=new Timer();
+        int MaxTime=10*60;
 
-
-        }, 0, 1000);
+//        stopTimer();
+//        Timer timer = new Timer();
+//        timer.scheduleAtFixedRate(new TimerTask() {
+//            @Override
+//            public void run() {
+//                updateTimer();
+//            }
+//
+//
+//        }, 0, 1000);
     }
 
     private void stopTimer() {
@@ -420,7 +470,7 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
     }
 
     private void showFile(List<File> recordList) {
-
+Log.i("555555", "recordList.size="+recordList.size());
         RecordAdapter recodAdapter = new RecordAdapter(getActivity(), recordList);
         mLv_recoding.setAdapter(recodAdapter);
         mLv_recoding.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -451,12 +501,29 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
         super.onPause();
     }
 
+    private Handler mhalder;
     @Override
     public void onResume() {
         super.onResume();
-        showFile(recordList);
+        String dir = Environment.getExternalStorageDirectory().getPath() + "/AAmart";
+        final File file = new File(dir);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
 
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                File[] files = file.listFiles();
+                recordList.addAll(Arrays.asList(files));
+                mhalder.sendEmptyMessage(1);
+            }
+        }).start();
+//        HandlerThread thread = new HandlerThread("thread");
+//
+//        thread.start();
     }
+
 
     @Override
     public void onStop() {

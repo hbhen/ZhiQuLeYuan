@@ -5,6 +5,7 @@
                 android:padding="10dp">
 
     <ImageView
+        android:scaleType="centerCrop"
         android:id="@+id/iv_album_details_two"
         android:layout_width="60dp"
         android:layout_height="60dp"

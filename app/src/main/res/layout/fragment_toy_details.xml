@@ -62,7 +62,7 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:id="@+id/iv_call_signal"
+                    android:id="@+id/iv_fragment_toy_details_call_signal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
@@ -70,30 +70,30 @@
                     android:src="@drawable/toy_signal_2"/>
 
                 <ImageView
-                    android:id="@+id/iv_call_buttery"
+                    android:id="@+id/iv_fragment_toy_details_call_buttery"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="10dp"
-                    android:layout_toLeftOf="@id/iv_call_signal"
+                    android:layout_toLeftOf="@id/iv_fragment_toy_details_call_signal"
                     android:src="@drawable/toy_battery_6"/>
 
                 <ImageView
-                    android:id="@+id/iv_call_mic"
+                    android:id="@+id/iv_fragment_toy_details_call_mic"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="10dp"
-                    android:layout_toLeftOf="@id/iv_call_buttery"
+                    android:layout_toLeftOf="@id/iv_fragment_toy_details_call_buttery"
                     android:src="@drawable/toy_recording_prohibit"/>
 
                 <ImageView
-                    android:id="@+id/iv_call_camera"
+                    android:id="@+id/iv_fragment_toy_details_call_camera"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="10dp"
-                    android:layout_toLeftOf="@id/iv_call_mic"
+                    android:layout_toLeftOf="@id/iv_fragment_toy_details_call_mic"
                     android:src="@drawable/toy_webcam_prohibit"/>
             </RelativeLayout>
         </RelativeLayout>
@@ -321,8 +321,7 @@
         android:id="@+id/lv_fragment_toy_details_recommand"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/rl_toy_details"
-        android:layout_marginTop="39dp"/>
+        android:layout_below="@id/tv_toy_details_playing"/>
 
 
 </RelativeLayout>

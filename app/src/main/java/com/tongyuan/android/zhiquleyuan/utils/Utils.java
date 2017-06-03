@@ -8,7 +8,6 @@ import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.net.Uri;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -70,11 +69,9 @@ public class Utils {
     /**
      * ת��ͼƬ��Բ��
      *
-     * @param bitmap  ����Bitmap����
-     * @param tempUri
      * @return
      */
-    public static Bitmap toRoundBitmap(Bitmap bitmap, Uri tempUri) {
+    public static Bitmap toRoundBitmap(Bitmap bitmap, String dir, String fileName) {
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
         float roundPx;
@@ -105,6 +102,8 @@ public class Utils {
         }
 
         Bitmap output = Bitmap.createBitmap(width, height, Config.ARGB_8888);
+        savePhoto(output, dir, fileName);
+
         Canvas canvas = new Canvas(output);
 
         final int color = 0xff424242;

@@ -2,7 +2,7 @@
     <string name="app_name">咿呀</string>
     <string name="explaination">请将摄像头对准玩具说明书首页的二维码,保证二维码放入框内,自动进行扫描.</string>
     <!--这里添加的是我们在布局文件里设置的text的内容,格式是:属性+实际内容-->
-<!--qrcode-->
+    <!--qrcode-->
     <string name="scan_text">放入框中即可进行二维码扫描</string>
     <string name="preferences_vibrate">preferences_vibrate</string>
     <string name="preferences_play_beep">preferences_play_beep</string>
@@ -152,4 +152,8 @@
     <string name="pull_to_refresh_from_bottom_refreshing_label">正在加载中</string>
     <string name="invitemembertogroup">邀请</string>
     <string name="inputphonenum">请输入手机号</string>
+    <string name="main_discovery">发现</string>
+    <string name="main_record">录音</string>
+    <string name="main_history">历史</string>
+    <string name="main_mine">我的</string>
 </resources>

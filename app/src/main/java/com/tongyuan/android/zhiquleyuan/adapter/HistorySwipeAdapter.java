@@ -19,7 +19,9 @@ import java.util.ArrayList;
 /**
  * Created by DTC on 2017/4/6.
  */
-
+/*
+* 不用这个adapter,删除通话记录的功能暂时不要,保留,若以后需要再使用
+* */
 public class HistorySwipeAdapter extends BaseSwipeAdapter {
     private Context mContext;
     private ArrayList<CallHistoryResultBean.BODYBean.LSTBean> mLSTBeen;

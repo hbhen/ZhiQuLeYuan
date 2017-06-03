@@ -15,6 +15,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
@@ -94,7 +95,7 @@ public class MyPlayActivity extends AppCompatActivity {
             }
         });
         //格式化时间
-        mTextView_duration.setText(Util.formatMillis(mMediaPlayer.getDuration()));
+//        mTextView_duration.setText(Util.formatMillis(mMediaPlayer.getDuration()));
         updatePlayProgressShow();
         mMediaPlayer = MediaPlayer.create(this, R.raw.bumie);
 
@@ -161,8 +162,8 @@ public class MyPlayActivity extends AppCompatActivity {
     private void updatePlayProgressShow() {
         int currentPosition = mMediaPlayer.getCurrentPosition();
         mTextView_start.setText(Util.formatMillis(currentPosition));
-        mTextView_duration.setText(Util.formatMillis(mMediaPlayer.getDuration()));
-        mSeekBar.setMax(mMediaPlayer.getDuration());
+
+
         mSeekBar.setProgress(currentPosition);
         mHandler.sendEmptyMessageDelayed(UPDATE_PLAY_PROGRESSS_SHOW, 30);
     }
@@ -173,6 +174,17 @@ public class MyPlayActivity extends AppCompatActivity {
         try {
             mMediaPlayer.reset();
             mMediaPlayer.setDataSource(this, Uri.parse(mUrl));
+            mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    if(mSeekBar != null)
+                        mSeekBar.setMax(mp.getDuration());
+                    long duration = mp.getDuration();
+                    Log.i("111111", duration+"ms");
+                    if(duration != -1)
+                        mTextView_duration.setText(Util.formatMillis(mp.getDuration()));
+                }
+            });
             mMediaPlayer.prepare();
         } catch (IOException e) {
             e.printStackTrace();
@@ -183,6 +195,7 @@ public class MyPlayActivity extends AppCompatActivity {
         mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
+                Log.i("111111", "onCompletion");
                 mp.stop();
                 mImageView.clearAnimation();
             }
@@ -204,7 +217,6 @@ public class MyPlayActivity extends AppCompatActivity {
 //                mImageView.clearAnimation();
 //            }
 //        });
-
     }
 
     private void pauseMusic() {

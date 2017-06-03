@@ -1,18 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
               android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
-
-    <com.tongyuan.android.zhiquleyuan.view.SwipeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <include layout="@layout/item_content"/>
-
-        <include layout="@layout/item_delete"/>
-
-    </com.tongyuan.android.zhiquleyuan.view.SwipeLayout>
+              android:layout_height="80dp">
 
 
-</LinearLayout>
+        <LinearLayout
+
+            android:layout_width="140dp"
+            android:layout_height="78dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_item_history_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:text="0710"
+                android:textSize="24sp"/>
+
+
+            <ImageView
+                android:id="@+id/iv_item_history_pic"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="13dp"
+                android:src="@drawable/my_call_ico_60_3x"/>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tv_item_history_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="X-III2型"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_item_history_title"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="通话时长"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:id="@+id/tv_itemt_history_desc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="36:00"
+                    android:textColor="#ff4511"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+
+
+            <ImageView
+                android:id="@+id/iv_item_history_play"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:src="@drawable/myplay_ico_26_3x"/>
+
+            <View
+                android:background="#8f8f8f"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="75dp"/>
+        </RelativeLayout>
+    </LinearLayout>
+

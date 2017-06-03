@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -84,9 +85,9 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
         babyListResult.enqueue(new Callback<QueryBabyListResult>() {
             @Override
             public void onResponse(Call<QueryBabyListResult> call, Response<QueryBabyListResult> response) {
-//                String listResponse = response.body().toString();
+                String listResponse = response.body().toString();
 
-//                Log.i("111", "listResponse: " + listResponse);
+                Log.i("111", "listResponse: " + listResponse);
                 List<QueryBabyListResult.BODYBean.LSTBean> lst = response.body().getBODY().getLST();
 
                 QueryBabyListResult.BODYBean.LSTBean lstBean = null;

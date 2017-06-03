@@ -38,11 +38,16 @@ import java.util.Date;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+import static android.os.Environment.DIRECTORY_PICTURES;
 
 /**
  * Created by android on 2016/12/23.
@@ -78,6 +83,8 @@ public class MyBabyActivity extends AppCompatActivity {
     Button mBtActivityAddbabyinfoConfirm;
 
     private Uri mTempUri;
+    private String uploadFilePath;
+    private String uploadFileName;
     private ChangeDatePopwindow mChangeDatePopwindow;
     private String mBabyID;
     private String[] mBirthday;
@@ -105,6 +112,8 @@ public class MyBabyActivity extends AppCompatActivity {
                 }
             }
         });
+
+        uploadFilePath = getExternalFilesDir(DIRECTORY_PICTURES).getAbsolutePath();
     }
 
     @OnClick({R.id.iv_addbabyinfo, R.id.et_addbabyinfo, R.id.rg_addbabyinfo,
@@ -119,14 +128,14 @@ public class MyBabyActivity extends AppCompatActivity {
                 //添加宝宝的姓名或者说是宝宝的ID
                 mBabyID = mEtAddbabyinfo.getText().toString().trim();
                 break;
-//            case R.id.radioButtonBoy:
-//                //宝宝的性别选择(男), 如果选中,就给定一个值
-//                    sex = "M";
-//                break;
-//            case R.id.radiobuttonGirls:
-//                //宝宝的性别选择(女)
-//                    sex = "W";
-//                break;
+            case R.id.radioButtonBoy:
+                //宝宝的性别选择(男), 如果选中,就给定一个值
+                    sex = "M";
+                break;
+            case R.id.radiobuttonGirls:
+                //宝宝的性别选择(女)
+                    sex = "W";
+                break;
             case R.id.tv_activity_addbabyinfo_date:
                 mBirthday = selectDate();
                 break;
@@ -141,12 +150,15 @@ public class MyBabyActivity extends AppCompatActivity {
                 Date date = new Date();
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
                 String time = simpleDateFormat.format(date);
-                uploadPic(uriIntent);
-//                if (sex.equals("") |babyID.equals("") | phoneNum.equals("") | babyToken.equals("")) {
+
+//                uploadPic(uriIntent);
+//                if (sex.equals("") || babyID.equals("") || phoneNum.equals("") || babyToken.equals("")) {
 //                    ToastUtil.showToast(this, "您有未完成的信息,请填完以后再点击");
 //                    return;
 //                } else {
-                confirmInfo(phoneNum, time, babyToken, babyID, sex);
+//                confirmInfo(phoneNum, time, babyToken, babyID, sex);
+                    //把头像,上传到服务器
+                    uploadPic(new File(uploadFilePath+File.separator+uploadFileName));
 //                }
 
                 break;
@@ -155,12 +167,6 @@ public class MyBabyActivity extends AppCompatActivity {
         }
     }
 
-    private void uploadPic(Intent uriIntent) {
-        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        AllInterface allInterface = retrofit.create(AllInterface.class);
-    }
 
     //上传宝宝的信息
     private void confirmInfo(String phoneNum, String time, final String token, String babyID, String sex) {
@@ -318,38 +324,53 @@ public class MyBabyActivity extends AppCompatActivity {
         Bundle extras = data.getExtras();
         if (extras != null) {
             Bitmap photo = extras.getParcelable("data");
-            photo = Utils.toRoundBitmap(photo, mTempUri);
+            photo = Utils.toRoundBitmap(photo, uploadFilePath, uploadFileName);
             mIvAddbabyinfo.setImageBitmap(photo);
 
-            //把头像,上传到服务器
-            //uploadPic(photo);
         }
     }
 
-    //private void uploadPic(Bitmap photo) {
     //用retrofit上传头像
-//        Retrofit retrofit=new Retrofit.Builder().build()
-//                .baseUrl("http://120.27.41.179:8081/");
-//        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-//        photo.compress(Bitmap.CompressFormat.PNG, 60, stream);
-//        byte[] bytes = stream.toByteArray();
-//        String img = new String(Base64.encode(bytes, Base64.DEFAULT));
-//        AsyncHttpClient client = new AsyncHttpClient();
-//        RequestParams params = new RequestParams();
-//
-//        params.add("img", img);
-//        client.post("http://120.27.41.179:8081/", params, new AsyncHttpResponseHandler() {
-//            @Override
-//            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-//                ToastUtil.showToast(getApplicationContext(), "上传成功");
-//            }
-//
-//            @Override
-//            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-//                ToastUtil.showToast(getApplicationContext(), "上传失败");
-//            }
-//        });
-    //}
+    private void uploadPic(File photo) {
+        Retrofit retrofit=new Retrofit.Builder()
+                .baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        AllInterface allInterface = retrofit.create(AllInterface.class);
+        Gson gson=new Gson();
+        String babyID = mEtAddbabyinfo.getText().toString().trim();
+        Date date = new Date();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        String time = simpleDateFormat.format(date);
+        BabyInfoRequestBean.BODYBean babyInfoBody = new BabyInfoRequestBean.BODYBean("BABY", time, babyID, babyID, mTimedate, "M");
+        String phoneNum = SPUtils.getString(this, "phoneNum", "");
+        String babyToken = SPUtils.getString(this, "TOKEN", "");
+        BabyInfoRequestBean babyInfoRequestBean = new BabyInfoRequestBean("REQ", "INFO", phoneNum, time, babyInfoBody, "", babyToken, "1");
+
+        String s = gson.toJson(babyInfoRequestBean);
+
+        RequestBody requestFile = RequestBody.create(MediaType.parse("image/png"), photo);
+        MultipartBody.Part body = MultipartBody.Part.createFormData("IMG", photo.getName(), requestFile);
+Log.i("upload", "request ="+s);
+        RequestBody description = RequestBody.create(MediaType.parse("multipart/form_data"), s);
+        Call<BabyInfoResultBean> call = allInterface.BABY_INFO_RESULT_BEAN_CALL(description, body);
+        call.enqueue(new Callback<BabyInfoResultBean>() {
+            @Override
+            public void onResponse(Call<BabyInfoResultBean> call, Response<BabyInfoResultBean> response) {
+                Log.i("upload", "body="+response.message() + " " + response.body().getMSG());
+                String code = response.body().getCODE();
+                Log.i("upload", response.body().toString());
+            }
+
+            @Override
+            public void onFailure(Call<BabyInfoResultBean> call, Throwable t) {
+                Log.i("upload", "onFailure...");
+            }
+        });
+
+    }
+
+
 
 
 }

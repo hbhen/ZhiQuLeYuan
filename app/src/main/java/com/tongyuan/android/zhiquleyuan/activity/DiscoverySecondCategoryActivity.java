@@ -81,8 +81,6 @@ public class DiscoverySecondCategoryActivity extends AppCompatActivity implement
         String token = SPUtils.getString(this, "TOKEN", "");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         String formatTime = simpleDateFormat.format(new Date());
-
-
         getIdColSecondaryInfo(colid, phoneNum, formatTime, token);
 
 
@@ -118,11 +116,11 @@ public class DiscoverySecondCategoryActivity extends AppCompatActivity implement
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                             ToastUtil.showToast(getApplicationContext(), "点击的是" + position);
-                            Retrofit retrofit2=new Retrofit.Builder().baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
+                            Retrofit retrofit2 = new Retrofit.Builder().baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
                                     .addConverterFactory(GsonConverterFactory.create())
                                     .build();
                             AllInterface allInterface1 = retrofit2.create(AllInterface.class);
-                            Gson gson1=new Gson();
+                            Gson gson1 = new Gson();
 
                             //本机播放需要播放申请,3.4.48   网络请求
                             LocalPlayApplyReqBean.BODYBean bodyBean1 = new LocalPlayApplyReqBean.BODYBean(mResponse.body().getBODY().getLST().get
@@ -139,14 +137,14 @@ public class DiscoverySecondCategoryActivity extends AppCompatActivity implement
                                         return;
                                     } else if (response.body().getCODE().equals("0")) {
                                         Intent intent = new Intent();
-                                        intent.putExtra("musicimg",mResponse.body().getBODY().getLST().get(position).getIMG() );
-                                        intent.putExtra("musicname",mResponse.body().getBODY().getLST().get(position).getNAME());
+                                        intent.putExtra("musicimg", mResponse.body().getBODY().getLST().get(position).getIMG());
+                                        intent.putExtra("musicname", mResponse.body().getBODY().getLST().get(position).getNAME());
                                         Bundle bundle = new Bundle();
                                         bundle.putParcelable("musicinfo", response.body());
                                         intent.putExtras(bundle);
                                         intent.setClass(getApplicationContext(), MyPlayActivity.class);
                                         startActivity(intent);
-                                        ToastUtil.showToast(getApplicationContext(),"didi");
+                                        ToastUtil.showToast(getApplicationContext(), "didi");
                                     }
                                 }
 

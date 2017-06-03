@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--<selector xmlns:android="http://schemas.android.com/apk/res/android">-->
+    <!--<item android:drawable="@drawable/home_my_60ico" android:state_selected="true"/>-->
+    <!--<item android:drawable="@drawable/home_my_gray_60ico" android:state_selected="false"/>-->
+<!--</selector>-->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@drawable/home_my_60ico" android:state_checked="true"
-          android:state_selected="true"></item>
-    <item android:drawable="@drawable/home_my_gray_60ico"></item>
+<item android:drawable="@drawable/home_my_60ico" android:state_selected="true"/>
+<item android:drawable="@drawable/home_my_gray_60ico" android:state_selected="false"/>
+<item android:drawable="@drawable/home_my_gray_60ico"/>
 </selector>
