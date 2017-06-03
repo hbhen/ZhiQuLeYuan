@@ -56,4 +56,5 @@ dependencies {
     compile 'com.zhy:magic-viewpager:1.0.1'
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'com.daimajia.swipelayout:library:1.2.0@aar'
+    compile 'com.github.zcweng:switch-button:0.0.3@aar'
 }

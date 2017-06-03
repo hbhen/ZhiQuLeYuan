@@ -3,15 +3,15 @@ package com.tongyuan.android.zhiquleyuan.view;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.tongyuan.android.zhiquleyuan.R;
 
 /**
  * 创建一个text和Icon组合的view子类
@@ -45,12 +45,12 @@ public class IconTextView extends LinearLayout {
         this.setGravity(Gravity.CENTER);
         mIcon = new ImageView(context);
         mIcon.setImageDrawable(icon);
-        addView(mIcon,  new LayoutParams(
-                LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT));
+        addView(mIcon, new LayoutParams(
+                LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
         mText = new TextView(context);
         mText.setText(title);
-        titleSize = titleSize/getResources().getDisplayMetrics().density;
+        titleSize = titleSize / getResources().getDisplayMetrics().density;
         mText.setTextSize(titleSize);
         mText.setGravity(Gravity.CENTER);
         mText.setTextColor(textColor != null ? textColor : ColorStateList.valueOf(0xFF000000));

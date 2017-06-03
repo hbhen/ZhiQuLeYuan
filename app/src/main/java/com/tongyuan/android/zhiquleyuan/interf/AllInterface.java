@@ -3,6 +3,7 @@ package com.tongyuan.android.zhiquleyuan.interf;
 import com.tongyuan.android.zhiquleyuan.bean.AddMemberToGroupReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.AddToyResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.BabyInfoResultBean;
+import com.tongyuan.android.zhiquleyuan.bean.BindBabyToToyRes;
 import com.tongyuan.android.zhiquleyuan.bean.CallHistoryResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.CallToToyRes;
 import com.tongyuan.android.zhiquleyuan.bean.DelMembFromGroupReSBean;
@@ -10,7 +11,9 @@ import com.tongyuan.android.zhiquleyuan.bean.DeleteBabyInfoReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridSecondaryResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListResultBean;
+import com.tongyuan.android.zhiquleyuan.bean.GetInstantStateInfoRes;
 import com.tongyuan.android.zhiquleyuan.bean.LocalPlayApplyResBean;
+import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListFromToyIdRes;
 import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListResult;
 import com.tongyuan.android.zhiquleyuan.bean.QueryMyPushResBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryPlayingMusicResBean;
@@ -18,12 +21,16 @@ import com.tongyuan.android.zhiquleyuan.bean.QuerySingleUserInfoReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryToyMemberReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoRESBean;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Query;
 
-    /**
+/**
  * Created by android on 2017/3/2.
  */
 
@@ -32,19 +39,26 @@ public interface AllInterface {
     @POST("busi")
     Call<BabyInfoResultBean> sendBabyInfoResult(@Query("params") String params);
 
+    @Multipart
+    @POST("busi")
+    Call<BabyInfoResultBean> BABY_INFO_RESULT_BEAN_CALL(@Part("description") RequestBody description, @Part("file") MultipartBody.Part file);
     //删除宝宝的信息(或者个人信息) 3.4.10
     @GET("busi")
     Call<DeleteBabyInfoReSBean> delteBabyInfoReult(@Query("params") String params);
 //    //如果是get请求呢
 //    @GET("busi")
 //    Call<BabyInfoResultBean> sendBabyInfoResult1(@Query("params") String params);
-    //上传宝宝的或者User的头像   3.4.9
+//    上传宝宝的或者User的头像   3.4.9
 //    @POST("busi")
-//    Call<String> sendImg(@Part("babyImg"))
+//    Call<String> sendImg(@Part("babyImg"));
 
     //查询根据登录用户创建的宝宝的列表 3.4.44
     @GET("busi")
     Call<QueryBabyListResult> getBabyListResult(@Query("params") String params);
+
+    //查询宝宝列表 (根据玩具id) 3.4.24
+    @GET("busi")
+    Call<QueryBabyListFromToyIdRes> QUERY_BABY_LIST_FROM_TOY_ID_CALL(@Query("params") String params);
 
     //请求首页gridview的目录信息(九宫格)3.4.25
     @GET("busi")
@@ -58,15 +72,15 @@ public interface AllInterface {
     @GET("busi")
     Call<DiscoveryListResultBean> getDiscoveryListResult(@Query("params") String params);
 
-    //添加/修改玩具信息
+    //添加/修改玩具信息 3.4.11
     @GET("busi")
     Call<AddToyResultBean> getAddToyResult(@Query("params") String params);
 
-    //查询玩具通话历史
+    //查询玩具通话历史 3.4.42
     @GET("busi")
     Call<CallHistoryResultBean> getCallHistoryResult(@Query("params") String params);
 
-    //查询单个玩具信息
+    //查询单个玩具信息 3.4.21
     @GET("busi")
     Call<SingleToyInfoRESBean> getSingleToyInfoResult(@Query("params") String params);
 
@@ -97,7 +111,16 @@ public interface AllInterface {
     //本地播放申请 3.4.38
     @GET("busi")
     Call<LocalPlayApplyResBean> LOCAL_PLAY_APPLY_RES_BEAN_CALL(@Query("params") String params);
+
     //通话控制  3.4.5
     @GET("jpush")
     Call<CallToToyRes> CALL_TO_TOY_RES_CALL(@Query("params") String params);
+
+    //拉去玩具及时状态 3.4.55
+    @GET("busi")
+    Call<GetInstantStateInfoRes> GET_INSTANT_STATE_INFO_RES_CALL(@Query("params") String params);
+
+    //绑定玩具和宝宝 3.4.18
+    @GET("busi")
+    Call<BindBabyToToyRes> BIND_BABY_TO_TOY_RES_CALL(@Query("params") String params);
 }

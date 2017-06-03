@@ -1,10 +1,13 @@
 package com.tongyuan.android.zhiquleyuan.bean;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by android on 2017/3/13.
  */
 
-public class AddToyResultBean {
+public class AddToyResultBean implements Parcelable {
     @Override
     public String toString() {
         return "AddToyResultBean{" +
@@ -138,7 +141,7 @@ public class AddToyResultBean {
         this.MSG = MSG;
     }
 
-    public static class BODYBean {
+    public static class BODYBean implements Parcelable {
         @Override
         public String toString() {
             return "BODYBean{" +
@@ -331,5 +334,103 @@ public class AddToyResultBean {
         public void setACTTIME(String ACTTIME) {
             this.ACTTIME = ACTTIME;
         }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(this.CODE);
+            dest.writeString(this.MIC);
+            dest.writeString(this.OWNERID);
+            dest.writeString(this.OWNERNAME);
+            dest.writeString(this.ID);
+            dest.writeString(this.WIFI);
+            dest.writeString(this.ONLINE);
+            dest.writeString(this.CAMERA);
+            dest.writeString(this.ELEC);
+            dest.writeString(this.NICK);
+            dest.writeString(this.STATE);
+            dest.writeString(this.VOL);
+            dest.writeString(this.IMG);
+            dest.writeString(this.NAME);
+            dest.writeString(this.ACTTIME);
+        }
+
+        protected BODYBean(Parcel in) {
+            this.CODE = in.readString();
+            this.MIC = in.readString();
+            this.OWNERID = in.readString();
+            this.OWNERNAME = in.readString();
+            this.ID = in.readString();
+            this.WIFI = in.readString();
+            this.ONLINE = in.readString();
+            this.CAMERA = in.readString();
+            this.ELEC = in.readString();
+            this.NICK = in.readString();
+            this.STATE = in.readString();
+            this.VOL = in.readString();
+            this.IMG = in.readString();
+            this.NAME = in.readString();
+            this.ACTTIME = in.readString();
+        }
+
+        public static final Creator<BODYBean> CREATOR = new Creator<BODYBean>() {
+            @Override
+            public BODYBean createFromParcel(Parcel source) {
+                return new BODYBean(source);
+            }
+
+            @Override
+            public BODYBean[] newArray(int size) {
+                return new BODYBean[size];
+            }
+        };
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.TYPE);
+        dest.writeString(this.CMD);
+        dest.writeString(this.ACCT);
+        dest.writeString(this.TIME);
+        dest.writeParcelable(this.BODY, flags);
+        dest.writeString(this.VERI);
+        dest.writeString(this.TOKEN);
+        dest.writeString(this.SEQ);
+        dest.writeString(this.CODE);
+        dest.writeString(this.MSG);
+    }
+
+    protected AddToyResultBean(Parcel in) {
+        this.TYPE = in.readString();
+        this.CMD = in.readString();
+        this.ACCT = in.readString();
+        this.TIME = in.readString();
+        this.BODY = in.readParcelable(BODYBean.class.getClassLoader());
+        this.VERI = in.readString();
+        this.TOKEN = in.readString();
+        this.SEQ = in.readString();
+        this.CODE = in.readString();
+        this.MSG = in.readString();
+    }
+
+    public static final Parcelable.Creator<AddToyResultBean> CREATOR = new Parcelable.Creator<AddToyResultBean>() {
+        @Override
+        public AddToyResultBean createFromParcel(Parcel source) {
+            return new AddToyResultBean(source);
+        }
+
+        @Override
+        public AddToyResultBean[] newArray(int size) {
+            return new AddToyResultBean[size];
+        }
+    };
 }

@@ -42,19 +42,34 @@ public abstract class BaseFragment extends Fragment {
     //初始化布局 交给子类实现
 //    public abstract View initview();
 
-    public void showFragment( String name) {
-        if(getActivity() instanceof MainActivity) {
-            ((MainActivity)getActivity()).showFragment(name);
+    public void showFragment(String name) {
+
+        if (getActivity() instanceof MainActivity) {
+            ((MainActivity) getActivity()).showFragment(name);
+
         }
 
 //        transaction.replace(R.id.fl_fragmentcontainer, f);
 //        transaction.commit();
-    }
-
-    public void hide() {
 
     }
 
+    public void showFragment(BaseFragment fragment) {
+        if (getActivity() instanceof MainActivity) {
+            ((MainActivity) getActivity()).showFragment(fragment);
+
+        }
+    }
+
+//    public void removeFragment(String name) {
+//        if (getActivity() instanceof MainActivity) {
+//            ((MainActivity) getActivity()).removeFragment(name);
+//        }
+//    }
+//
+//    public void hide() {
+//
+//    }
 
 
 }

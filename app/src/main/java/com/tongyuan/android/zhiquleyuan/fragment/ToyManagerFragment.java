@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.util.Log;
@@ -22,6 +21,7 @@ import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.activity.NoDisturbActivity;
 import com.tongyuan.android.zhiquleyuan.activity.SetupWlanActivity;
 import com.tongyuan.android.zhiquleyuan.adapter.ToyMemberAdapter;
+import com.tongyuan.android.zhiquleyuan.base.BaseFragment;
 import com.tongyuan.android.zhiquleyuan.bean.QueryToyMemberReQBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryToyMemberReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoRESBean;
@@ -31,6 +31,7 @@ import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 import com.tongyuan.android.zhiquleyuan.view.MyGridView;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -44,7 +45,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by android on 2017/3/12.
  */
 //TODO 从上一个页面传过来的数据,设置到页面的各个控件上.  玩具解除绑定,点击以后应该弹出的是宝宝的列表,然后选择,确定,提交网络请求,解除成功.
-public class ToyManagerFragment extends Fragment implements View.OnClickListener {
+public class ToyManagerFragment extends BaseFragment implements View.OnClickListener {
     private final String TAG = "111";
     private Button mBt_fragment_managetoy_setupwlan;
     private Button mBt_fragment_managetoy_nodisturb;
@@ -58,6 +59,8 @@ public class ToyManagerFragment extends Fragment implements View.OnClickListener
     private ImageView mBabyImg;
     private TextView mBabyName;
     private MyGridView mMygrid;
+    private List<QueryToyMemberReSBean.BODYBean.LSTBean> lst = new ArrayList<>();
+    ToyMemberAdapter toyMemberAdapter;
     boolean removeState = false;//定义删除状态
     private SingleToyInfoRESBean.BODYBean mResponse;
     private String mToken;
@@ -65,6 +68,8 @@ public class ToyManagerFragment extends Fragment implements View.OnClickListener
     private String mTime;
     private String mToyId;
     private String mToyCode;
+    private String mBabyimg;
+    private String mImg;
 
     @Nullable
     @Override
@@ -82,6 +87,9 @@ public class ToyManagerFragment extends Fragment implements View.OnClickListener
         mTv_fragment_managetoy_acttime = (TextView) fragment_manageToy.findViewById(R.id.tv_fragment_managetoy_acttime);
 //        mRecyclerview_fragment_managetoy = (RecyclerView) fragment_manageToy.findViewById(R.id.recyclerview_fragment_managetoy);
         mMygrid = (MyGridView) fragment_manageToy.findViewById(R.id.mygrid);
+        toyMemberAdapter = new ToyMemberAdapter(getActivity(), lst, mResponse);
+        mMygrid.setNumColumns(5);
+        mMygrid.setAdapter(toyMemberAdapter);
         mBabyImg = (ImageView) fragment_manageToy.findViewById(R.id.iv_fragment_managetoy_babyhead);
         mBabyName = (TextView) fragment_manageToy.findViewById(R.id.tv_fragment_managetoy_babyname);
         initData();
@@ -90,38 +98,13 @@ public class ToyManagerFragment extends Fragment implements View.OnClickListener
     }
 
     private void initData() {
+
+
         mToken = SPUtils.getString(getActivity(), "TOKEN", "");
         mPhoneNum = SPUtils.getString(getActivity(), "phoneNum", "");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         mTime = simpleDateFormat.format(new Date());
 
-
-        Bundle arguments = getArguments();
-        //singletoyinfo
-        mResponse = arguments.getParcelable("response");
-
-        mToyId = mResponse.getID();
-        mToyCode = mResponse.getCODE();
-        String acttime = arguments.getString("acttime");
-        String img = mResponse.getIMG();
-        String babyimg = arguments.getString("babyimg");
-        mTv_fragment_managetoy_toytype.setText(mResponse.getCODE());
-        mTv_fragment_managetoy_acttime.setText(acttime);
-
-        //玩具图片
-        Glide.with(getActivity()).load(img).asBitmap().into(mIv_fragmenft_managetoy_toyimg);
-        //baby头像
-        Glide.with(getActivity()).load(babyimg).asBitmap().centerCrop().into(new BitmapImageViewTarget(mBabyImg) {
-            @Override
-            protected void setResource(Bitmap resource) {
-
-                RoundedBitmapDrawable mRoundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
-                mRoundedBitmapDrawable.setCircular(true);
-                mBabyImg.setImageDrawable(mRoundedBitmapDrawable);
-            }
-
-
-        });
         //获取成员信息,需要传什么参数,去访问哪个接口  3.4.48接口
         getToyMember(mTime, mToken, mPhoneNum, mToyId, mToyCode);
         Log.i(TAG, "initData:toyimg ");
@@ -147,11 +130,15 @@ public class ToyManagerFragment extends Fragment implements View.OnClickListener
                     Log.i(TAG, "onResponse:toymem ++" + response.body().toString());
 
 
-                    List<QueryToyMemberReSBean.BODYBean.LSTBean> lst = response.body().getBODY().getLST();
-                    Log.i("111111", "onResponse: "+lst.size());
-                    mMygrid.setNumColumns(5);
-                    final ToyMemberAdapter toyMemberAdapter = new ToyMemberAdapter(getActivity(), lst, mResponse);
-                    mMygrid.setAdapter(toyMemberAdapter);
+                    lst.clear();
+                    lst.addAll(response.body().getBODY().getLST());
+                    Log.i("111111", "onResponse: " + lst.size());
+                    if(toyMemberAdapter != null) {
+                        toyMemberAdapter.notifyDataSetChanged();
+                    }
+//                    mMygrid.setNumColumns(5);
+//                    toyMemberAdapter = new ToyMemberAdapter(getActivity(), lst, mResponse);
+//                    mMygrid.setAdapter(toyMemberAdapter);
 
                 } else {
 
@@ -203,5 +190,45 @@ public class ToyManagerFragment extends Fragment implements View.OnClickListener
         //刷新
 
         getToyMember(mTime, mToken, mPhoneNum, mToyId, mToyCode);
+    }
+
+    public void setData(SingleToyInfoRESBean.BODYBean response, String formatTime,String babyimg) {
+        this.mResponse=response;
+        this.mBabyimg=babyimg;
+
+        mToken = SPUtils.getString(getActivity(), "TOKEN", "");
+        mPhoneNum = SPUtils.getString(getActivity(), "phoneNum", "");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+//        mTime = simpleDateFormat.format(new Date());
+//        Bundle arguments = getArguments();
+//        //singletoyinfo
+//        mResponse = arguments.getParcelable("response");
+
+        mToyId = mResponse.getID();
+        mToyCode = mResponse.getCODE();
+//        String acttime = arguments.getString("acttime");
+        String img = mResponse.getIMG();
+        //获取成员信息,需要传什么参数,去访问哪个接口  3.4.48接口
+        getToyMember(mTime, mToken, mPhoneNum, mToyId, mToyCode);
+
+        if(mTv_fragment_managetoy_toytype == null)
+            return;
+//        String babyimg = arguments.getString("babyimg");
+        mTv_fragment_managetoy_toytype.setText(mResponse.getCODE());
+        mTv_fragment_managetoy_acttime.setText(formatTime);
+
+        //玩具图片
+        Glide.with(getActivity()).load(img).asBitmap().into(mIv_fragmenft_managetoy_toyimg);
+        //baby头像
+        Glide.with(getActivity()).load(mBabyimg).asBitmap().centerCrop().into(new BitmapImageViewTarget(mBabyImg) {
+            @Override
+            protected void setResource(Bitmap resource) {
+
+                RoundedBitmapDrawable mRoundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
+                mRoundedBitmapDrawable.setCircular(true);
+                mBabyImg.setImageDrawable(mRoundedBitmapDrawable);
+            }
+        });
+
     }
 }

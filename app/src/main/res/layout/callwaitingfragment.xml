@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/tb_callwaiting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="#f1f1f1">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/arrow_left"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:text="玩具"
+            android:textColor="#000000"
+            android:textSize="18sp"/>
+    </android.support.v7.widget.Toolbar>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/tb_callwaiting"
+        android:layout_marginTop="30dp"
+        android:background="#8f8f8f"
+        />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tb_callwaiting"
+        android:layout_centerHorizontal="true">
+
+        <ImageView
+            android:id="@+id/iv_callwaiting_toyimg"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="@mipmap/ic_launcher"/>
+
+        <TextView
+
+            android:id="@+id/tv_callwaiting_toyname"
+            android:layout_width="120dp"
+            android:layout_height="60dp"/>
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/iv_callwaiting_babyimg"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:layout_below="@id/tb_callwaiting"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="120dp"
+        android:src="@mipmap/ic_launcher"/>
+
+    <TextView
+        android:id="@+id/tv_callwaiting_babyname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tb_callwaiting"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="290dp"
+        android:text="正正"
+        android:textColor="#000000"
+        android:textSize="24sp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tb_callwaiting"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="324dp"
+        android:text="正在等待网络接通..."
+        android:textColor="#000000"
+        android:textSize="16sp"/>
+
+    <ImageButton
+        android:id="@+id/ib_callwaitingfragment"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_below="@id/tb_callwaiting"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="413dp"
+        android:background="@drawable/stop_call_3x"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ib_callwaitingfragment"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="3dp"
+        android:text="取消"
+        android:textSize="16sp"
+        android:textColor="@color/grayFont"/>
+</RelativeLayout>

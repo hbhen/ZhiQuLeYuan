@@ -61,6 +61,7 @@
                 android:layout_height="49dp"
                 android:layout_weight="1"
                 android:drawableLeft="@drawable/phone_ico_light_3x"
+                android:drawablePadding="5dp"
                 android:gravity="center"
                 android:text="手机播放"
                 android:textColor="#ff4511"

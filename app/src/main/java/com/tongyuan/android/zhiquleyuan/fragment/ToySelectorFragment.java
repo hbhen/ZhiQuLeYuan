@@ -1,7 +1,6 @@
 package com.tongyuan.android.zhiquleyuan.fragment;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -61,7 +60,7 @@ public class ToySelectorFragment extends BaseFragment {
     ArrayList<String> babyImg = new ArrayList<String>();
     ArrayList<String> toyId = new ArrayList<String>();
     ArrayList<String> toyCode = new ArrayList<String>();
-    SingleToyInfoRESBean body;
+    private SingleToyInfoRESBean body;
 //    List<Response<SingleToyInfoRESBean>> responseList;
 //    String mToycode = new String();//唯一标识
 //    String mActtime = new String();
@@ -69,6 +68,9 @@ public class ToySelectorFragment extends BaseFragment {
 //    String mOwnername = new String();
 
     private ImageView mImageView;
+    private Bundle mBundle;
+    public static String mToyid;
+
 
     @Nullable
     @Override
@@ -114,10 +116,10 @@ public class ToySelectorFragment extends BaseFragment {
         });
 
         mViewpagetToy.setPageMargin(20);
-        mViewpagetToy.setOffscreenPageLimit(3);
+        mViewpagetToy.setOffscreenPageLimit(10);
 
 
-        Log.i("111111", "new MyPagerAdapter....");
+        Log.i(TAG, "new MyPagerAdapter....");
         mViewpagetToy.setAdapter(mPagerAdapter = new PagerAdapter() {
             @Override
             public Object instantiateItem(ViewGroup container, final int position) {
@@ -139,43 +141,30 @@ public class ToySelectorFragment extends BaseFragment {
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
                         String time = simpleDateFormat.format(new Date());
 
-                        String toyid = toyId.get(position);
-                        Log.i(TAG, "onClick:toyid " + toyid);
-                        SPUtils.putString(getActivity(), "toyidtopush", toyid);
+                        mToyid = toyId.get(position);
+                        Log.i(TAG, "onClick:toyid " + mToyid);
+                        SPUtils.putString(getActivity(), "toyidtopush", mToyid);
                         String toycode = toyCode.get(position);
                         Log.i(TAG, "onClick:toycode " + toycode);
 
-                        QuerySingleToyInfo(toyid, toycode, time);
-
+                        QuerySingleToyInfo(mToyid, toycode, time,position);
 
                         Toast.makeText(getActivity(), "当前position" + position, Toast.LENGTH_SHORT).show();
-                        Log.i(TAG, "onClick: toyid1" + toyid);
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                Bundle bundle = new Bundle();
-                                bundle.putParcelable("response", body.getBODY());
-                                bundle.putString("babyimg", babyImg.get(position));
-//                                Log.i(TAG, "run:---- " + babyImg.get(position));
-//                                toyDetailsFragment.setArguments(bundle);
+                        Log.i(TAG, "onClick: toyid1" + mToyid);
 
-                                MainActivity mainActivity = (MainActivity) getActivity();
-                                mainActivity.getToyDetailsFragment().setArguments(bundle);
-                                showFragment(ToyDetailsFragment.class.getSimpleName());
-//                                FragmentManager fragmentManager = getFragmentManager();
-//                                FragmentTransaction transaction = fragmentManager.beginTransaction();
-//                                transaction.replace(R.id.fl_fragmentcontainer, toyDetailsFragment);
-//                                transaction.commit();
+//                        new Handler().postDelayed(new Runnable() {
+//                            @Override
+//                            public void run() {
 
-                            }
-                        }, 300);
+//
+//                            }
+//                        }, 300);
                     }
                 });
 
 
                 return mImageView;
             }
-
 
             @Override
             public void notifyDataSetChanged() {
@@ -201,10 +190,17 @@ public class ToySelectorFragment extends BaseFragment {
         mViewpagetToy.setPageTransformer(true, new ScaleInTransformer());
         mViewpagetToy.setCurrentItem(1);
     }
-
+////获取数据
+//    public Bundle getBundle() {
+//        return mBundle;
+//    }
+////设置数据
+//    public void setBundle(Bundle bundle) {
+//        this.mBundle = bundle;
+//    }
 
     //查询单个玩具的信息
-    private void QuerySingleToyInfo(String toyid, String toycode, String time) {
+    private void QuerySingleToyInfo(String toyid, String toycode, String time, final int position) {
         Retrofit retrofit = new Retrofit.Builder().baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -233,6 +229,11 @@ public class ToySelectorFragment extends BaseFragment {
 //                    mOwnername = ownername;
                     body = response.body();
 
+                    MainActivity mainActivity = (MainActivity) getActivity();
+                    mainActivity.getToyDetailsFragment().setData(body.getBODY(), babyImg.get(position));
+                    showFragment(ToyDetailsFragment.class.getSimpleName());
+                    Log.i(TAG, "onResponse: +toyselelctorfragment+body" + body.getBODY().toString());
+
                 } else {
                     ToastUtil.showToast(getActivity(), "Response为空,请检查网络");
                     Log.d(TAG, "onResponse: 为空,请检查网络");
@@ -241,7 +242,7 @@ public class ToySelectorFragment extends BaseFragment {
 
             @Override
             public void onFailure(Call<SingleToyInfoRESBean> call, Throwable t) {
-
+                Log.i(TAG, "onFailure: "+t.toString());
             }
         });
     }
@@ -285,9 +286,13 @@ public class ToySelectorFragment extends BaseFragment {
             toyId.add(idToy);
             toyCode.add(code);
         }
-        mPagerAdapter.notifyDataSetChanged();
+
         Log.i(TAG, "babyImg=====" + babyImg);
         Log.i(TAG, "toyImg size=====" + toyImg.size());
+        Log.i(TAG, "onToyMessage: adapter1"+mPagerAdapter);
+        if (mPagerAdapter!=null)
+        mPagerAdapter.notifyDataSetChanged();
+        Log.i(TAG, "onToyMessage: adapter"+mPagerAdapter);
 
     }
 
@@ -312,6 +317,7 @@ public class ToySelectorFragment extends BaseFragment {
                 isAdd = false;
             }
         }
+
         if (isAdd) {
             toyImg.add(img);
             toyId.add(id);
@@ -333,6 +339,8 @@ public class ToySelectorFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
+//        MainActivity mainactivity = (MainActivity) getActivity();
+//        mainactivity.getToyDetailsFragment().setArguments();
 
     }
 }

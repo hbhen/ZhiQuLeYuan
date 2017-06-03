@@ -3,14 +3,19 @@ package com.tongyuan.android.zhiquleyuan.fragment;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
+import com.tongyuan.android.zhiquleyuan.base.BaseFragment;
+import com.tongyuan.android.zhiquleyuan.bean.CallToToyReq;
+import com.tongyuan.android.zhiquleyuan.bean.CallToToyRes;
+import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
+import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 import com.weiyicloud.whitepad.ControlMode;
 import com.weiyicloud.whitepad.SharePadMgr;
 
@@ -23,12 +28,17 @@ import info.emm.meeting.MeetingUser;
 import info.emm.meeting.Session;
 import info.emm.meeting.SessionInterface;
 import info.emm.sdk.VideoView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by android on 2017/2/28.
  */
 
-public class VideoFragment extends Fragment implements View.OnClickListener, SessionInterface {
+public class VideoFragment extends BaseFragment implements View.OnClickListener, SessionInterface {
     static public int WEIYI_VIDEO_OUT_SLOW = 1;       //视频发送速度慢
     static public int WEIYI_VIDEO_OUT_DISCONNECT = 2; //视频发送连接断开重连
     static public int WEIYI_VIDEO_IN_SLOW = 3;        //视频接收速度慢
@@ -54,27 +64,54 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Ses
 
     public static final String UPDATE_URL = "http://u.weiyicloud.com/";
     public static final String HOCKEY_APP_HASH = "dedae71020c1c014120ef0153cb8457c";
-
     public int _warningtime = 0;
-
 
     private ImageView bottom_action_end_call;
     private boolean change = false;
     private int _xDelta;
     private int _yDelta;
     public List<Integer> mCams = null;
+    private ImageView mStopCall;
+    private ImageView mNoVideo;
+    private boolean isShowVideo = true;
+    private String mRoomid;
+    private String mToken;
+    private String mToyid;
+
+    View viewById;
+    View viewById1;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View videoCallView = inflater.inflate(R.layout.fragment_videocall, null);
+//        getActivity().requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        View videoCallView = inflater.inflate(R.layout.activity_videocall, null);
         mMy_video = (VideoView) videoCallView.findViewById(R.id.surfaceView5);
         mOther_video = (VideoView) videoCallView.findViewById(R.id.surfaceView6);
-        View viewById = getActivity().findViewById(R.id.ll_bottom);
-        View viewById1 = getActivity().findViewById(R.id.fl_activity_main);
-        viewById1.setVisibility(View.GONE);
+        mOther_video.setZOrderOnTop(true);
+        //停止视频
+        mStopCall = (ImageView) videoCallView.findViewById(R.id.iv_fragment_videocall_stopcall);
+        //不显示视频
+
+        mNoVideo = (ImageView) videoCallView.findViewById(R.id.iv_fragment_videocall_novideo);
+        viewById = getActivity().findViewById(R.id.ll_bottom);//底部导航栏
+        viewById1 = getActivity().findViewById(R.id.rb_toy);//底部玩具按钮
+//        View viewById1 = getActivity().findViewById(R.id.fl_activity_main);
+//        viewById1.setVisibility(View.GONE);
         viewById.setVisibility(View.GONE);
+        viewById1.setVisibility(View.GONE);
+        //从ToyDetailsFragment传过来的roomid
+
+        Bundle arguments = getArguments();
+
+        mRoomid = arguments.getString("roomid");
+        mToken = arguments.getString("token");
+        mToyid = arguments.getString("toyid");
+
+
         return videoCallView;
+
     }
 
     @Override
@@ -83,8 +120,10 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Ses
         usefront = hasfront = Session.getInstance().Init(getActivity(), "demo", "", true);
         mCams = Session.getInstance().getCameraInfo();
         EnterMeeting();
+        mStopCall.setOnClickListener(this);
+        mNoVideo.setOnClickListener(this);
 
-        mMy_video.setOnClickListener(this);
+//        mMy_video.setOnClickListener(this);
         mOther_video.setOnClickListener(this);
         Session.getInstance().registerListener(this);
         Session.getInstance().registerListener(this);
@@ -102,22 +141,28 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Ses
         _warningtime = 0;
 
         uid = (int) (Math.random() * 100000);
-        String ip = "test.weiyicloud.com";
-//        String ip = "www.weiyicloud.com";
-        int port = 81;
-//        int port = 80;
+        String ip = "www.weiyicloud.com";
+        int port = 80;
+//        String meetingId = "565955139";
+
+//        String meetingId = mRoomid;
+//        String ip = "test.weiyicloud.com";
 //        String meetingId = "666666";
-        String meetingId = "666666";
+//        int port = 81;
+//        String meetingId = "777777";
+        String meetingId = mRoomid;
         Session.getInstance().setWebHttpServerAddress(ip + ":" + port);
+
         Session.getInstance().switchCamera(usefront);
 //        Session.getInstance().setCameraQuality(_checkHQ.isChecked());
         Session.getInstance().setLoudSpeaker(true);
-        Session.getInstance().setCameraQuality(false);
+        Session.getInstance().setCameraQuality(true);
 
         SharePadMgr.getInstance().setShareControl(Session.getInstance());
         SharePadMgr.getInstance().setAppContext(getActivity());
         SharePadMgr.getInstance().setControlMode(ControlMode.fullcontrol);
         SharePadMgr.getInstance().setClient(Session.getInstance().client);
+
         /*
         * ip:服务器地址;
         * port:服务器端口;
@@ -128,21 +173,50 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Ses
         * usertype:用户身份:发布者1,观看者2,还有0;
         * paramMap:null即可
         * */
+
         Session.getInstance().joinmeeting(ip, port, "user" + uid, meetingId, "", uid, 0, null);
     }
 
     @Override
     public void onClick(View v) {
-        if (!change) {
-            Log.d("surfaceview", "surfaceview: +change1");
-//            Session.getInstance().PlayVideo(0, true, mOther_video, 0, 0, 1, 1, 0, false, 1, 0);
-            Session.getInstance().PlayVideo(_watchingPeerID, true, mMy_video, 0, 0, 1, 1, 65, false, 1, 0);
-            change = true;
-        } else {
-            Log.d("surfaceview", "surfaceview: +change2");
-//            Session.getInstance().PlayVideo(0, true, mMy_video, 0, 0, 1, 1, 0, false, 1, 0);
-            Session.getInstance().PlayVideo(_watchingPeerID, true, mOther_video, 0, 0, 1, 1, 65, false, 1, 0);
-            change = false;
+
+        switch (v.getId()) {
+            case R.id.iv_fragment_videocall_stopcall:
+
+//                Session.getInstance().LeaveMeeting();
+//                showFragment(ToyDetailsFragment.class.getSimpleName());
+                Stop();
+                StopCallServer();
+                getFragmentManager().popBackStack();
+                ToastUtil.showToast(getContext(), "取消");
+                viewById.setVisibility(View.VISIBLE);
+                viewById1.setVisibility(View.VISIBLE);
+                break;
+            case R.id.iv_fragment_videocall_novideo:
+                ToastUtil.showToast(getContext(), "不看视频");
+//                if (isShowVideo) {
+//                    isShowVideo = !isShowVideo;
+//                    //不显示
+////                    mMy_video.setBackgroundResource(R.drawable.videobackground_3x);
+//                } else {
+//                    isShowVideo = !isShowVideo;
+//                }
+
+                break;
+            case R.id.surfaceView6:
+                if (!change) {
+                    Log.d("surfaceview", "surfaceview: +change1");
+                    Session.getInstance().PlayVideo(0, true, mOther_video, 0, 0, 1, 1, 0, false, 1, 0);
+                    Session.getInstance().PlayVideo(_watchingPeerID, true, mMy_video, 0, 0, 1, 1, 65, false, 1, 0);
+                    change = true;
+                } else {
+                    Log.d("surfaceview", "surfaceview: +change2");
+                    Session.getInstance().PlayVideo(0, true, mMy_video, 0, 0, 1, 1, 0, false, 1, 0);
+                    Session.getInstance().PlayVideo(_watchingPeerID, true, mOther_video, 0, 0, 1, 1, 65, false, 1, 0);
+                    change = false;
+                }
+            default:
+                break;
         }
     }
 
@@ -357,15 +431,50 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Ses
     public void onDestroy() {
         super.onDestroy();
         Stop();
+        //通知服务器,退出
+        StopCallServer();
+    }
+
+    private void StopCallServer() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        AllInterface allInterface = retrofit.create(AllInterface.class);
+        CallToToyReq.ParamBean paramBean = new CallToToyReq.ParamBean(mToyid, "2", mRoomid);
+        CallToToyReq callToToyReq = new CallToToyReq("contact_toy", paramBean, mToken);
+        Gson gson = new Gson();
+        String s = gson.toJson(callToToyReq);
+        Call<CallToToyRes> callToToyResCall = allInterface.CALL_TO_TOY_RES_CALL(s);
+        callToToyResCall.enqueue(new Callback<CallToToyRes>() {
+            @Override
+            public void onResponse(Call<CallToToyRes> call, Response<CallToToyRes> response) {
+                String s1 = response.body().toString();
+                Log.i("55555", "onResponse: stopcallserver" + s1);
+            }
+
+            @Override
+            public void onFailure(Call<CallToToyRes> call, Throwable t) {
+
+            }
+        });
+
     }
 
     private void Stop() {
+
         Session.getInstance().StopSpeaking();
         _freeSpeak = false;
         Session.getInstance().LeaveMeeting();
         _myPeerID = 0;
         _watchingPeerID = 0;
         _userList.clear();
+//        startActivity(new Intent(getActivity(), OtherActivity.class));
+//        showFragment(ToyDetailsFragment.class.getSimpleName());
+//        ToyDetailsFragment toyDetailsFragment = new ToyDetailsFragment();
+//        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+//        fragmentTransaction.replace(R.id.fl_fragmentcontainer, toyDetailsFragment);
+//        fragmentTransaction.commit();
     }
 
 }

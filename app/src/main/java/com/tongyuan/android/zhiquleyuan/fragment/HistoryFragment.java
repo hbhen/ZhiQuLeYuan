@@ -12,6 +12,7 @@ import android.widget.ImageView;
 
 import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
+import com.tongyuan.android.zhiquleyuan.adapter.HistoryAdapter;
 import com.tongyuan.android.zhiquleyuan.adapter.HistorySwipeAdapter;
 import com.tongyuan.android.zhiquleyuan.base.BaseFragment;
 import com.tongyuan.android.zhiquleyuan.bean.CallHistoryRequestBean;
@@ -20,6 +21,7 @@ import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.swipe.refreshlib.AbListView;
 import com.tongyuan.android.zhiquleyuan.swipe.refreshlib.library.PullToRefreshBase;
 import com.tongyuan.android.zhiquleyuan.swipe.refreshlib.library.PullToRefreshScrollView;
+import com.tongyuan.android.zhiquleyuan.utils.CallManager;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
@@ -44,7 +46,6 @@ public class HistoryFragment extends BaseFragment {
     private ImageView iv_item_history_pic;
     private Response<CallHistoryResultBean> mResponseCallHist;
     private final String TAG = "444444";
-    private String mToyId;
     private String mPhoneNum;
     private String mTime;
     private int start = 0; // 当前页数
@@ -95,7 +96,7 @@ public class HistoryFragment extends BaseFragment {
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
 
-        CallHistoryRequestBean.BODYBean callHistoryBody = new CallHistoryRequestBean.BODYBean("", "10", "1");
+        CallHistoryRequestBean.BODYBean callHistoryBody = new CallHistoryRequestBean.BODYBean("", "4", "1");
 
         CallHistoryRequestBean callHistoryRequestBean = new CallHistoryRequestBean("REQ", "MTALK", phoneNum, time, callHistoryBody, "", token, "1");
         Gson gson = new Gson();
@@ -103,13 +104,17 @@ public class HistoryFragment extends BaseFragment {
         Call<CallHistoryResultBean> callHistoryResult = allInterface.getCallHistoryResult(s);
         callHistoryResult.enqueue(new Callback<CallHistoryResultBean>() {
             @Override
-            public void onResponse(Call<CallHistoryResultBean> call, Response<CallHistoryResultBean> response) {
+            public void onResponse(final Call<CallHistoryResultBean> call, Response<CallHistoryResultBean> response) {
                 if (response != null) {
                     //给recyclerview设置adapter数据,展示list
                     mResponseCallHist = response;
+                    Log.i(TAG, "HistoryFragment:onResponse+response: " + response.body().toString() + ":");
                     mLst = (ArrayList<CallHistoryResultBean.BODYBean.LSTBean>) response.body()
                             .getBODY().getLST();
                     //展示数据
+                    /*
+                    * 这个adapter不用,换成不带删除功能的adapter
+
                     HistorySwipeAdapter historySwipeAdapter = new HistorySwipeAdapter(getContext(), mLst);
                     lv_fragment_history.setAdapter(historySwipeAdapter);
                     lv_fragment_history.addHeaderView(mItem_history_header);
@@ -117,6 +122,29 @@ public class HistoryFragment extends BaseFragment {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             ToastUtil.showToast(getContext(), "position" + position);
+
+                    });
+                    * */
+                    HistoryAdapter historyAdapter = new HistoryAdapter(getContext(), mLst);
+                    lv_fragment_history.setAdapter(historyAdapter);
+                    lv_fragment_history.addHeaderView(mItem_history_header);
+                    lv_fragment_history.setDivider(null);
+                    lv_fragment_history.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            if (position == 0) {
+                                if (ToySelectorFragment.mToyid != null) {
+                                    CallManager.CallToToy(ToySelectorFragment.mToyid, getActivity());
+//                                    ToastUtil.showToast(getContext(), "点击的是" + position);
+                                } else {
+                                    ToastUtil.showToast(getActivity(), "toyid为空,请选择玩具");
+                                }
+
+                            } else {
+
+                                String toyid = mResponseCallHist.body().getBODY().getLST().get(position).getTOYID();
+                                CallManager.CallToToy(toyid, getActivity());
+                            }
                         }
                     });
 

@@ -43,7 +43,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class ActivityLogin extends AppCompatActivity implements View.OnClickListener {
-    public static final int MINELOGINOK = 5011;
+    public static final int LOGINOK = 5011;
+    public static final int SAVETOKEN=5012;
     //界面控件
     private EditText et_login_smscode;
     private EditText et_login_phone;
@@ -53,7 +54,7 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
     //private String mPhoneNum;
     private String time = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
     private String mPhoneNum;
-    public final int LOGINSUCCESS = 7;
+    //    public int LOGINSUCCESS = 7;
     private String mPhoneNumSave;
     public static String mTokenSave;
     private static final String TAG = "444444";
@@ -64,13 +65,11 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         initView();
-        initData();
 
 
     }
 
-    private void initData() {
-    }
+
 
     private void initView() {
         iv_login = (ImageView) findViewById(R.id.iv_login);
@@ -97,6 +96,7 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
                 break;
             case R.id.et_login_phone:
                 break;
+
             /*
             * 获取验证码
             * 1,获得用户输入的手机号(判断手机号为空否?1,为空,给提示;2不为空,则判断是否是手机号3正确就保存,获取验证码的时候去取
@@ -122,7 +122,7 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
                 String smsCode = et_login_smscode.getText().toString();
                 Log.i(TAG, "onClick: 验证码.........." + smsCode);
                 String token = SPUtils.getString(this, "TOKEN", "");
-                Log.i("110011", "onClick: --!!"+token);
+                Log.i("110011", "onClick: --!!" + token);
                 confirmLogin();
                 break;
             default:
@@ -130,61 +130,7 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    private void confirmLogin() {
 
-        String loginToken = SPUtils.getString(this, "TOKEN", "");
-        Log.i("444444", "logintoken: " + loginToken);
-        String phoneNum = SPUtils.getString(this, "phoneNum", "");
-        if (!(loginToken.isEmpty())) {
-            ToastUtil.showToast(this, "登录成功");
-            //token不为空,在点击确认登录的时候去查询user信息
-            QueryUserInfo(phoneNum, loginToken);
-
-
-        } else {
-            ToastUtil.showToast(this, "登录失败");
-        }
-    }
-
-    private void QueryUserInfo(String phoneNum, String loginToken) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-        String format = simpleDateFormat.format(new Date());
-        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        AllInterface allInterface = retrofit.create(AllInterface.class);
-        QuerySingleUserInfoReQBean.BODYBean bodyBean = new QuerySingleUserInfoReQBean.BODYBean(phoneNum);
-        QuerySingleUserInfoReQBean querySingleUserInfoReQBean = new QuerySingleUserInfoReQBean("REQ", "QRYUSER", phoneNum, format, bodyBean, "",
-                loginToken, "1");
-        Gson gson = new Gson();
-        String params = gson.toJson(querySingleUserInfoReQBean);
-        retrofit2.Call<QuerySingleUserInfoReSBean> querySingleUserInfoResult = allInterface.getQuerySingleUserInfoResult(params);
-        querySingleUserInfoResult.enqueue(new Callback<QuerySingleUserInfoReSBean>() {
-            @Override
-            public void onResponse(retrofit2.Call<QuerySingleUserInfoReSBean> call, Response<QuerySingleUserInfoReSBean> response) {
-                if (response != null) {
-                    String name = response.body().getBODY().getNAME();
-                    String img = response.body().getBODY().getIMG();
-                    Intent data = new Intent();
-                    Bundle bundle = new Bundle();
-                    bundle.putString("username", name);
-                    bundle.putString("userimg", img);
-                    data.putExtras(bundle);
-                    setResult(MINELOGINOK, data);
-                    finish();
-
-                } else {
-                    ToastUtil.showToast(getApplicationContext(), "不知所措");
-                }
-            }
-
-            @Override
-            public void onFailure(retrofit2.Call<QuerySingleUserInfoReSBean> call, Throwable t) {
-
-            }
-        });
-
-    }
 
 
     private void getSmsCode(String phoneNum) {
@@ -374,7 +320,7 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
                 public void onResponse(String response, int id) {
                     Log.i(TAG, "onResponse: ------" + response);
                     ToastUtil.showToast(getApplicationContext(), "response" + response);
-                    Log.i("11223344","response"+response);
+                    Log.i("11223344", "response" + response);
                     //response里面有token,取出这个token以后保存,以后每次进入app都先判断一下,判断是不是又token,然后判断token对不对
                     //不需要每次都让用户输入手机号,登录,获取验证码,体验不好
                     try {
@@ -386,7 +332,7 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
 
                         String token = responseObject3.getString("TOKEN");
 //                        SPUtils.putString(getApplicationContext(),"TOKEN",token);
-                        Log.i("444444", "token: "+token);
+                        Log.i("444444", "token: " + token);
 
                         //保存token到本地
 //                        saveToken(token, phoneNum, userId);
@@ -400,7 +346,7 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
             });
         } catch (JSONException e) {
             e.printStackTrace();
-            Log.i("444444", "error:gettoken+"+e.toString());
+            Log.i("444444", "error:gettoken+" + e.toString());
         }
     }
 
@@ -418,17 +364,87 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
         mPhoneNumSave = SPUtils.getString(this, "phoneNum", "");
         mTokenSave = SPUtils.getString(this, "TOKEN", "");
 
-        String tokenS = SPUtils.getString(this, "TOKEN", "");
+
+        Intent intent = new Intent();
+        Bundle bundle = new Bundle();
+        bundle.putString("logintoken", mTokenSave);
+        intent.putExtras(bundle);
+
+        setResult(LOGINOK, intent);
+//        setResult(REQUEST_CODE_LOGIN, intent);
 
         Log.i(TAG, "phoneNum1: " + mPhoneNumSave);
         Log.i(TAG, "token1: " + mTokenSave);
-        Log.i("111222111", "token1: " + tokenS);
-        //TODO 开始准备登录的逻辑!!!!!!
     }
+
 
     private boolean isPhoneNum(String phoneNum) {
         String telRegex = "[1][3578]\\d{9}";
         return phoneNum.matches(telRegex);
+    }
+    private void confirmLogin() {
+
+        String loginToken = SPUtils.getString(this, "TOKEN", "");
+        Log.i("444444", "logintoken: " + loginToken);
+        String phoneNum = SPUtils.getString(this, "phoneNum", "");
+        if (!(loginToken.isEmpty())) {
+            ToastUtil.showToast(this, "登录成功");
+            this.finish();
+//            LOGIN_SUCCESS = 01;//登录成功的值
+
+            //token不为空,在点击确认登录的时候去查询user信息
+            QueryUserInfo(phoneNum, loginToken);
+
+        } else {
+            ToastUtil.showToast(this, "登录失败");
+        }
+    }
+
+    private void QueryUserInfo(String phoneNum, String loginToken) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        String format = simpleDateFormat.format(new Date());
+        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        AllInterface allInterface = retrofit.create(AllInterface.class);
+        QuerySingleUserInfoReQBean.BODYBean bodyBean = new QuerySingleUserInfoReQBean.BODYBean(phoneNum);
+        QuerySingleUserInfoReQBean querySingleUserInfoReQBean = new QuerySingleUserInfoReQBean("REQ", "QRYUSER", phoneNum, format, bodyBean, "",
+                loginToken, "1");
+        Gson gson = new Gson();
+        String params = gson.toJson(querySingleUserInfoReQBean);
+        retrofit2.Call<QuerySingleUserInfoReSBean> querySingleUserInfoResult = allInterface.getQuerySingleUserInfoResult(params);
+        querySingleUserInfoResult.enqueue(new Callback<QuerySingleUserInfoReSBean>() {
+            @Override
+            public void onResponse(retrofit2.Call<QuerySingleUserInfoReSBean> call, Response<QuerySingleUserInfoReSBean> response) {
+                if (response != null) {
+                    String name = response.body().getBODY().getNAME();
+                    String img = response.body().getBODY().getIMG();
+
+                    Log.i(TAG, "activitylogin:onResponse: userinfo" + response.body().toString());
+                    Log.i(TAG, "activitylogin:onResponse: userinfo" + name);
+                    Log.i(TAG, "activitylogin:onResponse: userinfo" + img);
+
+                    SPUtils.putString(getApplicationContext(),"username",name);
+                    SPUtils.putString(getApplicationContext(),"userimg",img);
+
+                    Intent data = new Intent();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("username", name);
+                    bundle.putString("userimg", img);
+                    data.putExtras(bundle);
+
+
+                } else {
+                    ToastUtil.showToast(getApplicationContext(), "不知所措");
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<QuerySingleUserInfoReSBean> call, Throwable t) {
+
+            }
+        });
+
     }
 }
 

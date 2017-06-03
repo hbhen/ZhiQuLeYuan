@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="80dp"
+
+              android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="80dp"
+        android:layout_height="match_parent"
+        android:padding="10dp">
+
+        <ImageView
+            android:id="@+id/iv_item_bindbaby_babyimg"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/test"/>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="10dp">
+
+        <TextView
+            android:id="@+id/tv_item_bindbaby_babyname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="正正"
+            android:textColor="#000000"
+            android:textSize="16sp"/>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_item_bindbaby_babyname"
+            android:layout_marginTop="20dp">
+
+            <ImageView
+                android:id="@+id/iv_item_bindbaby_sex"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:src="@drawable/signs_man"/>
+
+            <TextView
+                android:id="@+id/tv_item_bindbaby_sex"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="3dp"
+                android:layout_toRightOf="@id/iv_item_bindbaby_sex"
+                android:text="男"
+                android:textColor="#000000"
+                android:textSize="16sp"/>
+
+            <ImageView
+                android:id="@+id/iv_item_bindbaby_birthday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@id/tv_item_bindbaby_sex"
+                android:src="@drawable/baby_birthday_3x"/>
+
+            <TextView
+                android:id="@+id/tv_item_bindbaby_birthday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="3dp"
+                android:layout_toRightOf="@id/iv_item_bindbaby_birthday"
+                android:text="2012/02/01"
+                android:textColor="#000000"
+                android:textSize="16sp"/>
+
+
+        </RelativeLayout>
+
+        <!--<CheckBox-->
+        <!--android:visibility="invisible"-->
+        <!--android:id="@+id/cb_item_bindbaby_checkbox"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_centerVertical="true"/>-->
+
+        <ImageButton
+            android:id="@+id/iv_item_bindbaby_checked"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/bindbaby_checkbox_selector"
+            android:clickable="true"
+            android:focusable="false"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="#f1f1f1"/>
+    </RelativeLayout>
+</LinearLayout>

@@ -1,5 +1,6 @@
 package com.tongyuan.android.zhiquleyuan.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -67,11 +68,13 @@ public class DiscoveryFragment extends BaseFragment {
     private DiscoveryListViewAdapter mLAdapter;
     private TextView mGridviewTitle;
     private String mColid;
+    private String mLogintokenToMain;
 
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.i("tagd", "onCreateView: went");
         View discoveryRoot = inflater.inflate(R.layout.fragment_discovery, null);
         lv_fragment_discovery = (ListView) discoveryRoot.findViewById(R.id.lv_fragment_discovery);
         gv_fragment_discovery = (GridView) discoveryRoot.findViewById(R.id.gv_fragment_discovery);
@@ -83,8 +86,9 @@ public class DiscoveryFragment extends BaseFragment {
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Log.i("tagd", "onActivityCreated: went");
         if (SPUtils.getString(getActivity(), "TOKEN", "").isEmpty()) {
             mGridviewTitle.setVisibility(View.VISIBLE);
             mGridviewTitle.setOnClickListener(new View.OnClickListener() {
@@ -100,8 +104,26 @@ public class DiscoveryFragment extends BaseFragment {
             mGridviewTitle.setVisibility(View.GONE);
         }
         initData();
-    }
 
+    }
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (SPUtils.getString(getActivity(), "TOKEN", "").isEmpty()) {
+            mGridviewTitle.setVisibility(View.VISIBLE);
+            mGridviewTitle.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getActivity(), ActivityLogin.class);
+                    //需不需要intent传参数出去再说吧
+                    startActivityForResult(intent, REQUEST_CODE_LOGIN);
+                }
+            });
+
+        } else {
+            mGridviewTitle.setVisibility(View.GONE);
+        }
+    }
     private void initData() {
 //        拿grid的数据
         getIdCol();
@@ -279,7 +301,6 @@ public class DiscoveryFragment extends BaseFragment {
                 });
 
 
-
             }
 
             @Override
@@ -291,8 +312,14 @@ public class DiscoveryFragment extends BaseFragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        //TODO 这里写返回的来的数据的逻辑处理
+        switch (requestCode) {
+            case REQUEST_CODE_LOGIN:
+                Bundle b = data.getExtras();
+                mLogintokenToMain = b.getString("logintoken");
+                break;
+            default:
+                break;
+        }
 
     }
 
@@ -300,7 +327,7 @@ public class DiscoveryFragment extends BaseFragment {
     public void onDestroy() {
         super.onDestroy();
 //        EventBus.getDefault().unregister(getActivity());
-
+        Log.i("tagd", "onDestroy: went");
     }
 
     @Override
@@ -322,6 +349,52 @@ public class DiscoveryFragment extends BaseFragment {
         } else {
             mGridviewTitle.setVisibility(View.GONE);
         }
+        Log.i("tagd", "onResume: went");
+    }
+
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.i("tagd", "onStart: went");
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        Log.i("tagd", "onAttach: went");
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.i("tagd", "onCreate: went");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.i("tagd", "onPause: went");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.i("tagd", "onStop: went");
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.i("tagd", "onDetach: went");
+    }
+
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.i("tagd", "onDestroyView: went");
     }
 }
 

@@ -531,7 +531,6 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
                         String recode1 = result.toString();
                         Toast.makeText(getApplicationContext(), "recode" + recode1, Toast.LENGTH_LONG).show();
                         Log.i("1111", "recode: " + recode1);
-
                     } else {
                         String recodeFromAdd = result.toString();
                         Toast.makeText(getApplicationContext(), "recode" + recodeFromAdd, Toast.LENGTH_LONG).show();
@@ -545,15 +544,16 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
                             case 300:
                                 // 数据返回，在这里去处理扫码结果
                                 setResult(300, data1);
+//                                Intent intent = new Intent();
+//                                intent.setClass(getApplicationContext(), BindBabyActivity.class);
+//                                startActivity(intent);
                                 finish();
                                 break;
                             case 301:
                                 setResult(301, data1);
                                 finish();
                                 break;
-
                         }
-
                     }
                 }
             }).start();
