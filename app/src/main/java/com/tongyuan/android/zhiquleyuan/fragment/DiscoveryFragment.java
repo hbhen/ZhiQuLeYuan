@@ -12,10 +12,9 @@ import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.activity.ActivityLogin;
-import com.tongyuan.android.zhiquleyuan.activity.DiscoverySecondCategoryActivity;
+import com.tongyuan.android.zhiquleyuan.activity.DiscoverySubActivity;
 import com.tongyuan.android.zhiquleyuan.adapter.DiscoveryGridAdapter;
 import com.tongyuan.android.zhiquleyuan.adapter.DiscoveryListViewAdapter;
 import com.tongyuan.android.zhiquleyuan.base.BaseFragment;
@@ -71,7 +70,7 @@ public class DiscoveryFragment extends BaseFragment implements View.OnClickListe
                 String mColid = lst.get(position).ID;
                 String img = lst.get(position).IMG;
                 Intent intent = new Intent();
-                intent.setClass(getActivity(), DiscoverySecondCategoryActivity.class);
+                intent.setClass(getActivity(), DiscoverySubActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("colid", mColid);
                 bundle.putString("img", img);
@@ -229,10 +228,8 @@ public class DiscoveryFragment extends BaseFragment implements View.OnClickListe
 
     //gridview的数据
     private void getIdCol() {
-        final BaseRequest request = new BaseRequest<>(getContext(), new DiscoveryGridRequestBean.BODYBean("0", "-1", "1"));
-        String disGridJson = new Gson().toJson(request);
-
-        Call<SuperModel<DiscoveryGridItemBean>> discoveryGridResult = RequestManager.getInstance().getDiscoveryGridResult(disGridJson);
+        final BaseRequest request = new BaseRequest<>(getContext(), new DiscoveryGridRequestBean("0", "-1", "1"));
+        Call<SuperModel<DiscoveryGridItemBean>> discoveryGridResult = RequestManager.getInstance().getDiscoveryGridResult(request);
         discoveryGridResult.enqueue(new Callback<SuperModel<DiscoveryGridItemBean>>() {
             @Override
             public void onResponse(Call<SuperModel<DiscoveryGridItemBean>> call, Response<SuperModel<DiscoveryGridItemBean>> response) {

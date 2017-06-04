@@ -18,4 +18,18 @@ public class SuperModel<T> {
     public String SEQ;
     public String CODE;
     public String MSG;
+
+    @Override
+    public String toString() {
+        return "SuperModel{" +
+                "TYPE='" + TYPE + '\'' +
+                ", CMD='" + CMD + '\'' +
+                ", ACCT='" + ACCT + '\'' +
+                ", TIME='" + TIME + '\'' +
+                ", BODY=" + BODY +
+                ", VERI='" + VERI + '\'' +
+                ", TOKEN='" + TOKEN + '\'' +
+                ", SEQ='" + SEQ + '\'' +
+                '}';
+    }
 }

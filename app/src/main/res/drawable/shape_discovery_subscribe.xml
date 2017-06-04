@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 圆角 -->
+    <corners android:radius="90dp"/>
+    <!-- 描边 -->
+    <stroke android:color="@color/redFont" android:width="1px"/>
+    <!-- 填充 -->
+    <solid android:color="@color/white" />
+    <!--&lt;!&ndash; 间隔 &ndash;&gt;-->
+    <!--<padding-->
+        <!--android:left="10dp"-->
+        <!--android:top="5dp"-->
+        <!--android:right="15dp"-->
+        <!--android:bottom="5dp"/>-->
+</shape>

@@ -13,6 +13,7 @@ import com.tongyuan.android.zhiquleyuan.interf.OnMediaChangeListener;
 import java.util.HashSet;
 
 /**
+ * 播放服务端
  * Created by android on 2017/3/13.
  */
 

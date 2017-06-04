@@ -67,7 +67,7 @@ public interface AllInterface {
 
     //请求首页gridview的二级目录信息,点击之后的信息3.4.29
     @GET("busi")
-    Call<DiscoveryGridSecondaryResultBean> getDiscoveryGridSecondaryResult(@Query("params") String params);
+    Call<SuperModel<DiscoveryGridSecondaryResultBean>> getDiscoveryGridSecondaryResult(@Query("params") String params);
 
     //请求推荐内容网络请求
     @GET("busi")
@@ -111,7 +111,7 @@ public interface AllInterface {
 
     //本地播放申请 3.4.38
     @GET("busi")
-    Call<LocalPlayApplyResBean> LOCAL_PLAY_APPLY_RES_BEAN_CALL(@Query("params") String params);
+    Call<SuperModel<LocalPlayApplyResBean>> LOCAL_PLAY_APPLY_RES_BEAN_CALL(@Query("params") String params);
 
     //通话控制  3.4.5
     @GET("jpush")

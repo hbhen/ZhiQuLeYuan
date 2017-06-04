@@ -19,5 +19,26 @@ public class DiscoveryGridItemBean {
         public String ID;
         public String PID;
         public String NAME;
+
+        @Override
+        public String toString() {
+            return "LSTBean{" +
+                    "  IMG='"  + IMG  + '\'' +
+                    ", ID='"  + ID  + '\'' +
+                    ", PID='" + PID + '\'' +
+                    ", NAME='"  + NAME  + '\'' +
+                    '}';
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "DiscoveryGridItemBean{" +
+                "  PN='"  + PN  + '\'' +
+                ", NC='"  + NC  + '\'' +
+                ", CNT='" + CNT + '\'' +
+                ", PS='"  + PS  + '\'' +
+                ", LST='"  + LST  + '\'' +
+                '}';
     }
 }

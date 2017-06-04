@@ -158,4 +158,8 @@
     <string name="main_mine">我的</string>
 
     <string name="discovery_top_edit_hint">世界上最好的爸爸</string>
+    <string name="player_phone">手机播放</string>
+    <string name="player_toy">玩具播放</string>
+    <string name="player_start_time">00:00</string>
+
 </resources>

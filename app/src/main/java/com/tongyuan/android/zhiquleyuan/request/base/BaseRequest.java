@@ -1,8 +1,8 @@
 package com.tongyuan.android.zhiquleyuan.request.base;
 
 import android.content.Context;
+import android.util.Log;
 
-import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridRequestBean;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 
 import java.text.SimpleDateFormat;
@@ -33,6 +33,11 @@ public class BaseRequest<T> {
         VERI  = "";
         TOKEN = SPUtils.getString(context, "TOKEN", "");
         SEQ   = "1";
+    }
+
+    public BaseRequest(Context context, T body, String cmd) {
+        this(context, body);
+        this.CMD = cmd;
     }
 
 }
