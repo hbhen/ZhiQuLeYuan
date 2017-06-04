@@ -8,7 +8,7 @@ import com.tongyuan.android.zhiquleyuan.bean.CallHistoryResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.CallToToyRes;
 import com.tongyuan.android.zhiquleyuan.bean.DelMembFromGroupReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteBabyInfoReSBean;
-import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridResultBean;
+import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridItemBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridSecondaryResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.GetInstantStateInfoRes;
@@ -20,6 +20,7 @@ import com.tongyuan.android.zhiquleyuan.bean.QueryPlayingMusicResBean;
 import com.tongyuan.android.zhiquleyuan.bean.QuerySingleUserInfoReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryToyMemberReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoRESBean;
+import com.tongyuan.android.zhiquleyuan.request.base.SuperModel;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -62,7 +63,7 @@ public interface AllInterface {
 
     //请求首页gridview的目录信息(九宫格)3.4.25
     @GET("busi")
-    Call<DiscoveryGridResultBean> getDiscoveryGridResult(@Query("params") String params);
+    Call<SuperModel<DiscoveryGridItemBean>> getDiscoveryGridResult(@Query("params") String params);
 
     //请求首页gridview的二级目录信息,点击之后的信息3.4.29
     @GET("busi")

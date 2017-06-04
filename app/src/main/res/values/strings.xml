@@ -156,4 +156,6 @@
     <string name="main_record">录音</string>
     <string name="main_history">历史</string>
     <string name="main_mine">我的</string>
+
+    <string name="discovery_top_edit_hint">世界上最好的爸爸</string>
 </resources>
