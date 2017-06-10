@@ -1,6 +1,8 @@
 package com.tongyuan.android.zhiquleyuan.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +16,7 @@ import com.daimajia.swipe.adapters.BaseSwipeAdapter;
 import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.activity.BabyInfoListActivity;
+import com.tongyuan.android.zhiquleyuan.activity.SetInitVolumeActivity;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteBabyInfoReQBean;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteBabyInfoReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListResult;
@@ -46,7 +49,7 @@ public class BabyInfoListAdapter extends BaseSwipeAdapter {
     private String time;
     private String phone;
     private String token;
-    
+
 
     public BabyInfoListAdapter(Context context, List<QueryBabyListResult.BODYBean.LSTBean> lst) {
         mContext = context;
@@ -61,7 +64,7 @@ public class BabyInfoListAdapter extends BaseSwipeAdapter {
         this.time = time;
         this.phone = phone;
         this.token = token;
-        mLSTBeen=lst;
+        mLSTBeen = lst;
 
 
     }
@@ -114,6 +117,14 @@ public class BabyInfoListAdapter extends BaseSwipeAdapter {
         mTv_item_babyinfolist_primarysound.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //TODO 拿错数据了,应该要toyid,给setinitvolume传过了已经,要改正 2017 6月9 0:10
+                Intent intent = new Intent();
+                intent.setClass(mContext, SetInitVolumeActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("babaid", mLSTBeen.get(pos).getID());
+                intent.putExtras(bundle);
+                mContext.startActivity(intent);
+
                 ToastUtil.showToast(mContext, "点击的是设置音量");
             }
         });
@@ -127,9 +138,9 @@ public class BabyInfoListAdapter extends BaseSwipeAdapter {
 
         AllInterface allInterface = retrofit.create(AllInterface.class);
 
-        DeleteBabyInfoReQBean.BODYBean bodyBean = new DeleteBabyInfoReQBean.BODYBean("BABY",mLSTBeen.get(pos).getID());
+        DeleteBabyInfoReQBean.BODYBean bodyBean = new DeleteBabyInfoReQBean.BODYBean("BABY", mLSTBeen.get(pos).getID());
 
-        DeleteBabyInfoReQBean babyInfoRequestBean = new DeleteBabyInfoReQBean("REQ", "DINFO",phone,time,bodyBean,"",token,"1");
+        DeleteBabyInfoReQBean babyInfoRequestBean = new DeleteBabyInfoReQBean("REQ", "DINFO", phone, time, bodyBean, "", token, "1");
         Gson gson = new Gson();
         String s = gson.toJson(babyInfoRequestBean);
         Call<DeleteBabyInfoReSBean> deleteBabyInfoReSBeanCall = allInterface.delteBabyInfoReult(s);
@@ -151,7 +162,7 @@ public class BabyInfoListAdapter extends BaseSwipeAdapter {
 
     @Override
     public int getCount() {
-        return mLSTBeen.size()-1;
+        return mLSTBeen.size() - 1;
     }
 
     @Override

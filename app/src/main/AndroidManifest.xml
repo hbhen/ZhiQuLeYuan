@@ -101,6 +101,8 @@
             android:name=".activity.VideoActivity"
             android:screenOrientation="portrait">
         </activity>
+        <activity android:name=".activity.SetInitVolumeActivity">
+        </activity>
     </application>
 
 </manifest>

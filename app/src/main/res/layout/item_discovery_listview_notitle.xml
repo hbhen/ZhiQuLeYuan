@@ -12,6 +12,7 @@
         android:orientation="horizontal">
 
         <ImageView
+            android:scaleType="centerCrop"
             android:id="@+id/iv_desc_notitle"
             android:layout_width="60dp"
             android:layout_height="60dp"

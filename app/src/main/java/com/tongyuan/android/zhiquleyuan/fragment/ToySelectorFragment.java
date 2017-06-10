@@ -230,7 +230,9 @@ public class ToySelectorFragment extends BaseFragment {
                     body = response.body();
 
                     MainActivity mainActivity = (MainActivity) getActivity();
+
                     mainActivity.getToyDetailsFragment().setData(body.getBODY(), babyImg.get(position));
+
                     showFragment(ToyDetailsFragment.class.getSimpleName());
                     Log.i(TAG, "onResponse: +toyselelctorfragment+body" + body.getBODY().toString());
 

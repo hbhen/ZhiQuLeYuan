@@ -41,7 +41,6 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
     private String mToken;
     private ImageView mIv_babayinfolist_addbabyinfo;
     private ImageView mIv_babyinfolist_backa;
-    private Intent mIntent;
 
 
     @Override
@@ -49,6 +48,7 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.babyinfolist);
         initView();
+
         initData();
         initListener();
     }
@@ -64,7 +64,7 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void initData() {
-        mIntent = new Intent();
+
         mToken = SPUtils.getString(this, "TOKEN", "");
         final String phone = SPUtils.getString(this, "phoneNum", "");
         Date date = new Date();
@@ -124,6 +124,7 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.iv_babayinfolist_addbabyinfo:
+                Intent mIntent = new Intent();
                 mIntent.setClass(this,MyBabyActivity.class);
                 startActivityForResult(mIntent,ADD_BABYINFO);
                 break;
@@ -136,9 +137,12 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
         }
     }
 
+    public static final int SuccessCode = 66;
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        if(resultCode == SuccessCode) {
+            initData();
+        }
     }
 }

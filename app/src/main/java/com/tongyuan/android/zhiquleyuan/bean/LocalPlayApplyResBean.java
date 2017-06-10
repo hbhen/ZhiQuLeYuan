@@ -26,6 +26,13 @@ public class LocalPlayApplyResBean implements Parcelable {
     private String TYPE;
     private String CMD;
     private String ACCT;
+    private String TIME;
+    private BODYBean BODY;
+    private String VERI;
+    private String TOKEN;
+    private String SEQ;
+    private String CODE;
+    private String MSG;
 
     @Override
     public String toString() {
@@ -57,13 +64,7 @@ public class LocalPlayApplyResBean implements Parcelable {
         this.MSG = MSG;
     }
 
-    private String TIME;
-    private BODYBean BODY;
-    private String VERI;
-    private String TOKEN;
-    private String SEQ;
-    private String CODE;
-    private String MSG;
+
 
     public String getTYPE() {
         return TYPE;

@@ -33,7 +33,7 @@ public class Utils {
                 dir.mkdirs();
             }
 
-            File photoFile = new File(path, photoName + ".png");
+            File photoFile = new File(path, photoName);
             FileOutputStream fileOutputStream = null;
             try {
                 fileOutputStream = new FileOutputStream(photoFile);
@@ -102,7 +102,7 @@ public class Utils {
         }
 
         Bitmap output = Bitmap.createBitmap(width, height, Config.ARGB_8888);
-        savePhoto(output, dir, fileName);
+//
 
         Canvas canvas = new Canvas(output);
 

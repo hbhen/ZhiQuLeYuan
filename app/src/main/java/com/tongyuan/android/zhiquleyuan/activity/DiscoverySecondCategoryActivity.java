@@ -18,8 +18,6 @@ import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.adapter.DiscoverySecondCategoryAdapter;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridSecondaryRequestBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridSecondaryResultBean;
-import com.tongyuan.android.zhiquleyuan.bean.LocalPlayApplyReqBean;
-import com.tongyuan.android.zhiquleyuan.bean.LocalPlayApplyResBean;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
@@ -43,7 +41,7 @@ public class DiscoverySecondCategoryActivity extends AppCompatActivity implement
     private ListView mListviewSecondCategory;
     private ImageView mIv_discoverysecondcategory;
     private Button mSubscribeButton;
-    private Response<DiscoveryGridSecondaryResultBean> mResponse;
+//    private Response<DiscoveryGridSecondaryResultBean> mResponse;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -108,53 +106,23 @@ public class DiscoverySecondCategoryActivity extends AppCompatActivity implement
 
                 if (response.body() != null && response.body().getCODE().equals("0")) {
                     Log.d("aaaaaa", "onResponse: " + response.body().toString());
-                    mResponse = response;
+//                    mResponse = response;
 
-                    DiscoverySecondCategoryAdapter discoverySecondCategoryAdapter = new DiscoverySecondCategoryAdapter(getApplication(), mResponse);
+                    DiscoverySecondCategoryAdapter discoverySecondCategoryAdapter = new DiscoverySecondCategoryAdapter(getApplication(), response);
                     mListviewSecondCategory.setAdapter(discoverySecondCategoryAdapter);
                     mListviewSecondCategory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                            ToastUtil.showToast(getApplicationContext(), "点击的是" + position);
-                            Retrofit retrofit2 = new Retrofit.Builder().baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
-                                    .addConverterFactory(GsonConverterFactory.create())
-                                    .build();
-                            AllInterface allInterface1 = retrofit2.create(AllInterface.class);
-                            Gson gson1 = new Gson();
-
+                            DiscoveryGridSecondaryResultBean.BODYBean.LSTBean lstBean = response.body().getBODY().getLST().get(position);
                             //本机播放需要播放申请,3.4.48   网络请求
-                            LocalPlayApplyReqBean.BODYBean bodyBean1 = new LocalPlayApplyReqBean.BODYBean(mResponse.body().getBODY().getLST().get
-                                    (position).getID());
-                            LocalPlayApplyReqBean localPlayApplyReqBean = new LocalPlayApplyReqBean("REQ", "PLAY", phoneNum, formatTime, bodyBean1,
-                                    "", token, "1");
-                            String s1 = gson1.toJson(localPlayApplyReqBean);
-                            Call<LocalPlayApplyResBean> localPlayApplyResBeanCall = allInterface1.LOCAL_PLAY_APPLY_RES_BEAN_CALL(s1);
-                            localPlayApplyResBeanCall.enqueue(new Callback<LocalPlayApplyResBean>() {
-                                @Override
-                                public void onResponse(Call<LocalPlayApplyResBean> call, Response<LocalPlayApplyResBean> response) {
-                                    if (response.body().getCODE().equals("-700")) {
-                                        ToastUtil.showToast(getApplicationContext(), "资源不存在");
-                                        return;
-                                    } else if (response.body().getCODE().equals("0")) {
-                                        Intent intent = new Intent();
-                                        intent.putExtra("musicimg", mResponse.body().getBODY().getLST().get(position).getIMG());
-                                        intent.putExtra("musicname", mResponse.body().getBODY().getLST().get(position).getNAME());
-                                        Bundle bundle = new Bundle();
-                                        bundle.putParcelable("musicinfo", response.body());
-                                        intent.putExtras(bundle);
-                                        intent.setClass(getApplicationContext(), MyPlayActivity.class);
-                                        startActivity(intent);
-                                        ToastUtil.showToast(getApplicationContext(), "didi");
-                                    }
-                                }
-
-                                @Override
-                                public void onFailure(Call<LocalPlayApplyResBean> call, Throwable t) {
-
-                                }
-                            });
-
-
+//                            getLocalPlayApplication(position,phoneNum,formatTime,token);
+                            Intent intent = new Intent();
+                            Bundle bundle = new Bundle();
+                            bundle.putParcelable("secondcategorylistbean",lstBean );
+                            intent.putExtras(bundle);
+                            intent.setClass(getApplicationContext(), MyPlayActivity.class);
+                            startActivity(intent);
+                            ToastUtil.showToast(getApplicationContext(), "点击的是" + position);
                         }
                     });
                 } else {
@@ -169,6 +137,46 @@ public class DiscoverySecondCategoryActivity extends AppCompatActivity implement
         });
 
     }
+    //本机播放需要播放申请,3.4.48   网络请求
+//    private void getLocalPlayApplication(final int position, String phoneNum, String formatTime, String token) {
+//        Retrofit retrofit2 = new Retrofit.Builder().baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
+//                .addConverterFactory(GsonConverterFactory.create())
+//                .build();
+//        AllInterface allInterface1 = retrofit2.create(AllInterface.class);
+//        Gson gson1 = new Gson();
+//
+//        //本机播放需要播放申请,3.4.48   网络请求
+//        LocalPlayApplyReqBean.BODYBean bodyBean1 = new LocalPlayApplyReqBean.BODYBean(mResponse.body().getBODY().getLST().get
+//                (position).getID());
+//        LocalPlayApplyReqBean localPlayApplyReqBean = new LocalPlayApplyReqBean("REQ", "PLAY", phoneNum, formatTime, bodyBean1,
+//                "", token, "1");
+//        String s1 = gson1.toJson(localPlayApplyReqBean);
+//        Call<LocalPlayApplyResBean> localPlayApplyResBeanCall = allInterface1.LOCAL_PLAY_APPLY_RES_BEAN_CALL(s1);
+//        localPlayApplyResBeanCall.enqueue(new Callback<LocalPlayApplyResBean>() {
+//            @Override
+//            public void onResponse(Call<LocalPlayApplyResBean> call, Response<LocalPlayApplyResBean> response) {
+//                if (response.body().getCODE().equals("-700")) {
+//                    ToastUtil.showToast(getApplicationContext(), "资源不存在");
+//                    return;
+//                } else if (response.body().getCODE().equals("0")) {
+//                    Intent intent = new Intent();
+//                    intent.putExtra("musicimg", mResponse.body().getBODY().getLST().get(position).getIMG());
+//                    intent.putExtra("musicname", mResponse.body().getBODY().getLST().get(position).getNAME());
+//                    Bundle bundle = new Bundle();
+//                    bundle.putParcelable("musicinfo", response.body());
+//                    intent.putExtras(bundle);
+//                    intent.setClass(getApplicationContext(), MyPlayActivity.class);
+//                    startActivity(intent);
+//                    ToastUtil.showToast(getApplicationContext(), "didi");
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<LocalPlayApplyResBean> call, Throwable t) {
+//
+//            }
+//        });
+//    }
 
     @Override
     public void onClick(View v) {

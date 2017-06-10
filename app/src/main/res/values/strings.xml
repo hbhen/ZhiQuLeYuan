@@ -156,4 +156,5 @@
     <string name="main_record">录音</string>
     <string name="main_history">历史</string>
     <string name="main_mine">我的</string>
+    <string name="setinitvolemedesc">点击播放按钮,记录合适宝宝倾听的音量数值,将作为您远程控制播放音量的参考</string>
 </resources>

@@ -16,7 +16,10 @@ import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.bean.CallToToyReq;
 import com.tongyuan.android.zhiquleyuan.bean.CallToToyRes;
+import com.tongyuan.android.zhiquleyuan.bean.ControlToyVolumeReq;
+import com.tongyuan.android.zhiquleyuan.bean.ControlToyVolumeRes;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
+import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 import com.weiyicloud.whitepad.ControlMode;
 import com.weiyicloud.whitepad.SharePadMgr;
@@ -78,6 +81,8 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
     private String mToyid;
     private SeekBar mSeekBar;
     private TextView mVolume_text;
+    private String mVolumeString = "50";
+    private int mVolumeInt;
 
     @Override
     protected void onCreate(Bundle arguments) {
@@ -101,6 +106,8 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
 
         //seekbar
         mSeekBar = (SeekBar) findViewById(R.id.volume_line);
+        mVolumeInt = Integer.parseInt(mVolumeString);
+        mSeekBar.setProgress(mVolumeInt);
         ImageButton volume_reduce = (ImageButton) findViewById(R.id.ib_volume_reduce);//音量加
         ImageButton volume_add = (ImageButton) findViewById(R.id.ib_volume_add);//音量减
         //音量的数字显示
@@ -124,7 +131,12 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                mVolume_text.setText(progress);
+                Log.i("video", "onProgressChanged: " + progress);
+                mVolumeString = String.valueOf(progress);
+                mVolume_text.setText(mVolumeString);
+                mVolumeInt = Integer.parseInt(mVolumeString);
+
+                Log.i("video", "onProgressChanged----changelistenera: " + mVolumeString);
             }
 
             @Override
@@ -135,6 +147,10 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 //在松手的时候,把text通过网络传给玩具,通过接口传到服务器上
+                int progress = seekBar.getProgress();
+                String volume = String.valueOf(progress);
+                pushValueToToy(volume);
+                Log.i("video", "onProgressChanged:(stoptrackingtouch " + progress);
             }
         });
         volume_reduce.setOnClickListener(this);
@@ -237,27 +253,40 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
 //
 //                break;
             case R.id.ib_volume_add:
-
                 //先过去seekbar的progress的值
-                int progressreduce = mSeekBar.getProgress();
-                if (progressreduce <= 100) {
-                    progressreduce = progressreduce + 5;
-                    mSeekBar.setSecondaryProgress(progressreduce);
-                    String s = String.valueOf(progressreduce);
-                    mVolume_text.setText(s);
+//                mVolumeInt = Integer.parseInt(mVolumeString);
+//                int progressreduce = mVolumeInt;
+
+                if (mVolumeInt <= 100) {
+                    mVolumeInt = mVolumeInt + 1;
+                    if (mVolumeInt > 100) {
+                        mVolumeInt = 100;
+                    }
+//                    mSeekBar.setProgress(mVolumeInt);
+                    String volumeAdd = String.valueOf(mVolumeInt);
+                    mVolume_text.setText(volumeAdd);
+                    mSeekBar.setProgress(mVolumeInt);
                     //然后请求网络,把数据传到网络上去
+                    pushValueToToy(volumeAdd);
                 }
 
                 break;
             case R.id.ib_volume_reduce:
                 //先过去seekbar的progress的值
-                int progressadd = mSeekBar.getProgress();
-                if (progressadd >= 0) {
-                    progressadd = progressadd - 5;
-                    mSeekBar.setSecondaryProgress(progressadd);
-                    String s = String.valueOf(progressadd);
-                    mVolume_text.setText(s);
+
+                if (mVolumeInt >= 0) {
+                    mVolumeInt = mVolumeInt - 1;
+                    if (mVolumeInt < 0) {
+                        mVolumeInt = 0;
+                    }
+//                    mSeekBar.setProgress(mVolumeInt);
+//                    int secondaryProgress = mSeekBar.getSecondaryProgress();
+//                    secondaryProgress = mVolumeInt;
+                    String volumeReduce = String.valueOf(mVolumeInt);
+                    mVolume_text.setText(volumeReduce);
+                    mSeekBar.setProgress(mVolumeInt);
                     //然后请求网络,把数据传到网络上去
+                    pushValueToToy(volumeReduce);
 
                 }
 
@@ -266,6 +295,40 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
 
                 break;
         }
+    }
+
+    private void pushValueToToy(String volume) {
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(Constant.baseurl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        AllInterface allInterface = retrofit.create(AllInterface.class);
+        ControlToyVolumeReq.ParamBean paramBean = new ControlToyVolumeReq.ParamBean(mToyid, volume);
+        ControlToyVolumeReq controlToyVolumeReq = new ControlToyVolumeReq("volume", paramBean, mToken);
+        Gson gson = new Gson();
+        String s = gson.toJson(controlToyVolumeReq);
+        Call<ControlToyVolumeRes> controlToyVolumeResCall = allInterface.CONTROL_TOY_VOLUME_RES_CALL(s);
+        controlToyVolumeResCall.enqueue(new Callback<ControlToyVolumeRes>() {
+            @Override
+            public void onResponse(Call<ControlToyVolumeRes> call, Response<ControlToyVolumeRes> response) {
+                if (response.body().getCode().equals("0")) {
+                    ToastUtil.showToast(getApplicationContext(), "成功");
+                } else if (response.body().getCode().equals("-10009")) {
+                    ToastUtil.showToast(getApplicationContext(), "玩具未登录,为获取到玩具DEVCODE");
+                } else if (response.body().getCode().equals("-10006")) {
+                    ToastUtil.showToast(getApplicationContext(), "用户未登录");
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ControlToyVolumeRes> call, Throwable t) {
+                ToastUtil.showToast(getApplicationContext(), "网络异常");
+
+
+            }
+        });
+
+
     }
 
     private void seeMe() {

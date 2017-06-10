@@ -24,11 +24,11 @@ import com.tongyuan.android.zhiquleyuan.adapter.DiscoveryListViewAdapter;
 import com.tongyuan.android.zhiquleyuan.base.BaseFragment;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridRequestBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridResultBean;
-import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridSecondaryRequestBean;
-import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridSecondaryResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListRequsetBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.Items;
+import com.tongyuan.android.zhiquleyuan.bean.LocalPlayApplyReqBean;
+import com.tongyuan.android.zhiquleyuan.bean.LocalPlayApplyResBean;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
@@ -106,6 +106,7 @@ public class DiscoveryFragment extends BaseFragment {
         initData();
 
     }
+
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
@@ -124,6 +125,7 @@ public class DiscoveryFragment extends BaseFragment {
             mGridviewTitle.setVisibility(View.GONE);
         }
     }
+
     private void initData() {
 //        拿grid的数据
         getIdCol();
@@ -131,63 +133,65 @@ public class DiscoveryFragment extends BaseFragment {
 //        getIdColSecondaryInfo();
 
 //        拿到list的数据
-        //getListRaw();
+        getListRaw();
+
         //拿不到推荐资源的数据，先用colid 0来代替
 //        getListRawFromId();
 
     }
 
     //拿到colid 去申请的数据
-    private void getListRawFromId() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        AllInterface allInterface = retrofit.create(AllInterface.class);
-
-        DiscoveryGridSecondaryRequestBean.BODYBean bodyBean = new DiscoveryGridSecondaryRequestBean.BODYBean(mColid, "10", "1");
-        Log.d("aaaaaa", "colid " + mColid);
-        DiscoveryGridSecondaryRequestBean discoveryGridSecondaryRequestBean = new DiscoveryGridSecondaryRequestBean("REQ", "QRYRES", SPUtils
-                .getString(getActivity(), "phoneNum", ""), new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()), bodyBean, "", SPUtils
-                .getString(getActivity(), "TOKEN", ""), "1");
-        Gson gson = new Gson();
-        String s = gson.toJson(discoveryGridSecondaryRequestBean);
-        Call<DiscoveryGridSecondaryResultBean> discoveryGridSecondaryResult = allInterface.getDiscoveryGridSecondaryResult(s);
-        discoveryGridSecondaryResult.enqueue(new Callback<DiscoveryGridSecondaryResultBean>() {
-            @Override
-            public void onResponse(Call<DiscoveryGridSecondaryResultBean> call, final Response<DiscoveryGridSecondaryResultBean> response) {
-                if (response != null && !response.body().getCODE().equals(0)) {
-                    //返回的list是一个空list
-                    Log.d(TAG, "onResponse: " + SPUtils.getString(getActivity(), "TOKEN", ""));
-                    List<Items> list = new ArrayList<Items>();
-                    list.add(new Items("第一种布局", null));
-                    list.add(new Items(null, "第二种布局"));
-                    mLAdapter = new DiscoveryListViewAdapter(getActivity(), list);
-                    lv_fragment_discovery.setAdapter(mLAdapter);
-                    lv_fragment_discovery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            Intent intent = new Intent();
-                            intent.setClass(getActivity(), MyPlayActivity.class);
-                            Bundle bundle = new Bundle();
-                            //responselist为空，lstbean不能用
-                            bundle.putParcelable("recommandmusicinfo", response.body());
-                            startActivity(intent);
-                            ToastUtil.showToast(getActivity(), "当前点击的是:" + position);
-                        }
-                    });
-                } else {
-                    ToastUtil.showToast(getActivity(), "shibai1");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<DiscoveryGridSecondaryResultBean> call, Throwable t) {
-
-            }
-        });
-    }
+//    private void getListRawFromId() {
+//        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
+//                .addConverterFactory(GsonConverterFactory.create())
+//                .build();
+//
+//        AllInterface allInterface = retrofit.create(AllInterface.class);
+//
+//        DiscoveryGridSecondaryRequestBean.BODYBean bodyBean = new DiscoveryGridSecondaryRequestBean.BODYBean(mColid, "10", "1");
+//        Log.d("aaaaaa", "colid " + mColid);
+//        DiscoveryGridSecondaryRequestBean discoveryGridSecondaryRequestBean = new DiscoveryGridSecondaryRequestBean("REQ", "QRYRES", SPUtils
+//                .getString(getActivity(), "phoneNum", ""), new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()), bodyBean, "", SPUtils
+//                .getString(getActivity(), "TOKEN", ""), "1");
+//        Gson gson = new Gson();
+//        String s = gson.toJson(discoveryGridSecondaryRequestBean);
+//        Call<DiscoveryGridSecondaryResultBean> discoveryGridSecondaryResult = allInterface.getDiscoveryGridSecondaryResult(s);
+//        discoveryGridSecondaryResult.enqueue(new Callback<DiscoveryGridSecondaryResultBean>() {
+//            @Override
+//            public void onResponse(Call<DiscoveryGridSecondaryResultBean> call, final Response<DiscoveryGridSecondaryResultBean> response) {
+//                if (response != null && !response.body().getCODE().equals(0)) {
+//                    //返回的list是一个空list
+//                    Log.d(TAG, "onResponse: " + SPUtils.getString(getActivity(), "TOKEN", ""));
+//
+//                    List<Items> list = new ArrayList<Items>();
+//                    list.add(new Items("第一种布局", null));
+//                    list.add(new Items(null, "第二种布局"));
+//                    mLAdapter = new DiscoveryListViewAdapter(getActivity(), list);
+//                    lv_fragment_discovery.setAdapter(mLAdapter);
+//                    lv_fragment_discovery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                        @Override
+//                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                            Intent intent = new Intent();
+//                            intent.setClass(getActivity(), MyPlayActivity.class);
+//                            Bundle bundle = new Bundle();
+//                            //responselist为空，lstbean不能用
+//                            bundle.putParcelable("recommandmusicinfo", response.body());
+//                            startActivity(intent);
+//                            ToastUtil.showToast(getActivity(), "当前点击的是:" + position);
+//                        }
+//                    });
+//                } else {
+//                    ToastUtil.showToast(getActivity(), "shibai1");
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<DiscoveryGridSecondaryResultBean> call, Throwable t) {
+//
+//            }
+//        });
+//    }
 
 
     //拿到list的数据
@@ -215,16 +219,23 @@ public class DiscoveryFragment extends BaseFragment {
                     List<Items> list = new ArrayList<Items>();
                     list.add(new Items("第一种布局", null));
                     list.add(new Items(null, "第二种布局"));
-                    mLAdapter = new DiscoveryListViewAdapter(getActivity(), list);
+
+                    mLAdapter = new DiscoveryListViewAdapter(getContext(), list, response);
                     lv_fragment_discovery.setAdapter(mLAdapter);
                     lv_fragment_discovery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            DiscoveryListResultBean.BODYBean.LSTBean lstBean = response.body().getBODY().getLST().get(position);
+
+//                            getLocalPlayApplication(lstBean, position, SPUtils.getString(getActivity(), "phoneNum", ""), new SimpleDateFormat
+//                                    ("yyyyMMddHHmmssSSS").format(new Date()), SPUtils.getString(getActivity(), "TOKEN", ""));
+
                             Intent intent = new Intent();
                             intent.setClass(getActivity(), MyPlayActivity.class);
                             Bundle bundle = new Bundle();
-                            //responselist为空，lstbean不能用
-                            bundle.putParcelable("recommandmusicinfo", response.body());
+//                            responselist为空，lstbean不能用
+                            bundle.putParcelable("recommandlistbean",lstBean);
+                            intent.putExtras(bundle);
                             startActivity(intent);
                             ToastUtil.showToast(getActivity(), "当前点击的是:" + position);
                         }
@@ -239,6 +250,44 @@ public class DiscoveryFragment extends BaseFragment {
             @Override
             public void onFailure(Call<DiscoveryListResultBean> call, Throwable t) {
                 ToastUtil.showToast(getActivity(), "shibai2");
+            }
+        });
+    }
+
+    //本机播放需要播放申请,3.4.48   网络请求
+    private void getLocalPlayApplication(DiscoveryListResultBean.BODYBean.LSTBean lstBean, int position, String phoneNum, String formatTime, String
+            token) {
+        String colid = lstBean.getCOLID();
+        Retrofit retrofit2 = new Retrofit.Builder().baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        AllInterface allInterface1 = retrofit2.create(AllInterface.class);
+        Gson gson1 = new Gson();
+        LocalPlayApplyReqBean.BODYBean bodyBean1 = new LocalPlayApplyReqBean.BODYBean(colid);
+        LocalPlayApplyReqBean localPlayApplyReqBean = new LocalPlayApplyReqBean("REQ", "PLAY", phoneNum, formatTime, bodyBean1,
+                "", token, "1");
+        String s1 = gson1.toJson(localPlayApplyReqBean);
+        Call<LocalPlayApplyResBean> localPlayApplyResBeanCall = allInterface1.LOCAL_PLAY_APPLY_RES_BEAN_CALL(s1);
+        localPlayApplyResBeanCall.enqueue(new Callback<LocalPlayApplyResBean>() {
+            @Override
+            public void onResponse(Call<LocalPlayApplyResBean> call, Response<LocalPlayApplyResBean> response) {
+                if (response.body().getCODE().equals("-700")) {
+                    ToastUtil.showToast(getContext(), "资源不存在");
+                    return;
+                } else if (response.body().getCODE().equals("0")) {
+                    String url = response.body().getBODY().getURL();
+                    Intent intent = new Intent();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("recommandUrl", url);
+                    intent.putExtras(bundle);
+                    intent.setClass(getContext(), MyPlayActivity.class);
+                    startActivity(intent);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<LocalPlayApplyResBean> call, Throwable t) {
+
             }
         });
     }
@@ -351,7 +400,6 @@ public class DiscoveryFragment extends BaseFragment {
         }
         Log.i("tagd", "onResume: went");
     }
-
 
 
     @Override

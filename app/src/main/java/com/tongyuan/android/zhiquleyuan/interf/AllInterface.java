@@ -6,6 +6,8 @@ import com.tongyuan.android.zhiquleyuan.bean.BabyInfoResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.BindBabyToToyRes;
 import com.tongyuan.android.zhiquleyuan.bean.CallHistoryResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.CallToToyRes;
+import com.tongyuan.android.zhiquleyuan.bean.ControlToyPlayMusicResBean;
+import com.tongyuan.android.zhiquleyuan.bean.ControlToyVolumeRes;
 import com.tongyuan.android.zhiquleyuan.bean.DelMembFromGroupReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteBabyInfoReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridResultBean;
@@ -21,8 +23,9 @@ import com.tongyuan.android.zhiquleyuan.bean.QuerySingleUserInfoReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryToyMemberReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoRESBean;
 
+import java.util.List;
+
 import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
@@ -39,9 +42,17 @@ public interface AllInterface {
     @POST("busi")
     Call<BabyInfoResultBean> sendBabyInfoResult(@Query("params") String params);
 
+    //    @Multipart
+//    @POST("busi")
+//    Call<BabyInfoResultBean> BABY_INFO_RESULT_BEAN_CALL(@Body RequestBody description, @Part("file") MultipartBody.Part file);
+//    @Multipart
+//    @POST("busi")
+//    Call<BabyInfoResultBean> BABY_INFO_RESULT_BEAN_CALL(@Part("params") String params, @Part("file") MultipartBody.Part file);
     @Multipart
     @POST("busi")
-    Call<BabyInfoResultBean> BABY_INFO_RESULT_BEAN_CALL(@Part("description") RequestBody description, @Part("file") MultipartBody.Part file);
+    Call<BabyInfoResultBean> BABY_INFO_RESULT_BEAN_CALL(@Part List<MultipartBody.Part> partList);
+//    Call<BabyInfoResultBean> BABY_INFO_RESULT_BEAN_CALL(@Part("params") BabyInfoRequestBean params, @Part("file") MultipartBody.Part file);
+
     //删除宝宝的信息(或者个人信息) 3.4.10
     @GET("busi")
     Call<DeleteBabyInfoReSBean> delteBabyInfoReult(@Query("params") String params);
@@ -123,4 +134,12 @@ public interface AllInterface {
     //绑定玩具和宝宝 3.4.18
     @GET("busi")
     Call<BindBabyToToyRes> BIND_BABY_TO_TOY_RES_CALL(@Query("params") String params);
+
+    //设定玩具的音量 3.4.49
+    @GET("jpush")
+    Call<ControlToyVolumeRes> CONTROL_TOY_VOLUME_RES_CALL(@Query("params") String params);
+
+    //控制玩具播放3.4.50
+    @GET("jpush")
+    Call<ControlToyPlayMusicResBean> CONTROL_TOY_PLAY_MUSIC_RES_BEAN_CALL(@Query("params") String params);
 }
