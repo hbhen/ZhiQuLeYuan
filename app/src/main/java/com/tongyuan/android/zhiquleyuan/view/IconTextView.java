@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -51,11 +52,12 @@ public class IconTextView extends LinearLayout {
         mText = new TextView(context);
         mText.setText(title);
         titleSize = titleSize / getResources().getDisplayMetrics().density;
+        LayoutParams lp = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        lp.setMargins(15, 0, 0, 0);
         mText.setTextSize(titleSize);
         mText.setGravity(Gravity.CENTER);
         mText.setTextColor(textColor != null ? textColor : ColorStateList.valueOf(0xFF000000));
-        addView(mText, new LayoutParams(
-                LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+        addView(mText, lp);
     }
 
     //设置TextView的Text内容

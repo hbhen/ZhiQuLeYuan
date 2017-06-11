@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+    xmlns:text="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/main_top_bg">
 
     <RelativeLayout
         android:id="@+id/rl_play_details_title"
@@ -11,24 +13,25 @@
         android:gravity="center_horizontal">
 
         <ImageView
+            android:id="@+id/player_back"
             android:layout_width="10dp"
             android:layout_height="21dp"
-            android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
             android:background="@drawable/arrow_left"/>
 
         <TextView
-            android:id="@+id/tv_activity_playing_details_playname"
+            android:id="@+id/player_details_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:text="播放文件名"
-            android:textSize="18sp"/>
+            android:textSize="18sp"
+            android:layout_centerInParent="true"
+            android:textColor="@color/black"/>
 
         <TextView
-            android:id="@+id/tv_toy_details_collection"
+            android:id="@+id/player_collection"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -40,81 +43,68 @@
             android:textSize="20dp"/>
     </RelativeLayout>
 
-
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/rl_play_details_bottom"
         android:layout_width="match_parent"
-        android:layout_height="46dp"
+        android:layout_height="49dp"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+        <com.tongyuan.android.zhiquleyuan.view.IconTextView
+            android:id="@+id/player_phone"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            text:titleIcon="@drawable/phone_ico_light_3x"
+            text:titleText="@string/player_phone"
+            text:titleTextColor="@color/redFont"
+            text:titleTextSize="18sp" />
 
-            <TextView
-                android:id="@+id/tv_activity_playing_details_phoneplay"
-                android:layout_width="0dp"
-                android:layout_height="49dp"
-                android:layout_weight="1"
-                android:clickable="true"
-                android:drawableLeft="@drawable/phone_ico_light_3x"
-                android:drawablePadding="5dp"
-                android:gravity="center"
-                android:text="手机播放"
-                android:textColor="#ff4511"
-                android:textSize="18sp"/>
-            <!--<RelativeLayout-->
-            <!--android:layout_gravity="center"-->
-            <!--android:layout_weight="1"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content">-->
-            <!--<ImageView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:src="@drawable/phone"/>-->
-            <!--<TextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="手机播放"/>-->
-            <!--</RelativeLayout>-->
-            <View
-                android:layout_width="1dp"
-                android:layout_height="46dp"/>
+        <View
+            android:layout_width="1dp"
+            android:layout_height="46dp"
+            android:background="@color/main_top_edit_stroke" />
 
-            <TextView
-                android:id="@+id/tv_activity_playing_details_toyplay"
-                android:layout_width="0dp"
-                android:layout_height="49dp"
-                android:layout_weight="1"
-                android:clickable="true"
-                android:drawableLeft="@drawable/toy_rabbit_ico_light_3x"
-                android:drawablePadding="10dp"
-                android:gravity="center"
-                android:text="玩具播放"
-                android:textColor="#ff4511"
-                android:textSize="18sp"/>
-            <!--<RelativeLayout-->
-            <!--android:layout_weight="1"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content">-->
-            <!--<ImageView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:src="@drawable/phone"/>-->
-            <!--<TextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="手机播放"/>-->
-            <!--</RelativeLayout>-->
-        </LinearLayout>
+        <com.tongyuan.android.zhiquleyuan.view.IconTextView
+            android:id="@+id/player_toy"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="10dp"
+            text:titleIcon="@drawable/toy_rabbit_ico_light_3x"
+            text:titleText="@string/player_toy"
+            text:titleTextColor="@color/redFont"
+            text:titleTextSize="18sp" />
+    </LinearLayout>
 
-    </RelativeLayout>
+    <ProgressBar
+        android:id="@+id/player_progress"
+        android:layout_above="@id/rl_play_details_bottom"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:max="100"
+        android:progressDrawable="@drawable/progressbar_color"/>
+
+    <TextView
+        android:id="@+id/player_start_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_above="@id/player_progress"
+        android:text="@string/player_start_time" />
+
+    <TextView
+        android:id="@+id/player_duration_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_above="@id/player_progress"
+        android:layout_marginRight="10dp"
+        android:text="@string/player_start_time"/>
 
     <ImageView
         android:id="@+id/iv_playing_details_slide"
-
         android:layout_width="221dp"
         android:layout_height="221dp"
         android:layout_below="@id/rl_play_details_title"
@@ -123,13 +113,6 @@
         android:layout_marginTop="30dp"
         android:scaleType="centerCrop"
         android:src="@mipmap/ic_launcher"/>
-    <!--<com.tongyuan.android.zhiquleyuan.view.DiscView-->
-    <!--android:id="@+id/dv_playing_details"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_marginTop="30dp"-->
-    <!--android:layout_centerHorizontal="true"-->
-    <!--android:layout_below="@id/rl_play_details_title"-->
-    <!--android:layout_height="wrap_content"/>-->
 
     <View
         android:id="@+id/view_play_details"
@@ -139,42 +122,33 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"/>
 
-    <RelativeLayout
-        android:id="@+id/rl_play_details_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/view_play_details"
-        android:layout_marginBottom="10dp">
+    <!--<TextView-->
+        <!--android:id="@+id/tv_activity_playing_details_start"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentLeft="true"-->
+        <!--android:layout_marginLeft="10dp"-->
+        <!--android:text="00:00"/>-->
 
-        <TextView
-            android:id="@+id/tv_activity_playing_details_start"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="10dp"
-            android:text="00:00"/>
-
-        <SeekBar
-            android:id="@+id/sb_playing_details"
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"/>
+    <!--<SeekBar-->
+        <!--android:id="@+id/sb_playing_details"-->
+        <!--android:layout_width="250dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_centerHorizontal="true"/>-->
 
 
-        <TextView
-            android:id="@+id/tv_activity_playing_details_duration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="10dp"
-            android:text="02:20"/>
-    </RelativeLayout>
+    <!--<TextView-->
+        <!--android:id="@+id/tv_activity_playing_details_duration"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_marginRight="10dp"-->
+        <!--android:text="02:20"/>-->
 
     <LinearLayout
-
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/rl_play_details_time"
+        android:layout_above="@id/player_start_time"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="26dp"
         android:layout_marginLeft="20dp"
@@ -187,6 +161,7 @@
             android:layout_weight="1"
             android:src="@drawable/play_cycle"/>
 
+
         <ImageView
             android:layout_width="30dp"
             android:layout_height="30dp"
@@ -194,12 +169,13 @@
             android:src="@drawable/play_before_104"/>
 
         <ImageView
-            android:id="@+id/iv_activity_playing_details_play"
+            android:id="@+id/player_play_btn"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_weight="1"
             android:clickable="true"
             android:src="@drawable/play_240"/>
+
 
         <ImageView
             android:layout_width="30dp"

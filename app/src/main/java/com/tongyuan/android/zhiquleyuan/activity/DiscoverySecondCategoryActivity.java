@@ -13,12 +13,15 @@ import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.bumptech.glide.Glide;
-import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.adapter.DiscoverySecondCategoryAdapter;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridSecondaryRequestBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridSecondaryResultBean;
+import com.tongyuan.android.zhiquleyuan.bean.LocalPlayApplyResBean;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
+import com.tongyuan.android.zhiquleyuan.request.RequestManager;
+import com.tongyuan.android.zhiquleyuan.request.base.BaseRequest;
+import com.tongyuan.android.zhiquleyuan.request.base.SuperModel;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
@@ -87,39 +90,43 @@ public class DiscoverySecondCategoryActivity extends AppCompatActivity implement
 
     private void getIdColSecondaryInfo(String colid, final String phoneNum, final String formatTime, final String token) {
 
-        final Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        final AllInterface allInterface = retrofit.create(AllInterface.class);
+//        final Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
+//                .addConverterFactory(GsonConverterFactory.create())
+//                .build();
+//        final AllInterface allInterface = retrofit.create(AllInterface.class);
 
-        DiscoveryGridSecondaryRequestBean.BODYBean bodyBean = new DiscoveryGridSecondaryRequestBean.BODYBean(colid, "10", "1");
-        Log.d("aaaaaa", "colid " + colid);
-        DiscoveryGridSecondaryRequestBean discoveryGridSecondaryRequestBean = new DiscoveryGridSecondaryRequestBean("REQ", "QRYRES", phoneNum,
-                formatTime, bodyBean, "", token, "1");
-        final Gson gson = new Gson();
-        String s = gson.toJson(discoveryGridSecondaryRequestBean);
-        Call<DiscoveryGridSecondaryResultBean> discoveryGridSecondaryResult = allInterface.getDiscoveryGridSecondaryResult(s);
-        discoveryGridSecondaryResult.enqueue(new Callback<DiscoveryGridSecondaryResultBean>() {
+        DiscoveryGridSecondaryRequestBean bodyBean = new DiscoveryGridSecondaryRequestBean(colid, "10", "1");
+//        Log.d("aaaaaa", "colid " + colid);
+//        DiscoveryGridSecondaryRequestBean discoveryGridSecondaryRequestBean = new DiscoveryGridSecondaryRequestBean("REQ", "QRYRES", phoneNum,
+//                formatTime, bodyBean, "", token, "1");
+//        final Gson gson = new Gson();
+//        String s = gson.toJson(discoveryGridSecondaryRequestBean);
+//        Call<DiscoveryGridSecondaryResultBean> discoveryGridSecondaryResult = allInterface.getDiscoveryGridSecondaryResult(s);
+        BaseRequest baseRequest = new BaseRequest(getApplicationContext(), bodyBean, "QRYRES");
+        Call<SuperModel<DiscoveryGridSecondaryResultBean>> discoveryGridSecondaryResult = RequestManager.getInstance().getDiscoveryGridSecondaryResult
+                (baseRequest);
+        discoveryGridSecondaryResult.enqueue(new Callback<SuperModel<DiscoveryGridSecondaryResultBean>>() {
             @Override
-            public void onResponse(Call<DiscoveryGridSecondaryResultBean> call, final Response<DiscoveryGridSecondaryResultBean> response) {
+            public void onResponse(Call<SuperModel<DiscoveryGridSecondaryResultBean>> call, final Response<SuperModel<DiscoveryGridSecondaryResultBean>> response) {
 
-                if (response.body() != null && response.body().getCODE().equals("0")) {
+                if (response.body() != null && response.body().CODE.equals("0")) {
                     Log.d("aaaaaa", "onResponse: " + response.body().toString());
 //                    mResponse = response;
 
-                    DiscoverySecondCategoryAdapter discoverySecondCategoryAdapter = new DiscoverySecondCategoryAdapter(getApplication(), response);
+                    DiscoverySecondCategoryAdapter discoverySecondCategoryAdapter = new DiscoverySecondCategoryAdapter(getApplicationContext(), response.body().BODY.LST);
                     mListviewSecondCategory.setAdapter(discoverySecondCategoryAdapter);
                     mListviewSecondCategory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                            DiscoveryGridSecondaryResultBean.BODYBean.LSTBean lstBean = response.body().getBODY().getLST().get(position);
+                            DiscoveryGridSecondaryResultBean.LSTBean lstBean = response.body().BODY.LST.get(position);
                             //本机播放需要播放申请,3.4.48   网络请求
 //                            getLocalPlayApplication(position,phoneNum,formatTime,token);
                             Intent intent = new Intent();
                             Bundle bundle = new Bundle();
-                            bundle.putParcelable("secondcategorylistbean",lstBean );
+                            bundle.putSerializable("secondcategorylistbean",lstBean);
                             intent.putExtras(bundle);
+
                             intent.setClass(getApplicationContext(), MyPlayActivity.class);
                             startActivity(intent);
                             ToastUtil.showToast(getApplicationContext(), "点击的是" + position);
@@ -131,7 +138,7 @@ public class DiscoverySecondCategoryActivity extends AppCompatActivity implement
             }
 
             @Override
-            public void onFailure(Call<DiscoveryGridSecondaryResultBean> call, Throwable t) {
+            public void onFailure(Call<SuperModel<DiscoveryGridSecondaryResultBean>> call, Throwable t) {
                 ToastUtil.showToast(getApplicationContext(), "联网失败");
             }
         });

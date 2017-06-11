@@ -18,8 +18,7 @@
         android:id="@+id/rldetails_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:layout_toRightOf="@id/iv_album_details_one"
+        android:layout_marginLeft="10dp"
         android:orientation="vertical">
 
         <TextView
@@ -136,7 +135,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/rldetails_title"
             android:layout_toRightOf="@id/iv_album_details_one"
-            android:background="#8EC245"
+            android:background="@drawable/shape_discovery_subscribe"
             android:gravity="center"
             android:text="专辑订阅"
             android:textColor="#000000"

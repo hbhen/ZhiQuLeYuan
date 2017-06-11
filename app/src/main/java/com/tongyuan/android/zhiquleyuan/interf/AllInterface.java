@@ -10,7 +10,7 @@ import com.tongyuan.android.zhiquleyuan.bean.ControlToyPlayMusicResBean;
 import com.tongyuan.android.zhiquleyuan.bean.ControlToyVolumeRes;
 import com.tongyuan.android.zhiquleyuan.bean.DelMembFromGroupReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteBabyInfoReSBean;
-import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridResultBean;
+import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridItemBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridSecondaryResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.GetInstantStateInfoRes;
@@ -22,6 +22,7 @@ import com.tongyuan.android.zhiquleyuan.bean.QueryPlayingMusicResBean;
 import com.tongyuan.android.zhiquleyuan.bean.QuerySingleUserInfoReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryToyMemberReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoRESBean;
+import com.tongyuan.android.zhiquleyuan.request.base.SuperModel;
 
 import java.util.List;
 
@@ -73,11 +74,11 @@ public interface AllInterface {
 
     //请求首页gridview的目录信息(九宫格)3.4.25
     @GET("busi")
-    Call<DiscoveryGridResultBean> getDiscoveryGridResult(@Query("params") String params);
+    Call<SuperModel<DiscoveryGridItemBean>> getDiscoveryGridResult(@Query("params") String params);
 
     //请求首页gridview的二级目录信息,点击之后的信息3.4.29
     @GET("busi")
-    Call<DiscoveryGridSecondaryResultBean> getDiscoveryGridSecondaryResult(@Query("params") String params);
+    Call<SuperModel<DiscoveryGridSecondaryResultBean>> getDiscoveryGridSecondaryResult(@Query("params") String params);
 
     //请求推荐内容网络请求
     @GET("busi")
@@ -121,7 +122,7 @@ public interface AllInterface {
 
     //本地播放申请 3.4.38
     @GET("busi")
-    Call<LocalPlayApplyResBean> LOCAL_PLAY_APPLY_RES_BEAN_CALL(@Query("params") String params);
+    Call<SuperModel<LocalPlayApplyResBean>> LOCAL_PLAY_APPLY_RES_BEAN_CALL(@Query("params") String params);
 
     //通话控制  3.4.5
     @GET("jpush")

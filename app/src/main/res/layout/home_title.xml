@@ -4,7 +4,7 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="44dp"
-    android:background="#f1f1f1"
+    android:background="@color/main_top_bg"
     android:orientation="horizontal"
     android:gravity="center"
     tools:context="com.tongyuan.android.zhiquleyuan.activity.MainActivity">
@@ -15,19 +15,24 @@
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
        android:text="玖悦童缘"
-       android:textSize="16dp"
+       android:textSize="17sp"
        android:textColor="#ff4511"
        />
 
-    <EditText
-        android:layout_marginLeft="9dp"
+    <TextView
         android:id="@+id/et_home_title"
-        android:layout_width="242dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:singleLine="true"
+        android:background="@drawable/shape_main_top_edit"
+        android:hint="@string/discovery_top_edit_hint"
+        android:textColorHint="@color/main_top_edit_stroke"
+        android:textColorHighlight="@color/main_top_edit_stroke"
+        android:textSize="16sp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="5dp"
         android:drawableRight="@drawable/search_38ico"
-        android:hint="世上只有爸爸好"
-        android:textSize="12dp"
-
         />
 
     <ImageView

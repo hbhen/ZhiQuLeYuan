@@ -33,4 +33,7 @@
     <!--swiperefreshscrolllistview-->
     <color name="tips">#FF8E8E8E</color>
     <color name="common_tab_bg_light_gray">#D9DCE1</color>
+
+    <color name="main_top_bg">#f1f1f1</color>
+    <color name="main_top_edit_stroke">#d1d1d1</color>
 </resources>

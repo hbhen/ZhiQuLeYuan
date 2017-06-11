@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -22,14 +21,15 @@ import com.tongyuan.android.zhiquleyuan.activity.MyPlayActivity;
 import com.tongyuan.android.zhiquleyuan.adapter.DiscoveryGridAdapter;
 import com.tongyuan.android.zhiquleyuan.adapter.DiscoveryListViewAdapter;
 import com.tongyuan.android.zhiquleyuan.base.BaseFragment;
+import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridItemBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridRequestBean;
-import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListRequsetBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.Items;
-import com.tongyuan.android.zhiquleyuan.bean.LocalPlayApplyReqBean;
-import com.tongyuan.android.zhiquleyuan.bean.LocalPlayApplyResBean;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
+import com.tongyuan.android.zhiquleyuan.request.RequestManager;
+import com.tongyuan.android.zhiquleyuan.request.base.BaseRequest;
+import com.tongyuan.android.zhiquleyuan.request.base.SuperModel;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
@@ -44,83 +44,75 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-
 /**
+ *
  * Created by android on 2016/12/3.
  */
 /*
 * 先加载布局,再在布局里面添加数据.布局从哪个生命周期开始加载?数据从哪个生命周期开始加载?
 *
 * */
-public class DiscoveryFragment extends BaseFragment {
+public class DiscoveryFragment extends BaseFragment implements View.OnClickListener{
     public static final int REQUEST_CODE_LOGIN = 1001;
     private ListView lv_fragment_discovery;
     private GridView gv_fragment_discovery;
-    // private RecyclerView rv_fragment_discovery_above;
-    // private RecyclerView rv_fragment_discovery_below;
     public static final String TAG = "discovery";
-    private View headerView;
-    private EditText mEt_home_title;
-    private ArrayList mListImg;
-    private ArrayList mListId;
-    private ArrayList mListName;
+    private List<DiscoveryGridItemBean.LSTBean> lst = new ArrayList<>();
     private DiscoveryGridAdapter mGAdapter;
     private DiscoveryListViewAdapter mLAdapter;
     private TextView mGridviewTitle;
-    private String mColid;
-    private String mLogintokenToMain;
-
+//    private String mLogintokenToMain;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.i("tagd", "onCreateView: went");
         View discoveryRoot = inflater.inflate(R.layout.fragment_discovery, null);
         lv_fragment_discovery = (ListView) discoveryRoot.findViewById(R.id.lv_fragment_discovery);
         gv_fragment_discovery = (GridView) discoveryRoot.findViewById(R.id.gv_fragment_discovery);
         mGridviewTitle = (TextView) discoveryRoot.findViewById(R.id.tv_gridview_title);
-        headerView = inflater.inflate(R.layout.item_discovery_header, null);
-        mEt_home_title = (EditText) discoveryRoot.findViewById(R.id.et_home_title);
-        mEt_home_title.setFocusable(false);
+        mGridviewTitle.setOnClickListener(this);
+        discoveryRoot.findViewById(R.id.et_home_title).setOnClickListener(this);
+
+        mGAdapter = new DiscoveryGridAdapter(getActivity(), lst);
+        gv_fragment_discovery.setAdapter(mGAdapter);
+        gv_fragment_discovery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String mColid = lst.get(position).ID;
+                String img = lst.get(position).IMG;
+                Intent intent = new Intent();
+                intent.setClass(getActivity(), DiscoverySecondCategoryActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("colid", mColid);
+                bundle.putString("img", img);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
         return discoveryRoot;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Log.i("tagd", "onActivityCreated: went");
-        if (SPUtils.getString(getActivity(), "TOKEN", "").isEmpty()) {
-            mGridviewTitle.setVisibility(View.VISIBLE);
-            mGridviewTitle.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(getActivity(), ActivityLogin.class);
-                    //需不需要intent传参数出去再说吧
-                    startActivityForResult(intent, REQUEST_CODE_LOGIN);
-                }
-            });
-
-        } else {
-            mGridviewTitle.setVisibility(View.GONE);
-        }
         initData();
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        checkLoginState();
     }
 
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
+        checkLoginState();
+    }
+
+    private void checkLoginState() {
         if (SPUtils.getString(getActivity(), "TOKEN", "").isEmpty()) {
             mGridviewTitle.setVisibility(View.VISIBLE);
-            mGridviewTitle.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(getActivity(), ActivityLogin.class);
-                    //需不需要intent传参数出去再说吧
-                    startActivityForResult(intent, REQUEST_CODE_LOGIN);
-                }
-            });
-
         } else {
             mGridviewTitle.setVisibility(View.GONE);
         }
@@ -163,7 +155,7 @@ public class DiscoveryFragment extends BaseFragment {
 //                if (response != null && !response.body().getCODE().equals(0)) {
 //                    //返回的list是一个空list
 //                    Log.d(TAG, "onResponse: " + SPUtils.getString(getActivity(), "TOKEN", ""));
-//
+
 //                    List<Items> list = new ArrayList<Items>();
 //                    list.add(new Items("第一种布局", null));
 //                    list.add(new Items(null, "第二种布局"));
@@ -225,7 +217,9 @@ public class DiscoveryFragment extends BaseFragment {
                     lv_fragment_discovery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            DiscoveryListResultBean.BODYBean.LSTBean lstBean = response.body().getBODY().getLST().get(position);
+
+                            DiscoveryListResultBean.BODYBean.LSTBean lstBean = (DiscoveryListResultBean.BODYBean.LSTBean) parent.getAdapter().getItem(position);
+//                             = response.body().getBODY().getLST().get(position);
 
 //                            getLocalPlayApplication(lstBean, position, SPUtils.getString(getActivity(), "phoneNum", ""), new SimpleDateFormat
 //                                    ("yyyyMMddHHmmssSSS").format(new Date()), SPUtils.getString(getActivity(), "TOKEN", ""));
@@ -254,149 +248,48 @@ public class DiscoveryFragment extends BaseFragment {
         });
     }
 
-    //本机播放需要播放申请,3.4.48   网络请求
-    private void getLocalPlayApplication(DiscoveryListResultBean.BODYBean.LSTBean lstBean, int position, String phoneNum, String formatTime, String
-            token) {
-        String colid = lstBean.getCOLID();
-        Retrofit retrofit2 = new Retrofit.Builder().baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        AllInterface allInterface1 = retrofit2.create(AllInterface.class);
-        Gson gson1 = new Gson();
-        LocalPlayApplyReqBean.BODYBean bodyBean1 = new LocalPlayApplyReqBean.BODYBean(colid);
-        LocalPlayApplyReqBean localPlayApplyReqBean = new LocalPlayApplyReqBean("REQ", "PLAY", phoneNum, formatTime, bodyBean1,
-                "", token, "1");
-        String s1 = gson1.toJson(localPlayApplyReqBean);
-        Call<LocalPlayApplyResBean> localPlayApplyResBeanCall = allInterface1.LOCAL_PLAY_APPLY_RES_BEAN_CALL(s1);
-        localPlayApplyResBeanCall.enqueue(new Callback<LocalPlayApplyResBean>() {
-            @Override
-            public void onResponse(Call<LocalPlayApplyResBean> call, Response<LocalPlayApplyResBean> response) {
-                if (response.body().getCODE().equals("-700")) {
-                    ToastUtil.showToast(getContext(), "资源不存在");
-                    return;
-                } else if (response.body().getCODE().equals("0")) {
-                    String url = response.body().getBODY().getURL();
-                    Intent intent = new Intent();
-                    Bundle bundle = new Bundle();
-                    bundle.putString("recommandUrl", url);
-                    intent.putExtras(bundle);
-                    intent.setClass(getContext(), MyPlayActivity.class);
-                    startActivity(intent);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<LocalPlayApplyResBean> call, Throwable t) {
-
-            }
-        });
-    }
-
     //gridview的数据
     private void getIdCol() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        AllInterface allInterface = retrofit.create(AllInterface.class);
-
-        DiscoveryGridRequestBean.BODYBean discoveryGridRequestBody = new DiscoveryGridRequestBean.BODYBean("0", "-1", "1");
-        DiscoveryGridRequestBean discoveryGridRequestBean = new DiscoveryGridRequestBean("RES", "QRYCOL", SPUtils.getString(getActivity(),
-                "phoneNum", ""),
-                new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()), discoveryGridRequestBody, "", SPUtils.getString(getActivity(),
-                "TOKEN", ""), "1");
-
-        Gson gson = new Gson();
-        String disGridJson = gson.toJson(discoveryGridRequestBean);
-        Call<DiscoveryGridResultBean> discoveryGridResult = allInterface.getDiscoveryGridResult(disGridJson);
-        discoveryGridResult.enqueue(new Callback<DiscoveryGridResultBean>() {
+        final BaseRequest request = new BaseRequest<>(getContext(), new DiscoveryGridRequestBean("0", "-1", "1"));
+        Call<SuperModel<DiscoveryGridItemBean>> discoveryGridResult = RequestManager.getInstance().getDiscoveryGridResult(request);
+        discoveryGridResult.enqueue(new Callback<SuperModel<DiscoveryGridItemBean>>() {
             @Override
-            public void onResponse(Call<DiscoveryGridResultBean> call, final Response<DiscoveryGridResultBean> response) {
-                List<DiscoveryGridResultBean.BODYBean.LSTBean> lst = response.body().getBODY().getLST();
-                mListImg = new ArrayList();
-                mListId = new ArrayList();
-                mListName = new ArrayList();
-                for (int a = 0; a <= lst.size() - 1; a++) {
-                    String img = lst.get(a).getIMG();
-                    mListImg.add(img);
+            public void onResponse(Call<SuperModel<DiscoveryGridItemBean>> call, Response<SuperModel<DiscoveryGridItemBean>> response) {
+                if(response.body().BODY != null && response.body().BODY.LST != null) {
+                    lst.clear();
+                    lst.addAll(response.body().BODY.LST);
+                    mGAdapter.notifyDataSetChanged();
                 }
-                for (int b = 0; b <= lst.size() - 1; b++) {
-                    String id = lst.get(b).getID();
-                    mListId.add(id);
-                }
-                Log.d(TAG, "onResponse: +" + mListId.toString());
-                for (int c = 0; c <= lst.size() - 1; c++) {
-                    String name = lst.get(c).getNAME();
-                    mListName.add(name);
-                }
-//              从后台获取真的数据以后,要填充的adapter  已经获取了真的数据,解决了
-                mGAdapter = new DiscoveryGridAdapter(getActivity(), mListImg, mListId, mListName);
-                gv_fragment_discovery.setNumColumns(3);
-                gv_fragment_discovery.setVerticalSpacing(10);
-                gv_fragment_discovery.setAdapter(mGAdapter);
-                gv_fragment_discovery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        mColid = (String) mListId.get(position);
-                        String img = (String) mListImg.get(position);
-                        Intent intent = new Intent();
-                        intent.setClass(getActivity(), DiscoverySecondCategoryActivity.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putString("colid", mColid);
-                        bundle.putString("img", img);
-                        intent.putExtras(bundle);
-                        startActivity(intent);
-                    }
-                });
-
-
             }
 
             @Override
-            public void onFailure(Call<DiscoveryGridResultBean> call, Throwable t) {
+            public void onFailure(Call<SuperModel<DiscoveryGridItemBean>> call, Throwable t) {
                 ToastUtil.showToast(getActivity(), "错误");
             }
         });
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case REQUEST_CODE_LOGIN:
-                Bundle b = data.getExtras();
-                mLogintokenToMain = b.getString("logintoken");
-                break;
-            default:
-                break;
-        }
-
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-//        EventBus.getDefault().unregister(getActivity());
-        Log.i("tagd", "onDestroy: went");
-    }
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        switch (requestCode) {
+//            case REQUEST_CODE_LOGIN:
+//                Bundle b = data.getExtras();
+////                mLogintokenToMain = b.getString("logintoken");
+//                break;
+//            default:
+//                break;
+//        }
+//
+//    }
 
     @Override
-    public void onResume() {
-        super.onResume();
-//        String R1 = SPUtils.getString(getActivity(), "TOKEN", "");
-//        Log.i("oo", "onResume: token"+R1);
-        if (SPUtils.getString(getActivity(), "TOKEN", "").isEmpty()) {
-            mGridviewTitle.setVisibility(View.VISIBLE);
-            mGridviewTitle.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(getActivity(), ActivityLogin.class);
-                    //需不需要intent传参数出去再说吧
-                    startActivityForResult(intent, REQUEST_CODE_LOGIN);
-                }
-            });
+    public void onClick(View v) {
+        if (v.getId() == R.id.et_home_title) {
 
-        } else {
-            mGridviewTitle.setVisibility(View.GONE);
+        } else if(v.getId() == R.id.tv_gridview_title) {
+            Intent intent = new Intent(getActivity(), ActivityLogin.class);
+            //需不需要intent传参数出去再说吧
+            startActivityForResult(intent, REQUEST_CODE_LOGIN);
         }
         Log.i("tagd", "onResume: went");
     }
@@ -443,6 +336,7 @@ public class DiscoveryFragment extends BaseFragment {
     public void onDestroyView() {
         super.onDestroyView();
         Log.i("tagd", "onDestroyView: went");
+
     }
 }
 

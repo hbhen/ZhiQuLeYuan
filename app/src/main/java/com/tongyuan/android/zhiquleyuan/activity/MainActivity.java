@@ -30,6 +30,7 @@ import com.tongyuan.android.zhiquleyuan.fragment.ToySelectorFragment;
 import com.tongyuan.android.zhiquleyuan.fragment.VideoFragment;
 import com.tongyuan.android.zhiquleyuan.interf.QueryToyInterface;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
+import com.tongyuan.android.zhiquleyuan.utils.StatusBarUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -54,13 +55,13 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private ImageView rb_toy;
     private LinearLayout rb_history;
     private LinearLayout rb_mine;
-    private FragmentTransaction beginTransaction;
+//    private FragmentTransaction beginTransaction;
     private DiscoveryFragment discoveryFragment;
     private RecodingFragment recodingFragment;
     private ToySelectorFragment mToySelectorFragment;
     private HistoryFragment historyFragment;
     private MineFragment mineFragment;
-    private FragmentManager fragmentManager;
+//    private FragmentManager fragmentManager;
     private ToyAddFragment toyAddFragment;
     private ToyDetailsFragment toyDetailsFragment;
 //    private ToyManagerFragment mToyManagerFragment;
@@ -83,6 +84,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
+        StatusBarUtils.setStatusBarLightMode(this, getResources().getColor(R.color.main_top_bg));
 
         initView();
         initData();

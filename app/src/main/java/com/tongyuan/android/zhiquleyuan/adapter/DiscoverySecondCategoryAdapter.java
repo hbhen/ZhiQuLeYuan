@@ -14,7 +14,7 @@ import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridSecondaryResultBean;
 import com.tongyuan.android.zhiquleyuan.holder.SecondaryCategoryHolder;
 
-import retrofit2.Response;
+import java.util.List;
 
 /**
  * Created by android on 2016/12/21.
@@ -22,22 +22,22 @@ import retrofit2.Response;
 public class DiscoverySecondCategoryAdapter extends BaseAdapter {
     private Context mContext;
     private final LayoutInflater mInflater;
-    private Response<DiscoveryGridSecondaryResultBean> response;
+    private List<DiscoveryGridSecondaryResultBean.LSTBean> list ;
 
-    public DiscoverySecondCategoryAdapter(Context context, Response<DiscoveryGridSecondaryResultBean> response) {
+    public DiscoverySecondCategoryAdapter(Context context, List<DiscoveryGridSecondaryResultBean.LSTBean> list) {
         this.mContext = context;
         this.mInflater = LayoutInflater.from(context);
-        this.response = response;
+        this.list = list;
     }
 
     @Override
     public int getCount() {
-        return response.body().getBODY().getLST().size();
+        return list.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return position;
+        return list.get(position);
     }
 
     @Override
@@ -90,9 +90,9 @@ public class DiscoverySecondCategoryAdapter extends BaseAdapter {
          * "MSG": ""
          * }
          */
-        Uri parse = Uri.parse(response.body().getBODY().getLST().get(position).getIMG());
+        Uri parse = Uri.parse(list.get(position).IMG);
         Glide.with(mContext).load(parse).into(holder.itemalumbimg);
-        holder.textviewTitle.setText(response.body().getBODY().getLST().get(position).getNAME());
+        holder.textviewTitle.setText(list.get(position).NAME);
 
         return convertView;
     }

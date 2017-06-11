@@ -1,8 +1,6 @@
 package com.tongyuan.android.zhiquleyuan.adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +14,6 @@ import com.daimajia.swipe.adapters.BaseSwipeAdapter;
 import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.activity.BabyInfoListActivity;
-import com.tongyuan.android.zhiquleyuan.activity.SetInitVolumeActivity;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteBabyInfoReQBean;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteBabyInfoReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListResult;
@@ -94,40 +91,40 @@ public class BabyInfoListAdapter extends BaseSwipeAdapter {
         mTv_item_babyinfolist_birthday = (TextView) convertView.findViewById(R.id.tv_item_babyinfolist_birthday);
         mTv_item_babyinfolist_primarysound = (TextView) convertView.findViewById(R.id.tv_item_babyinfolist_primarysound);
         mSwipe_babyinfolist_delete = (Button) convertView.findViewById(R.id.swipe_babyinfolist_delete);
-        mSwipe_babyinfolist_delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mLSTBeen.remove(pos);
-                //先写在刷新列表之前
-                deleteBabyInfo(pos);
-                notifyDataSetChanged();
-                swipeLayout.close();// 删除成功后需要关闭侧滑
-            }
-        });
+//        mSwipe_babyinfolist_delete.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                mLSTBeen.remove(pos);
+//                //先写在刷新列表之前
+//                deleteBabyInfo(pos);
+//                notifyDataSetChanged();
+//                swipeLayout.close();// 删除成功后需要关闭侧滑
+//            }
+//        });
         Glide.with(mContext).load(mLSTBeen.get(pos).getIMG()).into(mIv_item_babyinfolist);
         mTv_title_item_babyinfolist.setText(mLSTBeen.get(pos).getNAME());
         mTv_item_babyinfolist_sexy.setText(mLSTBeen.get(pos).getSEX());
         mTv_item_babyinfolist_birthday.setText(mLSTBeen.get(pos).getBIRTHDAY());
-        mTv_item_babyinfolist_invite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ToastUtil.showToast(mContext, "点击的是邀请");
-            }
-        });
-        mTv_item_babyinfolist_primarysound.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO 拿错数据了,应该要toyid,给setinitvolume传过了已经,要改正 2017 6月9 0:10
-                Intent intent = new Intent();
-                intent.setClass(mContext, SetInitVolumeActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("babaid", mLSTBeen.get(pos).getID());
-                intent.putExtras(bundle);
-                mContext.startActivity(intent);
-
-                ToastUtil.showToast(mContext, "点击的是设置音量");
-            }
-        });
+//        mTv_item_babyinfolist_invite.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                ToastUtil.showToast(mContext, "点击的是邀请");
+//            }
+//        });
+//        mTv_item_babyinfolist_primarysound.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                //TODO 拿错数据了,应该要toyid,给setinitvolume传过了已经,要改正 2017 6月9 0:10
+//                Intent intent = new Intent();
+//                intent.setClass(mContext, SetInitVolumeActivity.class);
+//                Bundle bundle = new Bundle();
+//                bundle.putString("babaid", mLSTBeen.get(pos).getID());
+//                intent.putExtras(bundle);
+//                mContext.startActivity(intent);
+//
+//                ToastUtil.showToast(mContext, "点击的是设置音量");
+//            }
+//        });
     }
 
     private void deleteBabyInfo(int pos) {

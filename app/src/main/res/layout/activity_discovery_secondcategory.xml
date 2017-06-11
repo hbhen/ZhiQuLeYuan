@@ -1,185 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
+    <RelativeLayout
         android:id="@+id/tb_discovery_secondcategory"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="44dp"
+        android:background="@color/main_top_bg">
 
         <ImageView
+            android:id="@+id/sub_discovery_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/arrow_left"/>
+            android:layout_marginLeft="10dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/arrow_left" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:layout_gravity="center"
             android:text="专辑详情"
             android:textColor="#000000"
-            android:textSize="18sp"/>
-    </android.support.v7.widget.Toolbar>
+            android:textSize="18sp" />
+    </RelativeLayout>
 
-    <!--<LinearLayout-->
-    <!--android:padding="10dp"-->
-    <!--android:id="@+id/ll_item_discovery_secondcategory"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_below="@id/tb_discovery_secondcategory"-->
-    <!--android:orientation="horizontal">-->
-
-    <!--<ImageView-->
-    <!--android:id="@+id/iv_album_details_one"-->
-    <!--android:layout_width="108dp"-->
-    <!--android:layout_height="108dp"-->
-    <!--android:scaleType="centerCrop"-->
-    <!--android:src="@mipmap/test"/>-->
-
-    <!--<LinearLayout-->
-    <!--android:id="@+id/rldetails_title"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="108dp"-->
-    <!--android:layout_marginLeft="5dp"-->
-    <!--android:layout_toRightOf="@id/iv_album_details_one"-->
-    <!--android:orientation="vertical">-->
-
-    <!--<TextView-->
-    <!--android:id="@+id/tv_album_details_one_title"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:text="小精豆童谣说唱专辑"-->
-    <!--android:textColor="#000000"-->
-    <!--android:textSize="14sp"/>-->
-
-    <!--<RelativeLayout-->
-    <!--android:id="@+id/rl_details_name"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_below="@id/tv_album_details_one_title">-->
-
-    <!--<TextView-->
-    <!--android:id="@+id/tv_album_details_one_des_name"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:text="主        播:"-->
-    <!--android:textSize="12sp"-->
-    <!--/>-->
-
-    <!--<TextView-->
-    <!--android:id="@+id/tv_album_details_one_des_setname"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_toRightOf="@id/tv_album_details_one_des_name"-->
-    <!--android:text="little dot"-->
-    <!--android:textColor="#ff4511"-->
-    <!--android:textSize="12sp"-->
-    <!--/>-->
-    <!--</RelativeLayout>-->
-
-    <!--<RelativeLayout-->
-    <!--android:id="@+id/rl_details_times"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_below="@id/rl_details_name">-->
-
-    <!--<TextView-->
-    <!--android:id="@+id/tv_album_details_one_des_times"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:text="播放次数:"-->
-    <!--android:textSize="12sp"-->
-    <!--/>-->
-
-    <!--<TextView-->
-    <!--android:id="@+id/tv_album_details_one_des_settimes"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_toRightOf="@id/tv_album_details_one_des_times"-->
-    <!--android:text="3258"-->
-    <!--android:textColor="#ff4511"-->
-    <!--android:textSize="12sp"-->
-    <!--/>-->
-    <!--</RelativeLayout>-->
-
-    <!--<RelativeLayout-->
-    <!--android:id="@+id/rl_details_collection"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_below="@id/rl_details_times">-->
-
-    <!--<TextView-->
-    <!--android:id="@+id/tv_album_details_one_des_collection"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:text="收        藏:"-->
-    <!--android:textSize="12sp"-->
-    <!--/>-->
-
-    <!--<TextView-->
-    <!--android:id="@+id/tv_album_details_one_des_setcollection"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_toRightOf="@id/tv_album_details_one_des_collection"-->
-    <!--android:text="85"-->
-    <!--android:textColor="#ff4511"-->
-    <!--android:textSize="12sp"-->
-    <!--/>-->
-    <!--</RelativeLayout>-->
-
-    <!--<RelativeLayout-->
-    <!--android:id="@+id/rl_details_category"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_below="@id/rl_details_collection">-->
-
-    <!--<TextView-->
-    <!--android:id="@+id/tv_album_details_one_des_category"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:text="分        类:"-->
-    <!--android:textSize="12sp"-->
-    <!--/>-->
-
-    <!--<TextView-->
-    <!--android:id="@+id/tv_album_details_one_des_setcategory"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_toRightOf="@id/tv_album_details_one_des_category"-->
-    <!--android:text="童谣"-->
-    <!--android:textColor="#ff4511"-->
-    <!--android:textSize="12sp"-->
-    <!--/>-->
-    <!--</RelativeLayout>-->
-
-    <!--<Button-->
-    <!--android:layout_gravity=""-->
-    <!--android:layout_width="80dp"-->
-    <!--android:layout_height="26dp"-->
-    <!--android:layout_below="@id/rldetails_title"-->
-    <!--android:layout_toRightOf="@id/iv_album_details_one"-->
-    <!--android:background="#8EC245"-->
-    <!--android:text="专辑订阅"-->
-    <!--android:textColor="#000000"-->
-    <!--android:textSize="12sp"-->
-    <!--/>-->
-    <!--</LinearLayout>-->
-
-
-    <!--</LinearLayout>-->
     <include
         android:id="@+id/ll_item_discovery_secondcategory"
-        layout="@layout/item_album_details_one"/>
+        layout="@layout/item_album_details_one" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="@color/main_top_bg" />
 
     <ListView
         android:id="@+id/lv_activity_discovery_secondcategory"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/ll_item_discovery_secondcategory"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="10dp" />
 
 
-</RelativeLayout>
+</LinearLayout>
