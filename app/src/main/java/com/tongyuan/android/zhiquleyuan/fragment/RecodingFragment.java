@@ -14,11 +14,11 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -48,7 +48,7 @@ import static java.lang.System.currentTimeMillis;
 public class RecodingFragment extends BaseFragment implements View.OnClickListener {
 
     private ImageView mRecordingButton;
-    private AbsListView mLv_recoding;
+    private ListView mLv_recoding;
     private File mFile;
     private RecodingAdapter mAdapter;
     private LinearLayout mRecordingListHeader;
@@ -124,7 +124,7 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
         mDownAction = (ImageView) recordingRoot.findViewById(R.id.iv_fragent_recording_down);
         mRecordingButton = (ImageView) recordingRoot.findViewById(R.id.iv_recoding_tool_startrecoding);
 
-        mLv_recoding = (AbsListView) recordingRoot.findViewById(R.id.lv_recoding);
+        mLv_recoding = (ListView) recordingRoot.findViewById(R.id.lv_recoding);
         mItemRecordingListHeader = itemRecordingHeader.findViewById(R.id.tv_item_play_list_header);
         mControl = (RelativeLayout) recordingRoot.findViewById(R.id.rl_fragment_recoding_control);
 

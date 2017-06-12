@@ -38,6 +38,7 @@
         android:orientation="horizontal">
 
         <ImageView
+            android:scaleType="centerCrop"
             android:id="@+id/iv_desc"
             android:layout_width="60dp"
             android:layout_height="60dp"
@@ -77,11 +78,11 @@
                     android:id="@+id/tv_desc_detailstimes"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_toRightOf="@id/tv_desc_times"
                     android:text="336"
                     android:textColor="#ff4511"
-                    android:textSize="12dp" />
+                    android:textSize="12dp"
+                    android:layout_toRightOf="@+id/tv_desc_times"
+                    android:layout_toEndOf="@+id/tv_desc_times"/>
 
                 <TextView
                     android:id="@+id/tv_desc_category"

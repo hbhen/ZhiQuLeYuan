@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -211,22 +210,22 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
 //                以什么作为判断呢?
                 getListInfo();
 
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mLst.size() != 0) {
-                            ToastUtil.showToast(getActivity(), "进入宝宝信息里列表");
-
-                            mIntent.setClass(getActivity(), BabyInfoListActivity.class);
-                            startActivity(mIntent);
-                        } else {
-
-                            mIntent.setClass(getActivity(), MyBabyActivity.class);
-                            startActivity(mIntent);
-                        }
-                    }
-                }, 300);
+//                Handler handler = new Handler();
+//                handler.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        if (mLst.size() != 0) {
+//                            ToastUtil.showToast(getActivity(), "进入宝宝信息里列表");
+//
+//                            mIntent.setClass(getActivity(), BabyInfoListActivity.class);
+//                            startActivity(mIntent);
+//                        } else {
+//
+//                            mIntent.setClass(getActivity(), MyBabyActivity.class);
+//                            startActivity(mIntent);
+//                        }
+//                    }
+//                }, 300);
 
 
                 break;
@@ -328,6 +327,22 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                 mBody = response.body();
                 Log.i("111", "listResponse: " + listResponse);
                 mLst = response.body().getBODY().getLST();
+
+                if(response.body().getCODE().equals("0")) {
+                    if (mLst.size() != 0) {
+                        ToastUtil.showToast(getActivity(), "进入宝宝信息里列表");
+
+                        mIntent.setClass(getActivity(), BabyInfoListActivity.class);
+                        startActivity(mIntent);
+                    } else {
+
+                        mIntent.setClass(getActivity(), MyBabyActivity.class);
+                        startActivity(mIntent);
+                    }
+                } else {
+                    ToastUtil.showToast(getActivity(), response.body().getMSG());
+                }
+
             }
 
             @Override

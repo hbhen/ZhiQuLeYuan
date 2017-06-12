@@ -157,6 +157,9 @@
     <string name="main_history">历史</string>
     <string name="main_mine">我的</string>
 
+    <string name="setinitvolemedesc">点击播放按钮,记录合适宝宝倾听的音量数值,将作为您远程控制播放音量的参考</string>
+
+
     <string name="discovery_top_edit_hint">世界上最好的爸爸</string>
     <string name="player_phone">手机播放</string>
     <string name="player_toy">玩具播放</string>

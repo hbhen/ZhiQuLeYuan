@@ -16,7 +16,7 @@ import com.tongyuan.android.zhiquleyuan.holder.DiscoveryListViewHolder2;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.tongyuan.android.zhiquleyuan.R.id.tv_desc_times;
+import static com.tongyuan.android.zhiquleyuan.R.id.tv_desc_detailstimes;
 import static com.tongyuan.android.zhiquleyuan.R.id.tv_desc_times_notitle;
 import static com.tongyuan.android.zhiquleyuan.utils.ZhiQuLeYuanApplication.context;
 
@@ -72,7 +72,7 @@ public class ListRecommandAdapter extends BaseAdapter {
                     disHolder1.tv_title = (TextView) convertView.findViewById(R.id.tv_title);
                     disHolder1.iv_desc = (ImageView) convertView.findViewById(R.id.iv_desc);
                     disHolder1.tv_desc_title = (TextView) convertView.findViewById(R.id.tv_desc_title);
-                    disHolder1.tv_desc_times = (TextView) convertView.findViewById(tv_desc_times);
+                    disHolder1.tv_desc_times = (TextView) convertView.findViewById(tv_desc_detailstimes);
                     disHolder1.tv_desc_category = (TextView) convertView.findViewById(R.id.tv_desc_category);
                     convertView.setTag(disHolder1);
                     break;

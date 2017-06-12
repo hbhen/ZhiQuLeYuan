@@ -5,6 +5,7 @@
     android:background="#f1f1f1">
 
     <android.support.v7.widget.Toolbar
+
         android:id="@+id/tb_nodisturb"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -17,80 +18,62 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
             android:layout_gravity="center"
             android:text="免打扰设置"
             android:textColor="#000000"
-            android:textSize="60px" />
+            android:textSize="18sp" />
+        <TextView
+            android:layout_width="41dp"
+            android:text="完成"
+            android:textColor="#ff4511"
+            android:textSize="20sp"
+            android:layout_height="20dp"/>
     </android.support.v7.widget.Toolbar>
 
     <RelativeLayout
         android:id="@+id/rl_nodisturb_first"
+        android:descendantFocusability="afterDescendants"
         android:layout_width="match_parent"
         android:layout_height="160px"
         android:layout_below="@id/tb_nodisturb"
         android:background="#ffffff"
         android:gravity="center"
-        android:paddingLeft="30px"
-        android:paddingRight="30px">
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
 
         <TextView
+            android:textSize="16sp"
+            android:textColor="#000000"
             android:id="@+id/tv_nodisturb_first"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="时间的设置,用到三级联动,现在还不会" />
+            android:text="时间的设置,三级联动" />
 
         <TextView
+            android:layout_marginTop="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="#8f8f8f"
             android:layout_below="@id/tv_nodisturb_first"
             android:text="每天" />
 
-        <Button
-
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <com.suke.widget.SwitchButton
+            android:clickable="true"
             android:layout_alignParentRight="true"
-            android:text="开关" />
+            android:id="@+id/switch_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
     </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/rl_nodisturb_second"
-        android:layout_marginTop="30px"
-        android:layout_width="match_parent"
-        android:layout_height="160px"
-        android:layout_below="@id/rl_nodisturb_first"
-        android:background="#ffffff"
-        android:gravity="center"
-        android:paddingLeft="30px"
-        android:paddingRight="30px">
 
-        <TextView
-            android:id="@+id/tv_nodisturb_second"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="时间的设置,用到三级联动,现在还不会" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_nodisturb_second"
-            android:text="每天" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:text="开关" />
-
-    </RelativeLayout>
     <ImageView
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="30px"
+        android:layout_marginTop="11dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/rl_nodisturb_second"
+        android:layout_below="@id/rl_nodisturb_first"
         android:src="@drawable/toy_add_pressed_160"/>
 
 </RelativeLayout>

@@ -16,8 +16,6 @@ import com.tongyuan.android.zhiquleyuan.holder.SecondaryCategoryHolder;
 
 import java.util.List;
 
-import retrofit2.Response;
-
 /**
  * Created by android on 2016/12/21.
  */

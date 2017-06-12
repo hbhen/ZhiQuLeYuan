@@ -46,7 +46,7 @@ public class BabyInfoListAdapter extends BaseSwipeAdapter {
     private String time;
     private String phone;
     private String token;
-    
+
 
     public BabyInfoListAdapter(Context context, List<QueryBabyListResult.BODYBean.LSTBean> lst) {
         mContext = context;
@@ -61,7 +61,7 @@ public class BabyInfoListAdapter extends BaseSwipeAdapter {
         this.time = time;
         this.phone = phone;
         this.token = token;
-        mLSTBeen=lst;
+        mLSTBeen = lst;
 
 
     }
@@ -91,32 +91,40 @@ public class BabyInfoListAdapter extends BaseSwipeAdapter {
         mTv_item_babyinfolist_birthday = (TextView) convertView.findViewById(R.id.tv_item_babyinfolist_birthday);
         mTv_item_babyinfolist_primarysound = (TextView) convertView.findViewById(R.id.tv_item_babyinfolist_primarysound);
         mSwipe_babyinfolist_delete = (Button) convertView.findViewById(R.id.swipe_babyinfolist_delete);
-        mSwipe_babyinfolist_delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mLSTBeen.remove(pos);
-                //先写在刷新列表之前
-                deleteBabyInfo(pos);
-                notifyDataSetChanged();
-                swipeLayout.close();// 删除成功后需要关闭侧滑
-            }
-        });
+//        mSwipe_babyinfolist_delete.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                mLSTBeen.remove(pos);
+//                //先写在刷新列表之前
+//                deleteBabyInfo(pos);
+//                notifyDataSetChanged();
+//                swipeLayout.close();// 删除成功后需要关闭侧滑
+//            }
+//        });
         Glide.with(mContext).load(mLSTBeen.get(pos).getIMG()).into(mIv_item_babyinfolist);
         mTv_title_item_babyinfolist.setText(mLSTBeen.get(pos).getNAME());
         mTv_item_babyinfolist_sexy.setText(mLSTBeen.get(pos).getSEX());
         mTv_item_babyinfolist_birthday.setText(mLSTBeen.get(pos).getBIRTHDAY());
-        mTv_item_babyinfolist_invite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ToastUtil.showToast(mContext, "点击的是邀请");
-            }
-        });
-        mTv_item_babyinfolist_primarysound.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ToastUtil.showToast(mContext, "点击的是设置音量");
-            }
-        });
+//        mTv_item_babyinfolist_invite.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                ToastUtil.showToast(mContext, "点击的是邀请");
+//            }
+//        });
+//        mTv_item_babyinfolist_primarysound.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                //TODO 拿错数据了,应该要toyid,给setinitvolume传过了已经,要改正 2017 6月9 0:10
+//                Intent intent = new Intent();
+//                intent.setClass(mContext, SetInitVolumeActivity.class);
+//                Bundle bundle = new Bundle();
+//                bundle.putString("babaid", mLSTBeen.get(pos).getID());
+//                intent.putExtras(bundle);
+//                mContext.startActivity(intent);
+//
+//                ToastUtil.showToast(mContext, "点击的是设置音量");
+//            }
+//        });
     }
 
     private void deleteBabyInfo(int pos) {
@@ -127,9 +135,9 @@ public class BabyInfoListAdapter extends BaseSwipeAdapter {
 
         AllInterface allInterface = retrofit.create(AllInterface.class);
 
-        DeleteBabyInfoReQBean.BODYBean bodyBean = new DeleteBabyInfoReQBean.BODYBean("BABY",mLSTBeen.get(pos).getID());
+        DeleteBabyInfoReQBean.BODYBean bodyBean = new DeleteBabyInfoReQBean.BODYBean("BABY", mLSTBeen.get(pos).getID());
 
-        DeleteBabyInfoReQBean babyInfoRequestBean = new DeleteBabyInfoReQBean("REQ", "DINFO",phone,time,bodyBean,"",token,"1");
+        DeleteBabyInfoReQBean babyInfoRequestBean = new DeleteBabyInfoReQBean("REQ", "DINFO", phone, time, bodyBean, "", token, "1");
         Gson gson = new Gson();
         String s = gson.toJson(babyInfoRequestBean);
         Call<DeleteBabyInfoReSBean> deleteBabyInfoReSBeanCall = allInterface.delteBabyInfoReult(s);
@@ -151,7 +159,7 @@ public class BabyInfoListAdapter extends BaseSwipeAdapter {
 
     @Override
     public int getCount() {
-        return mLSTBeen.size()-1;
+        return mLSTBeen.size() - 1;
     }
 
     @Override

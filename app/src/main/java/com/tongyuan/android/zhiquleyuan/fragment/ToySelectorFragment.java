@@ -128,6 +128,7 @@ public class ToySelectorFragment extends BaseFragment {
                 Log.i("111111", "instaniateItem " + toyImg.get(position));
                 Glide.with(getActivity()).load(toyImg.get(position)).asBitmap().into(mImageView);
                 container.addView(mImageView);
+
                 mImageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -185,10 +186,27 @@ public class ToySelectorFragment extends BaseFragment {
             public boolean isViewFromObject(View view, Object object) {
                 return view == (View) object;
             }
+
         });
         Log.i("111111", "mPagerAdapter=" + mPagerAdapter);
         mViewpagetToy.setPageTransformer(true, new ScaleInTransformer());
         mViewpagetToy.setCurrentItem(1);
+        mViewpagetToy.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                //TODO
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 ////获取数据
 //    public Bundle getBundle() {
@@ -230,7 +248,9 @@ public class ToySelectorFragment extends BaseFragment {
                     body = response.body();
 
                     MainActivity mainActivity = (MainActivity) getActivity();
+
                     mainActivity.getToyDetailsFragment().setData(body.getBODY(), babyImg.get(position));
+
                     showFragment(ToyDetailsFragment.class.getSimpleName());
                     Log.i(TAG, "onResponse: +toyselelctorfragment+body" + body.getBODY().toString());
 

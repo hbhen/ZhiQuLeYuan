@@ -34,6 +34,7 @@ import com.tongyuan.android.zhiquleyuan.view.ChangeDatePopwindow;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -103,21 +104,22 @@ public class MyBabyActivity extends AppCompatActivity {
         mRgAddbabyinfo.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch (checkedId){
+                switch (checkedId) {
                     case R.id.radioButtonBoy:
-                        sex="M";
+                        sex = "M";
                         break;
                     case R.id.radiobuttonGirls:
-                        sex="W";
+                        sex = "W";
                 }
             }
         });
 
         uploadFilePath = getExternalFilesDir(DIRECTORY_PICTURES).getAbsolutePath();
+        uploadFileName="icon.png";
     }
 
     @OnClick({R.id.iv_addbabyinfo, R.id.et_addbabyinfo, R.id.rg_addbabyinfo,
-            R.id.tv_activity_addbabyinfo_date, R.id.bt_activity_addbabyinfo_confirm})
+            R.id.tv_activity_addbabyinfo_date, R.id.bt_activity_addbabyinfo_confirm, R.id.baby_back})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_addbabyinfo:
@@ -130,37 +132,22 @@ public class MyBabyActivity extends AppCompatActivity {
                 break;
             case R.id.radioButtonBoy:
                 //宝宝的性别选择(男), 如果选中,就给定一个值
-                    sex = "M";
+                sex = "M";
                 break;
             case R.id.radiobuttonGirls:
                 //宝宝的性别选择(女)
-                    sex = "W";
+                sex = "W";
                 break;
             case R.id.tv_activity_addbabyinfo_date:
                 mBirthday = selectDate();
                 break;
             case R.id.bt_activity_addbabyinfo_confirm:
                 //确认键,将头像,宝宝的姓名(babyID),性别,出生年月日上传到服务器
-                String babyID = mEtAddbabyinfo.getText().toString().trim();
-                String phoneNum = SPUtils.getString(this, "phoneNum", "");
-                String babyToken = SPUtils.getString(this, "TOKEN", "");
-                Log.i("111", "babyID" + babyID);
-                Log.i("111", "phoneNum" + phoneNum);
-                Log.i("111", "babyToken" + babyToken);
-                Date date = new Date();
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-                String time = simpleDateFormat.format(date);
-
-//                uploadPic(uriIntent);
-//                if (sex.equals("") || babyID.equals("") || phoneNum.equals("") || babyToken.equals("")) {
-//                    ToastUtil.showToast(this, "您有未完成的信息,请填完以后再点击");
-//                    return;
-//                } else {
-//                confirmInfo(phoneNum, time, babyToken, babyID, sex);
-                    //把头像,上传到服务器
-                    uploadPic(new File(uploadFilePath+File.separator+uploadFileName));
-//                }
-
+                //把头像,上传到服务器
+                uploadPic(new File(uploadFilePath + File.separator + uploadFileName));
+                break;
+            case R.id.baby_back:
+                finish();
                 break;
             default:
                 break;
@@ -325,41 +312,56 @@ public class MyBabyActivity extends AppCompatActivity {
         if (extras != null) {
             Bitmap photo = extras.getParcelable("data");
             photo = Utils.toRoundBitmap(photo, uploadFilePath, uploadFileName);
+            Utils.savePhoto(photo, uploadFilePath, uploadFileName);
             mIvAddbabyinfo.setImageBitmap(photo);
 
         }
     }
 
     //用retrofit上传头像
-    private void uploadPic(File photo) {
-        Retrofit retrofit=new Retrofit.Builder()
+    private void uploadPic(File file) {
+        String phoneNum = SPUtils.getString(this, "phoneNum", "");
+        String babyToken = SPUtils.getString(this, "TOKEN", "");
+        Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
-        Gson gson=new Gson();
+        Gson gson = new Gson();
         String babyID = mEtAddbabyinfo.getText().toString().trim();
         Date date = new Date();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         String time = simpleDateFormat.format(date);
+
         BabyInfoRequestBean.BODYBean babyInfoBody = new BabyInfoRequestBean.BODYBean("BABY", time, babyID, babyID, mTimedate, "M");
-        String phoneNum = SPUtils.getString(this, "phoneNum", "");
-        String babyToken = SPUtils.getString(this, "TOKEN", "");
         BabyInfoRequestBean babyInfoRequestBean = new BabyInfoRequestBean("REQ", "INFO", phoneNum, time, babyInfoBody, "", babyToken, "1");
 
         String s = gson.toJson(babyInfoRequestBean);
+//        Log.i("upload", "request =" + s);
+//        RequestBody requestFile = RequestBody.create(MediaType.parse("image/png"), file);
+//        RequestBody description = RequestBody.create(MediaType.parse("multipart/form_data"),"宝宝的头像");
+//        MultipartBody.Part body = MultipartBody.Part.createFormData("IMG", file.getName(), requestFile);
 
-        RequestBody requestFile = RequestBody.create(MediaType.parse("image/png"), photo);
-        MultipartBody.Part body = MultipartBody.Part.createFormData("IMG", photo.getName(), requestFile);
-Log.i("upload", "request ="+s);
-        RequestBody description = RequestBody.create(MediaType.parse("multipart/form_data"), s);
-        Call<BabyInfoResultBean> call = allInterface.BABY_INFO_RESULT_BEAN_CALL(description, body);
-        call.enqueue(new Callback<BabyInfoResultBean>() {
+        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+//        MultipartBody.Part body = MultipartBody.Part.createFormData("IMG", file.getName(), requestFile);
+
+        MultipartBody.Builder builder = new MultipartBody.Builder();
+        builder.setType(MultipartBody.FORM);
+        builder.addFormDataPart("params", s);
+        builder.addFormDataPart("IMG", file.getName(), requestFile);
+
+        List<MultipartBody.Part> parts = builder.build().parts();
+        Call<BabyInfoResultBean> babyInfoResultBeanCall = allInterface.BABY_INFO_RESULT_BEAN_CALL(parts);
+        babyInfoResultBeanCall.enqueue(new Callback<BabyInfoResultBean>() {
             @Override
             public void onResponse(Call<BabyInfoResultBean> call, Response<BabyInfoResultBean> response) {
-                Log.i("upload", "body="+response.message() + " " + response.body().getMSG());
+//                Log.i("upload", "body=" + response.message() + " " + response.body().getMSG());
                 String code = response.body().getCODE();
-                Log.i("upload", response.body().toString());
+//                Log.i("upload", response.body().toString());
+                if(code.equals("0")) {
+                    finish();
+                    setResult(BabyInfoListActivity.SuccessCode);
+                }
             }
 
             @Override
@@ -367,10 +369,22 @@ Log.i("upload", "request ="+s);
                 Log.i("upload", "onFailure...");
             }
         });
+//        Call<BabyInfoResultBean> call = allInterface.BABY_INFO_RESULT_BEAN_CALL(s, body);
+//        call.enqueue(new Callback<BabyInfoResultBean>() {
+//            @Override
+//            public void onResponse(Call<BabyInfoResultBean> call, Response<BabyInfoResultBean> response) {
+//                Log.i("upload", "body=" + response.message() + " " + response.body().getMSG());
+//                String code = response.body().getCODE();
+//                Log.i("upload", response.body().toString());
+//            }
+//
+//            @Override
+//            public void onFailure(Call<BabyInfoResultBean> call, Throwable t) {
+//                Log.i("upload", "onFailure...");
+//            }
+//        });
 
     }
-
-
 
 
 }

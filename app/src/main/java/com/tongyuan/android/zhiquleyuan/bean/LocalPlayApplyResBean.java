@@ -33,6 +33,7 @@ public class LocalPlayApplyResBean implements Parcelable {
 
     public String getURL() {
         return URL;
+
     }
 
     public void setURL(String URL) {

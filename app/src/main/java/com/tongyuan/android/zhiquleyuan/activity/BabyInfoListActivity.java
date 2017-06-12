@@ -2,15 +2,19 @@ package com.tongyuan.android.zhiquleyuan.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 
+import com.daimajia.swipe.util.Attributes;
 import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.adapter.BabyInfoListAdapter;
@@ -41,7 +45,7 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
     private String mToken;
     private ImageView mIv_babayinfolist_addbabyinfo;
     private ImageView mIv_babyinfolist_backa;
-    private Intent mIntent;
+    private SwipeRefreshLayout sp;
 
 
     @Override
@@ -49,22 +53,36 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.babyinfolist);
         initView();
+
         initData();
         initListener();
     }
 
-    private void initListener() {
-        mIv_babayinfolist_addbabyinfo.setOnClickListener(this);
-    }
+
 
     private void initView() {
         mListview = (ListView) findViewById(R.id.lv_babyinfolist);
+        sp = (SwipeRefreshLayout) findViewById(R.id.sp);
         mIv_babayinfolist_addbabyinfo = (ImageView) findViewById(R.id.iv_babayinfolist_addbabyinfo);
         mIv_babyinfolist_backa = (ImageView) findViewById(R.id.iv_babyinfolist_backa);
     }
+    private void initListener() {
+        mIv_babayinfolist_addbabyinfo.setOnClickListener(this);
+        sp.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        sp.setRefreshing(false);
+                    }
+                },300);
 
+            }
+        });
+    }
     private void initData() {
-        mIntent = new Intent();
+
         mToken = SPUtils.getString(this, "TOKEN", "");
         final String phone = SPUtils.getString(this, "phoneNum", "");
         Date date = new Date();
@@ -112,7 +130,15 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
 
     private void showBabyList(Response<QueryBabyListResult> response, String time, String phone, String token, List<QueryBabyListResult.BODYBean
             .LSTBean> lst) {
-        mListview.setAdapter((new BabyInfoListAdapter(this,response,time,phone,token,lst)));
+        BabyInfoListAdapter mAdapter = new BabyInfoListAdapter(this,response,time,phone,token,lst);
+        mListview.setAdapter(mAdapter);
+        mAdapter.setMode(Attributes.Mode.Single);
+        mListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ToastUtil.showToast(getApplicationContext(), "click postion"+position);
+            }
+        });
     }
 
 //    private void showBabyList(List<QueryBabyListResult.BODYBean.LSTBean> lst) {
@@ -124,6 +150,7 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.iv_babayinfolist_addbabyinfo:
+                Intent mIntent = new Intent();
                 mIntent.setClass(this,MyBabyActivity.class);
                 startActivityForResult(mIntent,ADD_BABYINFO);
                 break;
@@ -136,9 +163,12 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
         }
     }
 
+    public static final int SuccessCode = 66;
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        if(resultCode == SuccessCode) {
+            initData();
+        }
     }
 }

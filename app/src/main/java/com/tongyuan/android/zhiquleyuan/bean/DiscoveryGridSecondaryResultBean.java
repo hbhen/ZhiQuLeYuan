@@ -1,12 +1,13 @@
 package com.tongyuan.android.zhiquleyuan.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  *
  * Created by DTC on 2017/3/24.
  */
-public class DiscoveryGridSecondaryResultBean {
+public class DiscoveryGridSecondaryResultBean implements Serializable{
 
     public String PN;
     public String CNT;
@@ -14,7 +15,7 @@ public class DiscoveryGridSecondaryResultBean {
     public String NC;
     public List<LSTBean> LST;
 
-    public static class LSTBean {
+    public static class LSTBean implements Serializable{
 
         public String TYPE;
         public String NAME;

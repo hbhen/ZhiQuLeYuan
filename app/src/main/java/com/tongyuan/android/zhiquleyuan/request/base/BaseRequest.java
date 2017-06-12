@@ -1,7 +1,6 @@
 package com.tongyuan.android.zhiquleyuan.request.base;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 

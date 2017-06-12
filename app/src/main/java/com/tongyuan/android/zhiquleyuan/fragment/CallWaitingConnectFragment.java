@@ -21,6 +21,7 @@ public class CallWaitingConnectFragment extends BaseFragment {
         View viewById1 = getActivity().findViewById(R.id.rb_toy);//底部玩具按钮
         viewById.setVisibility(View.GONE);
         viewById1.setVisibility(View.GONE);
+
         return view;
     }
 }

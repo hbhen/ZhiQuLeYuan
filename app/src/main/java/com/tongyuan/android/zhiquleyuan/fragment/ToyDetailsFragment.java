@@ -19,11 +19,14 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
+import com.tongyuan.android.zhiquleyuan.activity.MyPlayActivity;
 import com.tongyuan.android.zhiquleyuan.activity.VideoActivity;
 import com.tongyuan.android.zhiquleyuan.adapter.DiscoveryListViewAdapter;
 import com.tongyuan.android.zhiquleyuan.base.BaseFragment;
 import com.tongyuan.android.zhiquleyuan.bean.CallToToyReq;
 import com.tongyuan.android.zhiquleyuan.bean.CallToToyRes;
+import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListRequsetBean;
+import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.GetInstantStateInfoReq;
 import com.tongyuan.android.zhiquleyuan.bean.GetInstantStateInfoRes;
 import com.tongyuan.android.zhiquleyuan.bean.Items;
@@ -51,7 +54,6 @@ import static com.tongyuan.android.zhiquleyuan.R.id.iv_toy_details_call;
 /**
  * Created by android on 2017/1/9.
  */
-
 public class ToyDetailsFragment extends BaseFragment implements View.OnClickListener {
 
     private View mToyDetails;
@@ -81,7 +83,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     private String mPhoneNum;
     private String mTime;
     private String mRoomid;
-//    private VideoFragment mVideoFragment;
+    //    private VideoFragment mVideoFragment;
     private TextView mToyIsPlaying;
     private ImageView mCallSignal;
     private ImageView mCallButtery;
@@ -89,6 +91,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     private ImageView mCallCamera;
     private TextView mUnbindToy;
     private SingleToyInfoRESBean.BODYBean singleresponse;
+    private DiscoveryListViewAdapter mLAdapter;
 
 
     @Nullable
@@ -96,7 +99,6 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.i(TAG, "onCreateView: went");
         mToyDetails = inflater.inflate(R.layout.fragment_toy_details, null);
-
 //        FrameLayout framelayoutControl =  (FrameLayout) mToyDetails.findViewById(R.id.fl_fragment_toy_details_playcontrol);
         mListviewRecommand = (ListView) mToyDetails.findViewById(R.id.lv_fragment_toy_details_recommand);
 
@@ -108,7 +110,6 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         mTv_fragment_toy_details_babyName = (TextView) mToyDetails.findViewById(R.id.tv_fragment_toy_details_babyName);
         mTv_fragment_toy_details_toytype = (TextView) mToyDetails.findViewById(R.id.tv_fragment_toy_details_toytype);
         mUnbindToy = (TextView) mToyDetails.findViewById(R.id.tv_fragment_toy_details_unbind);
-//        iv_toy_details_call
 
         //设置状态信息的图片
         mCallSignal = (ImageView) mToyDetails.findViewById(R.id.iv_fragment_toy_details_call_signal);
@@ -119,23 +120,77 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         mToyIsPlaying = (TextView) mToyDetails.findViewById(R.id.tv_toy_details_playing);
 
         mToyManagerFragment = new ToyManagerFragment();
-//        mVideoFragment = new VideoFragment();
 
-//        intiData();
-        initView();
+//        initView();
+        getListRaw();
         return mToyDetails;
+    }
+
+
+    private void getListRaw() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        AllInterface allInterface = retrofit.create(AllInterface.class);
+
+        DiscoveryListRequsetBean.BODYBean bodyBean = new DiscoveryListRequsetBean.BODYBean("10", "1");
+        DiscoveryListRequsetBean discoveryListRequsetBean = new DiscoveryListRequsetBean("REQ", "QRYREC", SPUtils.getString(getActivity(),
+                "phoneNum", ""),
+                new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()), bodyBean, "", SPUtils.getString(getActivity(), "TOKEN", ""), "1");
+        Gson gson = new Gson();
+        String s = gson.toJson(discoveryListRequsetBean);
+        Call<DiscoveryListResultBean> discoveryListResult = allInterface.getDiscoveryListResult(s);
+        discoveryListResult.enqueue(new Callback<DiscoveryListResultBean>() {
+            @Override
+            public void onResponse(Call<DiscoveryListResultBean> call, final Response<DiscoveryListResultBean> response) {
+                if (response != null && !response.body().getCODE().equals(0)) {
+                    //返回的list是一个空list
+                    Log.d(TAG, "onResponse: " + SPUtils.getString(getActivity(), "TOKEN", ""));
+                    List<Items> list = new ArrayList<Items>();
+                    list.add(new Items("第一种布局", null));
+                    list.add(new Items(null, "第二种布局"));
+                    mLAdapter = new DiscoveryListViewAdapter(getContext(), list, response);
+                    mListviewRecommand.setAdapter(mLAdapter);
+                    mListviewRecommand.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            DiscoveryListResultBean.BODYBean.LSTBean lstBean = response.body().getBODY().getLST().get(position);
+                            Log.i(TAG, "onItemClick: response:item" + response.body().getBODY().getLST().get(position).getID());
+                            Intent intent = new Intent();
+                            intent.setClass(getActivity(), MyPlayActivity.class);
+                            Bundle bundle = new Bundle();
+                            //responselist为空，lstbean不能用
+                            bundle.putParcelable("toydetailsrecommandlistbean", lstBean);
+                            intent.putExtras(bundle);
+                            startActivity(intent);
+                            ToastUtil.showToast(getActivity(), "当前点击的是:" + position);
+                        }
+                    });
+
+
+                } else {
+                    ToastUtil.showToast(getActivity(), "shibai1");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DiscoveryListResultBean> call, Throwable t) {
+                ToastUtil.showToast(getActivity(), "shibai2");
+            }
+        });
     }
 
 
     public void setData(SingleToyInfoRESBean.BODYBean response, String image) {
         Log.i(TAG, "setData: went");
-        this.mResponse=response;
+        this.mResponse = response;
         this.mBabyimg = image;
         mToyId = response.getID();
         mToken = SPUtils.getString(getContext(), "TOKEN", "");
         mPhoneNum = SPUtils.getString(getContext(), "phoneNum", "");
+
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-        mTime = simpleDateFormat.format(new Date());
         SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("yyyy/MM/dd");
         String acttime = response.getACTTIME();
         mFormatTime = acttime;
@@ -152,48 +207,38 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         mName = response.getNAME();
         mOwnerid = response.getOWNERID();
         mOwnername = response.getOWNERNAME();
-
+        Log.i(TAG, "mbabyimg: " + mBabyimg.toString());
         initView();
     }
 
     private void initView() {
+
         if (mListviewRecommand == null)
             return;
-        final List<Items> list = new ArrayList<Items>();
-        list.add(new Items("第一种布局", null));
-        list.add(new Items(null, "第二种布局"));
-        DiscoveryListViewAdapter discoveryListViewAdapter = new DiscoveryListViewAdapter(getActivity(), list);
-        mListviewRecommand.setAdapter(discoveryListViewAdapter);
-        mListviewRecommand.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //TODO 点击不同的item之后都进入音乐播放器.
-
-//                Intent intent = new Intent();
-//                Bundle bundle = new Bundle();
-//                RecommandBean recommandBean = new RecommandBean();
-//
-//                bundle.putParcelable("key", recommandBean);
-//                intent.putExtras(bundle);
-//                intent.setClass(getActivity(), MyPlayActivity.class);
-//                startActivity(intent);
-                ToastUtil.showToast(getContext(), "当前的position是" + position);
-            }
-        });
-
         mTv_fragment_toy_details_acttime.setText(mFormatTime);
         mTv_fragment_toy_details_toytype.setText(mName);
         Glide.with(getActivity()).load(mImg).asBitmap().into(mIv_fragment_toy_details_toyimg);
-//        Log.d(TAG, "mToycode: " + mToycode);
-        Glide.with(getActivity()).load(mBabyimg).asBitmap().into(new BitmapImageViewTarget(mIv_fragment_toy_details_babyImg) {
-            @Override
-            protected void setResource(Bitmap resource) {
-                RoundedBitmapDrawable mRoundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
-                mRoundedBitmapDrawable.setCircular(true);
-                mIv_fragment_toy_details_babyImg.setImageDrawable(mRoundedBitmapDrawable);
-            }
-        });
 
+        if (mBabyimg.isEmpty()) {
+            Glide.with(getActivity()).load(R.mipmap.default_babyimage).asBitmap().into(new BitmapImageViewTarget(mIv_fragment_toy_details_babyImg) {
+                @Override
+                protected void setResource(Bitmap resource) {
+                    RoundedBitmapDrawable mRoundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
+                    mRoundedBitmapDrawable.setCircular(true);
+                    mIv_fragment_toy_details_babyImg.setImageDrawable(mRoundedBitmapDrawable);
+                }
+            });
+
+        } else {
+            Glide.with(getActivity()).load(mBabyimg).asBitmap().into(new BitmapImageViewTarget(mIv_fragment_toy_details_babyImg) {
+                @Override
+                protected void setResource(Bitmap resource) {
+                    RoundedBitmapDrawable mRoundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
+                    mRoundedBitmapDrawable.setCircular(true);
+                    mIv_fragment_toy_details_babyImg.setImageDrawable(mRoundedBitmapDrawable);
+                }
+            });
+        }
         mCall.setOnClickListener(this);
         mToyManager.setOnClickListener(this);
         mUnbindToy.setOnClickListener(this);
@@ -219,7 +264,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                 ToastUtil.showToast(getActivity(), "跳转到玩具管理界面");
                 if (SPUtils.getString(getActivity(), "ID", "").equals(mOwnerid)) {
                     //TODO setdat
-                    mToyManagerFragment.setData(mResponse,mFormatTime,mBabyimg);
+                    mToyManagerFragment.setData(mResponse, mFormatTime, mBabyimg);
 
 //                    FragmentManager fragmentManager1 = getFragmentManager();
 //                    fragmentManager1.beginTransaction().replace(R.id.fl_fragmentcontainer, mToyManagerFragment).commit();
@@ -271,16 +316,14 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                 bundle.putString("token", token);
                 bundle.putString("toyid", mId);
 
-                startActivity(new Intent(getActivity(),VideoActivity.class).putExtras(bundle));
-
-
-
+                startActivity(new Intent(getActivity(), VideoActivity.class).putExtras(bundle));
 
 
 //                FragmentManager fragmentManager = getFragmentManager();
 //
 //                //跳转到videofragment,暂时不用了,改成跳到一个新的页面,再从那个新页面跳转到videofragment
-//                fragmentManager.beginTransaction().addToBackStack(ToyDetailsFragment.class.getSimpleName()).replace(R.id.fl_fragmentcontainer, mVideoFragment).commit();
+//                fragmentManager.beginTransaction().addToBackStack(ToyDetailsFragment.class.getSimpleName()).replace(R.id.fl_fragmentcontainer,
+// mVideoFragment).commit();
                 ToastUtil.showToast(getActivity(), "roomid" + mRoomid);
                 Log.i("555555", "onResponse:+mRoomid " + mRoomid);
 

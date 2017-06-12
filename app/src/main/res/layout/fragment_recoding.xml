@@ -21,12 +21,13 @@
 
     </android.support.v7.widget.Toolbar>
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/tb_recoding">
+    <!--<ScrollView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_below="@id/tb_recoding">-->
 
         <RelativeLayout
+
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/tb_recoding">
@@ -39,15 +40,14 @@
                 android:layout_marginTop="10dp"
                 android:text="录音列表"/>
 
-            <com.tongyuan.android.zhiquleyuan.swipe.refreshlib.AbListView
+            <ListView
                 android:id="@+id/lv_recoding"
                 android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@id/tv_recordinglist_title"
                 android:background="#ffffff"
-                android:listSelector="@color/transparent">
-            </com.tongyuan.android.zhiquleyuan.swipe.refreshlib.AbListView>
+                android:listSelector="@color/transparent"/>
             <!--<ListView-->
             <!--android:id="@+id/lv_recoding"-->
             <!--android:layout_width="match_parent"-->
@@ -57,10 +57,11 @@
             <!--android:layout_alignParentTop="true"-->
             <!--/>-->
         </RelativeLayout>
-    </ScrollView>
+    <!--</ScrollView>-->
 
     <RelativeLayout
         android:id="@+id/rl_fragment_recoding_control"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true">

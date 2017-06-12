@@ -3,6 +3,7 @@ package com.tongyuan.android.zhiquleyuan.adapter;
 import android.content.Context;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -83,6 +84,13 @@ public class RecordAdapter extends BaseSwipeAdapter {
         long durationLen = recordList.get(pos).length();
         String len = simpleDateFormat.format(durationLen);
         duration.setText(len);
+
+        swipeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("click", "click");
+            }
+        });
 
 
         //TODO Times不知道怎么写...
