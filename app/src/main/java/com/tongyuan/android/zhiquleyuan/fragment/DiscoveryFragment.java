@@ -64,10 +64,6 @@ public class DiscoveryFragment extends BaseFragment implements View.OnClickListe
     private DiscoveryGridAdapter mGAdapter;
     private DiscoveryListViewAdapter mLAdapter;
     private TextView mGridviewTitle;
-    @Bind(R.id.discovery_recycler_view)
-    SwipeRefreshLayout refreshLayout;
-    @Bind(R.id.discovery_recycler_view)
-    RecyclerView recyclerView;
 //    private String mLogintokenToMain;
 
     @Nullable
