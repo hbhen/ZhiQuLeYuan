@@ -1,5 +1,6 @@
 package com.tongyuan.android.zhiquleyuan.fragment;
 
+import android.database.DataSetObservable;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
@@ -7,10 +8,13 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
@@ -22,11 +26,24 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.baoyz.swipemenulistview.SwipeMenu;
+import com.baoyz.swipemenulistview.SwipeMenuCreator;
+import com.baoyz.swipemenulistview.SwipeMenuItem;
+import com.baoyz.swipemenulistview.SwipeMenuListView;
+import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
-import com.tongyuan.android.zhiquleyuan.adapter.RecodingAdapter;
 import com.tongyuan.android.zhiquleyuan.adapter.RecordAdapter;
+import com.tongyuan.android.zhiquleyuan.adapter.RecordingListAdapter;
 import com.tongyuan.android.zhiquleyuan.base.BaseFragment;
+import com.tongyuan.android.zhiquleyuan.bean.DeleteRecordingReqBean;
+import com.tongyuan.android.zhiquleyuan.bean.DeleteRecordingResBean;
+import com.tongyuan.android.zhiquleyuan.bean.QueryRecordingReqBean;
+import com.tongyuan.android.zhiquleyuan.bean.QueryRecordingResBean;
 import com.tongyuan.android.zhiquleyuan.db.DBHelper;
+import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
+import com.tongyuan.android.zhiquleyuan.interf.Constant;
+import com.tongyuan.android.zhiquleyuan.request.RequestManager;
+import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
 import java.io.File;
@@ -38,7 +55,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 import static java.lang.System.currentTimeMillis;
+
+//import com.tongyuan.android.zhiquleyuan.adapter.RecordAdapter;
 
 
 /**
@@ -50,7 +75,7 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
     private ImageView mRecordingButton;
     private ListView mLv_recoding;
     private File mFile;
-    private RecodingAdapter mAdapter;
+    //    private RecodingAdapter mAdapter;
     private LinearLayout mRecordingListHeader;
     private ImageView mShare;
     private ImageView mEditor;
@@ -88,13 +113,20 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
     private boolean isRecordingPlaying = false;
     private FrameLayout mBottomControl;
     private MediaPlayer mMediaPlayer1;
+    private String mToken;
+    private String mPhoneNum;
+    private SwipeRefreshLayout sprefresh;
+    private SwipeMenuListView mSwipelistview;
+    private SwipeMenuCreator mCreator;
 
+    DataSetObservable dataSetObservable = new DataSetObservable();
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View recordingRoot = initView(inflater);
         mDbHelper = new DBHelper(getActivity());
+
         return recordingRoot;
 
     }
@@ -147,17 +179,153 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
                 showFile(recordList);
             }
         };
+
+        sprefresh = (SwipeRefreshLayout) recordingRoot.findViewById(R.id.sprefresh);
+        mSwipelistview = (SwipeMenuListView) recordingRoot.findViewById(R.id.lv_recoding);
+        sprefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+
+            @Override
+            public void onRefresh() {
+                queryRecordingList();
+                sprefresh.setRefreshing(false);
+            }
+
+        });
+
+
         return recordingRoot;
     }
 
+    private int dp2px(int dp) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
+                getResources().getDisplayMetrics());
+    }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        initData();
         initListener();
 
         //TODO 展示本地的recording,没有就去网络获取
 
+
+    }
+
+    private void initData() {
+//    QueryRecordingReqBean.BODYBean bodyBean=new QueryRecordingReqBean.BODYBean("","10","1");
+////    QueryRecordingReqBean queryRecordingReqBean = new QueryRecordingReqBean(bodyBean);
+//    BaseRequest baseRequest = new BaseRequest(getContext(), bodyBean, "MYREC");
+//    Call<SuperModel<QueryRecordingResBean>> queryRecordingResBeanResult = RequestManager.getInstance().queryRecordingResBean(baseRequest);
+        queryRecordingList();
+
+
+    }
+
+    private void queryRecordingList() {
+        mToken = SPUtils.getString(getContext(), "TOKEN", "");
+        mPhoneNum = SPUtils.getString(getContext(), "phoneNum", "");
+        Date date = new Date();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        final String time = simpleDateFormat.format(date);
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constant.baseurl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        AllInterface allInterface = retrofit.create(AllInterface.class);
+        QueryRecordingReqBean.BODYBean bodyBean = new QueryRecordingReqBean.BODYBean("", "10", "1");
+        QueryRecordingReqBean queryRecordingReqBean = new QueryRecordingReqBean("REQ", "MYREC", mPhoneNum, time, bodyBean, "", mToken, "1");
+
+        Gson gson = new Gson();
+        String babyListJson = gson.toJson(queryRecordingReqBean);
+        Call<QueryRecordingResBean> babyListResult = allInterface.QUERY_RECORDING_RES_BEAN_CALL(babyListJson);
+        babyListResult.enqueue(new Callback<QueryRecordingResBean>() {
+
+            private List<QueryRecordingResBean.BODYBean.LSTBean> mLst;
+            private RecordingListAdapter mRecordingListAdapter;
+
+            @Override
+            public void onResponse(Call<QueryRecordingResBean> call, Response<QueryRecordingResBean> response) {
+                if (response.body() != null && response.body().getCODE().equals("0")) {
+                    Log.i("1111111", "queryRecordingList:response" + response.body().getBODY().toString());
+                    mLst = response.body().getBODY().getLST();
+                    mRecordingListAdapter = new RecordingListAdapter(getContext(), mLst);
+                    mSwipelistview.setAdapter(mRecordingListAdapter);
+                    mSwipelistview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                            ToastUtil.showToast(getContext(), "点击的是:" + position);
+
+                        }
+                    });
+                    SwipeMenuCreator mCreator = new SwipeMenuCreator() {
+                        @Override
+                        public void create(SwipeMenu menu) {
+                            SwipeMenuItem deleteItem = new SwipeMenuItem(getContext());
+                            deleteItem.setTitle("删除");
+                            deleteItem.setBackground(R.color.redFont);
+                            deleteItem.setWidth(dp2px(70));
+                            deleteItem.setTitleSize(16);
+
+                            deleteItem.setTitleColor(R.color.white);
+                            menu.addMenuItem(deleteItem);
+
+                        }
+                    };
+
+                    mSwipelistview.setMenuCreator(mCreator);
+                    mSwipelistview.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
+                            deleteRecording(time, position, mLst);
+                            mLst.remove(position);
+                            mRecordingListAdapter.notifyDataSetChanged();
+                            ToastUtil.showToast(getContext(), "点击删除");
+                            return false;
+                        }
+                    });
+
+                    mSwipelistview.setSmoothScrollbarEnabled(true);
+                    mSwipelistview.setSwipeDirection(SwipeMenuListView.DIRECTION_LEFT);
+                    mSwipelistview.setOpenInterpolator(new AccelerateInterpolator());
+                    mSwipelistview.setCloseInterpolator(new AccelerateInterpolator());
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<QueryRecordingResBean> call, Throwable t) {
+
+            }
+        });
+
+    }
+
+    private void deleteRecording(String time, int position, List<QueryRecordingResBean.BODYBean.LSTBean> lst) {
+        String recordingId = lst.get(position).getID();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constant.baseurl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        AllInterface allInterface = retrofit.create(AllInterface.class);
+        DeleteRecordingReqBean.BODYBean bodyBean = new DeleteRecordingReqBean.BODYBean(recordingId);
+        DeleteRecordingReqBean deleteRecordingReqBean = new DeleteRecordingReqBean("REQ", "DRES", mPhoneNum, time, bodyBean, "", mToken, "1");
+
+        Gson gson = new Gson();
+        String babyListJson = gson.toJson(deleteRecordingReqBean);
+        Call<DeleteRecordingResBean> babyListResult = allInterface.DELETE_RECORDING_RES_BEAN_CALL(babyListJson);
+        babyListResult.enqueue(new Callback<DeleteRecordingResBean>() {
+            @Override
+            public void onResponse(Call<DeleteRecordingResBean> call, Response<DeleteRecordingResBean> response) {
+                Log.i("555555", "recordingfragment+(deleteRecording)onResponse: " + response.body().getBODY().toString());
+            }
+
+            @Override
+            public void onFailure(Call<DeleteRecordingResBean> call, Throwable t) {
+                Log.i("555555", "recordingfragment+(deleteRecording)onFailure: " + t.toString());
+            }
+        });
     }
 
     private void initListener() {
@@ -208,10 +376,10 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
 //                    mMediaPlayer = new MediaPlayer();
 //                }
 
-                    Log.i("555555", "isplaying2: ");
+                Log.i("555555", "isplaying2: ");
 //                    isRecordingPlaying = true;
-                    mTryListener.setVisibility(View.INVISIBLE);
-                    startPlayRecord();
+                mTryListener.setVisibility(View.INVISIBLE);
+                startPlayRecord();
                 mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                     @Override
                     public void onCompletion(MediaPlayer mediaPlayer) {
@@ -253,11 +421,7 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
     }
 
     private void editRecordingFile() {
-        if (mRecordingComplete.getVisibility()==View.VISIBLE){
-
-        }else{
-
-        }
+        //TODO 2017 06 14 点击编辑的时候,出现整个list的选择框,选中那个,点击确定以后
     }
 
     private void moveToBottom() {
@@ -284,10 +448,16 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
         if (isRecordingPlaying) {
             stopPlayRecord();
         }
+        //往服务器上存储一份
+        saveRecrodingToServer();
         recordList.add(mFile);
         showFile(recordList);
         mRecordingFrag.setVisibility(View.VISIBLE);
         mCompleteFrag.setVisibility(View.INVISIBLE);
+    }
+
+    private void saveRecrodingToServer() {
+        RequestManager.getInstance();
     }
 
     private void reRecording() {
@@ -301,7 +471,7 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
         mRecordingFrag.setVisibility(View.VISIBLE);
     }
 
-//    private boolean isPlaying = false;
+    //    private boolean isPlaying = false;
     //播放录音
     private void startPlayRecord() {
 
@@ -310,15 +480,15 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
         }
 
         try {
-           if(isRecordingPlaying) {
-               mMediaPlayer.start();
-           } else {
-               mMediaPlayer.reset();
-               mMediaPlayer.setDataSource(mFile.getAbsolutePath());
-               mMediaPlayer.prepare();
-               mMediaPlayer.start();
+            if (isRecordingPlaying) {
+                mMediaPlayer.start();
+            } else {
+                mMediaPlayer.reset();
+                mMediaPlayer.setDataSource(mFile.getAbsolutePath());
+                mMediaPlayer.prepare();
+                mMediaPlayer.start();
 
-           }
+            }
             mPlayStop.setVisibility(View.VISIBLE);
             mPlayStopCircle.setVisibility(View.VISIBLE);
             isRecordingPlaying = true;
@@ -394,7 +564,7 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
                 mMediaRecorder.prepare();
                 mMediaRecorder.start();
                 long l2 = System.currentTimeMillis();
-                Log.i("55555", "startRecoding: "+(l2-l1));
+                Log.i("55555", "startRecoding: " + (l2 - l1));
                 startTimer();//时间计时
 
                 isNotRecording = !isNotRecording;
@@ -404,8 +574,8 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
             }
         } else {
             long end = System.currentTimeMillis();
-           long durat = end -l;
-            Log.i("555555", "haha: "+durat);
+            long durat = end - l;
+            Log.i("555555", "haha: " + durat);
             //没有录音状态
             mRecordingButton.setImageResource(R.drawable.recording_pressed_240);
             mMediaRecorder.stop();
@@ -439,8 +609,8 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
 
     private void startTimer() {
         l = currentTimeMillis();
-        Timer timer=new Timer();
-        int MaxTime=10*60;
+        Timer timer = new Timer();
+        int MaxTime = 10 * 60;
 
 //        stopTimer();
 //        Timer timer = new Timer();
@@ -470,7 +640,7 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
     }
 
     private void showFile(List<File> recordList) {
-Log.i("555555", "recordList.size="+recordList.size());
+        Log.i("555555", "recordList.size=" + recordList.size());
         RecordAdapter recodAdapter = new RecordAdapter(getActivity(), recordList);
         mLv_recoding.setAdapter(recodAdapter);
         mLv_recoding.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -502,6 +672,7 @@ Log.i("555555", "recordList.size="+recordList.size());
     }
 
     private Handler mhalder;
+
     @Override
     public void onResume() {
         super.onResume();

@@ -103,6 +103,8 @@
         </activity>
         <activity android:name=".activity.SetInitVolumeActivity">
         </activity>
+        <activity android:name=".activity.PlayListActivity">
+        </activity>
     </application>
 
 </manifest>

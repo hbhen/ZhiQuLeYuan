@@ -72,6 +72,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     public static boolean isLogin = false;
     private VideoFragment mVideoFragment;
     private CallWaitingConnectFragment mCallWaitingConnectFragment;
+    private static final String TAG1="88888";
 
 
     /**
@@ -95,7 +96,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         rb_toy.setOnClickListener(this);
         rb_history.setOnClickListener(this);
         rb_mine.setOnClickListener(this);
-
+        Log.i(TAG1, "mainactivity : onCreate went");
         //请求网络,获得我的录音的文件数据,拿到里面,请求网络数据,需要准备
 
     }
@@ -111,12 +112,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
     }
 
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-    }
 
     private void initView() {
         rb_discovery = (LinearLayout) findViewById(R.id.rb_discovery);
@@ -367,7 +362,32 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     protected void onResume() {
         super.onResume();
         initData();
+        Log.i(TAG1, "mainactivity : onResume went");
 
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.i(TAG1, "mainactivity : onStop went");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.i(TAG1, "mainactivity : onStart went");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.i(TAG1, "mainactivity : onPause went");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i(TAG1, "mainactivity : onDestroy went");
     }
 
 }

@@ -53,7 +53,7 @@ public class IconTextView extends LinearLayout {
         mText.setText(title);
         titleSize = titleSize / getResources().getDisplayMetrics().density;
         LayoutParams lp = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.setMargins(15, 0, 0, 0);
+        lp.setMargins(0, 0, 0, 0);
         mText.setTextSize(titleSize);
         mText.setGravity(Gravity.CENTER);
         mText.setTextColor(textColor != null ? textColor : ColorStateList.valueOf(0xFF000000));

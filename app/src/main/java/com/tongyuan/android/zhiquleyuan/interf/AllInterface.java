@@ -1,6 +1,7 @@
 package com.tongyuan.android.zhiquleyuan.interf;
 
 import com.tongyuan.android.zhiquleyuan.bean.AddMemberToGroupReSBean;
+import com.tongyuan.android.zhiquleyuan.bean.AddRecordingResBean;
 import com.tongyuan.android.zhiquleyuan.bean.AddToyResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.BabyInfoResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.BindBabyToToyRes;
@@ -10,15 +11,22 @@ import com.tongyuan.android.zhiquleyuan.bean.ControlToyPlayMusicResBean;
 import com.tongyuan.android.zhiquleyuan.bean.ControlToyVolumeRes;
 import com.tongyuan.android.zhiquleyuan.bean.DelMembFromGroupReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteBabyInfoReSBean;
+import com.tongyuan.android.zhiquleyuan.bean.DeleteMyCollectionResBean;
+import com.tongyuan.android.zhiquleyuan.bean.DeleteMyPlayResBean;
+import com.tongyuan.android.zhiquleyuan.bean.DeleteRecordingResBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridItemBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridSecondaryResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.GetInstantStateInfoRes;
 import com.tongyuan.android.zhiquleyuan.bean.LocalPlayApplyResBean;
+import com.tongyuan.android.zhiquleyuan.bean.ModifyRecordingResBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListFromToyIdRes;
 import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListResult;
+import com.tongyuan.android.zhiquleyuan.bean.QueryMyCollectionResBean;
+import com.tongyuan.android.zhiquleyuan.bean.QueryMyPlayResBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryMyPushResBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryPlayingMusicResBean;
+import com.tongyuan.android.zhiquleyuan.bean.QueryRecordingResBean;
 import com.tongyuan.android.zhiquleyuan.bean.QuerySingleUserInfoReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryToyMemberReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoRESBean;
@@ -143,4 +151,42 @@ public interface AllInterface {
     //控制玩具播放3.4.50
     @GET("jpush")
     Call<ControlToyPlayMusicResBean> CONTROL_TOY_PLAY_MUSIC_RES_BEAN_CALL(@Query("params") String params);
+
+    //查询我的录音 3.4.37
+    @GET("busi")
+    Call<SuperModel<QueryRecordingResBean>> SUPER_MODEL_CALL_QUERY_RECORDING_RES_BEAN_CALL(@Query("params") String params);
+
+    //没有封装的  3.4.37
+    @GET("busi")
+    Call<QueryRecordingResBean> QUERY_RECORDING_RES_BEAN_CALL(@Query("params") String params);
+
+    //删除资源(录音文件) 3.4.28
+    @GET("busi")
+    Call<DeleteRecordingResBean> DELETE_RECORDING_RES_BEAN_CALL(@Query("params") String params);
+
+    //添加资源(录音文件) 3.4.26
+    @GET("busi")
+    Call<AddRecordingResBean> ADD_RECORDING_RES_BEAN_CALL(@Query("params") String params);
+
+    //修改资源(录音文件) 3.4.26
+    @GET("busi")
+    Call<ModifyRecordingResBean> MODIFY_RECORDING_RES_BEAN_CALL(@Query("params") String params);
+
+    //查询我的收藏3.4.34
+    @GET("busi")
+    Call<QueryMyCollectionResBean> QUERY_MYCOLLECTION_RES_BEAN_CALL(@Query("params") String params);
+
+    //删除我的收藏 3.4.33
+    @GET("busi")
+    Call<DeleteMyCollectionResBean> DELETE_MYCOLLECTION_RES_BEAN_CALL(@Query("params") String params);
+
+    //查询我的播放3.4.35
+    @GET("busi")
+    Call<QueryMyPlayResBean> QUERY_MYPLAY_RES_BEAN_CALL(@Query("params") String params);
+    //删除我的播放 3.4.56
+    @GET("busi")
+    Call<DeleteMyPlayResBean> DELETE_MYPLAY_RES_BEAN_CALL(@Query("params") String params);
+
+
+
 }

@@ -40,12 +40,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class BabyInfoListActivity extends AppCompatActivity implements View.OnClickListener {
 
+
     private static final int ADD_BABYINFO = 502;
     private ListView mListview;
     private String mToken;
     private ImageView mIv_babayinfolist_addbabyinfo;
     private ImageView mIv_babyinfolist_backa;
     private SwipeRefreshLayout sp;
+    private static final String TAG = "88888";
 
 
     @Override
@@ -56,9 +58,8 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
 
         initData();
         initListener();
+        Log.i(TAG, "babyinfolistactivity : onCreatea went");
     }
-
-
 
     private void initView() {
         mListview = (ListView) findViewById(R.id.lv_babyinfolist);
@@ -66,6 +67,7 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
         mIv_babayinfolist_addbabyinfo = (ImageView) findViewById(R.id.iv_babayinfolist_addbabyinfo);
         mIv_babyinfolist_backa = (ImageView) findViewById(R.id.iv_babyinfolist_backa);
     }
+
     private void initListener() {
         mIv_babayinfolist_addbabyinfo.setOnClickListener(this);
         sp.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -76,11 +78,11 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
                     public void run() {
                         sp.setRefreshing(false);
                     }
-                },300);
-
+                }, 300);
             }
         });
     }
+
     private void initData() {
 
         mToken = SPUtils.getString(this, "TOKEN", "");
@@ -93,7 +95,7 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
-
+        //3.4.44
         QueryBabyListRequest.BODYBean queryBabyListBody = new QueryBabyListRequest.BODYBean("10", "1");
         QueryBabyListRequest queryBabyListRequest = new QueryBabyListRequest("REQ", "QMYB", phone, time, queryBabyListBody, "", mToken, "1");
 
@@ -106,6 +108,7 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
                 String listResponse = response.body().toString();
 
                 Log.i("111", "listResponse: " + listResponse);
+
                 List<QueryBabyListResult.BODYBean.LSTBean> lst = response.body().getBODY().getLST();
 
                 QueryBabyListResult.BODYBean.LSTBean lstBean = null;
@@ -115,7 +118,8 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
 //                    ToastUtil.showToast(getApplicationContext(), "chenggong" + response.body().getBODY().toString());
 
 //                    showBabyList(lst);
-                    showBabyList(response,time,phone,mToken,lst);
+
+                    showBabyList(response, time, phone, mToken, lst);//传一个response就行了,之前做的是把response.body.getBody().getLst()也传过去了
                 }
 
             }
@@ -130,13 +134,17 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
 
     private void showBabyList(Response<QueryBabyListResult> response, String time, String phone, String token, List<QueryBabyListResult.BODYBean
             .LSTBean> lst) {
-        BabyInfoListAdapter mAdapter = new BabyInfoListAdapter(this,response,time,phone,token,lst);
+        System.out.println("222222222222" + response.body().toString());
+        BabyInfoListAdapter mAdapter = new BabyInfoListAdapter(this, response, time, phone, token, lst);
         mListview.setAdapter(mAdapter);
         mAdapter.setMode(Attributes.Mode.Single);
         mListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ToastUtil.showToast(getApplicationContext(), "click postion"+position);
+
+                ToastUtil.showToast(getApplicationContext(), "click postion" + position);
+
             }
         });
     }
@@ -145,30 +153,62 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
 //        mListview.setAdapter(new BabyInfoListAdapter(this, lst));
 //    }
 
-
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.iv_babayinfolist_addbabyinfo:
                 Intent mIntent = new Intent();
-                mIntent.setClass(this,MyBabyActivity.class);
-                startActivityForResult(mIntent,ADD_BABYINFO);
+                mIntent.setClass(this, MyBabyActivity.class);
+                startActivityForResult(mIntent, ADD_BABYINFO);
                 break;
             case R.id.iv_babyinfolist_backa:
                 FragmentManager supportFragmentManager = getSupportFragmentManager();
                 FragmentTransaction transaction = supportFragmentManager.beginTransaction();
-                transaction.replace(R.id.fl_fragmentcontainer,new MineFragment());
+                transaction.replace(R.id.fl_fragmentcontainer, new MineFragment());
                 transaction.commit();
                 break;
         }
     }
 
     public static final int SuccessCode = 66;
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == SuccessCode) {
+        if (resultCode == SuccessCode) {
             initData();
         }
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initData();
+        Log.i(TAG, "babyinfolistactivity : onResume went");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.i(TAG, "babyinfolistactivity : onStop went");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.i(TAG, "babyinfolistactivity : onStart went");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.i(TAG, "babyinfolistactivity : onPause went");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i(TAG, "babyinfolistactivity : onDestroy went");
     }
 }

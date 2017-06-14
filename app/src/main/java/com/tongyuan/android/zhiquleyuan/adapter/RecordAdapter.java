@@ -31,9 +31,7 @@ public class RecordAdapter extends BaseSwipeAdapter {
     private LinearLayoutManager mLinearLayoutManager1;
     RecordingItem item;
 
-    public RecordAdapter() {
 
-    }
 
     public RecordAdapter(FragmentActivity activity, List<File> recordList) {
         this.mContext = activity;

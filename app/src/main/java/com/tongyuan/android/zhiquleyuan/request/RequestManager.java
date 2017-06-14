@@ -57,4 +57,8 @@ public class RequestManager {
         String json = mGson.toJson(params);
         return serves.LOCAL_PLAY_APPLY_RES_BEAN_CALL(json);
     }
+//    public  Call<SuperModel<QueryRecordingResBean>> queryRecordingResBean (BaseRequest params) {
+//        String json = mGson.toJson(params);
+//        return serves.QUERY_RECORDING_RES_BEAN_CALL(json);
+//    }
 }

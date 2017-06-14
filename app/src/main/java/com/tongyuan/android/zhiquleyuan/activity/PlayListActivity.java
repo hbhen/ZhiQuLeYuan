@@ -1,7 +1,6 @@
 package com.tongyuan.android.zhiquleyuan.activity;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -9,7 +8,6 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.AdapterView;
-import android.widget.ListView;
 
 import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
@@ -17,11 +15,11 @@ import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
-import com.tongyuan.android.zhiquleyuan.adapter.MyCollectionAdapter;
-import com.tongyuan.android.zhiquleyuan.bean.DeleteMyCollectionReqBean;
-import com.tongyuan.android.zhiquleyuan.bean.DeleteMyCollectionResBean;
+import com.tongyuan.android.zhiquleyuan.adapter.PlayListAdapter;
+import com.tongyuan.android.zhiquleyuan.bean.DeleteMyPlayReqBean;
+import com.tongyuan.android.zhiquleyuan.bean.DeleteMyPlayResBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryMyCollectionReqBean;
-import com.tongyuan.android.zhiquleyuan.bean.QueryMyCollectionResBean;
+import com.tongyuan.android.zhiquleyuan.bean.QueryMyPlayResBean;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
@@ -38,46 +36,30 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-/**
- * Created by android on 2016/12/23.
- */
+public class PlayListActivity extends AppCompatActivity {
 
-public class MyCollectionActivity extends AppCompatActivity {
-
-    private ListView lv_mycollection;
-    private SwipeRefreshLayout mSpRefresh;
-    private SwipeMenuListView mSwipeListview;
+    private SwipeMenuListView mSwipelistview;
+    private SwipeRefreshLayout sprefresh;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mycollection);
+        setContentView(R.layout.activity_play_list);
         initView();
         initData();
         initListener();
     }
 
     private void initView() {
-        mSpRefresh = (SwipeRefreshLayout) findViewById(R.id.sprefresh);
-        mSwipeListview = (SwipeMenuListView) findViewById(R.id.lv_mycollection);
-        lv_mycollection = (ListView) findViewById(R.id.lv_mycollection);
+        sprefresh = (SwipeRefreshLayout) findViewById(R.id.sprefresh);
+        mSwipelistview = (SwipeMenuListView) findViewById(R.id.sp_activity_play_list);
     }
 
     private void initData() {
-        getMyCollection();
+        getMyPlayList();
     }
 
-    private void initListener() {
-        mSpRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                getMyCollection();
-                mSpRefresh.setRefreshing(false);
-            }
-        });
-    }
-
-    private void getMyCollection() {
+    private void getMyPlayList() {
         final String token = SPUtils.getString(this, "TOKEN", "");
         final String phoneNum = SPUtils.getString(this, "phoneNum", "");
         Date date = new Date();
@@ -89,25 +71,31 @@ public class MyCollectionActivity extends AppCompatActivity {
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
         QueryMyCollectionReqBean.BODYBean bodyBean = new QueryMyCollectionReqBean.BODYBean("", "10", "1");
-        QueryMyCollectionReqBean queryMyCollectionReqBean = new QueryMyCollectionReqBean("REQ", "MYREC", phoneNum, time, bodyBean, "", token, "1");
+        QueryMyCollectionReqBean queryMyCollectionReqBean = new QueryMyCollectionReqBean("REQ", "MYFAV", phoneNum, time, bodyBean, "", token, "1");
 
         Gson gson = new Gson();
         String babyListJson = gson.toJson(queryMyCollectionReqBean);
-        Call<QueryMyCollectionResBean> babyListResult = allInterface.QUERY_MYCOLLECTION_RES_BEAN_CALL(babyListJson);
-        babyListResult.enqueue(new Callback<QueryMyCollectionResBean>() {
+        Call<QueryMyPlayResBean> babyListResult = allInterface.QUERY_MYPLAY_RES_BEAN_CALL(babyListJson);
+        babyListResult.enqueue(new Callback<QueryMyPlayResBean>() {
+
+            private List<QueryMyPlayResBean.BODYBean.LSTBean> mLst;
+            private PlayListAdapter mPlayListAdapter;
+
             @Override
-            public void onResponse(Call<QueryMyCollectionResBean> call, Response<QueryMyCollectionResBean> response) {
+            public void onResponse(Call<QueryMyPlayResBean> call, Response<QueryMyPlayResBean> response) {
                 if (response.body() != null && response.body().getCODE().equals("0")) {
                     Log.i("555555", "queryRecordingList:response" + response.body().getBODY().toString());
-                    final List<QueryMyCollectionResBean.BODYBean.LSTBean> lst = response.body().getBODY().getLST();//TODO 考虑一下,这时候,
-                    // 如果list为空怎么办??2017.6.14
-                    final MyCollectionAdapter myCollectionAdapter = new MyCollectionAdapter(getApplicationContext(), lst);
-                    mSwipeListview.setAdapter(myCollectionAdapter);
-                    mSwipeListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    //TODO 考虑一下,这时候,
+                    mLst = response.body().getBODY().getLST();
+                    // 如果list为空怎么办??2017.6.14   傻呀!!做判断就行了!!!
+                    mPlayListAdapter = new PlayListAdapter(getApplicationContext(), mLst);
+                    mSwipelistview.setAdapter(mPlayListAdapter);
+                    mSwipelistview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                             ToastUtil.showToast(getApplicationContext(), "点击的是:" + position);
+
                         }
                     });
                     SwipeMenuCreator mCreator = new SwipeMenuCreator() {
@@ -124,64 +112,75 @@ public class MyCollectionActivity extends AppCompatActivity {
 
                         }
                     };
-                    mSwipeListview.setMenuCreator(mCreator);
-                    mSwipeListview.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
+                    mSwipelistview.setMenuCreator(mCreator);
+                    mSwipelistview.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
-                            deleteRecording(phoneNum, time, position, lst, token);
-                            lst.remove(position);
-                            myCollectionAdapter.notifyDataSetChanged();
-
+                            deleteMyPlay(phoneNum, time, position, mLst, token);
+                            mLst.remove(position);
+                            mPlayListAdapter.notifyDataSetChanged();
                             ToastUtil.showToast(getApplicationContext(), "点击删除");
-
                             return false;
                         }
                     });
-                    mSwipeListview.setSmoothScrollbarEnabled(true);
-                    mSwipeListview.setSwipeDirection(SwipeMenuListView.DIRECTION_LEFT);
-                    mSwipeListview.setOpenInterpolator(new AccelerateInterpolator());
-                    mSwipeListview.setCloseInterpolator(new AccelerateInterpolator());
+                    mSwipelistview.setSmoothScrollbarEnabled(true);
+                    mSwipelistview.setSwipeDirection(SwipeMenuListView.DIRECTION_LEFT);
+                    mSwipelistview.setOpenInterpolator(new AccelerateInterpolator());
+                    mSwipelistview.setCloseInterpolator(new AccelerateInterpolator());
 
                 }
             }
 
             @Override
-            public void onFailure(Call<QueryMyCollectionResBean> call, Throwable t) {
+            public void onFailure(Call<QueryMyPlayResBean> call, Throwable t) {
+
                 Log.i("555555", "querymycollection+List:failure" + t.toString());
             }
-
         });
+
     }
 
-    private void deleteRecording(String phoneNum, String time, int position, List<QueryMyCollectionResBean.BODYBean.LSTBean> qlst, String token) {
+    private void deleteMyPlay(String phoneNum, String time, int position, List<QueryMyPlayResBean.BODYBean.LSTBean> qlst, String token) {
         String resId = qlst.get(position).getID();
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constant.baseurl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
-        DeleteMyCollectionReqBean.BODYBean.LSTBean lstBean = new DeleteMyCollectionReqBean.BODYBean.LSTBean(resId);
-        List<DeleteMyCollectionReqBean.BODYBean.LSTBean> lst = new ArrayList<>();
+        List<DeleteMyPlayReqBean.BODYBean.LSTBean> lst = new ArrayList<>();
+        DeleteMyPlayReqBean.BODYBean.LSTBean lstBean = new DeleteMyPlayReqBean.BODYBean.LSTBean(resId);
         lst.add(lstBean);
-        DeleteMyCollectionReqBean.BODYBean bodyBean = new DeleteMyCollectionReqBean.BODYBean(lst);
-        DeleteMyCollectionReqBean deleteMyCollectionReqBean = new DeleteMyCollectionReqBean("REQ", "DFAVRES", phoneNum, time, bodyBean, "", token,
+        DeleteMyPlayReqBean.BODYBean bodyBean = new DeleteMyPlayReqBean.BODYBean(lst);
+        DeleteMyPlayReqBean deleteMyPlayReqBean = new DeleteMyPlayReqBean("REQ", "DMYPLAY", phoneNum, time, bodyBean, "", token,
                 "1");
-
         Gson gson = new Gson();
-        String babyListJson = gson.toJson(deleteMyCollectionReqBean);
-        Call<DeleteMyCollectionResBean> babyListResult = allInterface.DELETE_MYCOLLECTION_RES_BEAN_CALL(babyListJson);
-        babyListResult.enqueue(new Callback<DeleteMyCollectionResBean>() {
+        String babyListJson = gson.toJson(deleteMyPlayReqBean);
+        Call<DeleteMyPlayResBean> babyListResult = allInterface.DELETE_MYPLAY_RES_BEAN_CALL(babyListJson);
+        babyListResult.enqueue(new Callback<DeleteMyPlayResBean>() {
             @Override
-            public void onResponse(Call<DeleteMyCollectionResBean> call, Response<DeleteMyCollectionResBean> response) {
+            public void onResponse(Call<DeleteMyPlayResBean> call, Response<DeleteMyPlayResBean> response) {
                 Log.i("555555", "recordingfragment+(deleteRecording)onResponse: " + response.body().getBODY().toString());
+
             }
 
             @Override
-            public void onFailure(Call<DeleteMyCollectionResBean> call, Throwable t) {
+            public void onFailure(Call<DeleteMyPlayResBean> call, Throwable t) {
                 Log.i("555555", "recordingfragment+(deleteRecording)onFailure: " + t.toString());
+
             }
         });
+    }
 
+    private void initListener() {
+        sprefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+
+            @Override
+            public void onRefresh() {
+                getMyPlayList();
+                sprefresh.setRefreshing(false);
+            }
+
+        });
     }
 
     private int dp2px(int dp) {

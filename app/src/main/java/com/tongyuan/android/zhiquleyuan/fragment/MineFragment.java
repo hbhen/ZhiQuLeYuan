@@ -23,10 +23,10 @@ import com.tongyuan.android.zhiquleyuan.activity.ActivityLogin;
 import com.tongyuan.android.zhiquleyuan.activity.BabyInfoListActivity;
 import com.tongyuan.android.zhiquleyuan.activity.MyBabyActivity;
 import com.tongyuan.android.zhiquleyuan.activity.MyCollectionActivity;
-import com.tongyuan.android.zhiquleyuan.activity.MyPlayActivity;
 import com.tongyuan.android.zhiquleyuan.activity.MyPushActivity;
 import com.tongyuan.android.zhiquleyuan.activity.MySuggestionActivity;
 import com.tongyuan.android.zhiquleyuan.activity.MyUpdateActivity;
+import com.tongyuan.android.zhiquleyuan.activity.PlayListActivity;
 import com.tongyuan.android.zhiquleyuan.base.BaseFragment;
 import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListRequest;
 import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListResult;
@@ -234,7 +234,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                 startActivity(mIntent);
                 break;
             case R.id.ll_fragment_mine_play:
-                mIntent.setClass(getActivity(), MyPlayActivity.class);
+                mIntent.setClass(getActivity(), PlayListActivity.class);
                 startActivity(mIntent);
                 break;
             case R.id.ll_fragment_mine_push:

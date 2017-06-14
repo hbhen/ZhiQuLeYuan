@@ -21,50 +21,45 @@
 
     </android.support.v7.widget.Toolbar>
 
-    <!--<ScrollView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_below="@id/tb_recoding">-->
+    <RelativeLayout
 
-        <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/tb_recoding">
 
+        <TextView
+            android:id="@+id/tv_recordinglist_title"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/tb_recoding">
+            android:layout_height="16sp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:text="录音列表"/>
 
-            <TextView
-                android:id="@+id/tv_recordinglist_title"
-                android:layout_width="match_parent"
-                android:layout_height="16sp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:text="录音列表"/>
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/sprefresh"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_recordinglist_title">
 
-            <ListView
+            <com.baoyz.swipemenulistview.SwipeMenuListView
                 android:id="@+id/lv_recoding"
-                android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@id/tv_recordinglist_title"
+                android:layout_marginTop="10dp"
                 android:background="#ffffff"
                 android:listSelector="@color/transparent"/>
-            <!--<ListView-->
-            <!--android:id="@+id/lv_recoding"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_alignParentLeft="true"-->
-            <!--android:layout_alignParentStart="true"-->
-            <!--android:layout_alignParentTop="true"-->
-            <!--/>-->
-        </RelativeLayout>
-    <!--</ScrollView>-->
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+
+    </RelativeLayout>
+
 
     <RelativeLayout
         android:id="@+id/rl_fragment_recoding_control"
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:visibility="visible">
 
         <LinearLayout
             android:id="@+id/ll_recoding_tool_title"
@@ -134,12 +129,12 @@
             android:background="#000000"/>
 
         <FrameLayout
-            android:background="#f1f1f1"
-            android:clickable="true"
             android:id="@+id/fl_fragment_recording_control"
             android:layout_width="match_parent"
             android:layout_height="250dp"
-            android:layout_below="@id/ll_recoding_tool_title">
+            android:layout_below="@id/ll_recoding_tool_title"
+            android:background="#f1f1f1"
+            android:clickable="true">
             <!--录音完成-->
             <RelativeLayout
                 android:id="@+id/rl_fragment_recording_complete"
@@ -219,20 +214,20 @@
                             android:src="@drawable/recording_listener_3x"/>
 
                         <ImageView
-                            android:visibility="invisible"
                             android:id="@+id/iv_recoding_tool_trylistener_stop"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
-                            android:src="@drawable/recordpause_3x"/>
+                            android:src="@drawable/recordpause_3x"
+                            android:visibility="invisible"/>
 
                         <ImageView
-                            android:visibility="gone"
                             android:id="@+id/iv_recoding_tool_trylistener_stopcircle"
                             android:layout_width="80dp"
                             android:layout_height="80dp"
                             android:layout_centerInParent="true"
-                            android:src="@drawable/colorcircle_3x"/>
+                            android:src="@drawable/colorcircle_3x"
+                            android:visibility="gone"/>
 
                         <TextView
                             android:layout_width="wrap_content"
