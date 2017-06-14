@@ -82,6 +82,7 @@
         <attr name="titleTextColor" format="color"/>
         <attr name="titleTextSize" format="dimension"/>
         <attr name="titleIcon" format="reference"/>
+        <attr name="titlePadding" format="dimension"/>
     </declare-styleable>
     <declare-styleable name="TintDrawableHelper">
         <!-- support tint background color -->

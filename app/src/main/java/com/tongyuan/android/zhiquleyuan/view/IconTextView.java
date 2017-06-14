@@ -29,6 +29,7 @@ public class IconTextView extends LinearLayout {
     private Drawable icon;
     private String title;
     private float titleSize;
+    private int padding;
     private ColorStateList textColor = null;
 
     public IconTextView(Context context, AttributeSet attrs) {
@@ -37,6 +38,8 @@ public class IconTextView extends LinearLayout {
         title = typedArray.getString(R.styleable.CustomTitleView_titleText);
         textColor = typedArray.getColorStateList(R.styleable.CustomTitleView_titleTextColor);
         titleSize = typedArray.getDimensionPixelSize(R.styleable.CustomTitleView_titleTextSize, 15);
+        padding = typedArray.getDimensionPixelSize(R.styleable.CustomTitleView_titlePadding, 0);
+
         icon = typedArray.getDrawable(R.styleable.CustomTitleView_titleIcon);
         init(context);
         typedArray.recycle();
@@ -53,7 +56,13 @@ public class IconTextView extends LinearLayout {
         mText.setText(title);
         titleSize = titleSize / getResources().getDisplayMetrics().density;
         LayoutParams lp = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.setMargins(0, 0, 0, 0);
+
+        if(getOrientation() == HORIZONTAL) {
+            lp.setMargins(padding, 0, 0, 0);
+        } else {
+            lp.setMargins(0, padding, 0, 0);
+        }
+
         mText.setTextSize(titleSize);
         mText.setGravity(Gravity.CENTER);
         mText.setTextColor(textColor != null ? textColor : ColorStateList.valueOf(0xFF000000));

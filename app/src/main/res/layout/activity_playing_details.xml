@@ -40,7 +40,7 @@
             android:clickable="true"
             android:text="收藏"
             android:textColor="#ff4511"
-            android:textSize="20dp"/>
+            android:textSize="16sp"/>
     </RelativeLayout>
 
     <LinearLayout
@@ -58,7 +58,8 @@
             text:titleIcon="@drawable/phone_ico_light_3x"
             text:titleText="@string/player_phone"
             text:titleTextColor="@color/redFont"
-            text:titleTextSize="18sp" />
+            text:titleTextSize="18sp"
+            text:titlePadding="5dp" />
 
         <View
             android:layout_width="1dp"
@@ -74,7 +75,8 @@
             text:titleIcon="@drawable/toy_rabbit_ico_light_3x"
             text:titleText="@string/player_toy"
             text:titleTextColor="@color/redFont"
-            text:titleTextSize="18sp" />
+            text:titleTextSize="18sp"
+            text:titlePadding="5dp"/>
     </LinearLayout>
 
     <ProgressBar

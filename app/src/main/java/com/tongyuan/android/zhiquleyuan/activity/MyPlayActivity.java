@@ -187,7 +187,7 @@ public class MyPlayActivity extends BaseActivity {
         });
 
 //        }
-//        mTextView_playname.setText(mMusicName);
+        titleTextView.setText(mMusicName);
 //        mTextView_duration.setText(mMusicDur);
         //格式化时间
 //        mTextView_duration.setText(Util.formatMillis(mMediaPlayer.getDuration()));
