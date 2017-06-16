@@ -18,8 +18,10 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -120,6 +122,10 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
     private SwipeMenuCreator mCreator;
 
     DataSetObservable dataSetObservable = new DataSetObservable();
+    private RelativeLayout mPlayRecordingFrag;
+    private TextView mPlayRecordingDesc;
+    private ImageButton mSetVolume;
+    private ImageView mPlayBack;
 
     @Nullable
     @Override
@@ -139,6 +145,18 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
         mRecordingFrag = (RelativeLayout) recordingRoot.findViewById(R.id.rl_fragment_recording_recording);
         //录音完成布局
         mCompleteFrag = (RelativeLayout) recordingRoot.findViewById(R.id.rl_fragment_recording_complete);
+        //录音播放布局
+        mPlayRecordingFrag = (RelativeLayout) recordingRoot.findViewById(R.id.rl_fragment_recording_playrecording);
+
+        //录音播放的布局view
+        mPlayRecordingDesc = (TextView) mPlayRecordingFrag.findViewById(R.id.tv_fragment_playrecoding_desc);
+        mSetVolume = (ImageButton) mPlayRecordingFrag.findViewById(R.id.ib_fragment_recoding_setvolume);
+        mPlayBack = (ImageView) mPlayRecordingFrag.findViewById(R.id.iv_fragment_playrecording_back);
+        mPlayRecordingFrag.findViewById(R.id.iv_fragment_playrecording_back);
+        mPlayRecordingFrag.findViewById(R.id.iv_fragment_playrecording_back);
+
+        mPlayRecordingFrag.findViewById(R.id.iv_fragment_playrecording_back);
+
 
         mRecordingDesc = (TextView) recordingRoot.findViewById(R.id.tv_fragment_recoding_desc);
         mRecordingDuration = (TextView) recordingRoot.findViewById(R.id.tv_fragment_recoding_duration);
@@ -182,6 +200,7 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
 
         sprefresh = (SwipeRefreshLayout) recordingRoot.findViewById(R.id.sprefresh);
         mSwipelistview = (SwipeMenuListView) recordingRoot.findViewById(R.id.lv_recoding);
+        mSwipelistview.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
         sprefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 
             @Override
@@ -192,8 +211,8 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
 
         });
 
-
         return recordingRoot;
+
     }
 
     private int dp2px(int dp) {
@@ -248,12 +267,37 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
             public void onResponse(Call<QueryRecordingResBean> call, Response<QueryRecordingResBean> response) {
                 if (response.body() != null && response.body().getCODE().equals("0")) {
                     Log.i("1111111", "queryRecordingList:response" + response.body().getBODY().toString());
-                    mLst = response.body().getBODY().getLST();
+                    mLst = response.body().getBODY().getLST();//这里拿的是所有的录音的列表
+                    final List<String> list = new ArrayList<String>();
+
+                    for (int i = 0; i < mLst.size() - 1; i++) {
+                        String id = mLst.get(i).getID();
+                        list.add(id);
+                    }
+                    Log.i("555555", "onResponse:+list的长度: " + list.size() + "list的内容:");
                     mRecordingListAdapter = new RecordingListAdapter(getContext(), mLst);
                     mSwipelistview.setAdapter(mRecordingListAdapter);
                     mSwipelistview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            /**1,点击item,显示录音播放界面
+                             //2,拿到item的信息(name,duration),展示到播放界面上
+                             //3,点击播放,开始播放,seekbar的begintime开始走 ,seekbar的进度也跟着走,同时播放按钮变成暂停按钮
+                             //4,点击暂停,录音播放暂停,seekbar停止进度,记住当前的播放位置,并停留在当前的显示位置
+                             //5,点击上一首,去list列表获取上一首的信息,如果是第一首就仍然是第一首,点击上一首,直接开始播放
+                             //6,点击下一首,去list列表获取下一首的信息,如果是最后一首就仍然是最后一首,点击下一首,直接开始播放
+                             //7,播放结束的监听,当音乐播放完,进度条停止,暂停按钮变成播放按钮
+                             //8,点击音量控制,去设置初始化音量界面,设置音量并上传到服务器
+                             **/
+                            //1,点击item,显示录音播放界面
+                            showRecordingPlayView(true);
+                            //拿到item的信息(name,duration),展示到播放界面上
+                            String recordingId = list.get(position);
+
+                            //2,拿到item的信息(name,duration),展示到播放界面上
+                            String name = mLst.get(position).getNAME();
+                            String dur = mLst.get(position).getDUR();
+
 
                             ToastUtil.showToast(getContext(), "点击的是:" + position);
 
@@ -300,6 +344,20 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
             }
         });
 
+    }
+
+    private void showRecordingPlayView(boolean b) {
+        if (b == true) {
+            mPlayRecordingFrag.setVisibility(View.VISIBLE);
+            mCompleteFrag.setVisibility(View.GONE);
+            mRecordingFrag.setVisibility(View.GONE);
+            mBottomControl.setVisibility(View.VISIBLE);
+        } else {
+            return;
+//            mPlayRecordingFrag.setVisibility(View.GONE);
+//            mCompleteFrag.setVisibility(View.VISIBLE);
+//            mRecordingFrag.setVisibility(View.GONE);
+        }
     }
 
     private void deleteRecording(String time, int position, List<QueryRecordingResBean.BODYBean.LSTBean> lst) {
@@ -422,6 +480,9 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
 
     private void editRecordingFile() {
         //TODO 2017 06 14 点击编辑的时候,出现整个list的选择框,选中那个,点击确定以后
+
+
+        mSwipelistview.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
     }
 
     private void moveToBottom() {
