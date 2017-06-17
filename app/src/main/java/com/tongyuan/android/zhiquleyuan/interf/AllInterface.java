@@ -9,6 +9,7 @@ import com.tongyuan.android.zhiquleyuan.bean.CallHistoryResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.CallToToyRes;
 import com.tongyuan.android.zhiquleyuan.bean.ChangeRecordingNameResBean;
 import com.tongyuan.android.zhiquleyuan.bean.ControlToyPlayMusicResBean;
+import com.tongyuan.android.zhiquleyuan.bean.ControlToyPlayRecordingResBean;
 import com.tongyuan.android.zhiquleyuan.bean.ControlToyVolumeRes;
 import com.tongyuan.android.zhiquleyuan.bean.DelMembFromGroupReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteBabyInfoReSBean;
@@ -149,9 +150,12 @@ public interface AllInterface {
     @GET("jpush")
     Call<ControlToyVolumeRes> CONTROL_TOY_VOLUME_RES_CALL(@Query("params") String params);
 
-    //控制玩具播放3.4.50
+    //控制玩具播放 音频 3.4.50
     @GET("jpush")
     Call<ControlToyPlayMusicResBean> CONTROL_TOY_PLAY_MUSIC_RES_BEAN_CALL(@Query("params") String params);
+    //控制玩具播放 录音 3.4.50
+    @GET("jpush")
+    Call<ControlToyPlayRecordingResBean> CONTROL_TOY_PLAY_RECORDING_RES_BEAN_CALL(@Query("params") String params);
 
     //查询我的录音 3.4.37
     @GET("busi")

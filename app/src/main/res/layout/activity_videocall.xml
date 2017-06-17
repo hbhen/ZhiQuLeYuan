@@ -26,9 +26,9 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="0.5dp"
         android:layout_marginTop="73dp"
-        android:background="#fff"/>
+        android:background="#d1d1d1"/>
 
     <ImageView
         android:id="@+id/fragment_videocall_babyimg"
@@ -36,7 +36,25 @@
         android:layout_height="60dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="44dp"
-        android:background="@color/translucent_white_8p"/>
+        android:background="@drawable/viedocalling_babyimg_3x"/>
+    <ImageView
+        android:layout_alignLeft="@id/fragment_videocall_babyimg"
+        android:layout_alignBottom="@id/fragment_videocall_babyimg"
+        android:layout_alignStart="@id/fragment_videocall_babyimg"
+        android:layout_width="60dp"
+        android:layout_height="60dp"/>
+    <TextView
+        android:text="正正正正大大"
+        android:singleLine="true"
+        android:textSize="16sp"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:gravity="center"
+        android:layout_width="60dp"
+        android:layout_alignBottom="@id/fragment_videocall_babyimg"
+        android:layout_alignEnd="@id/fragment_videocall_babyimg"
+        android:layout_alignRight="@id/fragment_videocall_babyimg"
+        android:layout_height="60dp"/>
 
     <RelativeLayout
         android:id="@+id/rl_fragment_videocall_stopcall"

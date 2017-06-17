@@ -131,7 +131,7 @@
         <FrameLayout
             android:id="@+id/fl_fragment_recording_control"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
+            android:layout_height="230dp"
             android:layout_below="@id/ll_recoding_tool_title"
             android:background="#f1f1f1"
             android:clickable="true">
@@ -140,32 +140,43 @@
                 android:id="@+id/rl_fragment_recording_complete"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
                 android:visibility="gone">
 
-                <TextView
-                    android:id="@+id/tv_fragment_recoding_desc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="2016年9月20日 09:30:30"
-                    android:textColor="#000000"
-                    android:textSize="16sp"/>
+                <RelativeLayout
+                    android:id="@+id/rl_fragment_recoding_nameandtime"
+                    android:paddingTop="5dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingBottom="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-                <TextView
-                    android:id="@+id/tv_fragment_recoding_duration"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:text="00:50"
-                    android:textColor="#8f8f8f"
-                    android:textSize="16sp"/>
+                    <TextView
+                        android:id="@+id/tv_fragment_recoding_desc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="2016年9月20日 09:30:30"
+                        android:textColor="#000000"
+                        android:textSize="16sp"/>
+
+                    <TextView
+                        android:id="@+id/tv_fragment_recoding_duration"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:text="00:50"
+                        android:textColor="#8f8f8f"
+                        android:textSize="16sp"/>
+                </RelativeLayout>
 
                 <RelativeLayout
+                    android:layout_below="@id/rl_fragment_recoding_nameandtime"
                     android:layout_width="match_parent"
-                    android:layout_height="140dp"
+                    android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:layout_marginTop="40dp"
-                    android:padding="10dp">
+                    android:layout_marginTop="15dp"
+                    android:paddingRight="10dp"
+                    android:paddingLeft="10dp">
 
                     <ImageView
                         android:id="@+id/iv_fragment_recording_back"
@@ -210,24 +221,22 @@
                             android:id="@+id/iv_recoding_tool_trylistener"
                             android:layout_width="80dp"
                             android:layout_height="80dp"
-                            android:layout_centerInParent="true"
                             android:src="@drawable/recording_listener_3x"/>
 
                         <ImageView
                             android:id="@+id/iv_recoding_tool_trylistener_stop"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
                             android:src="@drawable/recordpause_3x"
-                            android:visibility="invisible"/>
+                            android:scaleType="centerInside"
+                            android:visibility="visible"/>
 
                         <ImageView
                             android:id="@+id/iv_recoding_tool_trylistener_stopcircle"
                             android:layout_width="80dp"
                             android:layout_height="80dp"
-                            android:layout_centerInParent="true"
                             android:src="@drawable/colorcircle_3x"
-                            android:visibility="gone"/>
+                            android:visibility="visible"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -275,13 +284,13 @@
                 android:layout_below="@id/ll_recoding_tool_title"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="26dp"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:layout_marginTop="70dp"
+
                     android:gravity="center"
                     android:orientation="vertical">
 
@@ -298,7 +307,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/iv_recoding_tool_startrecoding"
                         android:layout_centerInParent="true"
-                        android:layout_marginTop="20dp"
+                        android:layout_marginTop="10dp"
                         android:text="点击开始录音"
                         android:textColor="#909090"
                         android:textSize="16dp"/>
@@ -309,9 +318,9 @@
             <RelativeLayout
                 android:id="@+id/rl_fragment_recording_playrecording"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="140dp"
                 android:padding="10dp"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <TextView
                     android:id="@+id/tv_fragment_playrecoding_desc"
@@ -332,7 +341,7 @@
                 <RelativeLayout
                     android:id="@+id/rl_fragment_recording_control"
                     android:layout_width="match_parent"
-                    android:layout_height="140dp"
+                    android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:layout_marginTop="40dp"
                     android:padding="10dp">

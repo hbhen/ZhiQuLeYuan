@@ -44,6 +44,8 @@ import com.tongyuan.android.zhiquleyuan.bean.AddRecordingReqBean;
 import com.tongyuan.android.zhiquleyuan.bean.AddRecordingResBean;
 import com.tongyuan.android.zhiquleyuan.bean.ChangeRecordingNameReqBean;
 import com.tongyuan.android.zhiquleyuan.bean.ChangeRecordingNameResBean;
+import com.tongyuan.android.zhiquleyuan.bean.ControlToyPlayRecordingReqBean;
+import com.tongyuan.android.zhiquleyuan.bean.ControlToyPlayRecordingResBean;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteRecordingReqBean;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteRecordingResBean;
 import com.tongyuan.android.zhiquleyuan.bean.LocalPlayApplyReqBean;
@@ -155,7 +157,9 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
     private String mUrl;
     private String mRecordingId;
     private String mTime;
-
+    private int RECORDING = 1;
+    private int PLAYRECORDING = 2;
+    private int RRCORDINGCOMPLETE = 3;
 
     @Nullable
     @Override
@@ -163,24 +167,23 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
         View recordingRoot = initView(inflater);
         mDbHelper = new DBHelper(getActivity());
 
+        Log.i("circlelife", "recordingfragment:onCreateView: went");
         return recordingRoot;
-
     }
 
     private View initView(LayoutInflater inflater) {
         View recordingRoot = inflater.inflate(R.layout.fragment_recoding, null);
         View itemRecordingHeader = inflater.inflate(R.layout.item_play_list_header, null);
 
-
+        //整个framelayout的布局
         mBottomControl = (FrameLayout) recordingRoot.findViewById(R.id.fl_fragment_recording_control);
         //录音布局
         mRecordingFrag = (RelativeLayout) recordingRoot.findViewById(R.id.rl_fragment_recording_recording);
         //录音完成布局
         mCompleteFrag = (RelativeLayout) recordingRoot.findViewById(R.id.rl_fragment_recording_complete);
-
-
         //录音播放布局
         mPlayRecordingFrag = (RelativeLayout) recordingRoot.findViewById(R.id.rl_fragment_recording_playrecording);
+
 
         //录音播放的布局view
         //文件名称
@@ -274,7 +277,7 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
         super.onActivityCreated(savedInstanceState);
         initData();
         initListener();
-
+        Log.i("circlelife", "recordingfragment:onActivityCreated: went");
         //TODO 展示本地的recording,没有就去网络获取
 
 
@@ -318,8 +321,20 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
                 break;
             //推送到玩具
             case R.id.iv_fragent_recording_toy:
+                //判断当前的布局是不是播放的布局,如果是播放的布局才能推送给玩具
+                String mToyid = ToySelectorFragment.mToyid;
+                if (mToyid == null) {
+                    ToastUtil.showToast(getContext(), "当前没有选中玩具");
+                    return;
+                } else if (selectedPosition == -1) {
+                    ToastUtil.showToast(getContext(), "当前没有选中的item,请选择item之后再推送给玩具");
+                    return;
+                }
+                sendRecordingToToy(mToyid);
                 ToastUtil.showToast(getContext(), "点击了send2toy");
+
                 break;
+
             //编辑
             case R.id.iv_fragent_recording_editor:
                 //我想干什么,我想在我点编辑按钮的时候,如果当前有选中的item,那么就拿到当前的选中的item的recording的名字,然后弹dialog,修改这个名字.
@@ -341,6 +356,8 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
                 moveToBottom();
                 ToastUtil.showToast(getContext(), "点击了downaction");
                 break;
+
+
             //试听
             case R.id.iv_recoding_tool_trylistener:
                 //播放刚录完的音频,获得刚录完的音频的路劲
@@ -396,9 +413,41 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
             //播放界面的返回
             case R.id.iv_fragment_playrecording_back:
                 showRecordingPlayView(false);
+                selectedPosition = -1;
             default:
                 break;
         }
+    }
+
+    private void sendRecordingToToy(String mToyid) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constant.baseurl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        AllInterface allInterface = retrofit.create(AllInterface.class);
+        System.out.println("mtoyid" + ToySelectorFragment.mToyid);
+
+        ControlToyPlayRecordingReqBean.ParamBean paramBean = new ControlToyPlayRecordingReqBean.ParamBean(mToyid, "1", mRecordingId,
+                "0");
+        ControlToyPlayRecordingReqBean controlToyPlayRecordingReqBean = new ControlToyPlayRecordingReqBean("control_play", paramBean, mToken);
+        Gson gson = new Gson();
+        String s = gson.toJson(controlToyPlayRecordingReqBean);
+        System.out.println("ssssssss" + s);
+        Call<ControlToyPlayRecordingResBean> controlToyPlayRecordingResBeanCall = allInterface.CONTROL_TOY_PLAY_RECORDING_RES_BEAN_CALL(s);
+        controlToyPlayRecordingResBeanCall.enqueue(new Callback<ControlToyPlayRecordingResBean>() {
+            @Override
+            public void onResponse(Call<ControlToyPlayRecordingResBean> call, Response<ControlToyPlayRecordingResBean> response) {
+
+                System.out.println(response.body().toString());
+
+            }
+
+            @Override
+            public void onFailure(Call<ControlToyPlayRecordingResBean> call, Throwable t) {
+
+            }
+        });
+
     }
 
     public void showEditDialog() {
@@ -952,6 +1001,7 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
     @Override
     public void onPause() {
         super.onPause();
+        Log.i("circlelife", "recordingfragment:onPause: went");
     }
 
     private Handler mhalder;
@@ -973,15 +1023,16 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
 //                mhalder.sendEmptyMessage(1);
             }
         }).start();
-
+        Log.i("circlelife", "recordingfragment:onResume: went");
     }
 
 
     @Override
     public void onStop() {
         super.onStop();
-
+        Log.i("circlelife", "recordingfragment:onStop: went");
     }
+
 
     public interface EditListener {
         void EditRecordingName();
