@@ -3,17 +3,11 @@ package com.tongyuan.android.zhiquleyuan.service;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
-import android.media.MediaPlayer;
-import android.net.Uri;
-import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
-import com.tongyuan.android.zhiquleyuan.interf.OnMediaChangeListener;
-import com.tongyuan.android.zhiquleyuan.player.Constans;
+import com.tongyuan.android.zhiquleyuan.base.BaseActivity;
 import com.tongyuan.android.zhiquleyuan.player.MusicAidlStub;
-
-import java.util.HashSet;
 
 /**
  * 播放服务端
@@ -34,7 +28,7 @@ public class MusicPlayerService extends Service {
     }
 
     public void sendPreparedNotify() {
-        Intent intent = new Intent(Constans.PLAYER_PREPARED);
+        Intent intent = new Intent(BaseActivity.PLAYER_PREPARED);
         sendBroadcast(intent);
     }
 
