@@ -4,8 +4,6 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -30,9 +28,9 @@ import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridSecondaryResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.LocalPlayApplyReqBean;
 import com.tongyuan.android.zhiquleyuan.bean.LocalPlayApplyResBean;
-import com.tongyuan.android.zhiquleyuan.fragment.ToySelectorFragment;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.interf.Constant;
+import com.tongyuan.android.zhiquleyuan.player.MusicPlayer;
 import com.tongyuan.android.zhiquleyuan.request.RequestManager;
 import com.tongyuan.android.zhiquleyuan.request.base.BaseRequest;
 import com.tongyuan.android.zhiquleyuan.request.base.SuperModel;
@@ -42,7 +40,6 @@ import com.tongyuan.android.zhiquleyuan.utils.StatusBarUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 import com.tongyuan.android.zhiquleyuan.utils.Util;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -63,18 +60,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MyPlayActivity extends BaseActivity {
 
-
-//    public static void launch(Context context, String img, String id, String name, String duration) {
-//
-//        Intent intent = new Intent(context, MyPlayActivity.class);
-//        intent.putExtra("imgId", imgId);
-//        intent.putExtra("imgId", imgId);
-//        intent.putExtra("imgId", imgId);
-//        context.startActivity();
-//    }
-
-
-
     @Bind(R.id.player_details_name)
     TextView titleTextView;
     @Bind(R.id.player_collection)
@@ -93,17 +78,9 @@ public class MyPlayActivity extends BaseActivity {
     //更新播放进度的显示
     private static final int UPDATE_PLAY_PROGRESS_SHOW = 1;
 
-    private MediaPlayer mMediaPlayer;
     boolean pause = true;
     private ObjectAnimator mRotateObjectAnimator;
 
-//    private TextView mTextView_duration;
-//    private TextView mTextView_playname;
-//    private TextView phoneplay;
-//    private TextView toyplay;
-    //private DiscView mDiscView;
-    //boolean isPlaying=isPlaying();
-    private TextView mTextView_start;
     private final String TAG = "play";
 
     private Handler mHandler = new Handler() {
@@ -131,11 +108,11 @@ public class MyPlayActivity extends BaseActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle saveInstance) {
+        Log.i("gengen", "onCreate");
         super.onCreate(saveInstance);
         setContentView(R.layout.activity_playing_details);
-
-//        toyplay.setOnClickListener(this);
-//        phoneplay.setOnClickListener(this);
+        ButterKnife.bind(this);
+        StatusBarUtils.setStatusBarLightMode(this, getResources().getColor(R.color.main_top_bg));
 
         mFormatData = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
         mPhoneNum = SPUtils.getString(this, "phoneNum", "");
@@ -157,7 +134,7 @@ public class MyPlayActivity extends BaseActivity {
             mMusicId = secondcategorylistbean.ID;//拿这个colid去请求本机播放申请
             mMusicName = secondcategorylistbean.NAME;
             mMusicDur = secondcategorylistbean.DUR;
-            Log.i(TAG, "recommandid:secondcategorylistbean " + mMusicId);
+//            Log.i(TAG, "recommandid:secondcategorylistbean " + mMusicId);
         } else if (bundle != null && bundle.containsKey("toydetailsrecommandlistbean")) {
             //从toydetailsfragment传过来的bundle
             DiscoveryListResultBean.BODYBean.LSTBean toydetailslistbean = bundle.getParcelable("toydetailsrecommandlistbean");
@@ -165,16 +142,10 @@ public class MyPlayActivity extends BaseActivity {
             mMusicId = toydetailslistbean.getID();//拿这个colid去请求本机播放申请
             mMusicName = toydetailslistbean.getNAME();
             mMusicDur = toydetailslistbean.getDUR();
-            Log.i(TAG, "recommandid:toydetailsrecommandlistbean " + mMusicId);
+//            Log.i(TAG, "recommandid:toydetailsrecommandlistbean " + mMusicId);
         }
-        getLocalPlayApplication(mMusicId, mPhoneNum, mFormatData, mToken);
-        mMediaPlayer = new MediaPlayer();
+        getLocalPlayApplication(mMusicId);
 
-
-        ButterKnife.bind(this);
-        StatusBarUtils.setStatusBarLightMode(this, getResources().getColor(R.color.main_top_bg));
-
-        mMediaPlayer = new MediaPlayer();
         Glide.with(this).load(mMusicImg).asBitmap().centerCrop().into(new BitmapImageViewTarget(mImageView) {
 
             @Override
@@ -186,14 +157,7 @@ public class MyPlayActivity extends BaseActivity {
             }
         });
 
-//        }
         titleTextView.setText(mMusicName);
-//        mTextView_duration.setText(mMusicDur);
-        //格式化时间
-//        mTextView_duration.setText(Util.formatMillis(mMediaPlayer.getDuration()));
-        updatePlayProgressShow();
-
-//        mMediaPlayer = MediaPlayer.create(this, R.raw.bumie);
 
         mRotateObjectAnimator = ObjectAnimator.ofFloat(mImageView, "rotation", 0, 360);
         mRotateObjectAnimator.setDuration(20000);
@@ -237,13 +201,13 @@ public class MyPlayActivity extends BaseActivity {
     }
 
     private void playOrPause() {
-        if (pause && !mMediaPlayer.isPlaying()) {
-            Intent intent1 = new Intent();
+        if (!MusicPlayer.isPlaying()) {
+            /*Intent intent1 = new Intent();
             //网络播放应在子线程中
             intent1.putExtra("musicurl", mUrl);
             intent1.putExtra("playstate", 1);//播放状态
             intent1.setClass(getApplicationContext(), MusicPlayerService.class);
-            startService(intent1);
+            startService(intent1);*/
             playMusic();
             mRotateObjectAnimator.start();
             pause = false;
@@ -255,18 +219,9 @@ public class MyPlayActivity extends BaseActivity {
         }
     }
 
-    private void getLocalPlayApplication(String musicId, String phoneNum, String formatTime, String token) {
+    private void getLocalPlayApplication(String musicId) {
 
-//        Retrofit retrofit2 = new Retrofit.Builder().baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
-//                .addConverterFactory(GsonConverterFactory.create())
-//                .build();
-//        AllInterface allInterface1 = retrofit2.create(AllInterface.class);
-//        Gson gson1 = new Gson();
         LocalPlayApplyReqBean.BODYBean bodyBean1 = new LocalPlayApplyReqBean.BODYBean(musicId);
-//        LocalPlayApplyReqBean localPlayApplyReqBean = new LocalPlayApplyReqBean("REQ", "PLAY", phoneNum, formatTime, bodyBean1,
-//                "", token, "1");
-//        String s1 = gson1.toJson(localPlayApplyReqBean);
-//        Call<LocalPlayApplyResBean> localPlayApplyResBeanCall = allInterface1.LOCAL_PLAY_APPLY_RES_BEAN_CALL(s1);
         BaseRequest baseRequest = new BaseRequest(getApplicationContext(), bodyBean1, "PLAY");
         Call<SuperModel<LocalPlayApplyResBean>> localPlayApplyResBeanCall = RequestManager.getInstance().requestMusicDetail(baseRequest);
         localPlayApplyResBeanCall.enqueue(new Callback<SuperModel<LocalPlayApplyResBean>>() {
@@ -274,11 +229,10 @@ public class MyPlayActivity extends BaseActivity {
             public void onResponse(Call<SuperModel<LocalPlayApplyResBean>> call, Response<SuperModel<LocalPlayApplyResBean>> response) {
                 if (response.body().CODE.equals("-700")) {
                     ToastUtil.showToast(getApplicationContext(), "资源不存在");
-                    return;
                 } else if (response.body().CODE.equals("0")) {
                     mUrl = response.body().BODY.getURL();
-                    Log.i(TAG, "onResponse: murl" + mUrl.toString());
-
+                    Log.i("gengen", "mUrl="+mUrl);
+                    MusicPlayer.open(mUrl);
                 }
             }
 
@@ -292,7 +246,7 @@ public class MyPlayActivity extends BaseActivity {
 
     //更新播放进度的显示
     private void updatePlayProgressShow() {
-        int currentPosition = mMediaPlayer.getCurrentPosition();
+        int currentPosition = MusicPlayer.getCurrentPosition();
         startTimeView.setText(Util.formatMillis(currentPosition));
 
         progressBar.setProgress(currentPosition);
@@ -302,40 +256,12 @@ public class MyPlayActivity extends BaseActivity {
 
 
     private void playMusic() {
-        try {
-            mMediaPlayer.reset();
-            Log.i(TAG, "playMusic: murl" + mUrl.toString());
-            mMediaPlayer.setDataSource(this, Uri.parse(mUrl));
-            mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                @Override
-                public void onPrepared(MediaPlayer mp) {
-                    if(progressBar != null)
-                        progressBar.setMax(mp.getDuration());
-                    int duration = mp.getDuration();
-                    if(duration != -1)
-                        durationView.setText(Util.formatMillis(duration));
-
-                }
-            });
-            mMediaPlayer.prepare();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        mMediaPlayer.start();
+        MusicPlayer.start();
         mPlayBtn.setImageResource(R.drawable.play_stop_pressed240);
-        mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                mp.stop();
-                mImageView.clearAnimation();
-            }
-        });
-
     }
 
     private void pauseMusic() {
-        mMediaPlayer.pause();
+        MusicPlayer.pause();
         mPlayBtn.setImageResource(R.drawable.play_pressed_240);
         mHandler.removeMessages(UPDATE_PLAY_PROGRESS_SHOW);
     }
@@ -346,6 +272,24 @@ public class MyPlayActivity extends BaseActivity {
         ButterKnife.unbind(this);
     }
 
+    protected void onPrepared() {
+        int duration = MusicPlayer.getDuration();
+        if(duration != 0) {
+            if(progressBar != null)
+                progressBar.setMax(MusicPlayer.getDuration());
+            durationView.setText(Util.formatMillis(duration));
+        }
+    }
+
+    protected void onError() {
+
+    }
+
+    protected void onCompleted() {
+        MusicPlayer.stop();
+        mImageView.clearAnimation();
+    }
+
 
     private void pushMusicToToy() {
         Retrofit retrofit = new Retrofit.Builder()
@@ -353,16 +297,11 @@ public class MyPlayActivity extends BaseActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
-        System.out.println("mtoyid"+ToySelectorFragment.mToyid);
-//        ControlToyPlayMusicReqBean.ParamBean paramBean = new ControlToyPlayMusicReqBean.ParamBean(ToySelectorFragment.mToyid, "1", mMusicId,
-//                "0");
-//        ControlToyPlayMusicReqBean control_play = new ControlToyPlayMusicReqBean("control_play", paramBean, mToken);
         ControlToyPlayMusicReqBean.ParamBean paramBean = new ControlToyPlayMusicReqBean.ParamBean("201705081005211016644025", "1", "201705151824191016803202",
                 "0");
         ControlToyPlayMusicReqBean control_play = new ControlToyPlayMusicReqBean("control_play", paramBean, mToken);
         Gson gson=new Gson();
         String s = gson.toJson(control_play);
-        System.out.println("ssssssss"+s);
         Call<ControlToyPlayMusicResBean> controlToyPlayMusicResBeanCall = allInterface.CONTROL_TOY_PLAY_MUSIC_RES_BEAN_CALL(s);
         controlToyPlayMusicResBeanCall.enqueue(new Callback<ControlToyPlayMusicResBean>() {
             @Override

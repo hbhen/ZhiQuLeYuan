@@ -90,7 +90,9 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".activity.OtherActivity"/>
 
-        <service android:name=".service.MusicPlayerService"/>
+        <service android:name=".service.MusicPlayerService"
+            android:enabled="true"
+            android:exported="true"/>
         <!-- <activity android:name=".fragment.MyToyFragment"/> -->
 
         <meta-data

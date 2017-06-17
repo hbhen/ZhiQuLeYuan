@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.util.Log;
 
 import com.tongyuan.android.zhiquleyuan.IMusicAidl;
 import com.tongyuan.android.zhiquleyuan.IRemoteServiceCallback;
@@ -39,16 +40,21 @@ public class MusicPlayer {
 
     public static ServiceToken bindToService(Context context, ServiceConnection connection) {
         Activity realActivity = ((Activity) context).getParent();
+        Log.i("gengen", "bindToService");
         if (realActivity == null) {
             realActivity = (Activity) context;
         }
         final ContextWrapper contextWrapper = new ContextWrapper(realActivity);
         contextWrapper.startService(new Intent(contextWrapper, MusicPlayerService.class));
+
         final ServiceBinder binder = new ServiceBinder(connection);
         if (contextWrapper.bindService(
                 new Intent().setClass(contextWrapper, MusicPlayerService.class), binder, Context.BIND_AUTO_CREATE)) {
             mConnectionMap.put(contextWrapper, binder);
+            Log.i("gengen", "bind success");
             return new ServiceToken(contextWrapper);
+        } else {
+            Log.i("gengen", "bind fail");
         }
         return null;
     }
@@ -78,11 +84,11 @@ public class MusicPlayer {
         }
     }
 
-    public static void play() {
+    public static void start() {
         if(mService == null)
             return;
         try {
-            mService.play();
+            mService.start();
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -93,6 +99,16 @@ public class MusicPlayer {
             return;
         try {
             mService.pause();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void stop() {
+        if(mService == null)
+            return;
+        try {
+            mService.stop();
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -120,6 +136,19 @@ public class MusicPlayer {
         return 0;
     }
 
+    public static int getDuration() {
+        if(mService == null)
+            return 0;
+        try {
+            return mService.getDuration();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+
+
     public static void registerCallback(IRemoteServiceCallback callback) {
         if(mService == null)
             return ;
@@ -139,7 +168,9 @@ public class MusicPlayer {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
+            Log.i("gengen", "onServiceConnected");
             mService = IMusicAidl.Stub.asInterface(service);
+            Log.i("gengen", "mService="+mService);
             if (callback != null) {
                 callback.onServiceConnected(name, service);
             }

@@ -129,7 +129,7 @@ public class DiscoverySecondCategoryActivity extends AppCompatActivity implement
 
                             intent.setClass(getApplicationContext(), MyPlayActivity.class);
                             startActivity(intent);
-                            ToastUtil.showToast(getApplicationContext(), "点击的是" + position);
+                            ToastUtil.showToast(getApplicationContext(), "aldfkalsdf点击的是" + position);
                         }
                     });
                 } else {

@@ -15,26 +15,25 @@ import java.lang.ref.WeakReference;
 
 public class MusicAidlStub extends IMusicAidl.Stub {
 
-//    private WeakReference<MusicPlayerService> mService;
     private MultiPlayer multiPlayer;
 
-    public MusicAidlStub() {
-//        mService = new WeakReference<MusicPlayerService>(service);
+    public MusicAidlStub(MusicPlayerService service) {
+        multiPlayer = new MultiPlayer(service);
     }
 
     @Override
     public void open(String path) throws RemoteException {
-
+        multiPlayer.setDataSource(path);
     }
 
     @Override
-    public void play() throws RemoteException {
-
+    public void start() throws RemoteException {
+        multiPlayer.start();
     }
 
     @Override
     public boolean isPlaying() throws RemoteException {
-        return false;
+        return multiPlayer.isPlaying();
     }
 
     @Override
@@ -49,27 +48,32 @@ public class MusicAidlStub extends IMusicAidl.Stub {
 
     @Override
     public int getDuration() throws RemoteException {
-        return 0;
+        return multiPlayer.getDuration();
     }
 
     @Override
     public int getCurrentPosition() throws RemoteException {
-        return 0;
+        return multiPlayer.getCurrentPosition();
     }
 
     @Override
     public void pause() throws RemoteException {
-
+        multiPlayer.pause();
     }
 
     @Override
     public void stop() throws RemoteException {
-
+        multiPlayer.stop();
     }
 
     @Override
     public void setLockScreenAlbumArt(boolean enable) throws RemoteException {
 
+    }
+
+    @Override
+    public void setLooping(boolean looping) throws RemoteException {
+        multiPlayer.setLooping(looping);
     }
 
     @Override

@@ -8,7 +8,7 @@ interface IMusicAidl {
 
     void open(String path);
 
-    void play();
+    void start();
 
     boolean isPlaying();
 
@@ -25,6 +25,8 @@ interface IMusicAidl {
     void stop();
 
     void setLockScreenAlbumArt(boolean enable);
+
+    void setLooping(boolean looping);
 
     /**
      * Often you want to allow a service to call back to its clients.
