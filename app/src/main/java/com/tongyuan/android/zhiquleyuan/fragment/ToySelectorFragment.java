@@ -148,7 +148,7 @@ public class ToySelectorFragment extends BaseFragment {
                         String toycode = toyCode.get(position);
                         Log.i(TAG, "onClick:toycode " + toycode);
 
-                        QuerySingleToyInfo(mToyid, toycode, time,position);
+                        QuerySingleToyInfo(mToyid, toycode, time, position);
 
                         Toast.makeText(getActivity(), "当前position" + position, Toast.LENGTH_SHORT).show();
                         Log.i(TAG, "onClick: toyid1" + mToyid);
@@ -262,7 +262,7 @@ public class ToySelectorFragment extends BaseFragment {
 
             @Override
             public void onFailure(Call<SingleToyInfoRESBean> call, Throwable t) {
-                Log.i(TAG, "onFailure: "+t.toString());
+                Log.i(TAG, "onFailure: " + t.toString());
             }
         });
     }
@@ -279,6 +279,7 @@ public class ToySelectorFragment extends BaseFragment {
     //接收并处理从activity传过来的数据
     @Subscribe(threadMode = ThreadMode.POSTING, sticky = true)
     public void onToyMessage(MessageEventToy messageEventToy) {
+
         //从mainactivity传过来的lst数据,
 //        Log.i(TAG, "messageEventToy.mQueryBabyListResults: " + messageEventToy.mQueryBabyListResults.get(1).1toString());
 //        Log.i(TAG, "messageEventToy.mQueryBabyListResults: " + messageEventToy.mQueryBabyListResults.size());
@@ -309,10 +310,10 @@ public class ToySelectorFragment extends BaseFragment {
 
         Log.i(TAG, "babyImg=====" + babyImg);
         Log.i(TAG, "toyImg size=====" + toyImg.size());
-        Log.i(TAG, "onToyMessage: adapter1"+mPagerAdapter);
-        if (mPagerAdapter!=null)
-        mPagerAdapter.notifyDataSetChanged();
-        Log.i(TAG, "onToyMessage: adapter"+mPagerAdapter);
+        Log.i(TAG, "onToyMessage: adapter1" + mPagerAdapter);
+        if (mPagerAdapter != null)
+            mPagerAdapter.notifyDataSetChanged();
+        Log.i(TAG, "onToyMessage: adapter" + mPagerAdapter);
 
     }
 

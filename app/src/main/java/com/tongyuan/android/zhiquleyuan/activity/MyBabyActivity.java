@@ -101,18 +101,18 @@ public class MyBabyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_addbabyinfo);
         ButterKnife.bind(this);
-        mRgAddbabyinfo.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch (checkedId) {
-                    case R.id.radioButtonBoy:
-                        sex = "M";
-                        break;
-                    case R.id.radiobuttonGirls:
-                        sex = "W";
-                }
-            }
-        });
+//        mRgAddbabyinfo.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(RadioGroup group, int checkedId) {
+//                switch (checkedId) {
+//                    case R.id.radioButtonBoy:
+//                        sex = "M";
+//                        break;
+//                    case R.id.radiobuttonGirls:
+//                        sex = "W";
+//                }
+//            }
+//        });
 
         uploadFilePath = getExternalFilesDir(DIRECTORY_PICTURES).getAbsolutePath();
         uploadFileName="icon.png";
@@ -333,7 +333,7 @@ public class MyBabyActivity extends AppCompatActivity {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         String time = simpleDateFormat.format(date);
 
-        BabyInfoRequestBean.BODYBean babyInfoBody = new BabyInfoRequestBean.BODYBean("BABY", time, babyID, babyID, mTimedate, "M");
+        BabyInfoRequestBean.BODYBean babyInfoBody = new BabyInfoRequestBean.BODYBean("BABY", time, babyID, babyID, mTimedate, sex);
         BabyInfoRequestBean babyInfoRequestBean = new BabyInfoRequestBean("REQ", "INFO", phoneNum, time, babyInfoBody, "", babyToken, "1");
 
         String s = gson.toJson(babyInfoRequestBean);

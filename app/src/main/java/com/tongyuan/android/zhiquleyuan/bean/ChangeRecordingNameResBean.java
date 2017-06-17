@@ -1,52 +1,22 @@
 package com.tongyuan.android.zhiquleyuan.bean;
 
 /**
- * Created by Android on 2017/6/13.
+ * Created by Android on 2017/6/17.
  */
 
-public class AddRecordingResBean {
-
-    @Override
-    public String toString() {
-        return "AddRecordingResBean{" +
-                "TYPE='" + TYPE + '\'' +
-                ", CMD='" + CMD + '\'' +
-                ", ACCT='" + ACCT + '\'' +
-                ", TIME='" + TIME + '\'' +
-                ", VERI='" + VERI + '\'' +
-                ", SEQ='" + SEQ + '\'' +
-                ", CODE='" + CODE + '\'' +
-                ", MSG='" + MSG + '\'' +
-                ", BODY=" + BODY +
-                ", TOKEN='" + TOKEN + '\'' +
-                '}';
-    }
-
-    public AddRecordingResBean(String TYPE, String CMD, String ACCT, String TIME, String VERI, String SEQ, String CODE, String MSG, BODYBean BODY,
-                               String TOKEN) {
-        this.TYPE = TYPE;
-        this.CMD = CMD;
-        this.ACCT = ACCT;
-        this.TIME = TIME;
-        this.VERI = VERI;
-        this.SEQ = SEQ;
-        this.CODE = CODE;
-        this.MSG = MSG;
-        this.BODY = BODY;
-        this.TOKEN = TOKEN;
-    }
+public class ChangeRecordingNameResBean {
 
     /**
      * TYPE : RES
      * CMD : ARES
      * ACCT : 13628327181
-     * TIME : 20170617112258912
+     * TIME : 20170617100839009
      * VERI :
      * SEQ : 1
      * CODE : 0
      * MSG :
-     * BODY : {"TIMES":"0","DUR":"","SIZE":"","TYPE":"0","IMG":"","COLID":"","NAME":"哈哈","ID":"201706171122581016824542","COLNAME":"",
-     * "RESOLUTION":"","REMARK":""}
+     * BODY : {"TYPE":"0","NAME":"哈哈","ID":"201706171008381016824535","TIMES":"0","SIZE":"","DUR":"","COLID":"","RESOLUTION":"","REMARK":"",
+     * "IMG":"","COLNAME":""}
      * TOKEN : c19d5a15-592a-4b78-863e-846e789163be
      */
 
@@ -60,6 +30,36 @@ public class AddRecordingResBean {
     private String MSG;
     private BODYBean BODY;
     private String TOKEN;
+
+    @Override
+    public String toString() {
+        return "ChangeRecordingNameResBean{" +
+                "TYPE='" + TYPE + '\'' +
+                ", CMD='" + CMD + '\'' +
+                ", ACCT='" + ACCT + '\'' +
+                ", TIME='" + TIME + '\'' +
+                ", VERI='" + VERI + '\'' +
+                ", SEQ='" + SEQ + '\'' +
+                ", CODE='" + CODE + '\'' +
+                ", MSG='" + MSG + '\'' +
+                ", BODY=" + BODY +
+                ", TOKEN='" + TOKEN + '\'' +
+                '}';
+    }
+
+    public ChangeRecordingNameResBean(String TYPE, String CMD, String ACCT, String TIME, String VERI, String SEQ, String CODE, String MSG, BODYBean
+            BODY, String TOKEN) {
+        this.TYPE = TYPE;
+        this.CMD = CMD;
+        this.ACCT = ACCT;
+        this.TIME = TIME;
+        this.VERI = VERI;
+        this.SEQ = SEQ;
+        this.CODE = CODE;
+        this.MSG = MSG;
+        this.BODY = BODY;
+        this.TOKEN = TOKEN;
+    }
 
     public String getTYPE() {
         return TYPE;
@@ -143,85 +143,44 @@ public class AddRecordingResBean {
 
     public static class BODYBean {
         /**
-         * TIMES : 0
-         * DUR :
-         * SIZE :
          * TYPE : 0
-         * IMG :
-         * COLID :
          * NAME : 哈哈
-         * ID : 201706171122581016824542
-         * COLNAME :
+         * ID : 201706171008381016824535
+         * TIMES : 0
+         * SIZE :
+         * DUR :
+         * COLID :
          * RESOLUTION :
          * REMARK :
+         * IMG :
+         * COLNAME :
          */
 
-        private String TIMES;
-        private String DUR;
-        private String SIZE;
         private String TYPE;
-        private String IMG;
-        private String COLID;
         private String NAME;
         private String ID;
-        private String COLNAME;
+        private String TIMES;
+        private String SIZE;
+        private String DUR;
+        private String COLID;
         private String RESOLUTION;
         private String REMARK;
+        private String IMG;
+        private String COLNAME;
 
-        @Override
-        public String toString() {
-            return "BODYBean{" +
-                    "TIMES='" + TIMES + '\'' +
-                    ", DUR='" + DUR + '\'' +
-                    ", SIZE='" + SIZE + '\'' +
-                    ", TYPE='" + TYPE + '\'' +
-                    ", IMG='" + IMG + '\'' +
-                    ", COLID='" + COLID + '\'' +
-                    ", NAME='" + NAME + '\'' +
-                    ", ID='" + ID + '\'' +
-                    ", COLNAME='" + COLNAME + '\'' +
-                    ", RESOLUTION='" + RESOLUTION + '\'' +
-                    ", REMARK='" + REMARK + '\'' +
-                    '}';
-        }
-
-        public BODYBean(String TIMES, String DUR, String SIZE, String TYPE, String IMG, String COLID, String NAME, String ID, String COLNAME,
-                        String RESOLUTION, String REMARK) {
-            this.TIMES = TIMES;
-            this.DUR = DUR;
-            this.SIZE = SIZE;
+        public BODYBean(String TYPE, String NAME, String ID, String TIMES, String SIZE, String DUR, String COLID, String RESOLUTION, String REMARK,
+                        String IMG, String COLNAME) {
             this.TYPE = TYPE;
-            this.IMG = IMG;
-            this.COLID = COLID;
             this.NAME = NAME;
             this.ID = ID;
-            this.COLNAME = COLNAME;
+            this.TIMES = TIMES;
+            this.SIZE = SIZE;
+            this.DUR = DUR;
+            this.COLID = COLID;
             this.RESOLUTION = RESOLUTION;
             this.REMARK = REMARK;
-        }
-
-        public String getTIMES() {
-            return TIMES;
-        }
-
-        public void setTIMES(String TIMES) {
-            this.TIMES = TIMES;
-        }
-
-        public String getDUR() {
-            return DUR;
-        }
-
-        public void setDUR(String DUR) {
-            this.DUR = DUR;
-        }
-
-        public String getSIZE() {
-            return SIZE;
-        }
-
-        public void setSIZE(String SIZE) {
-            this.SIZE = SIZE;
+            this.IMG = IMG;
+            this.COLNAME = COLNAME;
         }
 
         public String getTYPE() {
@@ -230,22 +189,6 @@ public class AddRecordingResBean {
 
         public void setTYPE(String TYPE) {
             this.TYPE = TYPE;
-        }
-
-        public String getIMG() {
-            return IMG;
-        }
-
-        public void setIMG(String IMG) {
-            this.IMG = IMG;
-        }
-
-        public String getCOLID() {
-            return COLID;
-        }
-
-        public void setCOLID(String COLID) {
-            this.COLID = COLID;
         }
 
         public String getNAME() {
@@ -264,12 +207,36 @@ public class AddRecordingResBean {
             this.ID = ID;
         }
 
-        public String getCOLNAME() {
-            return COLNAME;
+        public String getTIMES() {
+            return TIMES;
         }
 
-        public void setCOLNAME(String COLNAME) {
-            this.COLNAME = COLNAME;
+        public void setTIMES(String TIMES) {
+            this.TIMES = TIMES;
+        }
+
+        public String getSIZE() {
+            return SIZE;
+        }
+
+        public void setSIZE(String SIZE) {
+            this.SIZE = SIZE;
+        }
+
+        public String getDUR() {
+            return DUR;
+        }
+
+        public void setDUR(String DUR) {
+            this.DUR = DUR;
+        }
+
+        public String getCOLID() {
+            return COLID;
+        }
+
+        public void setCOLID(String COLID) {
+            this.COLID = COLID;
         }
 
         public String getRESOLUTION() {
@@ -286,6 +253,22 @@ public class AddRecordingResBean {
 
         public void setREMARK(String REMARK) {
             this.REMARK = REMARK;
+        }
+
+        public String getIMG() {
+            return IMG;
+        }
+
+        public void setIMG(String IMG) {
+            this.IMG = IMG;
+        }
+
+        public String getCOLNAME() {
+            return COLNAME;
+        }
+
+        public void setCOLNAME(String COLNAME) {
+            this.COLNAME = COLNAME;
         }
     }
 }
