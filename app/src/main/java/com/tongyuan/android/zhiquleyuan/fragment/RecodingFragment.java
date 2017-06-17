@@ -1,12 +1,13 @@
 package com.tongyuan.android.zhiquleyuan.fragment;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.database.DataSetObservable;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
@@ -20,12 +21,14 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.baoyz.swipemenulistview.SwipeMenu;
@@ -37,14 +40,22 @@ import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.adapter.RecordAdapter;
 import com.tongyuan.android.zhiquleyuan.adapter.RecordingListAdapter;
 import com.tongyuan.android.zhiquleyuan.base.BaseFragment;
+import com.tongyuan.android.zhiquleyuan.bean.AddRecordingReqBean;
+import com.tongyuan.android.zhiquleyuan.bean.AddRecordingResBean;
+import com.tongyuan.android.zhiquleyuan.bean.ChangeRecordingNameReqBean;
+import com.tongyuan.android.zhiquleyuan.bean.ChangeRecordingNameResBean;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteRecordingReqBean;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteRecordingResBean;
+import com.tongyuan.android.zhiquleyuan.bean.LocalPlayApplyReqBean;
+import com.tongyuan.android.zhiquleyuan.bean.LocalPlayApplyResBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryRecordingReqBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryRecordingResBean;
 import com.tongyuan.android.zhiquleyuan.db.DBHelper;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.request.RequestManager;
+import com.tongyuan.android.zhiquleyuan.request.base.BaseRequest;
+import com.tongyuan.android.zhiquleyuan.request.base.SuperModel;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
@@ -57,12 +68,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static com.nostra13.universalimageloader.core.ImageLoader.TAG;
 import static java.lang.System.currentTimeMillis;
 
 //import com.tongyuan.android.zhiquleyuan.adapter.RecordAdapter;
@@ -126,6 +141,21 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
     private TextView mPlayRecordingDesc;
     private ImageButton mSetVolume;
     private ImageView mPlayBack;
+    private ImageView mPlayPrev;
+    private ImageView mPlayNext;
+    private ImageView mPlay;
+    private ImageView mStop;
+    private TextView mPlayBeginTime;
+    private TextView mPlayendTime;
+    private SeekBar mPlaySeekBar;
+    private ImageView mStopCircle;
+    private EditListener mEditListener;
+    private String mPlayName;
+    private int selectedPosition = -1;
+    private String mUrl;
+    private String mRecordingId;
+    private String mTime;
+
 
     @Nullable
     @Override
@@ -140,22 +170,41 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
     private View initView(LayoutInflater inflater) {
         View recordingRoot = inflater.inflate(R.layout.fragment_recoding, null);
         View itemRecordingHeader = inflater.inflate(R.layout.item_play_list_header, null);
+
+
         mBottomControl = (FrameLayout) recordingRoot.findViewById(R.id.fl_fragment_recording_control);
         //录音布局
         mRecordingFrag = (RelativeLayout) recordingRoot.findViewById(R.id.rl_fragment_recording_recording);
         //录音完成布局
         mCompleteFrag = (RelativeLayout) recordingRoot.findViewById(R.id.rl_fragment_recording_complete);
+
+
         //录音播放布局
         mPlayRecordingFrag = (RelativeLayout) recordingRoot.findViewById(R.id.rl_fragment_recording_playrecording);
 
         //录音播放的布局view
+        //文件名称
         mPlayRecordingDesc = (TextView) mPlayRecordingFrag.findViewById(R.id.tv_fragment_playrecoding_desc);
+        //设置音量
         mSetVolume = (ImageButton) mPlayRecordingFrag.findViewById(R.id.ib_fragment_recoding_setvolume);
+        //返回键
         mPlayBack = (ImageView) mPlayRecordingFrag.findViewById(R.id.iv_fragment_playrecording_back);
-        mPlayRecordingFrag.findViewById(R.id.iv_fragment_playrecording_back);
-        mPlayRecordingFrag.findViewById(R.id.iv_fragment_playrecording_back);
-
-        mPlayRecordingFrag.findViewById(R.id.iv_fragment_playrecording_back);
+        //上一首
+        mPlayPrev = (ImageView) mPlayRecordingFrag.findViewById(R.id.iv_recoding_prev);
+        //下一首
+        mPlayNext = (ImageView) mPlayRecordingFrag.findViewById(R.id.iv_recoding_next);
+        //播放键
+        mPlay = (ImageView) mPlayRecordingFrag.findViewById(R.id.iv_recoding_play);
+        //播放暂停键
+        mStop = (ImageView) mPlayRecordingFrag.findViewById(R.id.iv_recoding_stop);
+        //开始时间
+        mPlayBeginTime = (TextView) mPlayRecordingFrag.findViewById(R.id.tv_fragment_recoding_begintime);
+        //结束时间
+        mPlayendTime = (TextView) mPlayRecordingFrag.findViewById(R.id.tv_fragment_recoding_endtime);
+        //播放进度条
+        mPlaySeekBar = (SeekBar) mPlayRecordingFrag.findViewById(R.id.seekbar);
+        //彩色环
+        mStopCircle = (ImageView) mPlayRecordingFrag.findViewById(R.id.iv_recoding_stopcircle);
 
 
         mRecordingDesc = (TextView) recordingRoot.findViewById(R.id.tv_fragment_recoding_desc);
@@ -189,14 +238,14 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
 //        View mHeadview = inflater.inflate(R.layout.fragment_recoding_headerview, null);
 //        mHeadTitle = (TextView) mHeadview.findViewById(R.id.tv_recoding_title);
 
-        mhalder = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                Log.i("555555", "scan file over...");
-                showFile(recordList);
-            }
-        };
+//        mhalder = new Handler() {
+//            @Override
+//            public void handleMessage(Message msg) {
+//                super.handleMessage(msg);
+//                Log.i("555555", "scan file over...");
+//                showFile(recordList);
+//            }
+//        };
 
         sprefresh = (SwipeRefreshLayout) recordingRoot.findViewById(R.id.sprefresh);
         mSwipelistview = (SwipeMenuListView) recordingRoot.findViewById(R.id.lv_recoding);
@@ -241,151 +290,6 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
 
     }
 
-    private void queryRecordingList() {
-        mToken = SPUtils.getString(getContext(), "TOKEN", "");
-        mPhoneNum = SPUtils.getString(getContext(), "phoneNum", "");
-        Date date = new Date();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-        final String time = simpleDateFormat.format(date);
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constant.baseurl)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        AllInterface allInterface = retrofit.create(AllInterface.class);
-        QueryRecordingReqBean.BODYBean bodyBean = new QueryRecordingReqBean.BODYBean("", "10", "1");
-        QueryRecordingReqBean queryRecordingReqBean = new QueryRecordingReqBean("REQ", "MYREC", mPhoneNum, time, bodyBean, "", mToken, "1");
-
-        Gson gson = new Gson();
-        String babyListJson = gson.toJson(queryRecordingReqBean);
-        Call<QueryRecordingResBean> babyListResult = allInterface.QUERY_RECORDING_RES_BEAN_CALL(babyListJson);
-        babyListResult.enqueue(new Callback<QueryRecordingResBean>() {
-
-            private List<QueryRecordingResBean.BODYBean.LSTBean> mLst;
-            private RecordingListAdapter mRecordingListAdapter;
-
-            @Override
-            public void onResponse(Call<QueryRecordingResBean> call, Response<QueryRecordingResBean> response) {
-                if (response.body() != null && response.body().getCODE().equals("0")) {
-                    Log.i("1111111", "queryRecordingList:response" + response.body().getBODY().toString());
-                    mLst = response.body().getBODY().getLST();//这里拿的是所有的录音的列表
-                    final List<String> list = new ArrayList<String>();
-
-                    for (int i = 0; i < mLst.size() - 1; i++) {
-                        String id = mLst.get(i).getID();
-                        list.add(id);
-                    }
-                    Log.i("555555", "onResponse:+list的长度: " + list.size() + "list的内容:");
-                    mRecordingListAdapter = new RecordingListAdapter(getContext(), mLst);
-                    mSwipelistview.setAdapter(mRecordingListAdapter);
-                    mSwipelistview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            /**1,点击item,显示录音播放界面
-                             //2,拿到item的信息(name,duration),展示到播放界面上
-                             //3,点击播放,开始播放,seekbar的begintime开始走 ,seekbar的进度也跟着走,同时播放按钮变成暂停按钮
-                             //4,点击暂停,录音播放暂停,seekbar停止进度,记住当前的播放位置,并停留在当前的显示位置
-                             //5,点击上一首,去list列表获取上一首的信息,如果是第一首就仍然是第一首,点击上一首,直接开始播放
-                             //6,点击下一首,去list列表获取下一首的信息,如果是最后一首就仍然是最后一首,点击下一首,直接开始播放
-                             //7,播放结束的监听,当音乐播放完,进度条停止,暂停按钮变成播放按钮
-                             //8,点击音量控制,去设置初始化音量界面,设置音量并上传到服务器
-                             **/
-                            //1,点击item,显示录音播放界面
-                            showRecordingPlayView(true);
-                            //拿到item的信息(name,duration),展示到播放界面上
-                            String recordingId = list.get(position);
-
-                            //2,拿到item的信息(name,duration),展示到播放界面上
-                            String name = mLst.get(position).getNAME();
-                            String dur = mLst.get(position).getDUR();
-
-
-                            ToastUtil.showToast(getContext(), "点击的是:" + position);
-
-                        }
-                    });
-                    SwipeMenuCreator mCreator = new SwipeMenuCreator() {
-                        @Override
-                        public void create(SwipeMenu menu) {
-                            SwipeMenuItem deleteItem = new SwipeMenuItem(getContext());
-                            deleteItem.setTitle("删除");
-                            deleteItem.setBackground(R.color.redFont);
-                            deleteItem.setWidth(dp2px(70));
-                            deleteItem.setTitleSize(16);
-
-                            deleteItem.setTitleColor(R.color.white);
-                            menu.addMenuItem(deleteItem);
-
-                        }
-                    };
-
-                    mSwipelistview.setMenuCreator(mCreator);
-                    mSwipelistview.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
-                            deleteRecording(time, position, mLst);
-                            mLst.remove(position);
-                            mRecordingListAdapter.notifyDataSetChanged();
-                            ToastUtil.showToast(getContext(), "点击删除");
-                            return false;
-                        }
-                    });
-
-                    mSwipelistview.setSmoothScrollbarEnabled(true);
-                    mSwipelistview.setSwipeDirection(SwipeMenuListView.DIRECTION_LEFT);
-                    mSwipelistview.setOpenInterpolator(new AccelerateInterpolator());
-                    mSwipelistview.setCloseInterpolator(new AccelerateInterpolator());
-
-                }
-            }
-
-            @Override
-            public void onFailure(Call<QueryRecordingResBean> call, Throwable t) {
-
-            }
-        });
-
-    }
-
-    private void showRecordingPlayView(boolean b) {
-        if (b == true) {
-            mPlayRecordingFrag.setVisibility(View.VISIBLE);
-            mCompleteFrag.setVisibility(View.GONE);
-            mRecordingFrag.setVisibility(View.GONE);
-            mBottomControl.setVisibility(View.VISIBLE);
-        } else {
-            return;
-//            mPlayRecordingFrag.setVisibility(View.GONE);
-//            mCompleteFrag.setVisibility(View.VISIBLE);
-//            mRecordingFrag.setVisibility(View.GONE);
-        }
-    }
-
-    private void deleteRecording(String time, int position, List<QueryRecordingResBean.BODYBean.LSTBean> lst) {
-        String recordingId = lst.get(position).getID();
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constant.baseurl)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        AllInterface allInterface = retrofit.create(AllInterface.class);
-        DeleteRecordingReqBean.BODYBean bodyBean = new DeleteRecordingReqBean.BODYBean(recordingId);
-        DeleteRecordingReqBean deleteRecordingReqBean = new DeleteRecordingReqBean("REQ", "DRES", mPhoneNum, time, bodyBean, "", mToken, "1");
-
-        Gson gson = new Gson();
-        String babyListJson = gson.toJson(deleteRecordingReqBean);
-        Call<DeleteRecordingResBean> babyListResult = allInterface.DELETE_RECORDING_RES_BEAN_CALL(babyListJson);
-        babyListResult.enqueue(new Callback<DeleteRecordingResBean>() {
-            @Override
-            public void onResponse(Call<DeleteRecordingResBean> call, Response<DeleteRecordingResBean> response) {
-                Log.i("555555", "recordingfragment+(deleteRecording)onResponse: " + response.body().getBODY().toString());
-            }
-
-            @Override
-            public void onFailure(Call<DeleteRecordingResBean> call, Throwable t) {
-                Log.i("555555", "recordingfragment+(deleteRecording)onFailure: " + t.toString());
-            }
-        });
-    }
-
     private void initListener() {
         mRecordingButton.setOnClickListener(this);
         mSend2Toy.setOnClickListener(this);
@@ -397,8 +301,8 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
         mSaveRecording.setOnClickListener(this);
         mBackArrow.setOnClickListener(this);
         mPlayStop.setOnClickListener(this);
+        mPlayBack.setOnClickListener(this);
     }
-
 
     @Override
     public void onClick(View v) {
@@ -418,6 +322,17 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
                 break;
             //编辑
             case R.id.iv_fragent_recording_editor:
+                //我想干什么,我想在我点编辑按钮的时候,如果当前有选中的item,那么就拿到当前的选中的item的recording的名字,然后弹dialog,修改这个名字.
+                //当前没有选中item的时候,告知用户,当前没有选择item,让用户选择以后再进行编辑的操作.
+                //点击dialog的确定以后,底下的播放界面的名字,和listview上的名字都改变,并且上传到服务器,然后刷新列表
+                //TODO 编辑的功能,逻辑混乱,捋一捋
+                Log.i("xuanzhong", "是否选中" + mSwipelistview.isSelected());
+                if (selectedPosition == -1) {
+                    ToastUtil.showToast(getActivity(), "您没有选择要编辑的录音,请选择后再进行编辑");
+                    return;
+                }
+                showEditDialog();
+
                 editRecordingFile();
                 ToastUtil.showToast(getContext(), "点击了editor");
                 break;
@@ -473,14 +388,277 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
                 mRecordingFrag.setVisibility(View.VISIBLE);
                 mCompleteFrag.setVisibility(View.INVISIBLE);
                 break;
+            //播放界面的播放按钮
+            case R.id.iv_recoding_play:
+                playListRecordingItem();
+
+                break;
+            //播放界面的返回
+            case R.id.iv_fragment_playrecording_back:
+                showRecordingPlayView(false);
             default:
                 break;
         }
     }
 
-    private void editRecordingFile() {
-        //TODO 2017 06 14 点击编辑的时候,出现整个list的选择框,选中那个,点击确定以后
+    public void showEditDialog() {
+        LayoutInflater factory = LayoutInflater.from(getContext());//提示框
+        //这里必须是final的
+        final View view = factory.inflate(R.layout.alertdialogedittext, null);
+        //获得输入框对象
+        final EditText editText = (EditText) view.findViewById(R.id.edittext);
 
+        editText.setText(mPlayName);
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+        builder.setTitle("修改录音的名字");
+        builder.setView(view);
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String editTrim = editText.getText().toString().trim();
+                mPlayRecordingDesc.setText(editTrim);
+                changeRecordingName(editTrim);
+            }
+        });
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        builder.create();
+        builder.show();
+    }
+
+    private void changeRecordingName(String editTrim) {
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constant.baseurl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        AllInterface allInterface = retrofit.create(AllInterface.class);
+        ChangeRecordingNameReqBean.BODYBean bodyBean = new ChangeRecordingNameReqBean.BODYBean("RADIO", mRecordingId, editTrim);
+
+        ChangeRecordingNameReqBean changeRecordingNameReqBean = new ChangeRecordingNameReqBean("REQ", "ARES", mPhoneNum, mTime, bodyBean, "",
+                mToken, "1");
+
+
+        Gson gson = new Gson();
+        String babyListJson = gson.toJson(changeRecordingNameReqBean);
+        Call<ChangeRecordingNameResBean> babyListResult = allInterface.CHANGE_RECORDING_NAME_RES_BEAN_CALL(babyListJson);
+        babyListResult.enqueue(new Callback<ChangeRecordingNameResBean>() {
+            @Override
+            public void onResponse(Call<ChangeRecordingNameResBean> call, Response<ChangeRecordingNameResBean> response) {
+
+                Log.i("555555", "recordingfragment+(changerecordingnamebean)onResponse: " + response.body().getBODY().toString());
+                //改变完了以后去访问网络,刷新listview
+                queryRecordingList();
+            }
+
+            @Override
+            public void onFailure(Call<ChangeRecordingNameResBean> call, Throwable t) {
+                Log.i("555555", "recordingfragment+(changerecordingnamebean)onFailure: " + t.toString());
+
+            }
+        });
+
+
+    }
+
+
+    public void setOnEditListener(EditListener editListener) {
+        mEditListener = editListener;
+    }
+
+    private void queryRecordingList() {
+        mToken = SPUtils.getString(getContext(), "TOKEN", "");
+        mPhoneNum = SPUtils.getString(getContext(), "phoneNum", "");
+        Date date = new Date();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        mTime = simpleDateFormat.format(date);
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constant.baseurl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        AllInterface allInterface = retrofit.create(AllInterface.class);
+        QueryRecordingReqBean.BODYBean bodyBean = new QueryRecordingReqBean.BODYBean("", "10", "1");
+        QueryRecordingReqBean queryRecordingReqBean = new QueryRecordingReqBean("REQ", "MYREC", mPhoneNum, mTime, bodyBean, "", mToken, "1");
+
+        Gson gson = new Gson();
+        String babyListJson = gson.toJson(queryRecordingReqBean);
+        Call<QueryRecordingResBean> babyListResult = allInterface.QUERY_RECORDING_RES_BEAN_CALL(babyListJson);
+        babyListResult.enqueue(new Callback<QueryRecordingResBean>() {
+
+            private List<QueryRecordingResBean.BODYBean.LSTBean> mLst;
+            private RecordingListAdapter mRecordingListAdapter;
+
+            @Override
+            public void onResponse(Call<QueryRecordingResBean> call, Response<QueryRecordingResBean> response) {
+                if (response.body() != null && response.body().getCODE().equals("0")) {
+                    Log.i("1111111", "queryRecordingList:response" + response.body().getBODY().toString());
+                    mLst = response.body().getBODY().getLST();//这里拿的是所有的录音的列表
+                    final List<String> list = new ArrayList<String>();
+
+                    for (int i = 0; i < mLst.size() - 1; i++) {
+                        String id = mLst.get(i).getID();
+                        list.add(id);
+                    }
+                    Log.i("555555", "onResponse:+list的长度: " + list.size() + "list的内容:");
+                    mRecordingListAdapter = new RecordingListAdapter(getContext(), mLst);
+                    mSwipelistview.setAdapter(mRecordingListAdapter);
+                    mSwipelistview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            /**1,点击item,显示录音播放界面
+                             //2,拿到item的信息(name,duration),展示到播放界面上
+                             //3,点击播放,开始播放,seekbar的begintime开始走 ,seekbar的进度也跟着走,同时播放按钮变成暂停按钮
+                             //4,点击暂停,录音播放暂停,seekbar停止进度,记住当前的播放位置,并停留在当前的显示位置
+                             //5,点击上一首,去list列表获取上一首的信息,如果是第一首就仍然是第一首,点击上一首,直接开始播放
+                             //6,点击下一首,去list列表获取下一首的信息,如果是最后一首就仍然是最后一首,点击下一首,直接开始播放
+                             //7,播放结束的监听,当音乐播放完,进度条停止,暂停按钮变成播放按钮
+                             //8,点击音量控制,去设置初始化音量界面,设置音量并上传到服务器
+                             **/
+                            //定义一个选中状态
+                            mSwipelistview.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
+                            mSwipelistview.setItemChecked(position, true);
+                            //1,点击item,显示录音播放界面
+                            showRecordingPlayView(true);
+                            //保存position
+                            selectedPosition = position;
+                            //拿到item的信息(name,duration),展示到播放界面上
+                            //播放的id
+                            mRecordingId = list.get(position);
+                            //2,拿到item的信息(name,duration),展示到播放界面上
+                            mPlayName = mLst.get(position).getNAME();
+                            String dur = mLst.get(position).getDUR();
+                            mPlayRecordingDesc.setText(mPlayName);
+                            mPlayendTime.setText(dur);
+//                            //带着id 去服务器申请本地播放
+//                            getLocalPlayApply(mToken, mPhoneNum, mRecordingId, mTime);
+
+                            ToastUtil.showToast(getContext(), "点击的是:" + position);
+
+                        }
+                    });
+                    SwipeMenuCreator mCreator = new SwipeMenuCreator() {
+                        @Override
+                        public void create(SwipeMenu menu) {
+                            SwipeMenuItem deleteItem = new SwipeMenuItem(getContext());
+                            deleteItem.setTitle("删除");
+                            deleteItem.setBackground(R.color.redFont);
+                            deleteItem.setWidth(dp2px(70));
+                            deleteItem.setTitleSize(16);
+
+                            deleteItem.setTitleColor(R.color.white);
+                            menu.addMenuItem(deleteItem);
+
+                        }
+                    };
+
+                    mSwipelistview.setMenuCreator(mCreator);
+                    mSwipelistview.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
+                            deleteRecording(mTime, position, mLst);
+                            mLst.remove(position);
+                            mRecordingListAdapter.notifyDataSetChanged();
+                            ToastUtil.showToast(getContext(), "点击删除");
+                            return false;
+                        }
+                    });
+
+                    mSwipelistview.setSmoothScrollbarEnabled(true);
+                    mSwipelistview.setSwipeDirection(SwipeMenuListView.DIRECTION_LEFT);
+                    mSwipelistview.setOpenInterpolator(new AccelerateInterpolator());
+                    mSwipelistview.setCloseInterpolator(new AccelerateInterpolator());
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<QueryRecordingResBean> call, Throwable t) {
+
+            }
+        });
+
+    }
+
+    private void getLocalPlayApply(String token, String phoneNum, String recordingId, String time) {
+        LocalPlayApplyReqBean.BODYBean bodyBean1 = new LocalPlayApplyReqBean.BODYBean(recordingId);
+
+        BaseRequest baseRequest = new BaseRequest(getContext(), bodyBean1, "PLAY");
+        Call<SuperModel<LocalPlayApplyResBean>> localPlayApplyResBeanCall = RequestManager.getInstance().requestMusicDetail(baseRequest);
+        localPlayApplyResBeanCall.enqueue(new Callback<SuperModel<LocalPlayApplyResBean>>() {
+            @Override
+            public void onResponse(Call<SuperModel<LocalPlayApplyResBean>> call, Response<SuperModel<LocalPlayApplyResBean>> response) {
+                if (response.body().CODE.equals("-700")) {
+                    ToastUtil.showToast(getContext(), "资源不存在");
+                    return;
+                } else if (response.body().CODE.equals("0")) {
+                    mUrl = response.body().BODY.getURL();
+                    Log.i(TAG, "onResponse: murl" + mUrl.toString());
+
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SuperModel<LocalPlayApplyResBean>> call, Throwable t) {
+
+            }
+        });
+
+    }
+
+    private void playListRecordingItem() {
+
+
+    }
+
+    private void showRecordingPlayView(boolean b) {
+        if (b == true) {
+            mPlayRecordingFrag.setVisibility(View.VISIBLE);
+            mCompleteFrag.setVisibility(View.GONE);
+            mRecordingFrag.setVisibility(View.GONE);
+            mBottomControl.setVisibility(View.VISIBLE);
+        } else {
+            mPlayRecordingFrag.setVisibility(View.GONE);
+            mCompleteFrag.setVisibility(View.GONE);
+            mRecordingFrag.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void deleteRecording(String time, int position, List<QueryRecordingResBean.BODYBean.LSTBean> lst) {
+        String recordingId = lst.get(position).getID();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constant.baseurl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        AllInterface allInterface = retrofit.create(AllInterface.class);
+        DeleteRecordingReqBean.BODYBean bodyBean = new DeleteRecordingReqBean.BODYBean(recordingId);
+        DeleteRecordingReqBean deleteRecordingReqBean = new DeleteRecordingReqBean("REQ", "DRES", mPhoneNum, time, bodyBean, "", mToken, "1");
+
+        Gson gson = new Gson();
+        String babyListJson = gson.toJson(deleteRecordingReqBean);
+        Call<DeleteRecordingResBean> babyListResult = allInterface.DELETE_RECORDING_RES_BEAN_CALL(babyListJson);
+        babyListResult.enqueue(new Callback<DeleteRecordingResBean>() {
+            @Override
+            public void onResponse(Call<DeleteRecordingResBean> call, Response<DeleteRecordingResBean> response) {
+                Log.i("555555", "recordingfragment+(deleteRecording)onResponse: " + response.body().getBODY().toString());
+            }
+
+            @Override
+            public void onFailure(Call<DeleteRecordingResBean> call, Throwable t) {
+                Log.i("555555", "recordingfragment+(deleteRecording)onFailure: " + t.toString());
+            }
+        });
+    }
+
+
+    private void editRecordingFile() {
 
         mSwipelistview.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
     }
@@ -512,13 +690,57 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
         //往服务器上存储一份
         saveRecrodingToServer();
         recordList.add(mFile);
-        showFile(recordList);
+//        showFile(recordList);
         mRecordingFrag.setVisibility(View.VISIBLE);
         mCompleteFrag.setVisibility(View.INVISIBLE);
     }
 
     private void saveRecrodingToServer() {
-        RequestManager.getInstance();
+        String phoneNum = SPUtils.getString(getContext(), "phoneNum", "");
+        String token = SPUtils.getString(getContext(), "TOKEN", "");
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constant.baseurl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        AllInterface allInterface = retrofit.create(AllInterface.class);
+        Gson gson = new Gson();
+        Date date = new Date();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        String time = simpleDateFormat.format(date);
+        String name = mFile.getName();
+        AddRecordingReqBean.BODYBean bodyBean = new AddRecordingReqBean.BODYBean("RADIO", "", name);
+        AddRecordingReqBean addRecordingReqBean = new AddRecordingReqBean("REQ", "ARES", phoneNum, time, bodyBean, "", token, "1");
+
+        String s = gson.toJson(addRecordingReqBean);
+
+        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), mFile);
+
+        MultipartBody.Builder builder = new MultipartBody.Builder();
+        builder.setType(MultipartBody.FORM);
+        builder.addFormDataPart("params", s);
+        builder.addFormDataPart("RADIO", mFile.getName(), requestFile);
+
+        List<MultipartBody.Part> parts = builder.build().parts();
+        Call<AddRecordingResBean> babyInfoResultBeanCall = allInterface.ADD_RECORDING_RES_BEAN_CALL(parts);
+
+
+        babyInfoResultBeanCall.enqueue(new Callback<AddRecordingResBean>() {
+            @Override
+            public void onResponse(Call<AddRecordingResBean> call, Response<AddRecordingResBean> response) {
+                Log.i("upload", "body=" + response.message() + " " + response.body().getMSG());
+//                String code = response.body().getCODE();
+                Log.i("recodingFragment:upLoad", response.body().toString());
+//                if (code.equals("0")) {
+//                    finish();
+//                    setResult(BabyInfoListActivity.SuccessCode);
+//                }
+            }
+
+            @Override
+            public void onFailure(Call<AddRecordingResBean> call, Throwable t) {
+                Log.i("upload", "onFailure...");
+            }
+        });
     }
 
     private void reRecording() {
@@ -748,12 +970,10 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
             public void run() {
                 File[] files = file.listFiles();
                 recordList.addAll(Arrays.asList(files));
-                mhalder.sendEmptyMessage(1);
+//                mhalder.sendEmptyMessage(1);
             }
         }).start();
-//        HandlerThread thread = new HandlerThread("thread");
-//
-//        thread.start();
+
     }
 
 
@@ -761,6 +981,10 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
     public void onStop() {
         super.onStop();
 
+    }
+
+    public interface EditListener {
+        void EditRecordingName();
     }
 
 }

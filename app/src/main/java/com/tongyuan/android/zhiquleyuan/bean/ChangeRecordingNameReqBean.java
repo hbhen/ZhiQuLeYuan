@@ -1,17 +1,17 @@
 package com.tongyuan.android.zhiquleyuan.bean;
 
 /**
- * Created by Android on 2017/6/13.
+ * Created by Android on 2017/6/17.
  */
 
-public class AddRecordingReqBean {
+public class ChangeRecordingNameReqBean {
 
     /**
      * TYPE : REQ
      * CMD : ARES
      * ACCT : 13628327181
      * TIME : 20161127101010000
-     * BODY : {"TYPE":"RADIO","ID":"","NAME":"哈哈"}
+     * BODY : {"TYPE":"RADIO","ID":"201706131447251016824343","NAME":"哈哈"}
      * VERI :
      * TOKEN : c19d5a15-592a-4b78-863e-846e789163be
      * SEQ : 1
@@ -26,21 +26,7 @@ public class AddRecordingReqBean {
     private String TOKEN;
     private String SEQ;
 
-    @Override
-    public String toString() {
-        return "AddRecordingReqBean{" +
-                "TYPE='" + TYPE + '\'' +
-                ", CMD='" + CMD + '\'' +
-                ", ACCT='" + ACCT + '\'' +
-                ", TIME='" + TIME + '\'' +
-                ", BODY=" + BODY +
-                ", VERI='" + VERI + '\'' +
-                ", TOKEN='" + TOKEN + '\'' +
-                ", SEQ='" + SEQ + '\'' +
-                '}';
-    }
-
-    public AddRecordingReqBean(String TYPE, String CMD, String ACCT, String TIME, BODYBean BODY, String VERI, String TOKEN, String SEQ) {
+    public ChangeRecordingNameReqBean(String TYPE, String CMD, String ACCT, String TIME, BODYBean BODY, String VERI, String TOKEN, String SEQ) {
         this.TYPE = TYPE;
         this.CMD = CMD;
         this.ACCT = ACCT;
@@ -115,25 +101,30 @@ public class AddRecordingReqBean {
         this.SEQ = SEQ;
     }
 
+    @Override
+    public String toString() {
+        return "ChangeRecordingNameReqBean{" +
+                "TYPE='" + TYPE + '\'' +
+                ", CMD='" + CMD + '\'' +
+                ", ACCT='" + ACCT + '\'' +
+                ", TIME='" + TIME + '\'' +
+                ", BODY=" + BODY +
+                ", VERI='" + VERI + '\'' +
+                ", TOKEN='" + TOKEN + '\'' +
+                ", SEQ='" + SEQ + '\'' +
+                '}';
+    }
+
     public static class BODYBean {
         /**
          * TYPE : RADIO
-         * ID :
+         * ID : 201706131447251016824343
          * NAME : 哈哈
          */
 
         private String TYPE;
         private String ID;
         private String NAME;
-
-        @Override
-        public String toString() {
-            return "BODYBean{" +
-                    "TYPE='" + TYPE + '\'' +
-                    ", ID='" + ID + '\'' +
-                    ", NAME='" + NAME + '\'' +
-                    '}';
-        }
 
         public BODYBean(String TYPE, String ID, String NAME) {
             this.TYPE = TYPE;
@@ -163,6 +154,15 @@ public class AddRecordingReqBean {
 
         public void setNAME(String NAME) {
             this.NAME = NAME;
+        }
+
+        @Override
+        public String toString() {
+            return "BODYBean{" +
+                    "TYPE='" + TYPE + '\'' +
+                    ", ID='" + ID + '\'' +
+                    ", NAME='" + NAME + '\'' +
+                    '}';
         }
     }
 }

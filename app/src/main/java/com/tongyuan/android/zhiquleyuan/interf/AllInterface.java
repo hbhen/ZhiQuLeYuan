@@ -7,6 +7,7 @@ import com.tongyuan.android.zhiquleyuan.bean.BabyInfoResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.BindBabyToToyRes;
 import com.tongyuan.android.zhiquleyuan.bean.CallHistoryResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.CallToToyRes;
+import com.tongyuan.android.zhiquleyuan.bean.ChangeRecordingNameResBean;
 import com.tongyuan.android.zhiquleyuan.bean.ControlToyPlayMusicResBean;
 import com.tongyuan.android.zhiquleyuan.bean.ControlToyVolumeRes;
 import com.tongyuan.android.zhiquleyuan.bean.DelMembFromGroupReSBean;
@@ -165,8 +166,13 @@ public interface AllInterface {
     Call<DeleteRecordingResBean> DELETE_RECORDING_RES_BEAN_CALL(@Query("params") String params);
 
     //添加资源(录音文件) 3.4.26
+    @Multipart
+    @POST("busi")
+    Call<AddRecordingResBean> ADD_RECORDING_RES_BEAN_CALL(@Part List<MultipartBody.Part> partList);
+
+    //修改资源(录音文件) 3.4.26
     @GET("busi")
-    Call<AddRecordingResBean> ADD_RECORDING_RES_BEAN_CALL(@Query("params") String params);
+    Call<ChangeRecordingNameResBean> CHANGE_RECORDING_NAME_RES_BEAN_CALL(@Query("params") String params);
 
     //修改资源(录音文件) 3.4.26
     @GET("busi")

@@ -169,8 +169,8 @@
 
                     <ImageView
                         android:id="@+id/iv_fragment_recording_back"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="21dp"
+                        android:layout_height="21dp"
                         android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
                         android:src="@drawable/arrow_left"/>
@@ -317,10 +317,10 @@
                     android:id="@+id/tv_fragment_playrecoding_desc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="2016年9月20日 09:30:30"
+
                     android:textColor="#000000"
                     android:textSize="16sp"/>
-
+                <!--android:text="2016年9月20日 09:30:30"-->
                 <ImageButton
                     android:id="@+id/ib_fragment_recoding_setvolume"
                     android:layout_width="wrap_content"
@@ -339,8 +339,8 @@
 
                     <ImageView
                         android:id="@+id/iv_fragment_playrecording_back"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="21dp"
+                        android:layout_height="21dp"
                         android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
                         android:src="@drawable/arrow_left"/>
@@ -408,39 +408,42 @@
                     </RelativeLayout>
 
                 </RelativeLayout>
+
                 <RelativeLayout
-                    android:layout_below="@id/rl_fragment_recording_control"
                     android:id="@+id/rl_fragment_recoding_seekbar"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/rl_fragment_recording_control">
+
                     <TextView
-                        android:gravity="center"
-                        android:text="00:33"
-                        android:layout_alignParentLeft="true"
-                        android:layout_marginLeft="24dp"
                         android:id="@+id/tv_fragment_recoding_begintime"
                         android:layout_width="56sp"
-                        android:layout_height="17sp"/>
+                        android:layout_height="17sp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="24dp"
+                        android:gravity="center"
+                        android:text="00:33"/>
 
                     <SeekBar
-                        android:layout_toRightOf="@id/tv_fragment_recoding_begintime"
                         android:id="@+id/seekbar"
                         android:layout_width="200dp"
                         android:layout_height="wrap_content"
+                        android:layout_toRightOf="@id/tv_fragment_recoding_begintime"
                         android:focusable="true"
                         android:maxHeight="1.7dp"
                         android:minHeight="1.7dp"
                         android:progressDrawable="@drawable/po_seekbar"
                         android:thumb="@drawable/seekbar_bar_3x"/>
+
                     <TextView
-                        android:gravity="center"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginRight="24dp"
-                        android:text="00:45"
-                        android:layout_toRightOf="@id/seekbar"
                         android:id="@+id/tv_fragment_recoding_endtime"
                         android:layout_width="56sp"
-                        android:layout_height="17sp"/>
+                        android:layout_height="17sp"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="24dp"
+                        android:layout_toRightOf="@id/seekbar"
+                        android:gravity="center"
+                        android:text="00:45"/>
                 </RelativeLayout>
             </RelativeLayout>
         </FrameLayout>
