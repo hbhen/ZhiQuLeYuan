@@ -40,7 +40,6 @@ public class MusicPlayer {
 
     public static ServiceToken bindToService(Context context, ServiceConnection connection) {
         Activity realActivity = ((Activity) context).getParent();
-        Log.i("gengen", "bindToService");
         if (realActivity == null) {
             realActivity = (Activity) context;
         }
@@ -51,10 +50,7 @@ public class MusicPlayer {
         if (contextWrapper.bindService(
                 new Intent().setClass(contextWrapper, MusicPlayerService.class), binder, Context.BIND_AUTO_CREATE)) {
             mConnectionMap.put(contextWrapper, binder);
-            Log.i("gengen", "bind success");
             return new ServiceToken(contextWrapper);
-        } else {
-            Log.i("gengen", "bind fail");
         }
         return null;
     }
