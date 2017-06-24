@@ -38,6 +38,7 @@ class MultiPlayer implements MediaPlayer.OnErrorListener,
         mCurrentMediaPlayer.reset();
         try {
             mCurrentMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            mCurrentMediaPlayer.setNextMediaPlayer(mNextMediaPlayer);
             mCurrentMediaPlayer.setDataSource(path);
             mCurrentMediaPlayer.setOnPreparedListener(this);
             mCurrentMediaPlayer.setOnBufferingUpdateListener(this);
