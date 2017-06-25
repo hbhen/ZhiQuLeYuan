@@ -8,6 +8,10 @@ interface IMusicAidl {
 
     void open(String path);
 
+    void openAndStart(String path);
+
+    boolean isPrepared();
+
     void start();
 
     boolean isPlaying();
@@ -34,4 +38,6 @@ interface IMusicAidl {
      * the service.
      */
     void registerCallback(IRemoteServiceCallback cb);
+
+    void release();
 }

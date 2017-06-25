@@ -12,8 +12,10 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridSecondaryResultBean;
+import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListResultBean;
 import com.tongyuan.android.zhiquleyuan.holder.SecondaryCategoryHolder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,12 +24,16 @@ import java.util.List;
 public class DiscoverySecondCategoryAdapter extends BaseAdapter {
     private Context mContext;
     private final LayoutInflater mInflater;
-    private List<DiscoveryGridSecondaryResultBean.LSTBean> list ;
+    private List<DiscoveryListResultBean.BODYBean.LSTBean> list ;
 
-    public DiscoverySecondCategoryAdapter(Context context, List<DiscoveryGridSecondaryResultBean.LSTBean> list) {
+    public DiscoverySecondCategoryAdapter(Context context, List<DiscoveryListResultBean.BODYBean.LSTBean> list) {
         this.mContext = context;
         this.mInflater = LayoutInflater.from(context);
         this.list = list;
+    }
+
+    public ArrayList<DiscoveryListResultBean.BODYBean.LSTBean> getList() {
+        return (ArrayList<DiscoveryListResultBean.BODYBean.LSTBean>) list;
     }
 
     @Override
@@ -90,9 +96,9 @@ public class DiscoverySecondCategoryAdapter extends BaseAdapter {
          * "MSG": ""
          * }
          */
-        Uri parse = Uri.parse(list.get(position).IMG);
+        Uri parse = Uri.parse(list.get(position).getIMG());
         Glide.with(mContext).load(parse).into(holder.itemalumbimg);
-        holder.textviewTitle.setText(list.get(position).NAME);
+        holder.textviewTitle.setText(list.get(position).getNAME());
 
         return convertView;
     }

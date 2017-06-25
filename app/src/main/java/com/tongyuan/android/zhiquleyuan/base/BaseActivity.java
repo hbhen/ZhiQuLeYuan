@@ -8,10 +8,8 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.tongyuan.android.zhiquleyuan.player.MusicPlayer;
 
@@ -27,20 +25,24 @@ public abstract class BaseActivity extends AppCompatActivity implements ServiceC
     public static final String PLAYER_PREPARED = "toy.player.prepared";
     public static final String PLAYER_ERROR    = "toy.player.error";
     public static final String PLAYER_COMPLETE = "toy.player.complete";
+    public static final String PLAYER_PLAYING  = "toy.player.playing";
 
     protected MusicPlayer.ServiceToken mToken;
     private PlaybackStatus mPlaybackStatus;
+    protected Context mContext;
+    protected boolean isBound = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i("gengen", "baseActivity onCreate");
+        mContext = this;
         mToken = MusicPlayer.bindToService(this, this);
         mPlaybackStatus = new PlaybackStatus(this);
         IntentFilter f = new IntentFilter();
         f.addAction(PLAYER_PREPARED);
         f.addAction(PLAYER_ERROR);
         f.addAction(PLAYER_COMPLETE);
+        f.addAction(PLAYER_PLAYING);
         registerReceiver(mPlaybackStatus, f);
     }
 
@@ -56,12 +58,13 @@ public abstract class BaseActivity extends AppCompatActivity implements ServiceC
 
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
-
+        isBound = true;
+        bindSuccess();
     }
 
     @Override
     public void onServiceDisconnected(ComponentName name) {
-
+        isBound = false;
     }
 
     @Override
@@ -76,6 +79,10 @@ public abstract class BaseActivity extends AppCompatActivity implements ServiceC
     protected abstract void onError();
 
     protected abstract void onCompleted();
+
+    protected abstract void bindSuccess();
+
+    protected abstract void isSimplePlayUrl();
 
     private final static class PlaybackStatus extends BroadcastReceiver {
 
@@ -96,6 +103,8 @@ public abstract class BaseActivity extends AppCompatActivity implements ServiceC
                 baseActivity.onError();
             } else if(action.equals(PLAYER_COMPLETE)) {
                 baseActivity.onCompleted();
+            } else if (action.equals(PLAYER_PLAYING)) {
+                baseActivity.isSimplePlayUrl();
             }
         }
     }

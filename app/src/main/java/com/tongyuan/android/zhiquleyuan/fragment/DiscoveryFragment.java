@@ -221,19 +221,19 @@ public class DiscoveryFragment extends BaseFragment implements View.OnClickListe
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                            DiscoveryListResultBean.BODYBean.LSTBean lstBean = (DiscoveryListResultBean.BODYBean.LSTBean) parent.getAdapter().getItem(position);
+                            //DiscoveryListResultBean.BODYBean.LSTBean lstBean = (DiscoveryListResultBean.BODYBean.LSTBean) parent.getAdapter().getItem(position);
 //                             = response.body().getBODY().getLST().get(position);
 
 //                            getLocalPlayApplication(lstBean, position, SPUtils.getString(getActivity(), "phoneNum", ""), new SimpleDateFormat
 //                                    ("yyyyMMddHHmmssSSS").format(new Date()), SPUtils.getString(getActivity(), "TOKEN", ""));
 
-                            Intent intent = new Intent();
+                            /*Intent intent = new Intent();
                             intent.setClass(getActivity(), MyPlayActivity.class);
                             Bundle bundle = new Bundle();
-//                            responselist为空，lstbean不能用
                             bundle.putParcelable("recommandlistbean",lstBean);
                             intent.putExtras(bundle);
-                            startActivity(intent);
+                            startActivity(intent);*/
+                            MyPlayActivity.launch(getActivity(), mLAdapter.getList(), position);
                             ToastUtil.showToast(getActivity(), "当前点击的是:" + position);
                         }
                     });

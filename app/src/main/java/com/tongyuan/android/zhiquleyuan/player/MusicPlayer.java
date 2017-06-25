@@ -24,7 +24,7 @@ public class MusicPlayer {
 
     private static IMusicAidl mService;
     private static final WeakHashMap<Context, ServiceBinder> mConnectionMap;
-    private static final long[] sEmptyList;
+//    private static final long[] sEmptyList;
 
     public static final class ServiceToken {
         private ContextWrapper mWrappedContext;
@@ -34,8 +34,8 @@ public class MusicPlayer {
     }
 
     static {
-        mConnectionMap = new WeakHashMap<Context, ServiceBinder>();
-        sEmptyList = new long[0];
+        mConnectionMap = new WeakHashMap<>();
+        //sEmptyList = new long[0];
     }
 
     public static ServiceToken bindToService(Context context, ServiceConnection connection) {
@@ -78,6 +78,27 @@ public class MusicPlayer {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void openAndStart(String path) {
+        if(mService == null)
+            return;
+        try {
+            mService.openAndStart(path);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static boolean isPrepared() {
+        if(mService == null)
+            return false;
+        try {
+            return mService.isPrepared();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public static void start() {
@@ -143,9 +164,17 @@ public class MusicPlayer {
         return 0;
     }
 
+    public static void setLooping(boolean looping) {
+        if(mService == null)
+            return ;
+        try {
+            mService.setLooping(looping);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
 
-
-    public static void registerCallback(IRemoteServiceCallback callback) {
+    /*public static void registerCallback(IRemoteServiceCallback callback) {
         if(mService == null)
             return ;
         try {
@@ -153,7 +182,7 @@ public class MusicPlayer {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     private static class ServiceBinder implements ServiceConnection {
 
@@ -164,9 +193,7 @@ public class MusicPlayer {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            Log.i("gengen", "onServiceConnected");
             mService = IMusicAidl.Stub.asInterface(service);
-            Log.i("gengen", "mService="+mService);
             if (callback != null) {
                 callback.onServiceConnected(name, service);
             }

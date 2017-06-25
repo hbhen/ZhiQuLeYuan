@@ -111,15 +111,14 @@ public class DiscoverySecondCategoryActivity extends AppCompatActivity implement
             public void onResponse(Call<SuperModel<DiscoveryGridSecondaryResultBean>> call, final Response<SuperModel<DiscoveryGridSecondaryResultBean>> response) {
 
                 if (response.body() != null && response.body().CODE.equals("0")) {
-                    Log.d("aaaaaa", "onResponse: " + response.body().toString());
+                    //Log.d("aaaaaa", "onResponse: " + response.body().toString());
 //                    mResponse = response;
-
-                    DiscoverySecondCategoryAdapter discoverySecondCategoryAdapter = new DiscoverySecondCategoryAdapter(getApplicationContext(), response.body().BODY.LST);
+                    final DiscoverySecondCategoryAdapter discoverySecondCategoryAdapter = new DiscoverySecondCategoryAdapter(getApplicationContext(), response.body().BODY.LST);
                     mListviewSecondCategory.setAdapter(discoverySecondCategoryAdapter);
                     mListviewSecondCategory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                            DiscoveryGridSecondaryResultBean.LSTBean lstBean = response.body().BODY.LST.get(position);
+                            /*DiscoveryGridSecondaryResultBean.LSTBean lstBean = response.body().BODY.LST.get(position);
                             //本机播放需要播放申请,3.4.48   网络请求
 //                            getLocalPlayApplication(position,phoneNum,formatTime,token);
                             Intent intent = new Intent();
@@ -128,8 +127,10 @@ public class DiscoverySecondCategoryActivity extends AppCompatActivity implement
                             intent.putExtras(bundle);
 
                             intent.setClass(getApplicationContext(), MyPlayActivity.class);
-                            startActivity(intent);
-                            ToastUtil.showToast(getApplicationContext(), "aldfkalsdf点击的是" + position);
+                            startActivity(intent);*/
+                            MyPlayActivity.launch(DiscoverySecondCategoryActivity.this, discoverySecondCategoryAdapter.getList(), position);
+
+                            //ToastUtil.showToast(getApplicationContext(), "aldfkalsdf点击的是" + position);
                         }
                     });
                 } else {
