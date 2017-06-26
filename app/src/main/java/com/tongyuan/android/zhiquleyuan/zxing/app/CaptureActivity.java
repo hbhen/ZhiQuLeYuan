@@ -345,13 +345,16 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
                     handleDecodeExternally(rawResult, barcode);
                     break;
                 case ZXING_LINK:
+
                     if (returnUrlTemplate == null) {
                         handleDecodeInternally(rawResult, barcode);
                     } else {
                         handleDecodeExternally(rawResult, barcode);
                     }
+
                     break;
                 case NONE:
+
                     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
                     if (prefs.getBoolean(PreferencesActivity.KEY_BULK_MODE, false)) {
                         // Wait a moment or else it will scan the same barcode
@@ -363,7 +366,9 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
                     } else {
                         handleDecodeInternally(rawResult, barcode);
                     }
+
                     break;
+
             }
         }
     }
@@ -375,6 +380,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
      * @param barcode   A bitmap of the captured image.
      * @param rawResult The decoded results which contains the points to draw.
      */
+
     private void drawResultPoints(Bitmap barcode, Result rawResult) {
         ResultPoint[] points = rawResult.getResultPoints();
         if (points != null && points.length > 0) {
@@ -385,7 +391,6 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
             paint.setStyle(Paint.Style.STROKE);
             Rect border = new Rect(2, 2, barcode.getWidth() - 2, barcode.getHeight() - 2);
             canvas.drawRect(border, paint);
-
             paint.setColor(getResources().getColor(R.color.result_points));
             if (points.length == 2) {
                 paint.setStrokeWidth(4.0f);
@@ -404,6 +409,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
             }
         }
     }
+
 
     private static void drawLine(Canvas canvas, Paint paint, ResultPoint a, ResultPoint b) {
         canvas.drawLine(a.getX(), a.getY(), b.getX(), b.getY(), paint);

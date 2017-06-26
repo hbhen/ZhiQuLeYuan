@@ -3,22 +3,38 @@ package com.tongyuan.android.zhiquleyuan.activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.RelativeLayout;
 
-import com.suke.widget.SwitchButton;
 import com.tongyuan.android.zhiquleyuan.R;
+import com.tongyuan.android.zhiquleyuan.adapter.NoDisturbAdapter;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 /**
  * Created by android on 2017/3/12.
  */
 public class NoDisturbActivity extends AppCompatActivity implements View.OnClickListener {
+//    @Bind(R.id.ll_activity_nodisturb_date)
+//    LinearLayout dateView;
+
+    @Bind(R.id.recyclerView)
+    RecyclerView mRecyclerView;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nodisturb);
-        SwitchButton switchButton = (SwitchButton) findViewById(R.id.switch_button);
+        ButterKnife.bind(this);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        NoDisturbAdapter adapter = new NoDisturbAdapter(this);
+        mRecyclerView.setAdapter(adapter);
+
+
+        /*SwitchButton switchButton = (SwitchButton) findViewById(R.id.switch_button);
         RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.rl_nodisturb_first);
 //        switchButton.setChecked(true);
 //        switchButton.toggle();
@@ -47,7 +63,7 @@ public class NoDisturbActivity extends AppCompatActivity implements View.OnClick
                 }
 
             }
-        });
+        });*/
 
     }
 
@@ -65,4 +81,11 @@ public class NoDisturbActivity extends AppCompatActivity implements View.OnClick
                 break;
         }
     }
+
+//    private void showDate() {
+//
+//    }
+
+
+
 }

@@ -48,6 +48,7 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
     private ImageView mIv_babyinfolist_backa;
     private SwipeRefreshLayout sp;
     private static final String TAG = "88888";
+    ImageView mBack;
 
 
     @Override
@@ -61,12 +62,23 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
         Log.i(TAG, "babyinfolistactivity : onCreatea went");
     }
 
+
     private void initView() {
         mListview = (ListView) findViewById(R.id.lv_babyinfolist);
         sp = (SwipeRefreshLayout) findViewById(R.id.sp);
         mIv_babayinfolist_addbabyinfo = (ImageView) findViewById(R.id.iv_babayinfolist_addbabyinfo);
         mIv_babyinfolist_backa = (ImageView) findViewById(R.id.iv_babyinfolist_backa);
+        mBack = (ImageView) findViewById(R.id.iv_babyinfolist_backa);
+        mBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+                ToastUtil.showToast(getApplicationContext(), "en en ");
+            }
+        });
+
     }
+
 
     private void initListener() {
         mIv_babayinfolist_addbabyinfo.setOnClickListener(this);
@@ -82,6 +94,7 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
             }
         });
     }
+
 
     private void initData() {
 
@@ -153,14 +166,17 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
 //        mListview.setAdapter(new BabyInfoListAdapter(this, lst));
 //    }
 
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+
             case R.id.iv_babayinfolist_addbabyinfo:
                 Intent mIntent = new Intent();
                 mIntent.setClass(this, MyBabyActivity.class);
                 startActivityForResult(mIntent, ADD_BABYINFO);
                 break;
+
             case R.id.iv_babyinfolist_backa:
                 FragmentManager supportFragmentManager = getSupportFragmentManager();
                 FragmentTransaction transaction = supportFragmentManager.beginTransaction();

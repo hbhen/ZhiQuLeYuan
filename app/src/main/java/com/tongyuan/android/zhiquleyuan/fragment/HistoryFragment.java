@@ -125,6 +125,7 @@ public class HistoryFragment extends BaseFragment {
 
                     });
                     * */
+
                     HistoryAdapter historyAdapter = new HistoryAdapter(getContext(), mLst);
                     lv_fragment_history.setAdapter(historyAdapter);
                     lv_fragment_history.addHeaderView(mItem_history_header);
@@ -148,10 +149,10 @@ public class HistoryFragment extends BaseFragment {
                         }
                     });
 
-
                     /**
                      *从这往下是不带侧滑的listview
                      */
+
 //                    //放玩具头像
 //                    final ArrayList<String> listImg = new ArrayList<String>();
 //                    for (int i = 0; i < lst.size() - 1; i++) {

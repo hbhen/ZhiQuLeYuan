@@ -169,6 +169,7 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
 
         Log.i("circlelife", "recordingfragment:onCreateView: went");
         return recordingRoot;
+
     }
 
     private View initView(LayoutInflater inflater) {
@@ -215,8 +216,10 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
         mReRecording = (ImageView) recordingRoot.findViewById(R.id.iv_recoding_tool_reRecording);
         mTryListener = (ImageView) recordingRoot.findViewById(R.id.iv_recoding_tool_trylistener);
         mSaveRecording = (ImageView) recordingRoot.findViewById(R.id.iv_recoding_tool_saverecording);
+
         //试听停止,中间的暂停图标
         mPlayStop = (ImageView) recordingRoot.findViewById(R.id.iv_recoding_tool_trylistener_stop);
+
         //试听停止,中间暂停的彩色圆圈
         mPlayStopCircle = (ImageView) recordingRoot.findViewById(R.id.iv_recoding_tool_trylistener_stopcircle);
 
@@ -509,11 +512,11 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
 
             @Override
             public void onFailure(Call<ChangeRecordingNameResBean> call, Throwable t) {
+
                 Log.i("555555", "recordingfragment+(changerecordingnamebean)onFailure: " + t.toString());
 
             }
         });
-
 
     }
 
@@ -774,8 +777,10 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
 
 
         babyInfoResultBeanCall.enqueue(new Callback<AddRecordingResBean>() {
+
             @Override
             public void onResponse(Call<AddRecordingResBean> call, Response<AddRecordingResBean> response) {
+
                 Log.i("upload", "body=" + response.message() + " " + response.body().getMSG());
 //                String code = response.body().getCODE();
                 Log.i("recodingFragment:upLoad", response.body().toString());

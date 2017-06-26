@@ -190,15 +190,30 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         mToken = SPUtils.getString(getContext(), "TOKEN", "");
         mPhoneNum = SPUtils.getString(getContext(), "phoneNum", "");
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-        SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("yyyy/MM/dd");
         String acttime = response.getACTTIME();
-        mFormatTime = acttime;
+        String substringTime = acttime.substring(0, 8);
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddmmssSSS");
+        SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("yyyy/MM/dd");
         try {
-            mFormatTime = simpleDateFormat1.format(simpleDateFormat.parse(acttime));
+            Date parse = simpleDateFormat.parse(acttime);
+            String formatTime = simpleDateFormat1.format(parse);
+            mFormatTime = formatTime;
+            Log.i(TAG, "toydetails toydetailsfragment1:" + formatTime);
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
+
+//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+//        SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("yyyy/MM/dd");
+        Log.i(TAG, "toydetails toydetailsfragment2:" + mFormatTime);
+        Log.i(TAG, "toydetails toydetailsfragment3:" + acttime);
+//        try {
+//            mFormatTime = simpleDateFormat1.format(simpleDateFormat.parse(acttime));
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
 
         //保不齐以后要用这些参数,先取出来
         mImg = response.getIMG();
@@ -260,7 +275,6 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
 //                fragmentManager.beginTransaction().replace(R.id.fl_fragmentcontainer, new VideoFragment()).commit();
                 break;
             case R.id.tv_toy_details_manager:
-
                 ToastUtil.showToast(getActivity(), "跳转到玩具管理界面");
                 if (SPUtils.getString(getActivity(), "ID", "").equals(mOwnerid)) {
                     //TODO setdat

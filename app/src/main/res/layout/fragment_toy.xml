@@ -50,32 +50,52 @@
         <!--android:layout_width="250dp"-->
         <!--android:layout_gravity="center_horizontal"-->
         <!--android:layout_height="350dp"/>-->
-        <android.support.v4.view.ViewPager
-            android:layout_width="match_parent"
-            android:id="@+id/id_viewpager"
-            android:layout_marginLeft="60dp"
-            android:layout_marginTop="60dp"
-            android:layout_marginRight="60dp"
-            android:clipChildren="false"
-            android:layout_height="300dp">
-        </android.support.v4.view.ViewPager>
 
+
+
+        <RelativeLayout
+            android:gravity="center_horizontal"
+            android:layout_gravity="bottom"
+            android:id="@+id/rl_fragment_toy_addtoy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="40dp">
+
+            <ImageView
+                android:id="@+id/iv_add"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/selector_addtoy_3x"/>
+
+            <ImageView
+                android:layout_marginLeft="14dp"
+                android:layout_toRightOf="@id/iv_add"
+                android:id="@+id/iv_delete"
+                android:layout_width="40dp"
+                android:src="@drawable/selector_deletetoy_3x"
+                android:layout_height="40dp"/>
+        </RelativeLayout>
+
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/id_viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginLeft="60dp"
+            android:layout_marginRight="60dp"
+            android:layout_marginTop="60dp"
+            android:clipChildren="false">
+        </android.support.v4.view.ViewPager>
         <ImageView
             android:id="@+id/iv_fragment_toy_headimage"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="30dp"
-            android:src="@drawable/baby_headimageview_3x"
+            android:background="@drawable/babyimagebackground_3x"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_launcher"
             android:visibility="visible"/>
-        <ImageView
-            android:layout_gravity="bottom|center_horizontal"
-            android:layout_marginBottom="50dp"
-            android:id="@+id/imageview_fragment_toy_addtoy"
-            android:src="@drawable/toy_add_160"
-            android:layout_width="wrap_content"
-
-            android:layout_height="wrap_content"/>
     </FrameLayout>
 
 

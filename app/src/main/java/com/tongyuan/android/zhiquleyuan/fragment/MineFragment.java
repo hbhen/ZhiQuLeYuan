@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
@@ -76,13 +78,18 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     private final String TAG = "minefragment";
     private String mUsername;
     private String mUserimg;
+    private Toolbar mToolbar;
+    private ImageView mBack;
 
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
         mIntent = new Intent();
+
         View mineRoot = inflater.inflate(R.layout.fragment_mine, null);
+
         initData();
         Log.i("tag", "onCreateView: went");
 
@@ -139,6 +146,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
         myAbout.setOnClickListener(this);
         mLogin.setOnClickListener(this);
         mMyLogout.setOnClickListener(this);
+
         Log.i("tag", "onActivityCreated: went");
     }
 

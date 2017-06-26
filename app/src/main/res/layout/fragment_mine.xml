@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#f1f1f1"
-    android:orientation="vertical">
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="#f1f1f1"
+              android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/tb_fragment_mine"
@@ -13,9 +13,11 @@
         android:gravity="center">
 
         <ImageView
+            android:id="@+id/iv_back"
             android:layout_width="10dp"
             android:layout_height="21dp"
-            android:src="@drawable/arrow_left" />
+            android:clickable="true"
+            android:src="@drawable/arrow_left"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -24,31 +26,34 @@
             android:layout_gravity="center"
             android:text="我的"
             android:textColor="#000000"
-            android:textSize="18sp" />
+            android:textSize="18sp"/>
 
     </android.support.v7.widget.Toolbar>
+
     <ScrollView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
+
         <LinearLayout
             android:layout_width="wrap_content"
-            android:orientation="vertical"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
             <RelativeLayout
-                android:padding="10dp"
                 android:id="@+id/rl_fragment_mine_clicklogin"
-                android:clickable="true"
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
-                android:background="#ffffff">
+                android:background="#ffffff"
+                android:clickable="true"
+                android:padding="10dp">
 
                 <ImageView
-                    android:clickable="true"
                     android:id="@+id/iv_fragment_mine"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:layout_centerVertical="true"
-                    android:src="@mipmap/ic_launcher" />
+                    android:clickable="true"
+                    android:src="@mipmap/ic_launcher"/>
 
                 <TextView
                     android:id="@+id/tv_fragment_mine_title"
@@ -60,7 +65,7 @@
                     android:text="点击登录"
                     android:textColor="#000000"
                     android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"/>
 
                 <TextView
                     android:id="@+id/tv_fragment_mine_desc"
@@ -71,7 +76,7 @@
                     android:layout_marginTop="10dp"
                     android:text="登录后可设置机主及宝宝的基本信息"
                     android:textColor="#8f8f8f"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"/>
 
             </RelativeLayout>
 
@@ -87,7 +92,7 @@
                     android:layout_width="26dp"
                     android:layout_height="26dp"
                     android:layout_marginLeft="18dp"
-                    android:src="@drawable/myboby_ico_26_3x" />
+                    android:src="@drawable/myboby_ico_26_3x"/>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -101,14 +106,14 @@
                         android:text="我的宝宝"
                         android:textColor="#000000"
                         android:textSize="16sp"
-                         />
+                        />
                     <!--android:textStyle="bold"-->
                     <ImageView
                         android:layout_width="8dp"
                         android:layout_height="13dp"
                         android:layout_alignParentRight="true"
                         android:layout_marginRight="14dp"
-                        android:src="@drawable/arrow_right" />
+                        android:src="@drawable/arrow_right"/>
                 </RelativeLayout>
 
             </LinearLayout>
@@ -131,7 +136,7 @@
                         android:layout_width="26dp"
                         android:layout_height="26dp"
                         android:layout_marginLeft="18dp"
-                        android:src="@drawable/my_collection_ico_23_3x" />
+                        android:src="@drawable/my_collection_ico_23_3x"/>
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -152,7 +157,7 @@
                             android:layout_height="13dp"
                             android:layout_alignParentRight="true"
                             android:layout_marginRight="14dp"
-                            android:src="@drawable/arrow_right" />
+                            android:src="@drawable/arrow_right"/>
                     </RelativeLayout>
 
 
@@ -161,7 +166,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginLeft="15dp" />
+                    android:layout_marginLeft="15dp"/>
 
                 <LinearLayout
                     android:id="@+id/ll_fragment_mine_play"
@@ -175,7 +180,7 @@
                         android:layout_width="26dp"
                         android:layout_height="26dp"
                         android:layout_marginLeft="18dp"
-                        android:src="@drawable/my_play_ico_24_3x" />
+                        android:src="@drawable/my_play_ico_24_3x"/>
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -189,14 +194,14 @@
                             android:text="我的播放"
                             android:textColor="#000000"
                             android:textSize="16sp"
-                             />
+                            />
 
                         <ImageView
                             android:layout_width="8dp"
                             android:layout_height="13dp"
                             android:layout_alignParentRight="true"
                             android:layout_marginRight="14dp"
-                            android:src="@drawable/arrow_right" />
+                            android:src="@drawable/arrow_right"/>
                     </RelativeLayout>
 
 
@@ -205,7 +210,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginLeft="15dp" />
+                    android:layout_marginLeft="15dp"/>
 
                 <LinearLayout
                     android:id="@+id/ll_fragment_mine_push"
@@ -219,7 +224,7 @@
                         android:layout_width="26dp"
                         android:layout_height="26dp"
                         android:layout_marginLeft="18dp"
-                        android:src="@drawable/my_play_ico_24_3x" />
+                        android:src="@drawable/my_play_ico_24_3x"/>
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -233,14 +238,14 @@
                             android:text="我的推送"
                             android:textColor="#000000"
                             android:textSize="16sp"
-                             />
+                            />
 
                         <ImageView
                             android:layout_width="8dp"
                             android:layout_height="13dp"
                             android:layout_alignParentRight="true"
                             android:layout_marginRight="14dp"
-                            android:src="@drawable/arrow_right" />
+                            android:src="@drawable/arrow_right"/>
                     </RelativeLayout>
 
 
@@ -249,7 +254,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginLeft="15dp" />
+                    android:layout_marginLeft="15dp"/>
 
             </LinearLayout>
 
@@ -264,7 +269,7 @@
                 <ImageView
                     android:layout_width="26dp"
                     android:layout_height="26dp"
-                    android:layout_marginLeft="18dp" />
+                    android:layout_marginLeft="18dp"/>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -278,14 +283,14 @@
                         android:text="意见反馈"
                         android:textColor="#000000"
                         android:textSize="16sp"
-                         />
+                        />
 
                     <ImageView
                         android:layout_width="8dp"
                         android:layout_height="13dp"
                         android:layout_alignParentRight="true"
                         android:layout_marginRight="14dp"
-                        android:src="@drawable/arrow_right" />
+                        android:src="@drawable/arrow_right"/>
                 </RelativeLayout>
 
 
@@ -313,7 +318,7 @@
                         <ImageView
                             android:layout_width="26dp"
                             android:layout_height="26dp"
-                            android:layout_marginLeft="18dp" />
+                            android:layout_marginLeft="18dp"/>
 
                         <RelativeLayout
                             android:layout_width="match_parent"
@@ -328,14 +333,14 @@
                                 android:textColor="#000000"
 
                                 android:textSize="16sp"
-                               />
+                                />
 
                             <ImageView
                                 android:layout_width="8dp"
                                 android:layout_height="13dp"
                                 android:layout_alignParentRight="true"
                                 android:layout_marginRight="14dp"
-                                android:src="@drawable/arrow_right" />
+                                android:src="@drawable/arrow_right"/>
                         </RelativeLayout>
 
 
@@ -356,7 +361,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginLeft="15dp" />
+                    android:layout_marginLeft="15dp"/>
 
                 <LinearLayout
                     android:id="@+id/ll_fragment_mine_about"
@@ -369,7 +374,7 @@
                     <ImageView
                         android:layout_width="26dp"
                         android:layout_height="26dp"
-                        android:layout_marginLeft="18dp" />
+                        android:layout_marginLeft="18dp"/>
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -383,18 +388,19 @@
                             android:text="关       于"
                             android:textColor="#000000"
                             android:textSize="16sp"
-                             />
+                            />
 
                         <ImageView
                             android:layout_width="8dp"
                             android:layout_height="13dp"
                             android:layout_alignParentRight="true"
                             android:layout_marginRight="14dp"
-                            android:src="@drawable/arrow_right" />
+                            android:src="@drawable/arrow_right"/>
                     </RelativeLayout>
 
 
                 </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/ll_fragment_mine_logout"
                     android:layout_width="match_parent"
@@ -406,7 +412,7 @@
                     <ImageView
                         android:layout_width="26dp"
                         android:layout_height="26dp"
-                        android:layout_marginLeft="18dp" />
+                        android:layout_marginLeft="18dp"/>
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -420,14 +426,14 @@
                             android:text="退出登录"
                             android:textColor="#000000"
                             android:textSize="16sp"
-                             />
+                            />
 
                         <ImageView
                             android:layout_width="8dp"
                             android:layout_height="13dp"
                             android:layout_alignParentRight="true"
                             android:layout_marginRight="14dp"
-                            android:src="@drawable/arrow_right" />
+                            android:src="@drawable/arrow_right"/>
                     </RelativeLayout>
 
 
@@ -436,13 +442,12 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginLeft="15dp" />
+                    android:layout_marginLeft="15dp"/>
 
 
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
-
 
 
 </LinearLayout>

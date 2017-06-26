@@ -83,6 +83,8 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
     private TextView mVolume_text;
     private String mVolumeString = "50";
     private int mVolumeInt;
+    private ImageView mBabyImg;
+    private TextView mBabyName;
 
     @Override
     protected void onCreate(Bundle arguments) {
@@ -94,12 +96,14 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
 
 
         mMy_video = (VideoView) findViewById(R.id.surfaceView5);
-        mOther_video = (VideoView) findViewById(R.id.surfaceView6);
-        mOther_video.setZOrderOnTop(true);
+// 其他的视频不显示了
+//        mOther_video = (VideoView) findViewById(R.id.surfaceView6);
+//        mOther_video.setZOrderOnTop(true);
+
         //停止视频
         mStopCall = (ImageView) findViewById(R.id.iv_fragment_videocall_stopcall);
-        //不显示视频
 
+        //不显示视频
         mNoVideo = (ImageView) findViewById(R.id.iv_fragment_videocall_novideo);
 
         //找到控制音量调整的接口
@@ -110,8 +114,13 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
         mSeekBar.setProgress(mVolumeInt);
         ImageButton volume_reduce = (ImageButton) findViewById(R.id.ib_volume_reduce);//音量加
         ImageButton volume_add = (ImageButton) findViewById(R.id.ib_volume_add);//音量减
+
         //音量的数字显示
         mVolume_text = (TextView) findViewById(R.id.tv_activity_videocall);
+        //宝宝的头像
+        mBabyImg = (ImageView) findViewById(R.id.iv_activity_videocall_babyimg);
+        //宝宝的名字
+        mBabyName = (TextView) findViewById(R.id.tv_activity_videocall_babyname);
 
 
         Intent intent = getIntent();
@@ -159,8 +168,7 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
         mNoVideo.setOnClickListener(this);
 
 //        mMy_video.setOnClickListener(this);
-        mOther_video.setOnClickListener(this);
-        Session.getInstance().registerListener(this);
+//        mOther_video.setOnClickListener(this);
         Session.getInstance().registerListener(this);
         Session.getInstance().registerWhiteBroad(SharePadMgr.getInstance());
 
@@ -227,6 +235,10 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
                 break;
             case R.id.iv_fragment_videocall_novideo:
                 ToastUtil.showToast(this, "不看视频");
+//                Session.getInstance().unplayVideo(_watchingPeerID, 0);
+                //Session.getInstance().unwatchOtherVideo(_watchingPeerID,0);
+                Session.getInstance().PlayVideo(_myPeerID, false, mMy_video, 0, 0, 1, 1, 65, false, 1, 0);
+
 //                if (isShowVideo) {
 //                    isShowVideo = !isShowVideo;
 //                    //不显示
@@ -236,22 +248,21 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
 //                }
 
                 break;
-            case R.id.surfaceView6:
-                if (!change) {
-                    Log.d("surfaceview", "surfaceview: +change1");
-                    Session.getInstance().PlayVideo(0, true, mOther_video, 0, 0, 1, 1, 0, false, 1, 0);
-                    Session.getInstance().PlayVideo(_watchingPeerID, true, mMy_video, 0, 0, 1, 1, 65, false, 1, 0);
-                    change = true;
-                } else {
-                    Log.d("surfaceview", "surfaceview: +change2");
-                    Session.getInstance().PlayVideo(0, true, mMy_video, 0, 0, 1, 1, 0, false, 1, 0);
-                    Session.getInstance().PlayVideo(_watchingPeerID, true, mOther_video, 0, 0, 1, 1, 65, false, 1, 0);
-                    change = false;
-                }
-                break;
-//            case R.id.volume_line:
-//
+            //不显示小的视频窗口了,也不让他有点击切换的事件了
+//            case R.id.surfaceView6:
+//                if (!change) {
+//                    Log.d("surfaceview", "surfaceview: +change1");
+//                    Session.getInstance().PlayVideo(0, true, mOther_video, 0, 0, 1, 1, 0, false, 1, 0);
+//                    Session.getInstance().PlayVideo(_watchingPeerID, true, mMy_video, 0, 0, 1, 1, 65, false, 1, 0);
+//                    change = true;
+//                } else {
+//                    Log.d("surfaceview", "surfaceview: +change2");
+//                    Session.getInstance().PlayVideo(0, true, mMy_video, 0, 0, 1, 1, 0, false, 1, 0);
+//                    Session.getInstance().PlayVideo(_watchingPeerID, true, mOther_video, 0, 0, 1, 1, 65, false, 1, 0);
+//                    change = false;
+//                }
 //                break;
+
             case R.id.ib_volume_add:
                 //先过去seekbar的progress的值
 //                mVolumeInt = Integer.parseInt(mVolumeString);
@@ -355,11 +366,12 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
 
         if (_watchingPeerID == 0) {
             int peerID = _userList.get(0);
-            Session.getInstance().PlayVideo(peerID, true, mOther_video, 0, 0, 1, 1, 1, false, 0, 0);
+            Session.getInstance().PlayVideo(peerID, true, mMy_video, 0, 0, 1, 1, 1, false, 0, 0);
+//            Session.getInstance().watchOtherVideo(peerID, 0);
             Log.d("surfaceview", "surfaceview5 ");
             _watchingPeerID = peerID;
         } else {
-            Session.getInstance().PlayVideo(_watchingPeerID, false, mOther_video, 0, 0, 1, 1, 1, false, 1, 0);
+            Session.getInstance().PlayVideo(_watchingPeerID, false, mMy_video, 0, 0, 1, 1, 1, false, 1, 0);
             _watchingPeerID = 0;
         }
     }
@@ -412,9 +424,9 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
         _userList.add(peerId);
 
         seeYou();
-        //		}
-        if (!_serverMix && hasAudio)
-            Session.getInstance().playAudio(peerId);
+Session.getInstance().requestSpeaking(_watchingPeerID);
+//        if (!_serverMix && hasAudio)
+//            Session.getInstance().playAudio(peerId);
     }
 
     @Override
@@ -432,8 +444,8 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onEnablePresence(int peerID) {
         _myPeerID = peerID;
-        seeMe();
-//        seeYou();
+//        seeMe();
+        seeYou();
         Session.getInstance().requestSpeaking(_myPeerID);
         _freeSpeak = true;
         sendText(0, "i am " + android.os.Build.MODEL + android.os.Build.VERSION.RELEASE, android.os.Build.MODEL);

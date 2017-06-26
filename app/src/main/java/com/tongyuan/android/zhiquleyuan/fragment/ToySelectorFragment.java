@@ -1,7 +1,11 @@
 package com.tongyuan.android.zhiquleyuan.fragment;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -9,9 +13,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.activity.MainActivity;
@@ -52,7 +58,7 @@ public class ToySelectorFragment extends BaseFragment {
     private ImageView mHeadeImageview;
     private ViewPager mViewpagetToy;
     private PagerAdapter mPagerAdapter;
-    private ImageView mImageview_fragment_toy_addtoy;
+    private RelativeLayout mRl_fragment_toy_addtoy;
     private static final String TAG = "222222";
 //    private ToyAddFragment toyAddFragment = new ToyAddFragment();
 
@@ -70,6 +76,8 @@ public class ToySelectorFragment extends BaseFragment {
     private ImageView mImageView;
     private Bundle mBundle;
     public static String mToyid;
+    private ImageView mIv_add;
+    private ImageView mIv_delete;
 
 
     @Nullable
@@ -86,7 +94,11 @@ public class ToySelectorFragment extends BaseFragment {
 
         mHeadeImageview = (ImageView) toyRoot.findViewById(R.id.iv_fragment_toy_headimage);
 
-        mImageview_fragment_toy_addtoy = (ImageView) toyRoot.findViewById(R.id.imageview_fragment_toy_addtoy);
+//        mRl_fragment_toy_addtoy = (RelativeLayout) toyRoot.findViewById(R.id.rl_fragment_toy_addtoy);
+
+        //添加
+        mIv_add = (ImageView) toyRoot.findViewById(R.id.iv_add);
+        mIv_delete = (ImageView) toyRoot.findViewById(R.id.iv_delete);
 //        mSelectImageview.setFocusable(true);
         mHeadeImageview.setFocusable(false);
 
@@ -96,7 +108,7 @@ public class ToySelectorFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 //        final ToyDetailsFragment toyDetailsFragment = new ToyDetailsFragment();
-        mImageview_fragment_toy_addtoy.setOnClickListener(new View.OnClickListener() {
+        mIv_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 //                FragmentManager fragmentManager = getFragmentManager();
@@ -104,6 +116,15 @@ public class ToySelectorFragment extends BaseFragment {
 //                transaction.replace(R.id.fl_fragmentcontainer, new ToyAddFragment());
 //                transaction.commit();
                 showFragment(ToyAddFragment.class.getSimpleName());
+            }
+        });
+        //删除当前的玩具
+        mIv_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ToastUtil.showToast(getContext(), "sanchu wanju ");
+                Intent intent = new Intent();
+//                intent.setClass(getContext(),)
             }
         });
         //不知道点击头像要跳到哪里,先添加一个点击事件吧
@@ -200,6 +221,31 @@ public class ToySelectorFragment extends BaseFragment {
             @Override
             public void onPageSelected(int position) {
                 //TODO
+                //获得宝宝的头像 , 滑到当前的position展示当前的玩具的宝宝,如果当前的玩具没有绑定宝宝,那么就让他显示默认的baby头像
+                //宝宝的头像从哪来?怎么确定宝宝的头像和玩具的关系
+
+                String s = babyImg.get(position);//获得宝宝的头像
+                if (s == null) {
+//                    Glide.with(getContext()).load(R.drawable.ic_launcher).asBitmap().into(mHeadeImageview);
+                    Glide.with(getContext()).load(R.drawable.ic_launcher).asBitmap().into(new BitmapImageViewTarget(mHeadeImageview) {
+                        @Override
+                        protected void setResource(Bitmap resource) {
+                            RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
+                            roundedBitmapDrawable.setCircular(true);
+                            mHeadeImageview.setImageDrawable(roundedBitmapDrawable);
+                        }
+                    });
+                }
+                Glide.with(getContext()).load(s).asBitmap().into(new BitmapImageViewTarget(mHeadeImageview) {
+                    @Override
+                    protected void setResource(Bitmap resource) {
+                        RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
+                        roundedBitmapDrawable.setCircular(true);
+                        mHeadeImageview.setImageDrawable(roundedBitmapDrawable);
+                    }
+                });
+
+
             }
 
             @Override
