@@ -270,11 +270,12 @@ public class MyPlayActivity extends BaseActivity {
     @Override
     protected void bindSuccess() {
         //和服务绑定成功后才能操作MediaPlayer
-        String mMusicId = list.get(playPosition).getID();
+        /*String mMusicId = list.get(playPosition).getID();
         if(mMusicId != null) {
             Log.i("gengen", "open...");
             MusicPlayer.open(mMusicId);
-        }
+        }*/
+        openAndStart();
     }
 
     private void openAndStart() {

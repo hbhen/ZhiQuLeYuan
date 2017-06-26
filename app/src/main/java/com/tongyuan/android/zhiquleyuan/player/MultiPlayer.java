@@ -63,6 +63,8 @@ class MultiPlayer implements MediaPlayer.OnErrorListener,
         if(urlMap.containsKey(musicId)) {
             String url = urlMap.get(musicId);
             if(url.equals(playUrl)) {
+                if(!isPlaying())
+                    start();
                 mService.get().sendBroadCastToReceiver(MusicPlayerService.CODE_playing);
             } else {
                 setDataSource(url);

@@ -1,12 +1,10 @@
 package com.tongyuan.android.zhiquleyuan.service;
 
-import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.tongyuan.android.zhiquleyuan.base.BaseActivity;
 import com.tongyuan.android.zhiquleyuan.player.MusicAidlStub;
@@ -18,7 +16,7 @@ import com.tongyuan.android.zhiquleyuan.player.MusicAidlStub;
 
 public class MusicPlayerService extends Service {
     private MusicAidlStub musicAidlStub ;
-    private NotificationManager mNotificationManager;
+    //private NotificationManager mNotificationManager;
     public static final int CODE_prepared = 1;
     public static final int CODE_error    = 2;
     public static final int CODE_complete = 3;
@@ -28,7 +26,7 @@ public class MusicPlayerService extends Service {
     public void onCreate() {
         super.onCreate();
         musicAidlStub = new MusicAidlStub(this, this);
-        mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        //mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
     }
 
