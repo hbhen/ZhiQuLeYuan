@@ -38,11 +38,11 @@ public class DiscoveryListViewAdapter extends BaseAdapter {
 //    private Response<DiscoveryListResultBean> mResponse;
     private List<DiscoveryListResultBean.BODYBean.LSTBean> list = new ArrayList<DiscoveryListResultBean.BODYBean.LSTBean>();
 
-    public DiscoveryListViewAdapter(Context context, List<Items> list, Response<DiscoveryListResultBean> response) {
+    public DiscoveryListViewAdapter(Context context, List<Items> list, List<DiscoveryListResultBean.BODYBean.LSTBean> discoveryList) {
         this.mContext = context;
 //        this.mResponse=response;
 //        this.itemList = list;
-        this.list.addAll(response.body().getBODY().getLST());
+        this.list.addAll(discoveryList);
     }
 
 

@@ -92,7 +92,7 @@ public interface AllInterface {
 
     //请求推荐内容网络请求
     @GET("busi")
-    Call<DiscoveryListResultBean> getDiscoveryListResult(@Query("params") String params);
+    Call<SuperModel<DiscoveryListResultBean.BODYBean>> getDiscoveryListResult2(@Query("params") String params);
 
     //添加/修改玩具信息 3.4.11
     @GET("busi")

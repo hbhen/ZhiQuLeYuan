@@ -34,6 +34,9 @@ import com.tongyuan.android.zhiquleyuan.bean.QueryPlayingMusicReqBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryPlayingMusicResBean;
 import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoRESBean;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
+import com.tongyuan.android.zhiquleyuan.request.RequestManager;
+import com.tongyuan.android.zhiquleyuan.request.base.BaseRequest;
+import com.tongyuan.android.zhiquleyuan.request.base.SuperModel;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
@@ -128,7 +131,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
 
 
     private void getListRaw() {
-        Retrofit retrofit = new Retrofit.Builder()
+        /*Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -141,6 +144,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         Gson gson = new Gson();
         String s = gson.toJson(discoveryListRequsetBean);
         Call<DiscoveryListResultBean> discoveryListResult = allInterface.getDiscoveryListResult(s);
+
         discoveryListResult.enqueue(new Callback<DiscoveryListResultBean>() {
             @Override
             public void onResponse(Call<DiscoveryListResultBean> call, final Response<DiscoveryListResultBean> response) {
@@ -155,7 +159,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                     mListviewRecommand.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            /*DiscoveryListResultBean.BODYBean.LSTBean lstBean = response.body().getBODY().getLST().get(position);
+                            *//*DiscoveryListResultBean.BODYBean.LSTBean lstBean = response.body().getBODY().getLST().get(position);
                             Log.i(TAG, "onItemClick: response:item" + response.body().getBODY().getLST().get(position).getID());
                             Intent intent = new Intent();
                             intent.setClass(getActivity(), MyPlayActivity.class);
@@ -163,7 +167,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                             //responselist为空，lstbean不能用
                             bundle.putParcelable("toydetailsrecommandlistbean", lstBean);
                             intent.putExtras(bundle);
-                            startActivity(intent);*/
+                            startActivity(intent);*//*
 
                             MyPlayActivity.launch(getActivity(), mLAdapter.getList(), position);
 
@@ -180,6 +184,36 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
 
             @Override
             public void onFailure(Call<DiscoveryListResultBean> call, Throwable t) {
+                ToastUtil.showToast(getActivity(), "shibai2");
+            }
+        });*/
+
+        DiscoveryListRequsetBean.BODYBean request = new DiscoveryListRequsetBean.BODYBean("10", "1");
+        Call<SuperModel<DiscoveryListResultBean.BODYBean>> discoveryListResult = RequestManager.getInstance().getDiscoveryListResult(getContext(), request);
+        discoveryListResult.enqueue(new Callback<SuperModel<DiscoveryListResultBean.BODYBean>>() {
+            @Override
+            public void onResponse(Call<SuperModel<DiscoveryListResultBean.BODYBean>> call, Response<SuperModel<DiscoveryListResultBean.BODYBean>> response) {
+                if ("0".equals(response.body().CODE)) {
+                    //返回的list是一个空list
+                    Log.d(TAG, "onResponse: " + SPUtils.getString(getActivity(), "TOKEN", ""));
+                    List<Items> list = new ArrayList<Items>();
+                    list.add(new Items("第一种布局", null));
+                    list.add(new Items(null, "第二种布局"));
+                    mLAdapter = new DiscoveryListViewAdapter(getContext(), list, response.body().BODY.getLST());
+                    mListviewRecommand.setAdapter(mLAdapter);
+                    mListviewRecommand.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            MyPlayActivity.launch(getActivity(), mLAdapter.getList(), position);
+                        }
+                    });
+                } else {
+                    ToastUtil.showToast(getActivity(), response.body().MSG);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SuperModel<DiscoveryListResultBean.BODYBean>> call, Throwable t) {
                 ToastUtil.showToast(getActivity(), "shibai2");
             }
         });

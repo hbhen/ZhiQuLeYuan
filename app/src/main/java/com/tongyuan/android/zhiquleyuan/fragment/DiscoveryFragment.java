@@ -32,6 +32,7 @@ import com.tongyuan.android.zhiquleyuan.request.RequestManager;
 import com.tongyuan.android.zhiquleyuan.request.base.BaseRequest;
 import com.tongyuan.android.zhiquleyuan.request.base.SuperModel;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
+import com.tongyuan.android.zhiquleyuan.utils.SpacesItemDecoration;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
 import java.text.SimpleDateFormat;
@@ -104,41 +105,36 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
 
     private void initView() {
         mSwiperefresh_discovery = (SwipeRefreshLayout) mDiscoveryRoot.findViewById(R.id.swiperefresh_discovery);
+        mSwiperefresh_discovery.setOnRefreshListener(this);
         mRecyclerView_discovery = (RecyclerView) mDiscoveryRoot.findViewById(R.id.recyclerView_discovery);
 
-
+        mDiscoveryRecyclerAdapter = new DiscoveryRecyclerAdapter(getContext(), discoveryGridViewList, discoveryListViewList);
+        mRecyclerView_discovery.setLayoutManager(new GridLayoutManager(mRecyclerView_discovery.getContext(), 6, GridLayoutManager.VERTICAL,
+                false));
+        mRecyclerView_discovery.setAdapter(mDiscoveryRecyclerAdapter);
+        int spacingInPixels = (int) getResources().getDimension(R.dimen.discovery_grid_space);
+        mRecyclerView_discovery.addItemDecoration(new SpacesItemDecoration(spacingInPixels));
+        mDiscoveryRecyclerAdapter.setOnItemClickListener(new DiscoveryRecyclerAdapter.MyItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                if (position == 0) {
+                    ToastUtil.showToast(getContext(), "" + position);
+                } else if (position >= 1 && position <= 9) {
+                    ToastUtil.showToast(getContext(), "ninegrid" + position);
+                } else if (position >= 10) {
+                    ToastUtil.showToast(getContext(), "listview" + position);
+                }
+            }
+        });
     }
+
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initData();
 
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mDiscoveryRecyclerAdapter = new DiscoveryRecyclerAdapter(getContext(), discoveryGridViewList, discoveryListViewList);
-                mRecyclerView_discovery.setLayoutManager(new GridLayoutManager(mRecyclerView_discovery.getContext(), 6, GridLayoutManager.VERTICAL,
-                        false));
-                mRecyclerView_discovery.setAdapter(mDiscoveryRecyclerAdapter);
-
-                mDiscoveryRecyclerAdapter.setOnItemClickListener(new DiscoveryRecyclerAdapter.MyItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-//                        ToastUtil.showToast(getContext(),position+"");
-                        if (position==0){
-                            ToastUtil.showToast(getContext(),""+position);
-                        }
-                        else if (position >= 1 && position <= 9) {
-                            ToastUtil.showToast(getContext(), "ninegrid" + position);
-                        } else if (position >= 10) {
-                            ToastUtil.showToast(getContext(), "listview" + position);
-                        }
-                    }
-                });
-            }
-        }, 300);
     }
 
     @Override
@@ -165,101 +161,39 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
     private void initData() {
         mPhoneNum = SPUtils.getString(getActivity(), "phoneNum", "");
         mToken = SPUtils.getString(getActivity(), "TOKEN", "");
-//        拿grid的数据
+        //拿grid的数据
         getIdCol();
-
-//        getIdColSecondaryInfo();
-
-//        拿到list的数据
-        getListRaw();
-
-        //拿不到推荐资源的数据，先用colid 0来代替
-//        getListRawFromId();
-
     }
 
-    //拿到colid 去申请的数据
-//    private void getListRawFromId() {
-//        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
-//                .addConverterFactory(GsonConverterFactory.create())
-//                .build();
-//
-//        AllInterface allInterface = retrofit.create(AllInterface.class);
-//
-//        DiscoveryGridSecondaryRequestBean.BODYBean bodyBean = new DiscoveryGridSecondaryRequestBean.BODYBean(mColid, "10", "1");
-//        Log.d("aaaaaa", "colid " + mColid);
-//        DiscoveryGridSecondaryRequestBean discoveryGridSecondaryRequestBean = new DiscoveryGridSecondaryRequestBean("REQ", "QRYRES", SPUtils
-//                .getString(getActivity(), "phoneNum", ""), new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()), bodyBean, "", SPUtils
-//                .getString(getActivity(), "TOKEN", ""), "1");
-//        Gson gson = new Gson();
-//        String s = gson.toJson(discoveryGridSecondaryRequestBean);
-//        Call<DiscoveryGridSecondaryResultBean> discoveryGridSecondaryResult = allInterface.getDiscoveryGridSecondaryResult(s);
-//        discoveryGridSecondaryResult.enqueue(new Callback<DiscoveryGridSecondaryResultBean>() {
-//            @Override
-//            public void onResponse(Call<DiscoveryGridSecondaryResultBean> call, final Response<DiscoveryGridSecondaryResultBean> response) {
-//                if (response != null && !response.body().getCODE().equals(0)) {
-//                    //返回的list是一个空list
-//                    Log.d(TAG, "onResponse: " + SPUtils.getString(getActivity(), "TOKEN", ""));
-
-//                    List<Items> list = new ArrayList<Items>();
-//                    list.add(new Items("第一种布局", null));
-//                    list.add(new Items(null, "第二种布局"));
-//                    mLAdapter = new DiscoveryListViewAdapter(getActivity(), list);
-//                    lv_fragment_discovery.setAdapter(mLAdapter);
-//                    lv_fragment_discovery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//                        @Override
-//                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                            Intent intent = new Intent();
-//                            intent.setClass(getActivity(), MyPlayActivity.class);
-//                            Bundle bundle = new Bundle();
-//                            //responselist为空，lstbean不能用
-//                            bundle.putParcelable("recommandmusicinfo", response.body());
-//                            startActivity(intent);
-//                            ToastUtil.showToast(getActivity(), "当前点击的是:" + position);
-//                        }
-//                    });
-//                } else {
-//                    ToastUtil.showToast(getActivity(), "shibai1");
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<DiscoveryGridSecondaryResultBean> call, Throwable t) {
-//
-//            }
-//        });
-//    }
-
-
     //拿到list的数据
-    //TODO 后台没有数据!而且还不能添加,所以先空着,这里取不到数据;
     private void getListRaw() {
-        Retrofit retrofit = new Retrofit.Builder()
+        /*Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
-
         DiscoveryListRequsetBean.BODYBean bodyBean = new DiscoveryListRequsetBean.BODYBean("10", "1");
+
         DiscoveryListRequsetBean discoveryListRequsetBean = new DiscoveryListRequsetBean("REQ", "QRYREC", SPUtils.getString(getActivity(),
                 "phoneNum", ""),
                 new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()), bodyBean, "", SPUtils.getString(getActivity(), "TOKEN", ""), "1");
         Gson gson = new Gson();
         String s = gson.toJson(discoveryListRequsetBean);
         Call<DiscoveryListResultBean> discoveryListResult = allInterface.getDiscoveryListResult(s);
+
         discoveryListResult.enqueue(new Callback<DiscoveryListResultBean>() {
             @Override
             public void onResponse(Call<DiscoveryListResultBean> call, final Response<DiscoveryListResultBean> response) {
+                Log.i(TAG, "code "+response.body().getCODE());
                 if (response != null && !response.body().getCODE().equals(0)) {
-
-                    discoveryListViewList = response.body().getBODY().getLST();
+                    discoveryListViewList.clear();
+                    discoveryListViewList.addAll(response.body().getBODY().getLST());
                     Log.i(TAG, "onResponse: list" + discoveryListViewList.toString());
 //                    sendListViewList();
 
                     //返回的list是一个空list
                     Log.d(TAG, "onResponse: " + SPUtils.getString(getActivity(), "TOKEN", ""));
-
+                    mDiscoveryRecyclerAdapter.notifyDataSetChanged();
 //
                 } else {
                     ToastUtil.showToast(getActivity(), "shibai1");
@@ -271,6 +205,28 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
             public void onFailure(Call<DiscoveryListResultBean> call, Throwable t) {
                 ToastUtil.showToast(getActivity(), "shibai2");
             }
+        });*/
+
+        DiscoveryListRequsetBean.BODYBean request = new DiscoveryListRequsetBean.BODYBean("10", "1");
+        Call<SuperModel<DiscoveryListResultBean.BODYBean>> discoveryListResult = RequestManager.getInstance().getDiscoveryListResult(getContext(), request);
+        discoveryListResult.enqueue(new Callback<SuperModel<DiscoveryListResultBean.BODYBean>>() {
+            @Override
+            public void onResponse(Call<SuperModel<DiscoveryListResultBean.BODYBean>> call, Response<SuperModel<DiscoveryListResultBean.BODYBean>> response) {
+                if ("0".equals(response.body().CODE)) {
+                    discoveryListViewList.clear();
+                    discoveryListViewList.addAll(response.body().BODY.getLST());
+                    mDiscoveryRecyclerAdapter.notifyDataSetChanged();
+                } else {
+                    ToastUtil.showToast(getActivity(), response.body().MSG);
+                }
+                mSwiperefresh_discovery.setRefreshing(false);
+            }
+
+            @Override
+            public void onFailure(Call<SuperModel<DiscoveryListResultBean.BODYBean>> call, Throwable t) {
+                ToastUtil.showToast(getActivity(), "网络请求失败");
+                mSwiperefresh_discovery.setRefreshing(false);
+            }
         });
     }
 
@@ -281,19 +237,24 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
         discoveryGridResult.enqueue(new Callback<SuperModel<DiscoveryGridItemBean>>() {
             @Override
             public void onResponse(Call<SuperModel<DiscoveryGridItemBean>> call, Response<SuperModel<DiscoveryGridItemBean>> response) {
-                if (response.body().BODY != null && response.body().BODY.LST != null) {
-
-
-                    discoveryGridViewList = response.body().BODY.LST;
-                    Log.i(TAG, "onResponse: grid" + discoveryGridViewList);
-
-
+                if ("0".equals(response.body().CODE)) {
+                    if (response.body().BODY != null && response.body().BODY.LST != null) {
+                        discoveryGridViewList.clear();
+                        discoveryGridViewList.addAll(response.body().BODY.LST);
+                        mDiscoveryRecyclerAdapter.notifyDataSetChanged();
+                        //Log.i(TAG, "onResponse: grid" + discoveryGridViewList);
+                        getListRaw();
+                    }
+                } else {
+                    ToastUtil.showToast(getActivity(), response.body().MSG);
+                    mSwiperefresh_discovery.setRefreshing(false);
                 }
             }
 
             @Override
             public void onFailure(Call<SuperModel<DiscoveryGridItemBean>> call, Throwable t) {
-                ToastUtil.showToast(getActivity(), "错误");
+                ToastUtil.showToast(getActivity(), "网络请求失败");
+                mSwiperefresh_discovery.setRefreshing(false);
             }
         });
     }
@@ -359,9 +320,6 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
     @Override
     public void onRefresh() {
         initData();
-        mSwiperefresh_discovery.setRefreshing(false);
-        mDiscoveryRecyclerAdapter.notifyDataSetChanged();
-
     }
 
 }

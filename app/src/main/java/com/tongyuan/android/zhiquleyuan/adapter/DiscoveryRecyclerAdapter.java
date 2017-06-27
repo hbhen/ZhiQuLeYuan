@@ -43,8 +43,9 @@ public class DiscoveryRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
     public TextView tv_desc_times;
     public TextView tv_desc_category;
 
-    public ImageView gridImg;
-    public TextView gridText;
+//    public ImageView gridImg;
+//    public TextView gridText;
+    LayoutInflater inflate;
 
     public DiscoveryRecyclerAdapter(Context context, List<DiscoveryGridItemBean.LSTBean> discoveryGridViewList, List<DiscoveryListResultBean
             .BODYBean.LSTBean> discoveryListViewList) {
@@ -52,7 +53,8 @@ public class DiscoveryRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         this.mDiscoveryGridViewList = discoveryGridViewList;
         this.mDiscoveryListViewList = discoveryListViewList;
         int screenWidth = context.getResources().getDisplayMetrics().widthPixels;
-        width = (screenWidth - 3 * (int) context.getResources().getDimension(R.dimen.discovery_grid_space)) / 3;
+        inflate = LayoutInflater.from(mContext);
+        width = (screenWidth - 4 * (int) context.getResources().getDimension(R.dimen.discovery_grid_space)) / 3;
         height = 86 * width / 112;
         Log.i("discovery ssshhh", "DiscoveryRecyclerAdapter: " + mDiscoveryGridViewList.size() + mDiscoveryGridViewList.toString());
         Log.i("discovery ssshhh", "DiscoveryRecyclerAdapter: " + mDiscoveryListViewList.size() + mDiscoveryListViewList.toString());
@@ -64,14 +66,14 @@ public class DiscoveryRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case TYPE_TYPE1_HEAD:
-                return new HolderNineGridTitle(LayoutInflater.from(mContext).inflate(R.layout.discovery_recyclerview_nine_title, null),mMyItemClickListener);
+                return new HolderNineGridTitle(inflate.inflate(R.layout.discovery_recyclerview_nine_title, null),mMyItemClickListener);
             case TYPE_TYPE1:
-                return new HolderNineGrid(LayoutInflater.from(mContext).inflate(R.layout.item_discovery_gridview, null),mMyItemClickListener);
+                return new HolderNineGrid(inflate.inflate(R.layout.item_discovery_gridview, null),mMyItemClickListener);
             case TYPE_TYPE2_HEAD:
-                return new HolderListViewTitle(LayoutInflater.from(mContext).inflate(R.layout.discovery_recyclerview_listview_title,
+                return new HolderListViewTitle(inflate.inflate(R.layout.discovery_recyclerview_listview_title,
                         null));
             case TYPE_TYPE2:
-                return new HolderListView(LayoutInflater.from(mContext).inflate(R.layout.item_discovery_listview, null),mMyItemClickListener);
+                return new HolderListView(inflate.inflate(R.layout.item_discovery_listview, null),mMyItemClickListener);
 
             default:
                 Log.d("error", "viewholder is null");
@@ -131,8 +133,8 @@ public class DiscoveryRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
 
     private void bindType1(HolderNineGrid holder, int position) {
         Log.i(TAG, "bindType1: " + position);
-        Glide.with(mContext).load(mDiscoveryGridViewList.get(position - 1).IMG).into(gridImg);
-        gridText.setText(mDiscoveryGridViewList.get(position - 1).NAME);
+        Glide.with(mContext).load(mDiscoveryGridViewList.get(position - 1).IMG).placeholder(R.drawable.player_cover_default).into(holder.gridImg);
+        holder.gridText.setText(mDiscoveryGridViewList.get(position - 1).NAME);
     }
 
     private void bindType2Head(HolderListViewTitle holder, int position) {
@@ -141,7 +143,7 @@ public class DiscoveryRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
 
     private void bindType2(HolderListView holder, int position) {
         Log.i(TAG, "bindType2: " + position);
-        Glide.with(mContext).load(mDiscoveryListViewList.get(position - mDiscoveryGridViewList.size() - 1).getIMG()).asBitmap().into(iv_desc);
+        Glide.with(mContext).load(mDiscoveryListViewList.get(position - mDiscoveryGridViewList.size() - 1).getIMG()).asBitmap().placeholder(R.drawable.player_cover_default).into(iv_desc);
         tv_desc_title.setText(mDiscoveryListViewList.get(position - mDiscoveryGridViewList.size() - 1).getNAME());
         tv_desc_times.setText(mDiscoveryListViewList.get(position - mDiscoveryGridViewList.size() - 1).getTIMES());
         tv_desc_category.setText(mDiscoveryListViewList.get(position - mDiscoveryGridViewList.size() - 1).getCOLNAME());
@@ -193,15 +195,16 @@ public class DiscoveryRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
 
     }
 
-    public class HolderNineGrid extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class HolderNineGrid extends RecyclerView.ViewHolder implements View.OnClickListener {
+        ImageView gridImg;
+        TextView  gridText;
 
-
-        public HolderNineGrid(View itemView, MyItemClickListener listener) {
+        HolderNineGrid(View itemView, MyItemClickListener listener) {
             super(itemView);
             mMyItemClickListener=listener;
 
             gridImg = (ImageView) itemView.findViewById(R.id.iv_grid);
-            gridImg.setLayoutParams(new LinearLayout.LayoutParams(width, height));
+            gridImg.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height));
             gridText = (TextView) itemView.findViewById(R.id.tv_grid);
             itemView.setOnClickListener(this);
 

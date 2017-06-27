@@ -1,9 +1,13 @@
 package com.tongyuan.android.zhiquleyuan.request;
 
+import android.content.Context;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridItemBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridSecondaryResultBean;
+import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListRequsetBean;
+import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.LocalPlayApplyResBean;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.request.base.BaseRequest;
@@ -61,4 +65,10 @@ public class RequestManager {
 //        String json = mGson.toJson(params);
 //        return serves.QUERY_RECORDING_RES_BEAN_CALL(json);
 //    }
+
+    public Call<SuperModel<DiscoveryListResultBean.BODYBean>> getDiscoveryListResult(Context context, DiscoveryListRequsetBean.BODYBean params) {
+        final BaseRequest request = new BaseRequest<>(context, params, "QRYREC");
+        String json = mGson.toJson(request);
+        return serves.getDiscoveryListResult2(json);
+    }
 }

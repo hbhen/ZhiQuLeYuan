@@ -174,7 +174,7 @@ public class DiscoverySecondCategoryActivity extends AppCompatActivity implement
 //        });
 //    }
 
-    @OnClick({R.id.sub_discovery_back, })
+    @OnClick({R.id.sub_discovery_back, R.id.bt_item_album_details_one_subscribe})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.bt_item_album_details_one_subscribe:
