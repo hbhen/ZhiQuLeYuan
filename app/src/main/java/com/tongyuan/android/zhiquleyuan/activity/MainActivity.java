@@ -55,16 +55,16 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private ImageView rb_toy;
     private LinearLayout rb_history;
     private LinearLayout rb_mine;
-//    private FragmentTransaction beginTransaction;
+    //    private FragmentTransaction beginTransaction;
     private DiscoveryFragment discoveryFragment;
     private RecodingFragment recodingFragment;
     private ToySelectorFragment mToySelectorFragment;
     private HistoryFragment historyFragment;
     private MineFragment mineFragment;
-//    private FragmentManager fragmentManager;
+    //    private FragmentManager fragmentManager;
     private ToyAddFragment toyAddFragment;
     private ToyDetailsFragment toyDetailsFragment;
-//    private ToyManagerFragment mToyManagerFragment;
+    //    private ToyManagerFragment mToyManagerFragment;
     private String mCurrentTime;
     private String mMainToken;
     private String mMainphoneNum;
@@ -72,7 +72,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     public static boolean isLogin = false;
     private VideoFragment mVideoFragment;
     private CallWaitingConnectFragment mCallWaitingConnectFragment;
-    private static final String TAG1="88888";
+    private static final String TAG1 = "88888";
 
 
     /**
@@ -195,7 +195,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     }
 
     public void showFragment(Fragment fragment) {
-        if(fragment instanceof  ToyManagerFragment) {
+        if (fragment instanceof ToyManagerFragment) {
             showFragment(fragment, ToyManagerFragment.class.getSimpleName());
             currentFragment = fragment;
         }
@@ -293,8 +293,14 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 rb_toy.setSelected(true);
                 //应该先判断是否登录,再判断是否有玩具
                 mMainToken = SPUtils.getString(this, "TOKEN", "");
-                Log.i(TAG, "onClick: token(mainactivity" + mMainToken);
-                chargeHasLogin(mMainToken);
+                if (mMainToken==null) {
+                    startActivity(new Intent(getApplicationContext(), ActivityLogin.class));
+                    Log.i(TAG, "onClick: token(mainactivity" + mMainToken);
+                } else {
+                    Log.i(TAG, "onClick: token(mainactivity" + mMainToken);
+                    chargeHasLogin(mMainToken);
+                }
+
                 break;
             default:
                 break;

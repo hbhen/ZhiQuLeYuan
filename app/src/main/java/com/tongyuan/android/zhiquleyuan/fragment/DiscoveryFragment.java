@@ -3,12 +3,15 @@ package com.tongyuan.android.zhiquleyuan.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -16,16 +19,14 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.activity.ActivityLogin;
-import com.tongyuan.android.zhiquleyuan.activity.DiscoverySecondCategoryActivity;
-import com.tongyuan.android.zhiquleyuan.activity.MyPlayActivity;
 import com.tongyuan.android.zhiquleyuan.adapter.DiscoveryGridAdapter;
 import com.tongyuan.android.zhiquleyuan.adapter.DiscoveryListViewAdapter;
+import com.tongyuan.android.zhiquleyuan.adapter.DiscoveryRecyclerAdapter;
 import com.tongyuan.android.zhiquleyuan.base.BaseFragment;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridItemBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridRequestBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListRequsetBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListResultBean;
-import com.tongyuan.android.zhiquleyuan.bean.Items;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.request.RequestManager;
 import com.tongyuan.android.zhiquleyuan.request.base.BaseRequest;
@@ -45,14 +46,13 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- *
  * Created by android on 2016/12/3.
  */
 /*
 * 先加载布局,再在布局里面添加数据.布局从哪个生命周期开始加载?数据从哪个生命周期开始加载?
 *
 * */
-public class DiscoveryFragment extends BaseFragment implements View.OnClickListener{
+public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener, View.OnClickListener {
     public static final int REQUEST_CODE_LOGIN = 1001;
     private ListView lv_fragment_discovery;
     private GridView gv_fragment_discovery;
@@ -61,40 +61,84 @@ public class DiscoveryFragment extends BaseFragment implements View.OnClickListe
     private DiscoveryGridAdapter mGAdapter;
     private DiscoveryListViewAdapter mLAdapter;
     private TextView mGridviewTitle;
-//    private String mLogintokenToMain;
+    private View mDiscoveryRoot;
+    private SwipeRefreshLayout mSwiperefresh_discovery;
+    private RecyclerView mRecyclerView_discovery;
+    private DiscoveryRecyclerAdapter mDiscoveryRecyclerAdapter;
+    private List<DiscoveryListResultBean.BODYBean.LSTBean> discoveryListViewList = new ArrayList<>();
+    private List<DiscoveryGridItemBean.LSTBean> discoveryGridViewList = new ArrayList<>();
+    private String mToken;
+    private String mPhoneNum;
+    //    private String mLogintokenToMain;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View discoveryRoot = inflater.inflate(R.layout.fragment_discovery, null);
-        lv_fragment_discovery = (ListView) discoveryRoot.findViewById(R.id.lv_fragment_discovery);
-        gv_fragment_discovery = (GridView) discoveryRoot.findViewById(R.id.gv_fragment_discovery);
-        mGridviewTitle = (TextView) discoveryRoot.findViewById(R.id.tv_gridview_title);
-        mGridviewTitle.setOnClickListener(this);
-        discoveryRoot.findViewById(R.id.et_home_title).setOnClickListener(this);
-        mGAdapter = new DiscoveryGridAdapter(getActivity(), lst);
-        gv_fragment_discovery.setAdapter(mGAdapter);
-        gv_fragment_discovery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String mColid = lst.get(position).ID;
-                String img = lst.get(position).IMG;
-                Intent intent = new Intent();
-                intent.setClass(getActivity(), DiscoverySecondCategoryActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("colid", mColid);
-                bundle.putString("img", img);
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }
-        });
-        return discoveryRoot;
+        mDiscoveryRoot = inflater.inflate(R.layout.fragment_discovery_recycleview, null);
+        initView();
+
+
+//        lv_fragment_discovery = (ListView) mDiscoveryRoot.findViewById(R.id.lv_fragment_discovery);
+//        gv_fragment_discovery = (GridView) mDiscoveryRoot.findViewById(R.id.gv_fragment_discovery);
+//        mGridviewTitle = (TextView) mDiscoveryRoot.findViewById(R.id.tv_gridview_title);
+//        mGridviewTitle.setOnClickListener(this);
+//        mDiscoveryRoot.findViewById(R.id.et_home_title).setOnClickListener(this);
+//        mGAdapter = new DiscoveryGridAdapter(getActivity(), lst);
+//        gv_fragment_discovery.setAdapter(mGAdapter);
+//        gv_fragment_discovery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                String mColid = lst.get(position).ID;
+//                String img = lst.get(position).IMG;
+//                Intent intent = new Intent();
+//                intent.setClass(getActivity(), DiscoverySecondCategoryActivity.class);
+//                Bundle bundle = new Bundle();
+//                bundle.putString("colid", mColid);
+//                bundle.putString("img", img);
+//                intent.putExtras(bundle);
+//                startActivity(intent);
+//            }
+//        });
+        return mDiscoveryRoot;
+    }
+
+    private void initView() {
+        mSwiperefresh_discovery = (SwipeRefreshLayout) mDiscoveryRoot.findViewById(R.id.swiperefresh_discovery);
+        mRecyclerView_discovery = (RecyclerView) mDiscoveryRoot.findViewById(R.id.recyclerView_discovery);
+
+
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initData();
+
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mDiscoveryRecyclerAdapter = new DiscoveryRecyclerAdapter(getContext(), discoveryGridViewList, discoveryListViewList);
+                mRecyclerView_discovery.setLayoutManager(new GridLayoutManager(mRecyclerView_discovery.getContext(), 6, GridLayoutManager.VERTICAL,
+                        false));
+                mRecyclerView_discovery.setAdapter(mDiscoveryRecyclerAdapter);
+
+                mDiscoveryRecyclerAdapter.setOnItemClickListener(new DiscoveryRecyclerAdapter.MyItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+//                        ToastUtil.showToast(getContext(),position+"");
+                        if (position==0){
+                            ToastUtil.showToast(getContext(),""+position);
+                        }
+                        else if (position >= 1 && position <= 9) {
+                            ToastUtil.showToast(getContext(), "ninegrid" + position);
+                        } else if (position >= 10) {
+                            ToastUtil.showToast(getContext(), "listview" + position);
+                        }
+                    }
+                });
+            }
+        }, 300);
     }
 
     @Override
@@ -106,18 +150,21 @@ public class DiscoveryFragment extends BaseFragment implements View.OnClickListe
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-        checkLoginState();
+//        checkLoginState();
     }
 
     private void checkLoginState() {
         if (SPUtils.getString(getActivity(), "TOKEN", "").isEmpty()) {
-            mGridviewTitle.setVisibility(View.VISIBLE);
+
+//            mGridviewTitle.setVisibility(View.VISIBLE);
         } else {
-            mGridviewTitle.setVisibility(View.GONE);
+//            mGridviewTitle.setVisibility(View.GONE);
         }
     }
 
     private void initData() {
+        mPhoneNum = SPUtils.getString(getActivity(), "phoneNum", "");
+        mToken = SPUtils.getString(getActivity(), "TOKEN", "");
 //        拿grid的数据
         getIdCol();
 
@@ -205,41 +252,48 @@ public class DiscoveryFragment extends BaseFragment implements View.OnClickListe
             @Override
             public void onResponse(Call<DiscoveryListResultBean> call, final Response<DiscoveryListResultBean> response) {
                 if (response != null && !response.body().getCODE().equals(0)) {
+
+                    discoveryListViewList = response.body().getBODY().getLST();
+                    Log.i(TAG, "onResponse: list" + discoveryListViewList.toString());
+//                    sendListViewList();
+
                     //返回的list是一个空list
                     Log.d(TAG, "onResponse: " + SPUtils.getString(getActivity(), "TOKEN", ""));
-                    List<Items> list = new ArrayList<Items>();
-                    list.add(new Items("第一种布局", null));
-                    list.add(new Items(null, "第二种布局"));
+//                    List<Items> list = new ArrayList<Items>();
+//                    list.add(new Items("第一种布局", null));
+//                    list.add(new Items(null, "第二种布局"));
+//
+//                    mLAdapter = new DiscoveryListViewAdapter(getContext(), list, response);
+//                    lv_fragment_discovery.setAdapter(mLAdapter);
+//                    lv_fragment_discovery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                        @Override
+//                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//
+//                            DiscoveryListResultBean.BODYBean.LSTBean lstBean = (DiscoveryListResultBean.BODYBean.LSTBean) parent.getAdapter()
+//                                    .getItem(position);
+////                             = response.body().getBODY().getLST().get(position);
+//
+////                            getLocalPlayApplication(lstBean, position, SPUtils.getString(getActivity(), "phoneNum", ""), new SimpleDateFormat
+////                                    ("yyyyMMddHHmmssSSS").format(new Date()), SPUtils.getString(getActivity(), "TOKEN", ""));
+//
+//                            Intent intent = new Intent();
+//                            intent.setClass(getActivity(), MyPlayActivity.class);
+//                            Bundle bundle = new Bundle();
+////                            responselist为空，lstbean不能用
+//                            bundle.putParcelable("recommandlistbean", lstBean);
+//                            intent.putExtras(bundle);
+//                            startActivity(intent);
+//                            ToastUtil.showToast(getActivity(), "当前点击的是:" + position);
+//                        }
+//                    });
 
-                    mLAdapter = new DiscoveryListViewAdapter(getContext(), list, response);
-                    lv_fragment_discovery.setAdapter(mLAdapter);
-                    lv_fragment_discovery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                            DiscoveryListResultBean.BODYBean.LSTBean lstBean = (DiscoveryListResultBean.BODYBean.LSTBean) parent.getAdapter().getItem(position);
-//                             = response.body().getBODY().getLST().get(position);
-
-//                            getLocalPlayApplication(lstBean, position, SPUtils.getString(getActivity(), "phoneNum", ""), new SimpleDateFormat
-//                                    ("yyyyMMddHHmmssSSS").format(new Date()), SPUtils.getString(getActivity(), "TOKEN", ""));
-
-                            Intent intent = new Intent();
-                            intent.setClass(getActivity(), MyPlayActivity.class);
-                            Bundle bundle = new Bundle();
-//                            responselist为空，lstbean不能用
-                            bundle.putParcelable("recommandlistbean",lstBean);
-                            intent.putExtras(bundle);
-                            startActivity(intent);
-                            ToastUtil.showToast(getActivity(), "当前点击的是:" + position);
-                        }
-                    });
-
-
+//
                 } else {
                     ToastUtil.showToast(getActivity(), "shibai1");
                 }
             }
 
+            //
             @Override
             public void onFailure(Call<DiscoveryListResultBean> call, Throwable t) {
                 ToastUtil.showToast(getActivity(), "shibai2");
@@ -254,10 +308,13 @@ public class DiscoveryFragment extends BaseFragment implements View.OnClickListe
         discoveryGridResult.enqueue(new Callback<SuperModel<DiscoveryGridItemBean>>() {
             @Override
             public void onResponse(Call<SuperModel<DiscoveryGridItemBean>> call, Response<SuperModel<DiscoveryGridItemBean>> response) {
-                if(response.body().BODY != null && response.body().BODY.LST != null) {
-                    lst.clear();
-                    lst.addAll(response.body().BODY.LST);
-                    mGAdapter.notifyDataSetChanged();
+                if (response.body().BODY != null && response.body().BODY.LST != null) {
+
+
+                    discoveryGridViewList = response.body().BODY.LST;
+                    Log.i(TAG, "onResponse: grid" + discoveryGridViewList);
+
+
                 }
             }
 
@@ -268,24 +325,12 @@ public class DiscoveryFragment extends BaseFragment implements View.OnClickListe
         });
     }
 
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        switch (requestCode) {
-//            case REQUEST_CODE_LOGIN:
-//                Bundle b = data.getExtras();
-////                mLogintokenToMain = b.getString("logintoken");
-//                break;
-//            default:
-//                break;
-//        }
-//
-//    }
 
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.et_home_title) {
 
-        } else if(v.getId() == R.id.tv_gridview_title) {
+        } else if (v.getId() == R.id.tv_gridview_title) {
             Intent intent = new Intent(getActivity(), ActivityLogin.class);
             //需不需要intent传参数出去再说吧
             startActivityForResult(intent, REQUEST_CODE_LOGIN);
@@ -337,5 +382,14 @@ public class DiscoveryFragment extends BaseFragment implements View.OnClickListe
         Log.i("tagd", "onDestroyView: went");
 
     }
+
+    @Override
+    public void onRefresh() {
+        initData();
+        mSwiperefresh_discovery.setRefreshing(false);
+        mDiscoveryRecyclerAdapter.notifyDataSetChanged();
+
+    }
+
 }
 

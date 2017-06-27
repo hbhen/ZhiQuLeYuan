@@ -31,6 +31,7 @@ public class HistoryAdapter extends BaseAdapter {
     private ArrayList<CallHistoryResultBean.BODYBean.LSTBean> mList;
     private String mFormattime;
 
+
     public HistoryAdapter(Context context, ArrayList<CallHistoryResultBean.BODYBean.LSTBean> lst) {
         this.mContext = context;
         this.mList = lst;

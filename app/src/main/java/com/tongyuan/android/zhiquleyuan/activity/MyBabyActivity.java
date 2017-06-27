@@ -118,6 +118,7 @@ public class MyBabyActivity extends AppCompatActivity {
         uploadFileName="icon.png";
     }
 
+
     @OnClick({R.id.iv_addbabyinfo, R.id.et_addbabyinfo, R.id.rg_addbabyinfo,
             R.id.tv_activity_addbabyinfo_date, R.id.bt_activity_addbabyinfo_confirm, R.id.baby_back})
     public void onClick(View view) {
@@ -337,13 +338,8 @@ public class MyBabyActivity extends AppCompatActivity {
         BabyInfoRequestBean babyInfoRequestBean = new BabyInfoRequestBean("REQ", "INFO", phoneNum, time, babyInfoBody, "", babyToken, "1");
 
         String s = gson.toJson(babyInfoRequestBean);
-//        Log.i("upload", "request =" + s);
-//        RequestBody requestFile = RequestBody.create(MediaType.parse("image/png"), file);
-//        RequestBody description = RequestBody.create(MediaType.parse("multipart/form_data"),"宝宝的头像");
-//        MultipartBody.Part body = MultipartBody.Part.createFormData("IMG", file.getName(), requestFile);
 
         RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-//        MultipartBody.Part body = MultipartBody.Part.createFormData("IMG", file.getName(), requestFile);
 
         MultipartBody.Builder builder = new MultipartBody.Builder();
         builder.setType(MultipartBody.FORM);
@@ -355,9 +351,7 @@ public class MyBabyActivity extends AppCompatActivity {
         babyInfoResultBeanCall.enqueue(new Callback<BabyInfoResultBean>() {
             @Override
             public void onResponse(Call<BabyInfoResultBean> call, Response<BabyInfoResultBean> response) {
-//                Log.i("upload", "body=" + response.message() + " " + response.body().getMSG());
                 String code = response.body().getCODE();
-//                Log.i("upload", response.body().toString());
                 if(code.equals("0")) {
                     finish();
                     setResult(BabyInfoListActivity.SuccessCode);
@@ -369,20 +363,6 @@ public class MyBabyActivity extends AppCompatActivity {
                 Log.i("upload", "onFailure...");
             }
         });
-//        Call<BabyInfoResultBean> call = allInterface.BABY_INFO_RESULT_BEAN_CALL(s, body);
-//        call.enqueue(new Callback<BabyInfoResultBean>() {
-//            @Override
-//            public void onResponse(Call<BabyInfoResultBean> call, Response<BabyInfoResultBean> response) {
-//                Log.i("upload", "body=" + response.message() + " " + response.body().getMSG());
-//                String code = response.body().getCODE();
-//                Log.i("upload", response.body().toString());
-//            }
-//
-//            @Override
-//            public void onFailure(Call<BabyInfoResultBean> call, Throwable t) {
-//                Log.i("upload", "onFailure...");
-//            }
-//        });
 
     }
 
