@@ -53,7 +53,9 @@ public class DiscoveryListViewAdapter extends BaseAdapter {
 //
 //    }
 
-
+    public ArrayList<DiscoveryListResultBean.BODYBean.LSTBean> getList() {
+        return (ArrayList<DiscoveryListResultBean.BODYBean.LSTBean>) list;
+    }
 
     @Override
     public int getCount() {

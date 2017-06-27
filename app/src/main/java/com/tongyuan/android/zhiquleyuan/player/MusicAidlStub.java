@@ -1,12 +1,11 @@
 package com.tongyuan.android.zhiquleyuan.player;
 
+import android.content.Context;
 import android.os.RemoteException;
 
 import com.tongyuan.android.zhiquleyuan.IMusicAidl;
 import com.tongyuan.android.zhiquleyuan.IRemoteServiceCallback;
 import com.tongyuan.android.zhiquleyuan.service.MusicPlayerService;
-
-import java.lang.ref.WeakReference;
 
 /**
  *
@@ -17,13 +16,23 @@ public class MusicAidlStub extends IMusicAidl.Stub {
 
     private MultiPlayer multiPlayer;
 
-    public MusicAidlStub(MusicPlayerService service) {
-        multiPlayer = new MultiPlayer(service);
+    public MusicAidlStub(Context context, MusicPlayerService service) {
+        multiPlayer = new MultiPlayer(context, service);
     }
 
     @Override
     public void open(String path) throws RemoteException {
-        multiPlayer.setDataSource(path);
+        multiPlayer.openMediaPlayer(path);
+    }
+
+    @Override
+    public void openAndStart(String path) throws RemoteException {
+        multiPlayer.openAndStart(path);
+    }
+
+    @Override
+    public boolean isPrepared() throws RemoteException {
+        return multiPlayer.isPrepared();
     }
 
     @Override
@@ -80,4 +89,11 @@ public class MusicAidlStub extends IMusicAidl.Stub {
     public void registerCallback(IRemoteServiceCallback cb) throws RemoteException {
 
     }
+
+    @Override
+    public void release() throws RemoteException {
+        multiPlayer.release();
+    }
+
+
 }

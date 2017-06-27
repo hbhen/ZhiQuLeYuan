@@ -259,6 +259,7 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
 
                     //返回的list是一个空list
                     Log.d(TAG, "onResponse: " + SPUtils.getString(getActivity(), "TOKEN", ""));
+<<<<<<< HEAD
 //                    List<Items> list = new ArrayList<Items>();
 //                    list.add(new Items("第一种布局", null));
 //                    list.add(new Items(null, "第二种布局"));
@@ -286,6 +287,35 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
 //                            ToastUtil.showToast(getActivity(), "当前点击的是:" + position);
 //                        }
 //                    });
+=======
+                    List<Items> list = new ArrayList<Items>();
+                    list.add(new Items("第一种布局", null));
+                    list.add(new Items(null, "第二种布局"));
+
+                    mLAdapter = new DiscoveryListViewAdapter(getContext(), list, response);
+                    lv_fragment_discovery.setAdapter(mLAdapter);
+                    lv_fragment_discovery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                            //DiscoveryListResultBean.BODYBean.LSTBean lstBean = (DiscoveryListResultBean.BODYBean.LSTBean) parent.getAdapter().getItem(position);
+//                             = response.body().getBODY().getLST().get(position);
+
+//                            getLocalPlayApplication(lstBean, position, SPUtils.getString(getActivity(), "phoneNum", ""), new SimpleDateFormat
+//                                    ("yyyyMMddHHmmssSSS").format(new Date()), SPUtils.getString(getActivity(), "TOKEN", ""));
+
+                            /*Intent intent = new Intent();
+                            intent.setClass(getActivity(), MyPlayActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putParcelable("recommandlistbean",lstBean);
+                            intent.putExtras(bundle);
+                            startActivity(intent);*/
+                            MyPlayActivity.launch(getActivity(), mLAdapter.getList(), position);
+                            ToastUtil.showToast(getActivity(), "当前点击的是:" + position);
+                        }
+                    });
+
+>>>>>>> c5c008b01423852293b24152233ca861753d5ef3
 
 //
                 } else {

@@ -23,11 +23,15 @@ import com.tongyuan.android.zhiquleyuan.request.RequestManager;
 import com.tongyuan.android.zhiquleyuan.request.base.BaseRequest;
 import com.tongyuan.android.zhiquleyuan.request.base.SuperModel;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
+import com.tongyuan.android.zhiquleyuan.utils.StatusBarUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -43,16 +47,15 @@ public class DiscoverySecondCategoryActivity extends AppCompatActivity implement
 
     private ListView mListviewSecondCategory;
     private ImageView mIv_discoverysecondcategory;
-    private Button mSubscribeButton;
-//    private Response<DiscoveryGridSecondaryResultBean> mResponse;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_discovery_secondcategory);
-
+        ButterKnife.bind(this);
+        StatusBarUtils.setStatusBarLightMode(this, getResources().getColor(R.color.main_top_bg));
         initView();
-        initListener();
+        //initListener();
         initData();
 
     }
@@ -60,17 +63,9 @@ public class DiscoverySecondCategoryActivity extends AppCompatActivity implement
     private void initView() {
 
         mIv_discoverysecondcategory = (ImageView) findViewById(R.id.iv_album_details_one);
-        mSubscribeButton = (Button) findViewById(R.id.bt_item_album_details_one_subscribe);
 
         mListviewSecondCategory = (ListView) findViewById(R.id.lv_activity_discovery_secondcategory);
-
-
     }
-
-    private void initListener() {
-        mSubscribeButton.setOnClickListener(this);
-    }
-
 
     private void initData() {
         Intent intent = getIntent();
@@ -111,15 +106,14 @@ public class DiscoverySecondCategoryActivity extends AppCompatActivity implement
             public void onResponse(Call<SuperModel<DiscoveryGridSecondaryResultBean>> call, final Response<SuperModel<DiscoveryGridSecondaryResultBean>> response) {
 
                 if (response.body() != null && response.body().CODE.equals("0")) {
-                    Log.d("aaaaaa", "onResponse: " + response.body().toString());
+                    //Log.d("aaaaaa", "onResponse: " + response.body().toString());
 //                    mResponse = response;
-
-                    DiscoverySecondCategoryAdapter discoverySecondCategoryAdapter = new DiscoverySecondCategoryAdapter(getApplicationContext(), response.body().BODY.LST);
+                    final DiscoverySecondCategoryAdapter discoverySecondCategoryAdapter = new DiscoverySecondCategoryAdapter(getApplicationContext(), response.body().BODY.LST);
                     mListviewSecondCategory.setAdapter(discoverySecondCategoryAdapter);
                     mListviewSecondCategory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                            DiscoveryGridSecondaryResultBean.LSTBean lstBean = response.body().BODY.LST.get(position);
+                            /*DiscoveryGridSecondaryResultBean.LSTBean lstBean = response.body().BODY.LST.get(position);
                             //本机播放需要播放申请,3.4.48   网络请求
 //                            getLocalPlayApplication(position,phoneNum,formatTime,token);
                             Intent intent = new Intent();
@@ -128,8 +122,10 @@ public class DiscoverySecondCategoryActivity extends AppCompatActivity implement
                             intent.putExtras(bundle);
 
                             intent.setClass(getApplicationContext(), MyPlayActivity.class);
-                            startActivity(intent);
-                            ToastUtil.showToast(getApplicationContext(), "aldfkalsdf点击的是" + position);
+                            startActivity(intent);*/
+                            MyPlayActivity.launch(DiscoverySecondCategoryActivity.this, discoverySecondCategoryAdapter.getList(), position);
+
+                            //ToastUtil.showToast(getApplicationContext(), "aldfkalsdf点击的是" + position);
                         }
                     });
                 } else {
@@ -185,9 +181,17 @@ public class DiscoverySecondCategoryActivity extends AppCompatActivity implement
 //        });
 //    }
 
-    @Override
+    @OnClick({R.id.sub_discovery_back, })
     public void onClick(View v) {
-        ToastUtil.showToast(this, "点击的是专辑订阅");
+        switch (v.getId()) {
+            case R.id.bt_item_album_details_one_subscribe:
+                ToastUtil.showToast(this, "点击的是专辑订阅");
+                break;
+            case R.id.sub_discovery_back:
+                finish();
+                break;
+        }
+
     }
 }
 

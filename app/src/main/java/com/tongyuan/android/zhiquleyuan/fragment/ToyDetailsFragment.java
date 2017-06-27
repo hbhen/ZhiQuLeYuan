@@ -155,7 +155,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                     mListviewRecommand.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            DiscoveryListResultBean.BODYBean.LSTBean lstBean = response.body().getBODY().getLST().get(position);
+                            /*DiscoveryListResultBean.BODYBean.LSTBean lstBean = response.body().getBODY().getLST().get(position);
                             Log.i(TAG, "onItemClick: response:item" + response.body().getBODY().getLST().get(position).getID());
                             Intent intent = new Intent();
                             intent.setClass(getActivity(), MyPlayActivity.class);
@@ -163,7 +163,11 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                             //responselist为空，lstbean不能用
                             bundle.putParcelable("toydetailsrecommandlistbean", lstBean);
                             intent.putExtras(bundle);
-                            startActivity(intent);
+                            startActivity(intent);*/
+
+                            MyPlayActivity.launch(getActivity(), mLAdapter.getList(), position);
+
+
                             ToastUtil.showToast(getActivity(), "当前点击的是:" + position);
                         }
                     });
