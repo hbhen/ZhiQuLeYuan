@@ -36,7 +36,7 @@ import com.tongyuan.android.zhiquleyuan.view.IconTextView;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import retrofit2.Call;
@@ -51,26 +51,26 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class MyPlayActivity extends BaseActivity {
 
-    @Bind(R.id.player_phone)
+    @BindView(R.id.player_phone)
     IconTextView phoneView;
-    @Bind(R.id.player_toy)
+    @BindView(R.id.player_toy)
     IconTextView toyView;
-    @Bind(R.id.player_details_name)
+    @BindView(R.id.player_details_name)
     TextView titleTextView;
-    @Bind(R.id.player_collection)
+    @BindView(R.id.player_collection)
     TextView collectView;
-    @Bind(R.id.player_progress)
+    @BindView(R.id.player_progress)
     ProgressBar progressBar;
-    @Bind(R.id.player_start_time)
+    @BindView(R.id.player_start_time)
     TextView startTimeView;
-    @Bind(R.id.player_duration_time)
+    @BindView(R.id.player_duration_time)
     TextView durationView;
-    @Bind(R.id.player_play_btn)
+    @BindView(R.id.player_play_btn)
     ImageView mPlayBtn;
-    @Bind(R.id.iv_playing_details_slide)
+    @BindView(R.id.iv_playing_details_slide)
     ImageView mImageView;
-    @Bind(R.id.player_lighting)
-    ImageView lightingView;
+//    @Bind(R.id.player_lighting)
+//    ImageView lightingView;
 
     //更新播放进度的显示
     private static final int UPDATE_PLAY_PROGRESS_SHOW = 1;
@@ -135,7 +135,8 @@ public class MyPlayActivity extends BaseActivity {
     }
 
     @OnClick({R.id.player_back, R.id.player_phone, R.id.player_toy, R.id.player_collection,
-            R.id.player_play_btn, R.id.player_loop, R.id.player_pre, R.id.player_next})
+            R.id.player_play_btn})
+//    , R.id.player_loop, R.id.player_pre, R.id.player_next
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.player_back:
@@ -161,24 +162,24 @@ public class MyPlayActivity extends BaseActivity {
             case R.id.player_play_btn:
                 playOrPause();
                 break;
-            case R.id.player_loop:
-                MusicPlayer.setLooping(!isLooping);
-                isLooping = !isLooping;
-                break;
-            case R.id.player_pre:
-                if(playPosition==0) {
-                    return;
-                }
-                --playPosition ;
-                playMusic(false);
-                break;
-            case R.id.player_next:
-                if(playPosition == list.size() - 1) {
-                    return;
-                }
-                ++playPosition;
-                playMusic(false);
-                break;
+//            case R.id.player_loop:
+//                MusicPlayer.setLooping(!isLooping);
+//                isLooping = !isLooping;
+//                break;
+//            case R.id.player_pre:
+//                if(playPosition==0) {
+//                    return;
+//                }
+//                --playPosition ;
+//                playMusic(false);
+//                break;
+//            case R.id.player_next:
+//                if(playPosition == list.size() - 1) {
+//                    return;
+//                }
+//                ++playPosition;
+//                playMusic(false);
+//                break;
         }
     }
 
@@ -243,7 +244,7 @@ public class MyPlayActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ButterKnife.unbind(this);
+//        ButterKnife.unbind(this);
     }
 
     @Override

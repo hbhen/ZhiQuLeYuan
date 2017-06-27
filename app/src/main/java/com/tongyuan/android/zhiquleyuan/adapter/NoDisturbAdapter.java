@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.suke.widget.SwitchButton;
 import com.tongyuan.android.zhiquleyuan.R;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -29,7 +29,7 @@ public class NoDisturbAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if(type_troggle == viewType) {
+        if (type_troggle == viewType) {
             View view = mInflater.inflate(R.layout.disturb_recycler_troggle, null);
             return new ToggleHolder(view);
         } else {
@@ -54,26 +54,24 @@ public class NoDisturbAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public int getItemViewType(int position) {
-        if(position %2 == 0) {
+        if (position % 2 == 0) {
             return type_troggle;
         } else {
             return type_date;
         }
     }
 
-    class DateHolder extends RecyclerView.ViewHolder
-    {
+    class DateHolder extends RecyclerView.ViewHolder {
 
         //TextView tv;
-        @Bind(R.id.wv_birth_year)
+        @BindView(R.id.wv_birth_year)
         TextView yearView;
-        @Bind(R.id.wv_birth_month)
+        @BindView(R.id.wv_birth_month)
         TextView monthView;
-        @Bind(R.id.wv_birth_day)
+        @BindView(R.id.wv_birth_day)
         TextView dayView;
 
-        public DateHolder(View view)
-        {
+        public DateHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
             //tv = (TextView) view.findViewById(R.id.id_num);
@@ -82,9 +80,9 @@ public class NoDisturbAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     class ToggleHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.tv_nodisturb_first)
+        @BindView(R.id.tv_nodisturb_first)
         TextView tv_nodisturb_first;
-        @Bind(R.id.switch_button)
+        @BindView(R.id.switch_button)
         SwitchButton btn;
 
         public ToggleHolder(View itemView) {

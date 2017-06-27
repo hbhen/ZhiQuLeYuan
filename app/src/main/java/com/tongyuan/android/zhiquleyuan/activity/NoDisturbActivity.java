@@ -11,7 +11,7 @@ import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.adapter.NoDisturbAdapter;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -21,7 +21,7 @@ public class NoDisturbActivity extends AppCompatActivity implements View.OnClick
 //    @Bind(R.id.ll_activity_nodisturb_date)
 //    LinearLayout dateView;
 
-    @Bind(R.id.recyclerView)
+    @BindView(R.id.recyclerView)
     RecyclerView mRecyclerView;
 
     @Override

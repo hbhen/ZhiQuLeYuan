@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -25,28 +25,28 @@ import butterknife.OnClick;
 
 public class MyToyFragment extends Fragment {
 
-    @Bind(R.id.tb_toy_details)
+    @BindView(R.id.tb_toy_details)
     Toolbar mTbToyDetails;
 
-    @Bind(R.id.iv_toy_details_rightimg)
+    @BindView(R.id.iv_toy_details_rightimg)
     RelativeLayout mIvToyDetailsRightimg;
 
-    @Bind(R.id.iv_toy_details_call)
+    @BindView(R.id.iv_toy_details_call)
     ImageView mIvToyDetailsCall;
 
-    @Bind(R.id.tv_toy_details_manager)
+    @BindView(R.id.tv_toy_details_manager)
     TextView mTvToyDetailsManager;
 
-    @Bind(R.id.rl_toy_details)
+    @BindView(R.id.rl_toy_details)
     RelativeLayout mRlToyDetails;
 
-    @Bind(R.id.tv_toy_details_playing)
+    @BindView(R.id.tv_toy_details_playing)
     TextView mTvToyDetailsPlaying;
 
-    @Bind(R.id.ll_toy_details_control)
+    @BindView(R.id.ll_toy_details_control)
     LinearLayout mLlToyDetailsControl;
 
-    @Bind(R.id.rl_toy_details_control)
+    @BindView(R.id.rl_toy_details_control)
     RelativeLayout mRlToyDetailsControl;
 
     private View mRootView;
@@ -71,7 +71,6 @@ public class MyToyFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
     }
 
     @OnClick({R.id.iv_toy_details_call, R.id.tv_toy_details_manager})

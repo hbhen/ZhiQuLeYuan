@@ -230,6 +230,8 @@ public class DiscoveryRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
             itemView.setOnClickListener(this);
         }
 
+
+
         @Override
         public void onClick(View v) {
             if (mMyItemClickListener!=null){

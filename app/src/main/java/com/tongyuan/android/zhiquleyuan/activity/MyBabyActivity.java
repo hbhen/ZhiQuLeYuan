@@ -36,7 +36,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.MediaType;
@@ -61,26 +61,26 @@ public class MyBabyActivity extends AppCompatActivity {
     private static final int CROP_SMALL_PICTURE = 2;
 
 
-    @Bind(R.id.tb_addbatyinfo)
+    @BindView(R.id.tb_addbatyinfo)
     Toolbar mTbAddbatyinfo;
-    @Bind(R.id.iv_addbabyinfo)
+    @BindView(R.id.iv_addbabyinfo)
     ImageView mIvAddbabyinfo;
-    @Bind(R.id.et_addbabyinfo)
+    @BindView(R.id.et_addbabyinfo)
     EditText mEtAddbabyinfo;
-    @Bind(R.id.rg_addbabyinfo)
+    @BindView(R.id.rg_addbabyinfo)
     RadioGroup mRgAddbabyinfo;
-    @Bind(R.id.radioButtonBoy)
+    @BindView(R.id.radioButtonBoy)
     RadioButton mRadioButtonBoy;
-    @Bind(R.id.radiobuttonGirls)
+    @BindView(R.id.radiobuttonGirls)
     RadioButton mRadioButtonGirls;
 
-    @Bind(R.id.tv_addbabyinfo_hint_up)
+    @BindView(R.id.tv_addbabyinfo_hint_up)
     TextView mTvAddbabyinfoHintUp;
-    @Bind(R.id.tv_addbabyinfo_hint_down)
+    @BindView(R.id.tv_addbabyinfo_hint_down)
     TextView mTvAddbabyinfoHintDown;
-    @Bind(R.id.tv_activity_addbabyinfo_date)
+    @BindView(R.id.tv_activity_addbabyinfo_date)
     TextView mTvActivityAddbabyinfoDate;
-    @Bind(R.id.bt_activity_addbabyinfo_confirm)
+    @BindView(R.id.bt_activity_addbabyinfo_confirm)
     Button mBtActivityAddbabyinfoConfirm;
 
     private Uri mTempUri;

@@ -45,14 +45,7 @@ public class ToyAddFragment extends BaseFragment implements View.OnClickListener
     private String mTime;
     private String mToken;
 
-    //    String toyCode;
-//    String toyOwnerid;
-//    String acttime;
-//    String toyOwnername;
-//    String toyId;
-//    String toyImg;
-//    ToySelectorFragment mToySelectorFragment = new ToySelectorFragment();
-//    MyToyFragment mMyToyFragment = new MyToyFragment();
+
     private static final String TAG = "taf";
     String code;
 
@@ -102,14 +95,7 @@ public class ToyAddFragment extends BaseFragment implements View.OnClickListener
                 break;
             case R.id.rl_toy_add_goshopping:
                 ToastUtil.showToast(getActivity(), "商城暂未开通");
-//                Intent intent1=new Intent();
-//                intent1.setClass(getActivity(), MyToyFragment.class);
-//                startActivity(intent1);
-//                ToastUtil.showToast(getActivity(),"0");
-//                FragmentManager fragmentManager = getFragmentManager();
-//                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//                fragmentTransaction.addToBackStack(null).replace(R.id.fl_fragmentcontainer, new MyToyFragment()).commit();
-//                showFragment( MyToyFragment.class.getSimpleName());
+
                 break;
             default:
                 break;
