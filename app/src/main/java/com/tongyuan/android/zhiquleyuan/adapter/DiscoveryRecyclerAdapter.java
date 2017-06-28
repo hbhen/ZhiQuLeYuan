@@ -1,6 +1,7 @@
 package com.tongyuan.android.zhiquleyuan.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -13,41 +14,37 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.tongyuan.android.zhiquleyuan.R;
+import com.tongyuan.android.zhiquleyuan.activity.ActivityLogin;
+import com.tongyuan.android.zhiquleyuan.activity.DiscoverySecondCategoryActivity;
+import com.tongyuan.android.zhiquleyuan.activity.MyPlayActivity;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridItemBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListResultBean;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.tongyuan.android.zhiquleyuan.R.id.tv_desc_detailstimes;
 
 /**
+ *
  * Created by android on 2016/12/27.
  */
 public class DiscoveryRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context mContext;
-    public MyItemClickListener mMyItemClickListener;
+    private MyItemClickListener mMyItemClickListener;
     public static final String TAG = "sshhsshh";
     private List<DiscoveryGridItemBean.LSTBean> mDiscoveryGridViewList;
     private List<DiscoveryListResultBean.BODYBean.LSTBean> mDiscoveryListViewList;
-    private int width;
     private int height;
     //TYPE
-    public static final int TYPE_TYPE1_HEAD = 0xff01;
-    public static final int TYPE_TYPE1 = 0xff02;
-    public static final int TYPE_TYPE2_HEAD = 0xff03;
-    public static final int TYPE_TYPE2 = 0xff04;
-    public ImageView iv_title;
-    public ImageView iv_desc;
-    public TextView tv_title;
-    public TextView tv_desc_title;
-    public TextView tv_desc_times;
-    public TextView tv_desc_category;
+    private static final int TYPE_TYPE1_HEAD = 0xff01;
+    private static final int TYPE_TYPE1 = 0xff02;
+    private static final int TYPE_TYPE2_HEAD = 0xff03;
+    private static final int TYPE_TYPE2 = 0xff04;
 
-//    public ImageView gridImg;
-//    public TextView gridText;
-    LayoutInflater inflate;
-    private final String mToken;
+    private LayoutInflater inflate;
+    private String mToken = "";
 
     public DiscoveryRecyclerAdapter(Context context, List<DiscoveryGridItemBean.LSTBean> discoveryGridViewList, List<DiscoveryListResultBean
             .BODYBean.LSTBean> discoveryListViewList) {
@@ -56,12 +53,9 @@ public class DiscoveryRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         this.mDiscoveryListViewList = discoveryListViewList;
         int screenWidth = context.getResources().getDisplayMetrics().widthPixels;
         inflate = LayoutInflater.from(mContext);
-        width = (screenWidth - 4 * (int) context.getResources().getDimension(R.dimen.discovery_grid_space)) / 3;
+        int width = (screenWidth - 4 * (int) context.getResources().getDimension(R.dimen.discovery_grid_space)) / 3;
         height = 86 * width / 112;
         mToken = SPUtils.getString(mContext, "TOKEN", "");
-        Log.i("discovery ssshhh", "DiscoveryRecyclerAdapter: " + mDiscoveryGridViewList.size() + mDiscoveryGridViewList.toString());
-        Log.i("discovery ssshhh", "DiscoveryRecyclerAdapter: " + mDiscoveryListViewList.size() + mDiscoveryListViewList.toString());
-
     }
 
 
@@ -69,17 +63,16 @@ public class DiscoveryRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case TYPE_TYPE1_HEAD:
-                return new HolderNineGridTitle(inflate.inflate(R.layout.discovery_recyclerview_nine_title, null),mMyItemClickListener);
+                return new HolderNineGridTitle(inflate.inflate(R.layout.discovery_recyclerview_nine_title, null));
             case TYPE_TYPE1:
-                return new HolderNineGrid(inflate.inflate(R.layout.item_discovery_gridview, null),mMyItemClickListener);
+                return new HolderNineGrid(inflate.inflate(R.layout.item_discovery_gridview, null));
             case TYPE_TYPE2_HEAD:
                 return new HolderListViewTitle(inflate.inflate(R.layout.discovery_recyclerview_listview_title,
                         null));
             case TYPE_TYPE2:
-                return new HolderListView(inflate.inflate(R.layout.item_discovery_listview, null),mMyItemClickListener);
-
+                return new HolderListView(inflate.inflate(R.layout.item_discovery_listview, null));
             default:
-                Log.d("error", "viewholder is null");
+                //Log.d("error", "viewholder is null");
                 return null;
         }
 
@@ -112,121 +105,135 @@ public class DiscoveryRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if (holder instanceof HolderNineGridTitle) {
-            bindType1Head((HolderNineGridTitle) holder, position);
-            //设置title的显示和隐藏
-
-        } else if (holder instanceof HolderNineGrid) {
-            bindType1((HolderNineGrid) holder, position);
-
-        } else if (holder instanceof HolderListViewTitle) {
-            bindType2Head((HolderListViewTitle) holder, position);
-
+        if (holder instanceof HolderNineGrid) {
+            bindGridHold((HolderNineGrid) holder, position);
         } else if (holder instanceof HolderListView) {
-            bindType2((HolderListView) holder, position);
+            bindListHold((HolderListView) holder, position);
         }
     }
 
-    private void bindType1Head(HolderNineGridTitle holder, int position) {
-        Log.i(TAG, "bindType1Head: " + position);
-        Log.i(TAG, "bindType1Head: " + position);
-
+    private void bindGridHold(HolderNineGrid holder, int position) {
+        int realPosition;
+        if("".equals(mToken)) {
+            realPosition = position - 1;
+        } else {
+            realPosition = position;
+        }
+        Glide.with(mContext).load(mDiscoveryGridViewList.get(realPosition).IMG).placeholder(R.drawable.player_cover_default).into(holder.gridImg);
+        holder.gridText.setText(mDiscoveryGridViewList.get(realPosition).NAME);
     }
 
-    private void bindType1(HolderNineGrid holder, int position) {
-        Log.i(TAG, "bindType1: " + position);
-        Glide.with(mContext).load(mDiscoveryGridViewList.get(position - 1).IMG).placeholder(R.drawable.player_cover_default).into(holder.gridImg);
-        holder.gridText.setText(mDiscoveryGridViewList.get(position - 1).NAME);
-    }
-
-    private void bindType2Head(HolderListViewTitle holder, int position) {
-        Log.i(TAG, "bindType2Head: " + position);
-    }
-
-    private void bindType2(HolderListView holder, int position) {
-        Log.i(TAG, "bindType2: " + position);
-        Glide.with(mContext).load(mDiscoveryListViewList.get(position - mDiscoveryGridViewList.size() - 1).getIMG()).asBitmap().placeholder(R.drawable.player_cover_default).into(iv_desc);
-        tv_desc_title.setText(mDiscoveryListViewList.get(position - mDiscoveryGridViewList.size() - 1).getNAME());
-        tv_desc_times.setText(mDiscoveryListViewList.get(position - mDiscoveryGridViewList.size() - 1).getTIMES());
-        tv_desc_category.setText(mDiscoveryListViewList.get(position - mDiscoveryGridViewList.size() - 1).getCOLNAME());
+    private void bindListHold(HolderListView holder, int position) {
+        int realPosition;
+        if("".equals(mToken)) {
+            realPosition = position - mDiscoveryGridViewList.size() - 2;
+        } else {
+            realPosition = position - mDiscoveryGridViewList.size() - 1;
+        }
+        Glide.with(mContext).load(mDiscoveryListViewList.get(realPosition).
+                getIMG()).asBitmap().placeholder(R.drawable.player_cover_default).into(holder.iv_desc);
+        holder.tv_desc_title.setText(mDiscoveryListViewList.get(realPosition).getNAME());
+        holder.tv_desc_times.setText(mDiscoveryListViewList.get(realPosition).getTIMES());
+        holder.tv_desc_category.setText(mDiscoveryListViewList.get(realPosition).getCOLNAME());
 
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (position == 0) {
-            return TYPE_TYPE1_HEAD;
-        } else if (1 <= position && position <= 9) {
-            return TYPE_TYPE1;
-        } else if (position == 10) {
-            return TYPE_TYPE2_HEAD;
+        if("".equals(mToken)) {
+            if (position == 0) {
+                return TYPE_TYPE1_HEAD;
+            } else if (0 < position && position <= mDiscoveryGridViewList.size()) {
+                return TYPE_TYPE1;
+            } else if (position == (1 + mDiscoveryGridViewList.size())) {
+                return TYPE_TYPE2_HEAD;
+            } else {
+                return TYPE_TYPE2;
+            }
         } else {
-            return TYPE_TYPE2;
+            if(position < mDiscoveryGridViewList.size()) {
+                return TYPE_TYPE1;
+            } else if(position == mDiscoveryGridViewList.size()) {
+                return TYPE_TYPE2_HEAD;
+            } else {
+                return TYPE_TYPE2;
+            }
         }
+
 
     }
 
     @Override
     public int getItemCount() {
-        Log.i(TAG, "getItemCount: " + mDiscoveryGridViewList.size() + mDiscoveryListViewList.size());
-        Log.i(TAG, "getItemCount: " + mDiscoveryGridViewList.size() + mDiscoveryListViewList.size() + 2);
-        return mDiscoveryGridViewList.size() + mDiscoveryListViewList.size();
+        //Log.i(TAG, "getItemCount: " + (mDiscoveryGridViewList.size() + mDiscoveryListViewList.size()));
+        //Log.i(TAG, "getItemCount: " + mDiscoveryGridViewList.size() + mDiscoveryListViewList.size() + 2);
+        if("".equals(mToken)) {
+            return mDiscoveryGridViewList.size() + mDiscoveryListViewList.size() + 2;
+        } else {
+            return mDiscoveryGridViewList.size() + mDiscoveryListViewList.size() + 1;
+        }
     }
 
 
-    public class HolderNineGridTitle extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public HolderNineGridTitle(View itemView,MyItemClickListener listener) {
+    private class HolderNineGridTitle extends RecyclerView.ViewHolder implements View.OnClickListener {
+        HolderNineGridTitle(View itemView) {
             super(itemView);
-            mMyItemClickListener=listener;
             itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            if (mMyItemClickListener!=null){
-                mMyItemClickListener.onItemClick(v,getLayoutPosition());
-            }
+            //登录
+            Intent intent = new Intent(mContext, ActivityLogin.class);
+            mContext.startActivity(intent);
         }
     }
 
-    public class HolderListViewTitle extends RecyclerView.ViewHolder {
-        public HolderListViewTitle(View itemView) {
+    private class HolderListViewTitle extends RecyclerView.ViewHolder {
+        HolderListViewTitle(View itemView) {
             super(itemView);
-
         }
-
-
     }
 
-    class HolderNineGrid extends RecyclerView.ViewHolder implements View.OnClickListener {
+    private class HolderNineGrid extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView gridImg;
         TextView  gridText;
 
-        HolderNineGrid(View itemView, MyItemClickListener listener) {
+        HolderNineGrid(View itemView) {
             super(itemView);
-            mMyItemClickListener=listener;
-
             gridImg = (ImageView) itemView.findViewById(R.id.iv_grid);
             gridImg.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height));
             gridText = (TextView) itemView.findViewById(R.id.tv_grid);
             itemView.setOnClickListener(this);
-
         }
 
         @Override
         public void onClick(View v) {
-            if (mMyItemClickListener!=null){
-                mMyItemClickListener.onItemClick(v,getLayoutPosition());
+//            if (mMyItemClickListener!=null){
+//                mMyItemClickListener.onItemClick(v,getLayoutPosition());
+//            }
+            int position;
+            if("".equals(mToken)) {
+                position = getLayoutPosition() - 1;
+            } else {
+                position = getLayoutPosition();
             }
+            DiscoveryGridItemBean.LSTBean bean = mDiscoveryGridViewList.get(position);
+            DiscoverySecondCategoryActivity.launch(mContext, bean.IMG, bean.ID);
         }
     }
 
-    public class HolderListView extends RecyclerView.ViewHolder implements View.OnClickListener {
+    private class HolderListView extends RecyclerView.ViewHolder implements View.OnClickListener {
+        ImageView iv_title;
+        ImageView iv_desc;
+        TextView tv_title;
+        TextView tv_desc_title;
+        TextView tv_desc_times;
+        TextView tv_desc_category;
 
-
-        public HolderListView(View itemView,MyItemClickListener listener) {
+        HolderListView(View itemView) {
             super(itemView);
-            mMyItemClickListener=listener;
+            //mMyItemClickListener=listener;
             iv_title = (ImageView) itemView.findViewById(R.id.iv_title);
             tv_title = (TextView) itemView.findViewById(R.id.tv_title);
             iv_desc = (ImageView) itemView.findViewById(R.id.iv_desc);
@@ -236,21 +243,31 @@ public class DiscoveryRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
             itemView.setOnClickListener(this);
         }
 
-
-
         @Override
         public void onClick(View v) {
-            if (mMyItemClickListener!=null){
-                mMyItemClickListener.onItemClick(v,getLayoutPosition());
+//            if (mMyItemClickListener!=null){
+//                mMyItemClickListener.onItemClick(v,getLayoutPosition());
+//            }
+            int position;
+            if("".equals(mToken)) {
+                position = getLayoutPosition() - 2 - mDiscoveryGridViewList.size();
+            } else {
+                position = getLayoutPosition() - mDiscoveryGridViewList.size() - 1;
             }
+            MyPlayActivity.launch(mContext, (ArrayList<DiscoveryListResultBean.BODYBean.LSTBean>) mDiscoveryListViewList, position);
         }
     }
 
-    public interface MyItemClickListener {
+    interface MyItemClickListener {
          void onItemClick(View view, int position);
     }
     public void setOnItemClickListener(MyItemClickListener listener){
         this.mMyItemClickListener = listener;
+    }
+
+    public boolean isLogin() {
+        mToken = SPUtils.getString(mContext, "TOKEN", "");
+        return (!"".equals(mToken));
     }
 
 }

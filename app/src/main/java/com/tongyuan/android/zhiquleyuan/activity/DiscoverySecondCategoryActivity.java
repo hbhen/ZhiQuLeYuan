@@ -1,5 +1,6 @@
 package com.tongyuan.android.zhiquleyuan.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -40,6 +41,13 @@ public class DiscoverySecondCategoryActivity extends AppCompatActivity implement
 
     private ListView mListviewSecondCategory;
     private ImageView mIv_discoverysecondcategory;
+
+    public static void launch(Context context, String imgPath, String colId) {
+        Intent intent = new Intent(context, DiscoverySecondCategoryActivity.class);
+        intent.putExtra("img", imgPath);
+        intent.putExtra("colid", colId);
+        context.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

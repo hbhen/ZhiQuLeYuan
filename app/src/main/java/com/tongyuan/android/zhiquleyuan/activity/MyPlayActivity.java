@@ -69,6 +69,7 @@ public class MyPlayActivity extends BaseActivity {
     ImageView mPlayBtn;
     @BindView(R.id.iv_playing_details_slide)
     ImageView mImageView;
+
 //    @Bind(R.id.player_lighting)
 //    ImageView lightingView;
 
@@ -103,10 +104,12 @@ public class MyPlayActivity extends BaseActivity {
      * @param playPosition  播放列表中哪一项
      */
     public static void launch(Context context, ArrayList<DiscoveryListResultBean.BODYBean.LSTBean> list, int playPosition) {
+        Log.e("gengen", "list.size="+list.size() + "playPosition="+playPosition);
         Intent it = new Intent(context, MyPlayActivity.class);
         it.putParcelableArrayListExtra("list", list);
         it.putExtra("position", playPosition);
         context.startActivity(it);
+
     }
 
     @Override
@@ -135,8 +138,7 @@ public class MyPlayActivity extends BaseActivity {
     }
 
     @OnClick({R.id.player_back, R.id.player_phone, R.id.player_toy, R.id.player_collection,
-            R.id.player_play_btn})
-//    , R.id.player_loop, R.id.player_pre, R.id.player_next
+            R.id.player_play_btn , R.id.player_loop, R.id.player_pre, R.id.player_next})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.player_back:
@@ -162,24 +164,24 @@ public class MyPlayActivity extends BaseActivity {
             case R.id.player_play_btn:
                 playOrPause();
                 break;
-//            case R.id.player_loop:
-//                MusicPlayer.setLooping(!isLooping);
-//                isLooping = !isLooping;
-//                break;
-//            case R.id.player_pre:
-//                if(playPosition==0) {
-//                    return;
-//                }
-//                --playPosition ;
-//                playMusic(false);
-//                break;
-//            case R.id.player_next:
-//                if(playPosition == list.size() - 1) {
-//                    return;
-//                }
-//                ++playPosition;
-//                playMusic(false);
-//                break;
+            case R.id.player_loop:
+                MusicPlayer.setLooping(!isLooping);
+                isLooping = !isLooping;
+                break;
+            case R.id.player_pre:
+                if(playPosition==0) {
+                    return;
+                }
+                --playPosition ;
+                playMusic(false);
+                break;
+            case R.id.player_next:
+                if(playPosition == list.size() - 1) {
+                    return;
+                }
+                ++playPosition;
+                playMusic(false);
+                break;
         }
     }
 
@@ -244,13 +246,11 @@ public class MyPlayActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        ButterKnife.unbind(this);
     }
 
     @Override
     protected void onPrepared() {
         int duration = MusicPlayer.getDuration();
-        Log.i("gengen", "onPrepared..."+duration);
         if(duration != 0) {
             if(progressBar != null)
                 progressBar.setMax(MusicPlayer.getDuration());
@@ -280,7 +280,6 @@ public class MyPlayActivity extends BaseActivity {
     }
 
     private void openAndStart() {
-        Log.i("gengen", "openAndStart...");
         String mMusicId = list.get(playPosition).getID();
         if(mMusicId != null) {
             MusicPlayer.openAndStart(mMusicId);
