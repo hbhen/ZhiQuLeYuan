@@ -189,7 +189,6 @@
                             android:text="设置网络"/>
 
                         <Button
-
                             android:id="@+id/bt_fragment_managetoy_nodisturb"
                             android:layout_width="96dp"
                             android:layout_height="44dp"

@@ -3,7 +3,6 @@ package com.tongyuan.android.zhiquleyuan.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -12,22 +11,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
-import android.widget.ListView;
-import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.activity.ActivityLogin;
-import com.tongyuan.android.zhiquleyuan.adapter.DiscoveryGridAdapter;
-import com.tongyuan.android.zhiquleyuan.adapter.DiscoveryListViewAdapter;
 import com.tongyuan.android.zhiquleyuan.adapter.DiscoveryRecyclerAdapter;
 import com.tongyuan.android.zhiquleyuan.base.BaseFragment;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridItemBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridRequestBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListRequsetBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListResultBean;
-import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.request.RequestManager;
 import com.tongyuan.android.zhiquleyuan.request.base.BaseRequest;
 import com.tongyuan.android.zhiquleyuan.request.base.SuperModel;
@@ -35,16 +27,12 @@ import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.SpacesItemDecoration;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by android on 2016/12/3.
@@ -55,13 +43,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 * */
 public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener, View.OnClickListener {
     public static final int REQUEST_CODE_LOGIN = 1001;
-    private ListView lv_fragment_discovery;
-    private GridView gv_fragment_discovery;
     public static final String TAG = "discovery";
-    private List<DiscoveryGridItemBean.LSTBean> lst = new ArrayList<>();
-    private DiscoveryGridAdapter mGAdapter;
-    private DiscoveryListViewAdapter mLAdapter;
-    private TextView mGridviewTitle;
     private View mDiscoveryRoot;
     private SwipeRefreshLayout mSwiperefresh_discovery;
     private RecyclerView mRecyclerView_discovery;
@@ -70,7 +52,7 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
     private List<DiscoveryGridItemBean.LSTBean> discoveryGridViewList = new ArrayList<>();
     private String mToken;
     private String mPhoneNum;
-    //    private String mLogintokenToMain;
+    private View mNineGridTitle;
 
     @Nullable
     @Override
@@ -146,16 +128,16 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-//        checkLoginState();
+        checkLoginState();
     }
 
     private void checkLoginState() {
-        if (SPUtils.getString(getActivity(), "TOKEN", "").isEmpty()) {
-
-//            mGridviewTitle.setVisibility(View.VISIBLE);
-        } else {
-//            mGridviewTitle.setVisibility(View.GONE);
-        }
+//        if (SPUtils.getString(getActivity(), "TOKEN", "").isEmpty()) {
+//
+//            mNineGridTitle.setVisibility(View.VISIBLE);
+//        } else {
+//            mNineGridTitle.setVisibility(View.GONE);
+//        }
     }
 
     private void initData() {
@@ -167,45 +149,6 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
 
     //拿到list的数据
     private void getListRaw() {
-        /*Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        AllInterface allInterface = retrofit.create(AllInterface.class);
-        DiscoveryListRequsetBean.BODYBean bodyBean = new DiscoveryListRequsetBean.BODYBean("10", "1");
-
-        DiscoveryListRequsetBean discoveryListRequsetBean = new DiscoveryListRequsetBean("REQ", "QRYREC", SPUtils.getString(getActivity(),
-                "phoneNum", ""),
-                new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()), bodyBean, "", SPUtils.getString(getActivity(), "TOKEN", ""), "1");
-        Gson gson = new Gson();
-        String s = gson.toJson(discoveryListRequsetBean);
-        Call<DiscoveryListResultBean> discoveryListResult = allInterface.getDiscoveryListResult(s);
-
-        discoveryListResult.enqueue(new Callback<DiscoveryListResultBean>() {
-            @Override
-            public void onResponse(Call<DiscoveryListResultBean> call, final Response<DiscoveryListResultBean> response) {
-                Log.i(TAG, "code "+response.body().getCODE());
-                if (response != null && !response.body().getCODE().equals(0)) {
-                    discoveryListViewList.clear();
-                    discoveryListViewList.addAll(response.body().getBODY().getLST());
-                    Log.i(TAG, "onResponse: list" + discoveryListViewList.toString());
-//                    sendListViewList();
-
-                    //返回的list是一个空list
-                    Log.d(TAG, "onResponse: " + SPUtils.getString(getActivity(), "TOKEN", ""));
-                    mDiscoveryRecyclerAdapter.notifyDataSetChanged();
-//
-                } else {
-                    ToastUtil.showToast(getActivity(), "shibai1");
-                }
-            }
-
-            //
-            @Override
-            public void onFailure(Call<DiscoveryListResultBean> call, Throwable t) {
-                ToastUtil.showToast(getActivity(), "shibai2");
-            }
-        });*/
 
         DiscoveryListRequsetBean.BODYBean request = new DiscoveryListRequsetBean.BODYBean("10", "1");
         Call<SuperModel<DiscoveryListResultBean.BODYBean>> discoveryListResult = RequestManager.getInstance().getDiscoveryListResult(getContext(), request);
@@ -214,6 +157,7 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
             public void onResponse(Call<SuperModel<DiscoveryListResultBean.BODYBean>> call, Response<SuperModel<DiscoveryListResultBean.BODYBean>> response) {
                 if ("0".equals(response.body().CODE)) {
                     discoveryListViewList.clear();
+
                     discoveryListViewList.addAll(response.body().BODY.getLST());
                     mDiscoveryRecyclerAdapter.notifyDataSetChanged();
                 } else {

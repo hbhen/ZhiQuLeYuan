@@ -12,14 +12,16 @@ import android.widget.RelativeLayout;
 
 import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
-import com.tongyuan.android.zhiquleyuan.activity.BindBabyActivity;
 import com.tongyuan.android.zhiquleyuan.base.BaseFragment;
 import com.tongyuan.android.zhiquleyuan.bean.AddToyRequestBean;
 import com.tongyuan.android.zhiquleyuan.bean.AddToyResultBean;
+import com.tongyuan.android.zhiquleyuan.event.AddToyMessageEvent;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 import com.tongyuan.android.zhiquleyuan.zxing.app.CaptureActivity;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -57,6 +59,7 @@ public class ToyAddFragment extends BaseFragment implements View.OnClickListener
         return toyRoot;
     }
 
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -68,8 +71,8 @@ public class ToyAddFragment extends BaseFragment implements View.OnClickListener
         rl_toy_add_goshopping.setOnClickListener(this);
     }
 
-    private void initData() {
 
+    private void initData() {
         mToycode = SPUtils.getString(getActivity(), "toycode", "");
         mPhoneNum = SPUtils.getString(getActivity(), "phoneNum", "");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
@@ -90,7 +93,6 @@ public class ToyAddFragment extends BaseFragment implements View.OnClickListener
 
                 startActivityForResult(intent, 300);//拿到玩具的唯一id code
 //                ToastUtil.showToast(getActivity(), "跳转到zxing界面,进行二维码扫描");
-
 
                 break;
             case R.id.rl_toy_add_goshopping:
@@ -165,16 +167,16 @@ public class ToyAddFragment extends BaseFragment implements View.OnClickListener
                     Log.i("55555", "(3.4.11) addtoyresultbean response:" + response.body().toString());
 
                     //这里添加玩具成功,需要去绑定宝宝的信息,所以跳转到宝宝绑定的页面
-                    Intent intent = new Intent();
-                    intent.setClass(getContext(), BindBabyActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putParcelable("addtoyresultbean", response.body());
-                    intent.putExtras(bundle);
-                    startActivity(intent);
+//                    Intent intent = new Intent();
+//                    intent.setClass(getContext(), BindBabyActivity.class);
+//                    Bundle bundle = new Bundle();
+//                    bundle.putParcelable("addtoyresultbean", response.body());
+//                    intent.putExtras(bundle);
+//                    startActivity(intent);
 
-//                    showFragment(ToySelectorFragment.class.getSimpleName());
+                    showFragment(ToySelectorFragment.class.getSimpleName());
 //                    //用eventbus发送给toyselectfragment,让它获取数据
-//                    EventBus.getDefault().post(new AddToyMessageEvent(response));
+                    EventBus.getDefault().post(new AddToyMessageEvent(response));
 
                 } else {
                     ToastUtil.showToast(getActivity(), "response为空,获取不到数据,网络异常");

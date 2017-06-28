@@ -143,7 +143,7 @@ public class HistoryFragment extends BaseFragment {
 
                             } else {
 
-                                String toyid = mResponseCallHist.body().getBODY().getLST().get(position).getTOYID();
+                                String toyid = mResponseCallHist.body().getBODY().getLST().get(position-1).getTOYID();
                                 CallManager.CallToToy(toyid, getActivity());
                             }
                         }

@@ -29,22 +29,18 @@ import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListRequsetBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.GetInstantStateInfoReq;
 import com.tongyuan.android.zhiquleyuan.bean.GetInstantStateInfoRes;
-import com.tongyuan.android.zhiquleyuan.bean.Items;
 import com.tongyuan.android.zhiquleyuan.bean.QueryPlayingMusicReqBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryPlayingMusicResBean;
 import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoRESBean;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.request.RequestManager;
-import com.tongyuan.android.zhiquleyuan.request.base.BaseRequest;
 import com.tongyuan.android.zhiquleyuan.request.base.SuperModel;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -95,6 +91,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     private TextView mUnbindToy;
     private SingleToyInfoRESBean.BODYBean singleresponse;
     private DiscoveryListViewAdapter mLAdapter;
+    private View mListviewtitle;
 
 
     @Nullable
@@ -102,6 +99,9 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.i(TAG, "onCreateView: went");
         mToyDetails = inflater.inflate(R.layout.fragment_toy_details, null);
+        mListviewtitle = inflater.inflate(R.layout.discovery_recyclerview_listview_title, null);
+
+
 //        FrameLayout framelayoutControl =  (FrameLayout) mToyDetails.findViewById(R.id.fl_fragment_toy_details_playcontrol);
         mListviewRecommand = (ListView) mToyDetails.findViewById(R.id.lv_fragment_toy_details_recommand);
 
@@ -131,76 +131,22 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
 
 
     private void getListRaw() {
-        /*Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        AllInterface allInterface = retrofit.create(AllInterface.class);
-
-        DiscoveryListRequsetBean.BODYBean bodyBean = new DiscoveryListRequsetBean.BODYBean("10", "1");
-        DiscoveryListRequsetBean discoveryListRequsetBean = new DiscoveryListRequsetBean("REQ", "QRYREC", SPUtils.getString(getActivity(),
-                "phoneNum", ""),
-                new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()), bodyBean, "", SPUtils.getString(getActivity(), "TOKEN", ""), "1");
-        Gson gson = new Gson();
-        String s = gson.toJson(discoveryListRequsetBean);
-        Call<DiscoveryListResultBean> discoveryListResult = allInterface.getDiscoveryListResult(s);
-
-        discoveryListResult.enqueue(new Callback<DiscoveryListResultBean>() {
-            @Override
-            public void onResponse(Call<DiscoveryListResultBean> call, final Response<DiscoveryListResultBean> response) {
-                if (response != null && !response.body().getCODE().equals(0)) {
-                    //返回的list是一个空list
-                    Log.d(TAG, "onResponse: " + SPUtils.getString(getActivity(), "TOKEN", ""));
-                    List<Items> list = new ArrayList<Items>();
-                    list.add(new Items("第一种布局", null));
-                    list.add(new Items(null, "第二种布局"));
-                    mLAdapter = new DiscoveryListViewAdapter(getContext(), list, response);
-                    mListviewRecommand.setAdapter(mLAdapter);
-                    mListviewRecommand.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            *//*DiscoveryListResultBean.BODYBean.LSTBean lstBean = response.body().getBODY().getLST().get(position);
-                            Log.i(TAG, "onItemClick: response:item" + response.body().getBODY().getLST().get(position).getID());
-                            Intent intent = new Intent();
-                            intent.setClass(getActivity(), MyPlayActivity.class);
-                            Bundle bundle = new Bundle();
-                            //responselist为空，lstbean不能用
-                            bundle.putParcelable("toydetailsrecommandlistbean", lstBean);
-                            intent.putExtras(bundle);
-                            startActivity(intent);*//*
-
-                            MyPlayActivity.launch(getActivity(), mLAdapter.getList(), position);
-
-
-                            ToastUtil.showToast(getActivity(), "当前点击的是:" + position);
-                        }
-                    });
-
-
-                } else {
-                    ToastUtil.showToast(getActivity(), "shibai1");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<DiscoveryListResultBean> call, Throwable t) {
-                ToastUtil.showToast(getActivity(), "shibai2");
-            }
-        });*/
-
         DiscoveryListRequsetBean.BODYBean request = new DiscoveryListRequsetBean.BODYBean("10", "1");
-        Call<SuperModel<DiscoveryListResultBean.BODYBean>> discoveryListResult = RequestManager.getInstance().getDiscoveryListResult(getContext(), request);
+        Call<SuperModel<DiscoveryListResultBean.BODYBean>> discoveryListResult = RequestManager.getInstance().getDiscoveryListResult(getContext(),
+                request);
         discoveryListResult.enqueue(new Callback<SuperModel<DiscoveryListResultBean.BODYBean>>() {
             @Override
-            public void onResponse(Call<SuperModel<DiscoveryListResultBean.BODYBean>> call, Response<SuperModel<DiscoveryListResultBean.BODYBean>> response) {
+            public void onResponse(Call<SuperModel<DiscoveryListResultBean.BODYBean>> call, Response<SuperModel<DiscoveryListResultBean.BODYBean>>
+                    response) {
                 if ("0".equals(response.body().CODE)) {
                     //返回的list是一个空list
                     Log.d(TAG, "onResponse: " + SPUtils.getString(getActivity(), "TOKEN", ""));
-                    List<Items> list = new ArrayList<Items>();
-                    list.add(new Items("第一种布局", null));
-                    list.add(new Items(null, "第二种布局"));
-                    mLAdapter = new DiscoveryListViewAdapter(getContext(), list, response.body().BODY.getLST());
+
+                    mLAdapter = new DiscoveryListViewAdapter(getContext(), response.body().BODY.getLST());
+                    mListviewRecommand.addHeaderView(mListviewtitle);
                     mListviewRecommand.setAdapter(mLAdapter);
+
+                    mListviewRecommand.setHeaderDividersEnabled(false);
                     mListviewRecommand.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -229,8 +175,6 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         mPhoneNum = SPUtils.getString(getContext(), "phoneNum", "");
 
         String acttime = response.getACTTIME();
-        String substringTime = acttime.substring(0, 8);
-
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddmmssSSS");
         SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("yyyy/MM/dd");
         try {
@@ -241,18 +185,8 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
-
-//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-//        SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("yyyy/MM/dd");
         Log.i(TAG, "toydetails toydetailsfragment2:" + mFormatTime);
         Log.i(TAG, "toydetails toydetailsfragment3:" + acttime);
-//        try {
-//            mFormatTime = simpleDateFormat1.format(simpleDateFormat.parse(acttime));
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-
         //保不齐以后要用这些参数,先取出来
         mImg = response.getIMG();
         mCode = response.getCODE();
@@ -292,6 +226,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                 }
             });
         }
+
         mCall.setOnClickListener(this);
         mToyManager.setOnClickListener(this);
         mUnbindToy.setOnClickListener(this);
@@ -304,30 +239,20 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
             case iv_toy_details_call:
                 //通话控制
                 CallToToy();
-//                FragmentManager fragmentManager = getFragmentManager();
-//                fragmentManager.beginTransaction().replace(R.id.fl_fragmentcontainer, mVideoFragment).commit();
-
                 ToastUtil.showToast(getActivity(), "跳转到通话界面");//是fragemnt界面
-
-//                FragmentManager fragmentManager = getFragmentManager();
-//                fragmentManager.beginTransaction().replace(R.id.fl_fragmentcontainer, new VideoFragment()).commit();
                 break;
             case R.id.tv_toy_details_manager:
                 ToastUtil.showToast(getActivity(), "跳转到玩具管理界面");
                 if (SPUtils.getString(getActivity(), "ID", "").equals(mOwnerid)) {
                     //TODO setdat
                     mToyManagerFragment.setData(mResponse, mFormatTime, mBabyimg);
-
-//                    FragmentManager fragmentManager1 = getFragmentManager();
-//                    fragmentManager1.beginTransaction().replace(R.id.fl_fragmentcontainer, mToyManagerFragment).commit();
                     showFragment(mToyManagerFragment);
                 } else {
                     ToastUtil.showToast(getActivity(), "您当前不是管理员,不能管理玩具");
                 }
                 break;
             case R.id.tv_fragment_toy_details_unbind:
-                //TODO
-//                showDialog(); 需不需要给用户一个友好的提示,dialog?
+                //TODO showDialog(); 需不需要给用户一个友好的提示,dialog?
 
                 ToastUtil.showToast(getActivity(), "details  unbind");
         }
@@ -369,13 +294,6 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                 bundle.putString("toyid", mId);
 
                 startActivity(new Intent(getActivity(), VideoActivity.class).putExtras(bundle));
-
-
-//                FragmentManager fragmentManager = getFragmentManager();
-//
-//                //跳转到videofragment,暂时不用了,改成跳到一个新的页面,再从那个新页面跳转到videofragment
-//                fragmentManager.beginTransaction().addToBackStack(ToyDetailsFragment.class.getSimpleName()).replace(R.id.fl_fragmentcontainer,
-// mVideoFragment).commit();
                 ToastUtil.showToast(getActivity(), "roomid" + mRoomid);
                 Log.i("555555", "onResponse:+mRoomid " + mRoomid);
 
@@ -386,8 +304,6 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
 //                fragmentTransaction.replace(R.id.fl_fragmentcontainer, callWaitingConnectFragment);
 //                fragmentTransaction.addToBackStack(null);
 //                fragmentTransaction.commit();
-
-
             }
 
             @Override
@@ -461,7 +377,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
 
         super.onHiddenChanged(hidden);
     }
-
+    //拉去玩具的状态信息
     private void checkStateInfo() {
         Retrofit retrofit = new Retrofit.Builder().baseUrl("http://120.27.41.179:8081/zqpland/m/iface/").addConverterFactory(GsonConverterFactory
                 .create())

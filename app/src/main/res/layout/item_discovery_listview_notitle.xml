@@ -1,103 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:id="@+id/ll_linearlayout_notitle"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_linearlayout_notitle"
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+   android:paddingLeft="10dp"
+    android:orientation="horizontal">
 
-    <LinearLayout
+    <ImageView
+        android:id="@+id/iv_desc_notitle"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="9dp"
+        android:layout_marginTop="9dp"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/ic_launcher"/>
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="80dp"
         android:layout_marginLeft="10dp"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-        <ImageView
-            android:scaleType="centerCrop"
-            android:id="@+id/iv_desc_notitle"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:src="@mipmap/ic_launcher"/>
+        <TextView
+            android:id="@+id/tv_desc_title_notitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="9dp"
+            android:text="TED-Ed原创课程"
+            android:textColor="#000000"
+            android:textSize="16dp"
+            android:textStyle="bold"/>
 
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:orientation="vertical">
+            android:layout_below="@id/tv_desc_title_notitle"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/tv_desc_title_notitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="TED-Ed原创课程"
-                android:textColor="#000000"
-                android:textSize="16dp"
-                android:textStyle="bold"/>
-
-            <RelativeLayout
+                android:id="@+id/tv_desc_times_notitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tv_desc_title_notitle"
-                android:layout_marginTop="8dp"
-                android:orientation="horizontal">
+                android:text="播放次数"
+                android:textColor="#8f8f8f"
+                android:textSize="12dp"/>
 
-                <TextView
-                    android:id="@+id/tv_desc_times_notitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="播放次数"
-                    android:textColor="#8f8f8f"
-                    android:textSize="12dp"/>
+            <TextView
+                android:id="@+id/tv_desc_detailstimes_notitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@id/tv_desc_times_notitle"
+                android:text="336"
+                android:textColor="#ff4511"
+                android:textSize="12dp"/>
 
-                <TextView
-                    android:id="@+id/tv_desc_detailstimes_notitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_toRightOf="@id/tv_desc_times_notitle"
-                    android:text="336"
-                    android:textColor="#ff4511"
-                    android:textSize="12dp"/>
+            <TextView
+                android:id="@+id/tv_desc_category_notitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="52dp"
+                android:layout_toRightOf="@id/tv_desc_times_notitle"
+                android:text="所属品类"
+                android:textColor="#8f8f8f"
+                android:textSize="12dp"/>
 
-                <TextView
-                    android:id="@+id/tv_desc_category_notitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="52dp"
-                    android:layout_toRightOf="@id/tv_desc_times_notitle"
-                    android:text="所属品类"
-                    android:textColor="#8f8f8f"
-                    android:textSize="12dp"/>
+            <TextView
+                android:id="@+id/tv_desc_detailscategory_notitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@id/tv_desc_category_notitle"
+                android:text="生活百科"
+                android:textColor="#ff4511"
+                android:textSize="12dp"/>
 
-                <TextView
-                    android:id="@+id/tv_desc_detailscategory_notitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_toRightOf="@id/tv_desc_category_notitle"
-                    android:text="生活百科"
-                    android:textColor="#ff4511"
-                    android:textSize="12dp"/>
 
-                <View
-
-                    android:layout_width="match_parent"
-                    android:layout_height="3dp"/>
-            </RelativeLayout>
-
-            <ImageView
-
-                android:id="@+id/iv_desc_rightarrow_notitle"
-                android:layout_width="10dp"
-                android:layout_height="20dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_gravity="center_vertical"
-                android:layout_marginRight="10dp"
-                android:src="@drawable/arrow_right"/>
         </RelativeLayout>
 
+        <ImageView
 
-    </LinearLayout>
+            android:id="@+id/iv_desc_rightarrow_notitle"
+            android:layout_width="10dp"
+            android:layout_height="20dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/arrow_right"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="#9f9f9f"/>
+    </RelativeLayout>
 
 
 </LinearLayout>
+
+

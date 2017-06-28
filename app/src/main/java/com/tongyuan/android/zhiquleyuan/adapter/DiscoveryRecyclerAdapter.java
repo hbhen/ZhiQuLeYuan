@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridItemBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListResultBean;
+import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 
 import java.util.List;
 
@@ -46,6 +47,7 @@ public class DiscoveryRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
 //    public ImageView gridImg;
 //    public TextView gridText;
     LayoutInflater inflate;
+    private final String mToken;
 
     public DiscoveryRecyclerAdapter(Context context, List<DiscoveryGridItemBean.LSTBean> discoveryGridViewList, List<DiscoveryListResultBean
             .BODYBean.LSTBean> discoveryListViewList) {
@@ -56,6 +58,7 @@ public class DiscoveryRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         inflate = LayoutInflater.from(mContext);
         width = (screenWidth - 4 * (int) context.getResources().getDimension(R.dimen.discovery_grid_space)) / 3;
         height = 86 * width / 112;
+        mToken = SPUtils.getString(mContext, "TOKEN", "");
         Log.i("discovery ssshhh", "DiscoveryRecyclerAdapter: " + mDiscoveryGridViewList.size() + mDiscoveryGridViewList.toString());
         Log.i("discovery ssshhh", "DiscoveryRecyclerAdapter: " + mDiscoveryListViewList.size() + mDiscoveryListViewList.toString());
 
@@ -112,7 +115,6 @@ public class DiscoveryRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         if (holder instanceof HolderNineGridTitle) {
             bindType1Head((HolderNineGridTitle) holder, position);
             //设置title的显示和隐藏
-
 
         } else if (holder instanceof HolderNineGrid) {
             bindType1((HolderNineGrid) holder, position);
@@ -190,6 +192,7 @@ public class DiscoveryRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
     public class HolderListViewTitle extends RecyclerView.ViewHolder {
         public HolderListViewTitle(View itemView) {
             super(itemView);
+
         }
 
 

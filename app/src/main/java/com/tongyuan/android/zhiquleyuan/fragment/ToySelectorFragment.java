@@ -410,4 +410,10 @@ public class ToySelectorFragment extends BaseFragment {
 //        mainactivity.getToyDetailsFragment().setArguments();
 
     }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+
+    }
 }

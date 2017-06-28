@@ -51,8 +51,8 @@
                 android:layout_height="210dp"
                 android:layout_centerHorizontal="true"
                 android:scaleType="centerCrop"
-                android:src="@mipmap/test"/>
-
+                />
+            <!--android:src="@mipmap/test"-->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -318,6 +318,7 @@
 
 
     <ListView
+        android:divider="@null"
         android:id="@+id/lv_fragment_toy_details_recommand"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

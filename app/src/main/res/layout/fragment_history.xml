@@ -22,19 +22,19 @@
             android:textSize="18sp"/>
     </android.support.v7.widget.Toolbar>
 
-    <EditText
-        android:id="@+id/et_history_search"
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:layout_below="@id/tb_history"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:background="#ffffff"
-        android:drawableRight="@drawable/search_38ico"
-        android:hint="世上只有爸爸好"
-        android:textSize="12dp"
+    <!--<EditText-->
+        <!--android:id="@+id/et_history_search"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="35dp"-->
+        <!--android:layout_below="@id/tb_history"-->
+        <!--android:layout_marginLeft="10dp"-->
+        <!--android:layout_marginRight="10dp"-->
+        <!--android:background="#ffffff"-->
+        <!--android:drawableRight="@drawable/search_38ico"-->
+        <!--android:hint="世上只有爸爸好"-->
+        <!--android:textSize="12dp"-->
 
-        />
+        <!--/>-->
 
     <!--<com.tongyuan.android.zhiquleyuan.swipe.refreshlib.library.PullToRefreshScrollView-->
         <!--xmlns:ptr="http://schemas.android.com/apk/res-auto"-->
@@ -58,7 +58,7 @@
             android:id="@+id/lv_fragment_history"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/et_history_search"
+            android:layout_below="@id/tb_history"
             android:background="#ffffff"
             android:listSelector="@color/transparent">
         </com.tongyuan.android.zhiquleyuan.swipe.refreshlib.AbListView>
