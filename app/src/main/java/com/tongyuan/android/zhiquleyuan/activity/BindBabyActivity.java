@@ -78,13 +78,13 @@ public class BindBabyActivity extends AppCompatActivity implements View.OnClickL
 
     private void initData() {
         //从ToyAddFragment穿过来的数据
-        Intent intent = getIntent();
-        Bundle bundle = intent.getExtras();
-        Log.i("bindbabyactivity", "initData: +bundle" + bundle);
-        Log.i("bindbabyactivity", "initData: +bundle" + bundle.getParcelable("addtoyresultbean"));
+//        Intent intent = getIntent();
+//        Bundle bundle = intent.getExtras();
+//        Log.i("bindbabyactivity", "initData: +bundle" + bundle);
+//        Log.i("bindbabyactivity", "initData: +bundle" + bundle.getParcelable("addtoyresultbean"));
 
-        AddToyResultBean addtoyresultbean = bundle.getParcelable("addtoyresultbean");//3.4.11接口
-        AddToyResultBean.BODYBean body = addtoyresultbean.getBODY();
+//        AddToyResultBean addtoyresultbean = bundle.getParcelable("addtoyresultbean");//3.4.11接口
+//        AddToyResultBean.BODYBean body = addtoyresultbean.getBODY();
         mToyCode = body.getCODE();
         mToyId = body.getID();
         mPhoneNum = SPUtils.getString(this, "phoneNum", "");

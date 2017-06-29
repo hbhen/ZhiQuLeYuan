@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -8,13 +7,14 @@
         android:id="@+id/rl_managetoy_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <ImageView
                 android:layout_width="10dp"
-                android:layout_height="21dp"
+                android:layout_height="20dp"
                 android:src="@drawable/arrow_left"/>
 
             <TextView
@@ -23,13 +23,13 @@
                 android:layout_centerInParent="true"
                 android:layout_gravity="center"
                 android:text="玩具管理"
-                android:textColor="#000000"
-                android:textSize="18sp"/>
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_18"/>
 
         </RelativeLayout>
     </android.support.v7.widget.Toolbar>
 
-
+    <!--scrollview只能嵌套一层-->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -38,7 +38,8 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_marginTop="8dp">
 
             <RelativeLayout
                 android:id="@+id/rl_managetoy_up"
@@ -46,57 +47,41 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:layout_marginTop="8dp">
+                android:layout_alignParentTop="true"
+                android:orientation="horizontal">
 
                 <LinearLayout
                     android:id="@+id/iv_managetoy"
-                    android:layout_width="153dp"
+                    android:layout_width="155dp"
                     android:layout_height="247dp"
                     android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="10dp"
                     android:background="#ffffff"
                     android:orientation="vertical"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:paddingTop="10dp">
+                    android:paddingLeft="@dimen/dp_5"
+                    android:paddingRight="@dimen/dp_5"
+                    android:paddingTop="@dimen/dp_10">
 
                     <ImageView
                         android:id="@+id/iv_fragment_managetoy_toyimg"
-                        android:layout_width="133dp"
+                        android:layout_width="145dp"
                         android:layout_height="200dp"
                         android:scaleType="centerCrop"
                         android:src="@mipmap/test"/>
 
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="fill_parent"
-                        android:layout_gravity="center_vertical"
-                        android:paddingBottom="10dp"
-                        android:paddingTop="10dp">
-
-                        <ImageView
-                            android:id="@+id/iv_fragment_managetoy_call_signal"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:layout_centerVertical="true"
-                            android:src="@drawable/toy_signal_2"/>
-
-                        <ImageView
-                            android:id="@+id/iv_fragment_managetoy_call_buttery"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
-                            android:layout_marginRight="10dp"
-                            android:layout_toLeftOf="@id/iv_fragment_managetoy_call_signal"
-                            android:src="@drawable/toy_battery_6"/>
+                        android:layout_height="match_parent"
+                        android:paddingBottom="@dimen/dp_10"
+                        android:paddingTop="@dimen/dp_10">
 
                         <ImageView
                             android:id="@+id/iv_fragment_managetoy_call_mic"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
                             android:layout_centerVertical="true"
-                            android:layout_marginRight="10dp"
-                            android:layout_toLeftOf="@id/iv_fragment_managetoy_call_buttery"
+
                             android:src="@drawable/toy_recording_prohibit"/>
 
                         <ImageView
@@ -104,9 +89,27 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
-                            android:layout_marginRight="10dp"
-                            android:layout_toLeftOf="@id/iv_fragment_managetoy_call_mic"
+                            android:layout_marginLeft="@dimen/dp_10"
+                            android:layout_toRightOf="@id/iv_fragment_managetoy_call_mic"
                             android:src="@drawable/toy_webcam_prohibit"/>
+
+                        <ImageView
+                            android:id="@+id/iv_fragment_managetoy_call_buttery"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="@dimen/dp_10"
+                            android:layout_toRightOf="@id/iv_fragment_managetoy_call_camera"
+                            android:src="@drawable/toy_battery_1"/>
+
+                        <ImageView
+                            android:id="@+id/iv_fragment_managetoy_call_signal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="@dimen/dp_10"
+                            android:layout_toRightOf="@id/iv_fragment_managetoy_call_buttery"
+                            android:src="@drawable/toy_signal_2"/>
 
 
                     </RelativeLayout>
@@ -115,13 +118,10 @@
 
                 <RelativeLayout
                     android:id="@+id/ll_manangetoy"
-                    android:layout_width="wrap_content"
+                    android:layout_width="180dp"
                     android:layout_height="247dp"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_toEndOf="@id/iv_managetoy"
-                    android:layout_toRightOf="@id/iv_managetoy">
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="10dp">
 
                     <LinearLayout
                         android:id="@+id/ll_fragment_managetoy_toytype"
@@ -133,7 +133,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="玩具型号:"
-                            android:textSize="16sp"/>
+                            android:textSize="@dimen/sp_16"/>
 
                         <TextView
                             android:id="@+id/tv_fragment_managetoy_toytype"
@@ -141,7 +141,7 @@
                             android:layout_height="wrap_content"
                             android:text="XIII56"
                             android:textColor="#ff4511"
-                            android:textSize="16sp"/>
+                            android:textSize="@dimen/sp_16"/>
                     </LinearLayout>
 
                     <LinearLayout
@@ -172,7 +172,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/ll_fragment_managetoy_toyacttime"
                         android:text="X型号玩具有聚酯塑胶集合,包含金属及小配件,建议3岁以下在家长监护下玩乐.X型机器人可沟通交流,远程监控"
-                        android:textSize="14sp"/>
+                        android:textSize="@dimen/sp_14"/>
 
                     <LinearLayout
                         android:id="@+id/ll_fragment_managetoy_button"
@@ -183,16 +183,16 @@
 
                         <Button
                             android:id="@+id/bt_fragment_managetoy_setupwlan"
-                            android:layout_width="96dp"
+                            android:layout_width="90dp"
                             android:layout_height="44dp"
-                            android:background="#ffffff"
+                            android:background="@drawable/shape_edit_rect"
                             android:text="设置网络"/>
 
                         <Button
                             android:id="@+id/bt_fragment_managetoy_nodisturb"
-                            android:layout_width="96dp"
+                            android:layout_width="90dp"
                             android:layout_height="44dp"
-                            android:background="#ffffff"
+                            android:background="@drawable/shape_edit_rect"
                             android:text="设置免打扰"/>
                     </LinearLayout>
 
@@ -205,6 +205,16 @@
                         android:layout_marginBottom="15dp"
                         android:layout_marginRight="10dp"
                         android:text="玩具解除绑定"
+                        android:visibility="gone"
+                        android:textColor="#ff4511"
+                        android:textSize="18sp"/>
+                    <TextView
+                        android:id="@+id/tv_fragment_managetoy_bindtoy"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_above="@id/ll_fragment_managetoy_button"
+                        android:layout_marginBottom="15dp"
+                        android:text="绑定宝宝"
                         android:textColor="#ff4511"
                         android:textSize="18sp"/>
 
@@ -232,23 +242,18 @@
                     android:text="设置管理员"
                     android:textColor="#000000"
                     android:textSize="16sp"/>
-                <!--recyclerview-->
-                <!--<android.support.v7.widget.RecyclerView-->
-                    <!--android:id="@+id/recyclerview_fragment_managetoy"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="match_parent"-->
-                    <!--android:layout_marginTop="70dp"/>-->
+
                 <com.tongyuan.android.zhiquleyuan.view.MyGridView
-                    android:layout_marginTop="70dp"
                     android:id="@+id/mygrid"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="70dp"
                     android:columnWidth="60dp"
                     android:gravity="center"
                     android:horizontalSpacing="10dp"
                     android:padding="10dp"
                     android:stretchMode="columnWidth"
-                    android:verticalSpacing="10dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:verticalSpacing="10dp">
 
                 </com.tongyuan.android.zhiquleyuan.view.MyGridView>
 
@@ -260,6 +265,7 @@
                 android:layout_below="@id/rl_managetoy_up"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="7dp"
+
                 >
 
                 <LinearLayout
@@ -272,6 +278,7 @@
                         android:id="@+id/iv_fragment_managetoy_babyhead"
                         android:layout_width="71dp"
                         android:layout_height="71dp"
+                        android:scaleType="centerInside"
                         android:src="@mipmap/test"/>
 
                     <TextView
@@ -285,6 +292,7 @@
                 </LinearLayout>
 
             </FrameLayout>
+
 
         </RelativeLayout>
 

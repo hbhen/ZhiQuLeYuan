@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
+import com.tongyuan.android.zhiquleyuan.activity.BindBabyActivity;
 import com.tongyuan.android.zhiquleyuan.activity.NoDisturbActivity;
 import com.tongyuan.android.zhiquleyuan.activity.SetupWlanActivity;
 import com.tongyuan.android.zhiquleyuan.adapter.ToyMemberAdapter;
@@ -51,6 +52,7 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
     private Button mBt_fragment_managetoy_nodisturb;
     private TextView mTv_frament_managetoy_manager;
     private TextView mTv_fragment_toy_details_unbind;
+    private TextView mTv_fragment_toy_details_bind;
     private ImageView mIv_fragmenft_managetoy_toyimg;
     private TextView mTv_fragment_managetoy_toytype;
     private TextView mTv_fragment_managetoy_desc;
@@ -80,6 +82,7 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
         mBt_fragment_managetoy_nodisturb = (Button) fragment_manageToy.findViewById(R.id.bt_fragment_managetoy_nodisturb);
         mTv_frament_managetoy_manager = (TextView) fragment_manageToy.findViewById(R.id.tv_frament_managetoy_manager);
         mTv_fragment_toy_details_unbind = (TextView) fragment_manageToy.findViewById(R.id.tv_fragment_managetoy_unbindtoy);
+        mTv_fragment_toy_details_bind = (TextView) fragment_manageToy.findViewById(R.id.tv_fragment_managetoy_bindtoy);
 //        向id中添加数据内容
         mIv_fragmenft_managetoy_toyimg = (ImageView) fragment_manageToy.findViewById(R.id.iv_fragment_managetoy_toyimg);
         mTv_fragment_managetoy_toytype = (TextView) fragment_manageToy.findViewById(R.id.tv_fragment_managetoy_toytype);
@@ -132,7 +135,7 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
                     lst.clear();
                     lst.addAll(response.body().getBODY().getLST());
                     Log.i("111111", "onResponse: " + lst.size());
-                    if(toyMemberAdapter != null) {
+                    if (toyMemberAdapter != null) {
                         toyMemberAdapter.notifyDataSetChanged();
                     }
 //                    mMygrid.setNumColumns(5);
@@ -158,6 +161,8 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
         mBt_fragment_managetoy_setupwlan.setOnClickListener(this);
         mTv_frament_managetoy_manager.setOnClickListener(this);
         mTv_fragment_toy_details_unbind.setOnClickListener(this);
+        mTv_fragment_toy_details_bind.setOnClickListener(this);
+
     }
 
 
@@ -178,6 +183,13 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
             case R.id.tv_fragment_managetoy_unbindtoy:
                 ToastUtil.showToast(getActivity(), "Unbind");
                 break;
+            case R.id.tv_fragment_managetoy_bindtoy:
+                //这里添加玩具成功,需要去绑定宝宝的信息,所以跳转到宝宝绑定的页面
+                    Intent intent2 = new Intent();
+                    intent2.setClass(getContext(), BindBabyActivity.class);
+                    startActivity(intent2);
+                ToastUtil.showToast(getActivity(), "bind");
+                break;
             default:
                 break;
         }
@@ -191,9 +203,9 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
         getToyMember(mTime, mToken, mPhoneNum, mToyId, mToyCode);
     }
 
-    public void setData(SingleToyInfoRESBean.BODYBean response, String formatTime,String babyimg) {
-        this.mResponse=response;
-        this.mBabyimg=babyimg;
+    public void setData(SingleToyInfoRESBean.BODYBean response, String formatTime, String babyimg) {
+        this.mResponse = response;
+        this.mBabyimg = babyimg;
 
         mToken = SPUtils.getString(getActivity(), "TOKEN", "");
         mPhoneNum = SPUtils.getString(getActivity(), "phoneNum", "");
@@ -210,7 +222,7 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
         //获取成员信息,需要传什么参数,去访问哪个接口  3.4.48接口
         getToyMember(mTime, mToken, mPhoneNum, mToyId, mToyCode);
 
-        if(mTv_fragment_managetoy_toytype == null)
+        if (mTv_fragment_managetoy_toytype == null)
             return;
 //        String babyimg = arguments.getString("babyimg");
         mTv_fragment_managetoy_toytype.setText(mResponse.getCODE());
