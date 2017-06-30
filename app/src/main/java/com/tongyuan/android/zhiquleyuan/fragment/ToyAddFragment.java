@@ -86,6 +86,7 @@ public class ToyAddFragment extends BaseFragment implements View.OnClickListener
         int id = view.getId();
         switch (id) {
             case R.id.tv_toy_add_boldtext:
+
                 //跳转到扫描二维码的界面,进行二维码扫描
                 Intent intent = new Intent();
                 intent.setClass(getActivity(), CaptureActivity.class);

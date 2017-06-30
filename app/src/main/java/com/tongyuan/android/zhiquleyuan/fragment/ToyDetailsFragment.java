@@ -19,7 +19,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
+import com.tongyuan.android.zhiquleyuan.activity.BindBabyActivity;
 import com.tongyuan.android.zhiquleyuan.activity.MyPlayActivity;
+import com.tongyuan.android.zhiquleyuan.activity.UnBindBabyActivity;
 import com.tongyuan.android.zhiquleyuan.activity.VideoActivity;
 import com.tongyuan.android.zhiquleyuan.adapter.DiscoveryListViewAdapter;
 import com.tongyuan.android.zhiquleyuan.base.BaseFragment;
@@ -29,10 +31,13 @@ import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListRequsetBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.GetInstantStateInfoReq;
 import com.tongyuan.android.zhiquleyuan.bean.GetInstantStateInfoRes;
+import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListFromToyIdReq;
+import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListFromToyIdRes;
 import com.tongyuan.android.zhiquleyuan.bean.QueryPlayingMusicReqBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryPlayingMusicResBean;
 import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoRESBean;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
+import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.request.RequestManager;
 import com.tongyuan.android.zhiquleyuan.request.base.SuperModel;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
@@ -55,6 +60,7 @@ import static com.tongyuan.android.zhiquleyuan.R.id.iv_toy_details_call;
  */
 public class ToyDetailsFragment extends BaseFragment implements View.OnClickListener {
 
+    private static final int UNBIND_BABY = 3002;
     private View mToyDetails;
     private ImageView mCall;
     private TextView mToyManager;
@@ -89,9 +95,13 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     private ImageView mCallMIc;
     private ImageView mCallCamera;
     private TextView mUnbindToy;
+    private TextView mBindToy;
     private SingleToyInfoRESBean.BODYBean singleresponse;
     private DiscoveryListViewAdapter mLAdapter;
     private View mListviewtitle;
+    private String mUserId;
+    private static final int BIND_BABYTO_TOY = 3001;
+    private String mBabyid;
 
 
     @Nullable
@@ -112,8 +122,8 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         mTv_fragment_toy_details_acttime = (TextView) mToyDetails.findViewById(R.id.tv_fragment_toy_details_acttime);
         mTv_fragment_toy_details_babyName = (TextView) mToyDetails.findViewById(R.id.tv_fragment_toy_details_babyName);
         mTv_fragment_toy_details_toytype = (TextView) mToyDetails.findViewById(R.id.tv_fragment_toy_details_toytype);
-        mUnbindToy = (TextView) mToyDetails.findViewById(R.id.tv_fragment_toy_details_unbind);
-
+        mUnbindToy = (TextView) mToyDetails.findViewById(R.id.tv_fragment_toy_details_unbind);//解绑玩具宝宝
+        mBindToy = (TextView) mToyDetails.findViewById(R.id.tv_fragment_toy_details_bind);//绑定玩具宝宝
         //设置状态信息的图片
         mCallSignal = (ImageView) mToyDetails.findViewById(R.id.iv_fragment_toy_details_call_signal);
         mCallButtery = (ImageView) mToyDetails.findViewById(R.id.iv_fragment_toy_details_call_buttery);
@@ -167,6 +177,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
 
 
     public void setData(SingleToyInfoRESBean.BODYBean response, String image) {
+        mUserId = SPUtils.getString(getContext(), "ID", "");
         Log.i(TAG, "setData: went");
         this.mResponse = response;
         this.mBabyimg = image;
@@ -195,18 +206,62 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         mOwnerid = response.getOWNERID();
         mOwnername = response.getOWNERNAME();
         Log.i(TAG, "mbabyimg: " + mBabyimg.toString());
-        initView();
+
+        //请求一次网络,查询当前玩具的宝宝信息: 3.4.24
+        queryToyHasBindBaby();
+
+    }
+
+    private void queryToyHasBindBaby() {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddmmssSSS");
+        String currentTime = simpleDateFormat.format(new Date());
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constant.baseurl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        AllInterface allInterface = retrofit.create(AllInterface.class);
+        QueryBabyListFromToyIdReq.BODYBean bodyBean = new QueryBabyListFromToyIdReq.BODYBean(mToyId, "10", "1");
+        QueryBabyListFromToyIdReq queryBabyListFromToyIdReq = new QueryBabyListFromToyIdReq("REQ", "QRYTOYB", mPhoneNum, currentTime, bodyBean, "",
+                mToken, "1");
+        Gson gson = new Gson();
+        String s = gson.toJson(queryBabyListFromToyIdReq);
+
+        Call<QueryBabyListFromToyIdRes> queryBabyListFromToyIdResCall = allInterface.QUERY_BABY_LIST_FROM_TOY_ID_CALL(s);
+        queryBabyListFromToyIdResCall.enqueue(new Callback<QueryBabyListFromToyIdRes>() {
+            @Override
+            public void onResponse(Call<QueryBabyListFromToyIdRes> call, Response<QueryBabyListFromToyIdRes> response) {
+                //如果当前的玩具绑定了宝宝,则显示"解绑宝宝",如果没有绑定宝宝,则显示"绑定宝宝"
+                if (response.body().getBODY().getLST().size() == 0) {
+                    mBindToy.setVisibility(View.VISIBLE);
+                    mUnbindToy.setVisibility(View.GONE);
+                    initView();
+                } else {
+
+                    mBindToy.setVisibility(View.GONE);
+                    mUnbindToy.setVisibility(View.VISIBLE);
+                    initView();
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<QueryBabyListFromToyIdRes> call, Throwable t) {
+
+            }
+        });
     }
 
     private void initView() {
 
         if (mListviewRecommand == null)
             return;
+
         mTv_fragment_toy_details_acttime.setText(mFormatTime);
         mTv_fragment_toy_details_toytype.setText(mName);
         Glide.with(getActivity()).load(mImg).asBitmap().into(mIv_fragment_toy_details_toyimg);
 
         if (mBabyimg.isEmpty()) {
+
             Glide.with(getActivity()).load(R.mipmap.default_babyimage).asBitmap().into(new BitmapImageViewTarget(mIv_fragment_toy_details_babyImg) {
                 @Override
                 protected void setResource(Bitmap resource) {
@@ -217,6 +272,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
             });
 
         } else {
+
             Glide.with(getActivity()).load(mBabyimg).asBitmap().into(new BitmapImageViewTarget(mIv_fragment_toy_details_babyImg) {
                 @Override
                 protected void setResource(Bitmap resource) {
@@ -225,11 +281,14 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                     mIv_fragment_toy_details_babyImg.setImageDrawable(mRoundedBitmapDrawable);
                 }
             });
+
         }
+
 
         mCall.setOnClickListener(this);
         mToyManager.setOnClickListener(this);
         mUnbindToy.setOnClickListener(this);
+        mBindToy.setOnClickListener(this);
 
     }
 
@@ -243,21 +302,78 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                 break;
             case R.id.tv_toy_details_manager:
                 ToastUtil.showToast(getActivity(), "跳转到玩具管理界面");
-                if (SPUtils.getString(getActivity(), "ID", "").equals(mOwnerid)) {
-                    //TODO setdat
-                    mToyManagerFragment.setData(mResponse, mFormatTime, mBabyimg);
-                    showFragment(mToyManagerFragment);
-                } else {
-                    ToastUtil.showToast(getActivity(), "您当前不是管理员,不能管理玩具");
-                }
+//                if (SPUtils.getString(getActivity(), "ID", "").equals(mOwnerid)) {
+                //TODO setdat
+                mToyManagerFragment.setData(mResponse, mFormatTime, mBabyimg);
+                showFragment(mToyManagerFragment);
+//                } else {
+//                    ToastUtil.showToast(getActivity(), "您当前不是管理员,不能管理玩具");
+//                }
                 break;
-            case R.id.tv_fragment_toy_details_unbind:
-                //TODO showDialog(); 需不需要给用户一个友好的提示,dialog?
 
+            case R.id.tv_fragment_toy_details_unbind:
+                //判断当前的userid是不是ownerid
+                if (!mUserId.equals(mOwnerid)) {
+                    ToastUtil.showToast(getContext(), "您不是该玩具的持有人,不能解绑玩具");
+                    return;
+                } else {
+
+                    Intent intent = new Intent();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("toycode", mCode);
+                    bundle.putString("toyid", mToyId);
+                    intent.putExtras(bundle);
+                    intent.setClass(getContext(), UnBindBabyActivity.class);
+                    startActivityForResult(intent, UNBIND_BABY);
+//                    startActivity(intent);
+                }
+                //可以先不跳转,直接解除绑定
+//                    unBindBabyToToy();
+
+
+                //TODO showDialog(); 需不需要给用户一个友好的提示,dialog?
                 ToastUtil.showToast(getActivity(), "details  unbind");
+                break;
+
+            case R.id.tv_fragment_toy_details_bind:
+                if (!mUserId.equals(mOwnerid)) {
+                    ToastUtil.showToast(getContext(), "您不是该玩具的持有人,不能解绑玩具");
+                    return;
+                }
+                //TODO showDialog(); 需不需要给用户一个友好的提示,dialog?
+                Intent intent = new Intent();
+                intent.setClass(getActivity(), BindBabyActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("toycode", mCode);
+                bundle.putString("toyid", mToyId);
+                intent.putExtras(bundle);
+                startActivityForResult(intent, BIND_BABYTO_TOY);
+//                startActivity(intent);
+                ToastUtil.showToast(getActivity(), "details  bind");
+                break;
+
         }
 
     }
+
+    //3.4.19 删除玩具和宝宝关心
+//    private void unBindBabyToToy() {
+//        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl(Constant.baseurl)
+//                .addConverterFactory(GsonConverterFactory.create())
+//                .build();
+//        AllInterface allInterface = retrofit.create(AllInterface.class);
+//        UnbindBabyToToyReqBean.BODYBean.LSTBean lstBean = new UnbindBabyToToyReqBean.BODYBean.LSTBean(mToyId, mToycode, );
+//        List<UnbindBabyToToyReqBean.BODYBean.LSTBean> lstBeanList = new ArrayList<>();
+//        lstBeanList.add(lstBean);
+//
+//        UnbindBabyToToyReqBean.BODYBean bodyBean = new UnbindBabyToToyReqBean.BODYBean(lstBeanList);
+//        UnbindBabyToToyReqBean unbindBabyToToyReqBean = new UnbindBabyToToyReqBean("REQ", "DTOYB", mPhoneNum, new SimpleDateFormat
+// ("yyyyMMddmmssSSS")
+//                .format(new Date()), bodyBean, "", mToken, "1");
+//
+//
+//    }
 
     private void CallToToy() {
         final String token = SPUtils.getString(getActivity(), "TOKEN", "");
@@ -374,9 +490,11 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
 
     @Override
     public void onHiddenChanged(boolean hidden) {
-
         super.onHiddenChanged(hidden);
+        queryToyHasBindBaby();
+        initView();
     }
+
     //拉去玩具的状态信息
     private void checkStateInfo() {
         Retrofit retrofit = new Retrofit.Builder().baseUrl("http://120.27.41.179:8081/zqpland/m/iface/").addConverterFactory(GsonConverterFactory
@@ -473,5 +591,17 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                 Log.i(TAG, "onFailure: " + t.toString());
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == BIND_BABYTO_TOY && resultCode == 00) {
+            queryToyHasBindBaby();
+            initView();
+        } else if (requestCode == UNBIND_BABY && resultCode == 00) {
+            queryToyHasBindBaby();
+            initView();
+        }
     }
 }

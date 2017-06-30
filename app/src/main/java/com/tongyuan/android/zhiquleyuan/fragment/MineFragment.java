@@ -35,6 +35,7 @@ import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListResult;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
+import com.tongyuan.android.zhiquleyuan.utils.ZhiQuLeYuanApplication;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -98,10 +99,10 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void initData() {
-        mToken = SPUtils.getString(getActivity(), "TOKEN", "");
-        mPhoneNum = SPUtils.getString(getActivity(), "phoneNum", "");
-        mUsername = SPUtils.getString(getActivity(), "username", "");
-        mUserimg = SPUtils.getString(getActivity(), "userimg", "");
+        mToken = SPUtils.getString(ZhiQuLeYuanApplication.context, "TOKEN", "");
+        mPhoneNum = SPUtils.getString(ZhiQuLeYuanApplication.context, "phoneNum", "");
+        mUsername = SPUtils.getString(ZhiQuLeYuanApplication.context, "username", "");
+        mUserimg = SPUtils.getString(ZhiQuLeYuanApplication.context, "userimg", "");
         Log.i(TAG, "initData: mUsername "+ mUsername);
         Log.i(TAG, "initData: mUserimg "+ mUserimg);
 

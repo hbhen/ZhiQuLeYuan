@@ -4,7 +4,7 @@
 <!--<item android:drawable="@drawable/home_find_gray_60ico" android:state_selected="false"/>-->
 <!--</selector>-->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@drawable/home_find_60ico" android:state_selected="true"/>
-    <item android:drawable="@drawable/home_find_gray_60ico" android:state_selected="false"/>
-    <item android:drawable="@drawable/home_find_gray_60ico"/>
+    <item android:drawable="@drawable/home_recording_60ico" android:state_selected="true"/>
+    <item android:drawable="@drawable/home_recording_gray_60ico" android:state_selected="false"/>
+    <item android:drawable="@drawable/home_recording_gray_60ico"/>
 </selector>

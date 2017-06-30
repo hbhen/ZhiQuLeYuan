@@ -347,6 +347,7 @@ public class ToySelectorFragment extends BaseFragment {
             String code = messageEventToy.mQueryBabyListResults.get(i).getCODE();
             String idToy = messageEventToy.mQueryBabyListResults.get(i).getID();
             String timeAct = messageEventToy.mQueryBabyListResults.get(i).getACTTIME();
+
             //TODO 需不需要在这个界面就把玩具的状态信息拿到?
             babyImg.add(imgBaby);
             toyImg.add(imgToy);

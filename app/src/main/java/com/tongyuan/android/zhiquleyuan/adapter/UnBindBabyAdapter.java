@@ -15,29 +15,20 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.tongyuan.android.zhiquleyuan.R;
-import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListResult;
+import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListFromToyIdRes;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
-
-import java.util.HashMap;
 
 import retrofit2.Response;
 
 /**
- * Created by Android on 2017/5/15.
+ * Created by Android on 2017/6/30.
  */
-public class BindBabyAdapter extends BaseAdapter {
-
-    private Response<QueryBabyListResult> mResponse;
+public class UnBindBabyAdapter extends BaseAdapter {
+    private Response<QueryBabyListFromToyIdRes> mResponse;
     private Context mContext;
-    HashMap<Integer, Boolean> isSelected;
-    private final LayoutInflater mInflater;
-
-
-    public BindBabyAdapter(Context context, Response<QueryBabyListResult> response) {
+    public UnBindBabyAdapter(Context context, Response<QueryBabyListFromToyIdRes> response) {
         this.mResponse = response;
         this.mContext = context;
-        isSelected = new HashMap<Integer, Boolean>();
-        mInflater = LayoutInflater.from(mContext);
     }
 
     @Override
@@ -54,26 +45,27 @@ public class BindBabyAdapter extends BaseAdapter {
     public long getItemId(int position) {
         return position;
     }
-    BindBabyHolder mBindBabyHolder = null;
+
+    UnBindBabyHolder mUnBindBabyHolder = null;
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
 
         if (convertView == null) {
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.item_bindbaby, null);
-            mBindBabyHolder = new BindBabyHolder();
-            mBindBabyHolder.mImageViewBabyImg = (ImageView) convertView.findViewById(R.id.iv_item_bindbaby_babyimg);
-            mBindBabyHolder.mTextViewBabyName = (TextView) convertView.findViewById(R.id.tv_item_bindbaby_babyname);
-            mBindBabyHolder.mImageViewSex = (ImageView) convertView.findViewById(R.id.iv_item_bindbaby_sex);
-            mBindBabyHolder.mTextViewSex = (TextView) convertView.findViewById(R.id.tv_item_bindbaby_sex);
-            mBindBabyHolder.mImageViewBirthday = (ImageView) convertView.findViewById(R.id.iv_item_bindbaby_birthday);
-            mBindBabyHolder.mTextViewBirthday = (TextView) convertView.findViewById(R.id.tv_item_bindbaby_birthday);
-            mBindBabyHolder.mCheckImageButton = (ImageButton) convertView.findViewById(R.id.iv_item_bindbaby_checked);
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.item_unbindbaby, null);
+            mUnBindBabyHolder = new UnBindBabyHolder();
+            mUnBindBabyHolder.mImageViewBabyImg = (ImageView) convertView.findViewById(R.id.iv_item_unbindbaby_babyimg);
+            mUnBindBabyHolder.mTextViewBabyName = (TextView) convertView.findViewById(R.id.tv_item_unbindbaby_babyname);
+            mUnBindBabyHolder.mImageViewSex = (ImageView) convertView.findViewById(R.id.iv_item_unbindbaby_sex);
+            mUnBindBabyHolder.mTextViewSex = (TextView) convertView.findViewById(R.id.tv_item_unbindbaby_sex);
+            mUnBindBabyHolder.mImageViewBirthday = (ImageView) convertView.findViewById(R.id.iv_item_unbindbaby_birthday);
+            mUnBindBabyHolder.mTextViewBirthday = (TextView) convertView.findViewById(R.id.tv_item_unbindbaby_birthday);
+            mUnBindBabyHolder.mCheckImageButton = (ImageButton) convertView.findViewById(R.id.iv_item_unbindbaby_checked);
 
-            convertView.setTag(mBindBabyHolder);
+            convertView.setTag(mUnBindBabyHolder);
 
         } else {
-            mBindBabyHolder = (BindBabyHolder) convertView.getTag();
+            mUnBindBabyHolder = (UnBindBabyHolder) convertView.getTag();
         }
         String babyImgUrl = mResponse.body().getBODY().getLST().get(position).getIMG().toString();
         String babyName = mResponse.body().getBODY().getLST().get(position).getNAME();
@@ -81,26 +73,26 @@ public class BindBabyAdapter extends BaseAdapter {
         String birthday = mResponse.body().getBODY().getLST().get(position).getBIRTHDAY();
 
 
-        Glide.with(mContext).load(babyImgUrl).asBitmap().into(new BitmapImageViewTarget(mBindBabyHolder.mImageViewBabyImg) {
+        Glide.with(mContext).load(babyImgUrl).asBitmap().into(new BitmapImageViewTarget(mUnBindBabyHolder.mImageViewBabyImg) {
             @Override
             protected void setResource(Bitmap resource) {
                 RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(mContext.getResources(), resource);
                 roundedBitmapDrawable.setCircular(true);
-                mBindBabyHolder.mImageViewBabyImg.setImageDrawable(roundedBitmapDrawable);
+                mUnBindBabyHolder.mImageViewBabyImg.setImageDrawable(roundedBitmapDrawable);
             }
         });
-        mBindBabyHolder.mTextViewBabyName.setText(babyName);
-        mBindBabyHolder.mTextViewSex.setText(sex);
-        mBindBabyHolder.mTextViewBirthday.setText(birthday);
+        mUnBindBabyHolder.mTextViewBabyName.setText(babyName);
+        mUnBindBabyHolder.mTextViewSex.setText(sex);
+        mUnBindBabyHolder.mTextViewBirthday.setText(birthday);
         if (sex.equals("m")) {
-            mBindBabyHolder.mImageViewSex.setImageResource(R.drawable.signs_man);
+            mUnBindBabyHolder.mImageViewSex.setImageResource(R.drawable.signs_man);
         }
-        mBindBabyHolder.mImageViewSex.setImageResource(R.drawable.signs_woman);
+        mUnBindBabyHolder.mImageViewSex.setImageResource(R.drawable.signs_woman);
 
-        mBindBabyHolder.mCheckImageButton.setOnClickListener(new View.OnClickListener() {
+        mUnBindBabyHolder.mCheckImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mBindBabyHolder.mCheckImageButton.setSelected(true);
+                mUnBindBabyHolder.mCheckImageButton.setSelected(true);
                 ToastUtil.showToast(mContext, "碰到了111");
             }
         });
@@ -108,7 +100,7 @@ public class BindBabyAdapter extends BaseAdapter {
     }
 
 
-    class BindBabyHolder {
+    class UnBindBabyHolder {
         private ImageView mImageViewSex;
         private TextView mTextViewSex;
         private ImageView mImageViewBirthday;
@@ -118,4 +110,3 @@ public class BindBabyAdapter extends BaseAdapter {
         private ImageButton mCheckImageButton;
     }
 }
-

@@ -28,6 +28,8 @@ import com.tongyuan.android.zhiquleyuan.fragment.ToyDetailsFragment;
 import com.tongyuan.android.zhiquleyuan.fragment.ToyManagerFragment;
 import com.tongyuan.android.zhiquleyuan.fragment.ToySelectorFragment;
 import com.tongyuan.android.zhiquleyuan.fragment.VideoFragment;
+import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
+import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.interf.QueryToyInterface;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.StatusBarUtils;
@@ -109,6 +111,17 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 //        Log.i(TAG, "initData: token" + mMainToken);
         mMainphoneNum = SPUtils.getString(this, "phoneNum", "");
         mList = new ArrayList<QueryToyResultBean.BODYBean.LSTBean>();
+
+        checkNewToken();
+
+    }
+
+    private void checkNewToken() {
+        Retrofit retrofit=new Retrofit.Builder()
+                .baseUrl(Constant.baseurl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        AllInterface allInterface = retrofit.create(AllInterface.class);
 
     }
 
@@ -291,6 +304,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 rb_history.setSelected(false);
                 rb_mine.setSelected(false);
                 rb_toy.setSelected(true);
+                //获取手机的心跳接口,获取最新的token,比较token,如果为空,去登录页,如果不相同 , 也去登录页面.
                 //应该先判断是否登录,再判断是否有玩具
                 mMainToken = SPUtils.getString(this, "TOKEN", "");
                 if (mMainToken==null) {
@@ -300,6 +314,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                     Log.i(TAG, "onClick: token(mainactivity" + mMainToken);
                     chargeHasLogin(mMainToken);
                 }
+
 
                 break;
             default:

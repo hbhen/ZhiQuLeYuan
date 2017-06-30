@@ -22,6 +22,7 @@ import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.GetInstantStateInfoRes;
 import com.tongyuan.android.zhiquleyuan.bean.LocalPlayApplyResBean;
 import com.tongyuan.android.zhiquleyuan.bean.ModifyRecordingResBean;
+import com.tongyuan.android.zhiquleyuan.bean.PhoneHeartResBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListFromToyIdRes;
 import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListResult;
 import com.tongyuan.android.zhiquleyuan.bean.QueryMyCollectionResBean;
@@ -32,6 +33,7 @@ import com.tongyuan.android.zhiquleyuan.bean.QueryRecordingResBean;
 import com.tongyuan.android.zhiquleyuan.bean.QuerySingleUserInfoReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryToyMemberReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoRESBean;
+import com.tongyuan.android.zhiquleyuan.bean.UnbindBabyToToyResBean;
 import com.tongyuan.android.zhiquleyuan.request.base.SuperModel;
 
 import java.util.List;
@@ -153,6 +155,7 @@ public interface AllInterface {
     //控制玩具播放 音频 3.4.50
     @GET("jpush")
     Call<ControlToyPlayMusicResBean> CONTROL_TOY_PLAY_MUSIC_RES_BEAN_CALL(@Query("params") String params);
+
     //控制玩具播放 录音 3.4.50
     @GET("jpush")
     Call<ControlToyPlayRecordingResBean> CONTROL_TOY_PLAY_RECORDING_RES_BEAN_CALL(@Query("params") String params);
@@ -193,10 +196,17 @@ public interface AllInterface {
     //查询我的播放3.4.35
     @GET("busi")
     Call<QueryMyPlayResBean> QUERY_MYPLAY_RES_BEAN_CALL(@Query("params") String params);
+
     //删除我的播放 3.4.56
     @GET("busi")
     Call<DeleteMyPlayResBean> DELETE_MYPLAY_RES_BEAN_CALL(@Query("params") String params);
 
+    //删除玩具和宝宝关系 3.4.19
+    @GET("busi")
+    Call<UnbindBabyToToyResBean> UNBIND_BABY_TO_TOY_RES_BEAN_CALL(@Query("params") String params);
 
+    //心跳接口(手机端)3.4.6
+    @GET("busi")
+    Call<PhoneHeartResBean> PHONEHEART_RES_BEAN_CALL (@Query("params") String params);
 
 }

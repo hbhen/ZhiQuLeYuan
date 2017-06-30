@@ -326,9 +326,9 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
                     try {
                         JSONObject responseObject3 = new JSONObject(response);
                         JSONObject body = responseObject3.getJSONObject("BODY");
-                        String userId1 = body.getString("ID");
+                        String userId = body.getString("ID");
 //                        String userId = responseObject3.getString("ID");
-                        Log.i("444444", "userId" + userId1);
+                        Log.i("444444", "userId" + userId);
 
                         String token = responseObject3.getString("TOKEN");
 //                        SPUtils.putString(getApplicationContext(),"TOKEN",token);
@@ -336,7 +336,7 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
 
                         //保存token到本地
 //                        saveToken(token, phoneNum, userId);
-                        saveToken(token, phoneNum, userId1);
+                        saveToken(token, phoneNum, userId);
                     } catch (JSONException e) {
                         e.printStackTrace();
                         Log.i("444444", "onResponse: +error" + e.toString());
