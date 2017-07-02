@@ -10,6 +10,7 @@
         android:layout_marginTop="10dp">
 
         <RelativeLayout
+            android:id="@+id/item_frame"
             android:layout_width="60dp"
             android:layout_height="60dp">
 
@@ -32,18 +33,16 @@
 
     </FrameLayout>
 
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true">
+
 
         <ImageView
             android:visibility="invisible"
+            android:layout_centerHorizontal="true"
             android:id="@+id/iv_manager_gridview_item_managerking"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/managerking_3x"/>
-    </FrameLayout>
+
 
 
 </RelativeLayout>

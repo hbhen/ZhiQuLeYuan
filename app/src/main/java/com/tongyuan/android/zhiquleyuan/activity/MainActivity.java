@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.google.gson.Gson;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.bean.QueryToyRequestBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryToyResultBean;
@@ -88,6 +89,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         StatusBarUtils.setStatusBarLightMode(this, getResources().getColor(R.color.main_top_bg));
+
+
+        CrashReport.initCrashReport(getApplicationContext(),"4d4412e3f1",true);
+//        CrashReport.testJavaCrash();
 
         initView();
         initData();
@@ -366,7 +371,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     }
 
     private void showDifferentToyFragment(List<QueryToyResultBean.BODYBean.LSTBean> lst) {
-        if (!lst.isEmpty()) {
+        if (lst !=null) {
             EventBus.getDefault().postSticky(new MessageEventToy(lst));
             //不为空,去玩具选择页面
 

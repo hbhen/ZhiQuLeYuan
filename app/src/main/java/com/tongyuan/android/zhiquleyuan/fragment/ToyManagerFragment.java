@@ -67,6 +67,7 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
     private SingleToyInfoRESBean.BODYBean mResponse;
     private String mToken;
     private String mPhoneNum;
+    private String formatTime;
     private String mTime;
     private String mToyId;
     private String mToyCode;
@@ -89,6 +90,7 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
         mTv_fragment_managetoy_desc = (TextView) fragment_manageToy.findViewById(R.id.tv_fragment_managetoy_desc);
         mTv_fragment_managetoy_acttime = (TextView) fragment_manageToy.findViewById(R.id.tv_fragment_managetoy_acttime);
 //        mRecyclerview_fragment_managetoy = (RecyclerView) fragment_manageToy.findViewById(R.id.recyclerview_fragment_managetoy);
+
         mMygrid = (MyGridView) fragment_manageToy.findViewById(R.id.mygrid);
         toyMemberAdapter = new ToyMemberAdapter(getActivity(), lst, mResponse);
         mMygrid.setNumColumns(5);
@@ -97,6 +99,8 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
         mBabyName = (TextView) fragment_manageToy.findViewById(R.id.tv_fragment_managetoy_babyname);
         initData();
         initListener();
+        Log.i("manager", "onCreateView");
+        refreshView();
         return fragment_manageToy;
     }
 
@@ -108,7 +112,7 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         mTime = simpleDateFormat.format(new Date());
         //获取成员信息,需要传什么参数,去访问哪个接口  3.4.48接口
-        getToyMember(mTime, mToken, mPhoneNum, mToyId, mToyCode);
+        //getToyMember(mTime, mToken, mPhoneNum, mToyId, mToyCode);
         Log.i(TAG, "initData:toyimg ");
     }
 
@@ -206,11 +210,12 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
     public void setData(SingleToyInfoRESBean.BODYBean response, String formatTime, String babyimg) {
         this.mResponse = response;
         this.mBabyimg = babyimg;
-
+        Log.i("manager", "setData");
         mToken = SPUtils.getString(getActivity(), "TOKEN", "");
+        this.formatTime = formatTime;
         mPhoneNum = SPUtils.getString(getActivity(), "phoneNum", "");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-//        mTime = simpleDateFormat.format(new Date());
+        mTime = simpleDateFormat.format(new Date());
 //        Bundle arguments = getArguments();
 //        //singletoyinfo
 //        mResponse = arguments.getParcelable("response");
@@ -218,16 +223,22 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
         mToyId = mResponse.getID();
         mToyCode = mResponse.getCODE();
 //        String acttime = arguments.getString("acttime");
-        String img = mResponse.getIMG();
+
         //获取成员信息,需要传什么参数,去访问哪个接口  3.4.48接口
         getToyMember(mTime, mToken, mPhoneNum, mToyId, mToyCode);
 
         if (mTv_fragment_managetoy_toytype == null)
             return;
 //        String babyimg = arguments.getString("babyimg");
+        refreshView();
+    }
+
+    private void refreshView() {
+        if(mResponse == null)
+            return;
         mTv_fragment_managetoy_toytype.setText(mResponse.getCODE());
         mTv_fragment_managetoy_acttime.setText(formatTime);
-
+        String img = mResponse.getIMG();
         //玩具图片
         Glide.with(getActivity()).load(img).asBitmap().into(mIv_fragmenft_managetoy_toyimg);
         //baby头像
@@ -237,9 +248,14 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
 
                 RoundedBitmapDrawable mRoundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
                 mRoundedBitmapDrawable.setCircular(true);
-                mBabyImg.setImageDrawable(mRoundedBitmapDrawable);
+               mBabyImg.setImageDrawable(mRoundedBitmapDrawable);
             }
         });
-
+        if (toyMemberAdapter != null) {
+            toyMemberAdapter.notifyDataSetChanged();
+        }
     }
+
+
+
 }

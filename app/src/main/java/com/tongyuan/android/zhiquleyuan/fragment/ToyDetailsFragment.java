@@ -260,7 +260,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         mTv_fragment_toy_details_toytype.setText(mName);
         Glide.with(getActivity()).load(mImg).asBitmap().into(mIv_fragment_toy_details_toyimg);
 
-        if (mBabyimg.isEmpty()) {
+        if (mBabyimg==null) {
 
             Glide.with(getActivity()).load(R.mipmap.default_babyimage).asBitmap().into(new BitmapImageViewTarget(mIv_fragment_toy_details_babyImg) {
                 @Override
@@ -432,8 +432,8 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     @Override
     public void onStart() {
         super.onStart();
-        //查询当前玩具是否正在播放音乐 3.4.43
-        queryPlayingMusic();
+        //TODO 查询当前玩具是否正在播放音乐 3.4.43
+//        queryPlayingMusic();
     }
 
     private void queryPlayingMusic() {
