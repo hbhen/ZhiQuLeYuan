@@ -57,9 +57,8 @@ public class ToyMemberAdapter extends BaseAdapter {
 
     }
 
+
     private Mode mMode = Mode.NORMAL;//默认给的初始状态是 normal;
-
-
     public ToyMemberAdapter(FragmentActivity activity, List<QueryToyMemberReSBean.BODYBean.LSTBean> lst, SingleToyInfoRESBean.BODYBean response) {
         this.mContext = activity;
         this.mResponse = response;
@@ -73,6 +72,7 @@ public class ToyMemberAdapter extends BaseAdapter {
         time = simpleDateFormat.format(new Date());
     }
 
+
     @Override
     public int getCount() {
         Log.i("adapter", "getCount="+(mLSTBeanlist.size() + 2));
@@ -80,6 +80,7 @@ public class ToyMemberAdapter extends BaseAdapter {
             return 0;
         return mLSTBeanlist.size() + 2;
     }
+
 
     @Override
     public Object getItem(int position) {
@@ -89,6 +90,7 @@ public class ToyMemberAdapter extends BaseAdapter {
         }
         return mLSTBeanlist.get(position);
     }
+
 
     @Override
     public long getItemId(int position) {

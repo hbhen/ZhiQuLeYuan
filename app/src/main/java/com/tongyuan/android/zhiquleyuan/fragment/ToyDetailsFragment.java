@@ -260,7 +260,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         mTv_fragment_toy_details_toytype.setText(mName);
         Glide.with(getActivity()).load(mImg).asBitmap().into(mIv_fragment_toy_details_toyimg);
 
-        if (mBabyimg==null) {
+        if (mBabyimg == null) {
 
             Glide.with(getActivity()).load(R.mipmap.default_babyimage).asBitmap().into(new BitmapImageViewTarget(mIv_fragment_toy_details_babyImg) {
                 @Override
@@ -478,7 +478,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     @Override
     public void onResume() {
         super.onResume();
-//        checkStateInfo();
+        checkStateInfo();
         initView();
     }
 
@@ -493,6 +493,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         super.onHiddenChanged(hidden);
         queryToyHasBindBaby();
         initView();
+        checkStateInfo();
     }
 
     //拉去玩具的状态信息
@@ -522,10 +523,21 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                     String wifi = response.body().getBODY().getWIFI();
 
                     //String值转化int
-                    int wifiValue = Integer.parseInt(wifi);
-//                    int wifiAbs = Math.abs(wifiValue);
-                    int volValue = Integer.parseInt(vol);
-                    int elecValue = Integer.parseInt(elec);
+                    int wifiValue = -100;
+                    int volValue = 0;
+                    int elecValue = 0;
+                    if (!wifi.equals("")) {
+                        wifiValue = Integer.parseInt(wifi);
+
+                    }
+//                    if (!vol.equals("")) {
+//                        volValue = Integer.parseInt(vol);
+//
+//                    }
+                    if (!elec.equals("")) {
+                        elecValue = Integer.parseInt(elec);
+
+                    }
 
                     Log.i(TAG, "onResponse:camera" + camera);
                     Log.i(TAG, "onResponse:elec" + elec);
@@ -540,47 +552,46 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                     //设置状态的图片
 
                     if (online.equals("0")) {
-                        mCallMIc.setBackgroundResource(R.drawable.toy_recording_prohibit);
-                        mCallCamera.setBackgroundResource(R.drawable.toy_webcam_prohibit);
+                        mCallMIc.setImageResource(R.drawable.toy_recording_prohibit);
+                        mCallCamera.setImageResource(R.drawable.toy_webcam_prohibit);
                     } else if (online.equals("1")) {
-                        mCallCamera.setBackgroundResource(R.drawable.toy_recording);
-                        mCallCamera.setBackgroundResource(R.drawable.toy_webcam);
+                        mCallMIc.setImageResource(R.drawable.toy_recording);
+                        mCallCamera.setImageResource(R.drawable.toy_webcam);
                     }
 
                     if (wifiValue == -200) {
                         ToastUtil.showToast(getActivity(), "当前玩具wifi异常");
                     }
-
                     if (wifiValue >= -100 && wifiValue <= -80) {//最弱信号
-                        mCallSignal.setBackgroundResource(R.drawable.toy_signal_1);
+                        mCallSignal.setImageResource(R.drawable.toy_signal_1);
                     } else if (wifiValue > -80 && wifiValue <= -60) {
-                        mCallSignal.setBackgroundResource(R.drawable.toy_signal_2);
+                        mCallSignal.setImageResource(R.drawable.toy_signal_2);
                     } else if (wifiValue > -60 && wifiValue <= -40) {
-                        mCallSignal.setBackgroundResource(R.drawable.toy_signal_3);
+                        mCallSignal.setImageResource(R.drawable.toy_signal_3);
                     } else if (wifiValue > -40 && wifiValue <= -20) {
-                        mCallSignal.setBackgroundResource(R.drawable.toy_signal_4);
+                        mCallSignal.setImageResource(R.drawable.toy_signal_4);
                     } else if (wifiValue > -20 && wifiValue <= 0) {
-                        mCallSignal.setBackgroundResource(R.drawable.toy_signal_5);
+                        mCallSignal.setImageResource(R.drawable.toy_signal_5);
                     }
 
                     if (elecValue >= 0 && elecValue <= 10) {
-                        mCallButtery.setBackgroundResource(R.drawable.toy_battery_1);
+                        mCallButtery.setImageResource(R.drawable.toy_battery_1);
                     } else if (elecValue > 10 && elecValue <= 20) {
-                        mCallButtery.setBackgroundResource(R.drawable.toy_battery_2);
+                        mCallButtery.setImageResource(R.drawable.toy_battery_2);
                     } else if (elecValue > 20 && elecValue <= 30) {
-                        mCallButtery.setBackgroundResource(R.drawable.toy_battery_3);
+                        mCallButtery.setImageResource(R.drawable.toy_battery_3);
                     } else if (elecValue > 30 && elecValue <= 40) {
-                        mCallButtery.setBackgroundResource(R.drawable.toy_battery_4);
+                        mCallButtery.setImageResource(R.drawable.toy_battery_4);
                     } else if (elecValue > 40 && elecValue <= 50) {
-                        mCallButtery.setBackgroundResource(R.drawable.toy_battery_5);
+                        mCallButtery.setImageResource(R.drawable.toy_battery_5);
                     } else if (elecValue > 50 && elecValue <= 70) {
-                        mCallButtery.setBackgroundResource(R.drawable.toy_battery_6);
+                        mCallButtery.setImageResource(R.drawable.toy_battery_6);
                     } else if (elecValue > 70 && elecValue <= 80) {
-                        mCallButtery.setBackgroundResource(R.drawable.toy_battery_7);
+                        mCallButtery.setImageResource(R.drawable.toy_battery_7);
                     } else if (elecValue > 80 && elecValue <= 90) {
-                        mCallButtery.setBackgroundResource(R.drawable.toy_battery_8);
+                        mCallButtery.setImageResource(R.drawable.toy_battery_8);
                     } else if (elecValue > 90 && elecValue <= 100) {
-                        mCallButtery.setBackgroundResource(R.drawable.toy_battery_9);
+                        mCallButtery.setImageResource(R.drawable.toy_battery_9);
                     }
                 }
             }

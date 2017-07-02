@@ -23,6 +23,8 @@ import com.tongyuan.android.zhiquleyuan.activity.NoDisturbActivity;
 import com.tongyuan.android.zhiquleyuan.activity.SetupWlanActivity;
 import com.tongyuan.android.zhiquleyuan.adapter.ToyMemberAdapter;
 import com.tongyuan.android.zhiquleyuan.base.BaseFragment;
+import com.tongyuan.android.zhiquleyuan.bean.GetInstantStateInfoReq;
+import com.tongyuan.android.zhiquleyuan.bean.GetInstantStateInfoRes;
 import com.tongyuan.android.zhiquleyuan.bean.QueryToyMemberReQBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryToyMemberReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoRESBean;
@@ -73,6 +75,10 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
     private String mToyCode;
     private String mBabyimg;
     private String mImg;
+    private ImageView mCallSignal;
+    private ImageView mCallButtery;
+    private ImageView mCallMIc;
+    private ImageView mCallCamera;
 
     @Nullable
     @Override
@@ -90,6 +96,12 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
         mTv_fragment_managetoy_desc = (TextView) fragment_manageToy.findViewById(R.id.tv_fragment_managetoy_desc);
         mTv_fragment_managetoy_acttime = (TextView) fragment_manageToy.findViewById(R.id.tv_fragment_managetoy_acttime);
 //        mRecyclerview_fragment_managetoy = (RecyclerView) fragment_manageToy.findViewById(R.id.recyclerview_fragment_managetoy);
+
+        mCallSignal = (ImageView) fragment_manageToy.findViewById(R.id.iv_fragment_managetoy_call_signal);
+        mCallButtery = (ImageView) fragment_manageToy.findViewById(R.id.iv_fragment_managetoy_call_buttery);
+        mCallMIc = (ImageView) fragment_manageToy.findViewById(R.id.iv_fragment_managetoy_call_mic);
+        mCallCamera = (ImageView) fragment_manageToy.findViewById(R.id.iv_fragment_managetoy_call_camera);
+
 
         mMygrid = (MyGridView) fragment_manageToy.findViewById(R.id.mygrid);
         toyMemberAdapter = new ToyMemberAdapter(getActivity(), lst, mResponse);
@@ -203,7 +215,7 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
     public void onResume() {
         super.onResume();
         //刷新
-
+        checkStateInfo();
         getToyMember(mTime, mToken, mPhoneNum, mToyId, mToyCode);
     }
 
@@ -255,7 +267,116 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
             toyMemberAdapter.notifyDataSetChanged();
         }
     }
+    private void checkStateInfo() {
+        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://120.27.41.179:8081/zqpland/m/iface/").addConverterFactory(GsonConverterFactory
+                .create())
+                .build();
+        AllInterface allInterface = retrofit.create(AllInterface.class);
+        GetInstantStateInfoReq.BODYBean bodyBean = new GetInstantStateInfoReq.BODYBean(mToyId);
+        GetInstantStateInfoReq getInstantStateInfoReq = new GetInstantStateInfoReq("REQ", "TOYSTATE", mPhoneNum, mTime, bodyBean, "", mToken, "1");
 
+        Gson gson = new Gson();
+        String s = gson.toJson(getInstantStateInfoReq);
+        Call<GetInstantStateInfoRes> getInstantStateInfoResCall = allInterface.GET_INSTANT_STATE_INFO_RES_CALL(s);
+        getInstantStateInfoResCall.enqueue(new Callback<GetInstantStateInfoRes>() {
+            @Override
+            public void onResponse(Call<GetInstantStateInfoRes> call, Response<GetInstantStateInfoRes> response) {
+                if (!response.body().getCODE().equals("0")) {
+                    ToastUtil.showToast(getActivity(), "拉取玩具即时状态返回的response为空");
+                } else {
+                    GetInstantStateInfoRes body = response.body();
+                    String camera = response.body().getBODY().getCAMERA();
+                    String elec = response.body().getBODY().getELEC();
+                    String mic = response.body().getBODY().getMIC();
+                    String online = response.body().getBODY().getONLINE();
+                    String vol = response.body().getBODY().getVOL();
+                    String wifi = response.body().getBODY().getWIFI();
 
+                    //String值转化int
+                    int wifiValue = -100;
+                    int volValue = 0;
+                    int elecValue = 0;
+                    if (!wifi.equals("")) {
+                        wifiValue = Integer.parseInt(wifi);
 
+                    }
+//                    if (!vol.equals("")) {
+//                        volValue = Integer.parseInt(vol);
+//
+//                    }
+                    if (!elec.equals("")) {
+                        elecValue = Integer.parseInt(elec);
+
+                    }
+//
+//                    Log.i(TAG, "onResponse:camera" + camera);
+//                    Log.i(TAG, "onResponse:elec" + elec);
+//                    Log.i(TAG, "onResponse:mic" + mic);
+//                    Log.i(TAG, "onResponse:online" + online);
+//                    Log.i(TAG, "onResponse:vol" + vol);
+//                    Log.i(TAG, "onResponse:wifi" + wifi);
+//
+//                    Log.i(TAG, "onResponse: wifiValue" + wifiValue);
+//                    Log.i(TAG, "onResponse: elecValue" + elecValue);
+//                    Log.i(TAG, "onResponse: volValue" + volValue);
+                    //设置状态的图片
+
+                    if (online.equals("0")) {
+                        mCallMIc.setImageResource(R.drawable.toy_recording_prohibit);
+                        mCallCamera.setImageResource(R.drawable.toy_webcam_prohibit);
+                    } else if (online.equals("1")) {
+                        mCallMIc.setImageResource(R.drawable.toy_recording);
+                        mCallCamera.setImageResource(R.drawable.toy_webcam);
+                    }
+
+                    if (wifiValue == -200) {
+                        ToastUtil.showToast(getActivity(), "当前玩具wifi异常");
+                    }
+                    if (wifiValue >= -100 && wifiValue <= -80) {//最弱信号
+                        mCallSignal.setImageResource(R.drawable.toy_signal_1);
+                    } else if (wifiValue > -80 && wifiValue <= -60) {
+                        mCallSignal.setImageResource(R.drawable.toy_signal_2);
+                    } else if (wifiValue > -60 && wifiValue <= -40) {
+                        mCallSignal.setImageResource(R.drawable.toy_signal_3);
+                    } else if (wifiValue > -40 && wifiValue <= -20) {
+                        mCallSignal.setImageResource(R.drawable.toy_signal_4);
+                    } else if (wifiValue > -20 && wifiValue <= 0) {
+                        mCallSignal.setImageResource(R.drawable.toy_signal_5);
+                    }
+
+                    if (elecValue >= 0 && elecValue <= 10) {
+                        mCallButtery.setImageResource(R.drawable.toy_battery_1);
+                    } else if (elecValue > 10 && elecValue <= 20) {
+                        mCallButtery.setImageResource(R.drawable.toy_battery_2);
+                    } else if (elecValue > 20 && elecValue <= 30) {
+                        mCallButtery.setImageResource(R.drawable.toy_battery_3);
+                    } else if (elecValue > 30 && elecValue <= 40) {
+                        mCallButtery.setImageResource(R.drawable.toy_battery_4);
+                    } else if (elecValue > 40 && elecValue <= 50) {
+                        mCallButtery.setImageResource(R.drawable.toy_battery_5);
+                    } else if (elecValue > 50 && elecValue <= 70) {
+                        mCallButtery.setImageResource(R.drawable.toy_battery_6);
+                    } else if (elecValue > 70 && elecValue <= 80) {
+                        mCallButtery.setImageResource(R.drawable.toy_battery_7);
+                    } else if (elecValue > 80 && elecValue <= 90) {
+                        mCallButtery.setImageResource(R.drawable.toy_battery_8);
+                    } else if (elecValue > 90 && elecValue <= 100) {
+                        mCallButtery.setImageResource(R.drawable.toy_battery_9);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetInstantStateInfoRes> call, Throwable t) {
+                ToastUtil.showToast(getActivity(), "拉取信息失败");
+                Log.i(TAG, "onFailure: " + t.toString());
+            }
+        });
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        checkStateInfo();
+    }
 }
