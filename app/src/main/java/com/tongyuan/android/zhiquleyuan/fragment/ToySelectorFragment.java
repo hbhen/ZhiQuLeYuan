@@ -1,6 +1,5 @@
 package com.tongyuan.android.zhiquleyuan.fragment;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -23,11 +22,14 @@ import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.activity.MainActivity;
 import com.tongyuan.android.zhiquleyuan.base.BaseFragment;
 import com.tongyuan.android.zhiquleyuan.bean.AddToyResultBean;
+import com.tongyuan.android.zhiquleyuan.bean.DeleteToyReqBean;
+import com.tongyuan.android.zhiquleyuan.bean.DeleteToyResBean;
 import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoREQBean;
 import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoRESBean;
 import com.tongyuan.android.zhiquleyuan.event.AddToyMessageEvent;
 import com.tongyuan.android.zhiquleyuan.event.MessageEventToy;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
+import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 import com.zhy.magicviewpager.transformer.ScaleInTransformer;
@@ -78,6 +80,7 @@ public class ToySelectorFragment extends BaseFragment {
     public static String mToyid;
     private ImageView mIv_add;
     private ImageView mIv_delete;
+    private int mCurrentposition;
 
 
     @Nullable
@@ -118,15 +121,7 @@ public class ToySelectorFragment extends BaseFragment {
                 showFragment(ToyAddFragment.class.getSimpleName());
             }
         });
-        //删除当前的玩具
-        mIv_delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ToastUtil.showToast(getContext(), "sanchu wanju ");
-                Intent intent = new Intent();
-//                intent.setClass(getContext(),)
-            }
-        });
+
         //不知道点击头像要跳到哪里,先添加一个点击事件吧
         mHeadeImageview.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -183,6 +178,19 @@ public class ToySelectorFragment extends BaseFragment {
 //                        }, 300);
                     }
                 });
+                //删除当前的玩具
+                mIv_delete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ToastUtil.showToast(getContext(), "sanchu wanju ");
+                        String deleteId = toyId.get(mCurrentposition);
+                        String deleteCode = toyCode.get(mCurrentposition);
+                        deleteToy(position, deleteId, deleteCode);
+
+                    }
+
+
+                });
 
 
                 return mImageView;
@@ -220,6 +228,7 @@ public class ToySelectorFragment extends BaseFragment {
 
             @Override
             public void onPageSelected(int position) {
+                mCurrentposition = position;
                 //TODO
                 //获得宝宝的头像 , 滑到当前的position展示当前的玩具的宝宝,如果当前的玩具没有绑定宝宝,那么就让他显示默认的baby头像
                 //宝宝的头像从哪来?怎么确定宝宝的头像和玩具的关系
@@ -253,6 +262,38 @@ public class ToySelectorFragment extends BaseFragment {
 
             }
         });
+    }
+
+    //TODO 没做完,没有刷新页面
+
+    private void deleteToy(int position, String deleteId, String deleteCode) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        String time = simpleDateFormat.format(new Date());
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constant.baseurl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        AllInterface allInterface = retrofit.create(AllInterface.class);
+        DeleteToyReqBean.BODYBean bodyBean = new DeleteToyReqBean.BODYBean(deleteId, deleteCode);
+        DeleteToyReqBean deleteToyReqBean = new DeleteToyReqBean("REQ", "DATOY", SPUtils.getString(getActivity(), "phoneNum", ""), time,
+                bodyBean, "", SPUtils.getString(getActivity(), "TOKEN", ""), "1");
+
+        Gson gson = new Gson();
+        String s = gson.toJson(deleteToyReqBean);
+        Call<DeleteToyResBean> deleteToyResBeanCall = allInterface.DELETE_TOY_RES_BEAN_CALL(s);
+        deleteToyResBeanCall.enqueue(new Callback<DeleteToyResBean>() {
+            @Override
+            public void onResponse(Call<DeleteToyResBean> call, Response<DeleteToyResBean> response) {
+                ToastUtil.showToast(getContext(), "确实已经删除了111");
+
+            }
+
+            @Override
+            public void onFailure(Call<DeleteToyResBean> call, Throwable t) {
+
+            }
+        });
+        ToastUtil.showToast(getContext(), "确实已经删除了");
     }
 ////获取数据
 //    public Bundle getBundle() {

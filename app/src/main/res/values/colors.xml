@@ -30,6 +30,7 @@
     <color name="viewfinder_mask">#60000000</color>
     <color name="redFont">#ff4511</color>
     <color name="grayFont">#8f8f8f</color>
+    <color name="titlebackground">#f1f1f1</color>
 
     <!--swiperefreshscrolllistview-->
     <color name="tips">#FF8E8E8E</color>

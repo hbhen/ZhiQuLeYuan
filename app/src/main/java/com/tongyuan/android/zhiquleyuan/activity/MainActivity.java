@@ -92,7 +92,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
 
         CrashReport.initCrashReport(getApplicationContext(),"4d4412e3f1",true);
-        CrashReport.testJavaCrash();
+//        CrashReport.testJavaCrash();
 
         initView();
         initData();

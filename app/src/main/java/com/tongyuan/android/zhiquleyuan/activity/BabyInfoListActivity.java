@@ -150,6 +150,7 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
         System.out.println("222222222222" + response.body().toString());
         BabyInfoListAdapter mAdapter = new BabyInfoListAdapter(this, response, time, phone, token, lst);
         mListview.setAdapter(mAdapter);
+        mListview.setDividerHeight(0);
         mAdapter.setMode(Attributes.Mode.Single);
         mListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 

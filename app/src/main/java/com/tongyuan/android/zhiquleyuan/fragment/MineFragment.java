@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,13 +28,13 @@ import com.tongyuan.android.zhiquleyuan.activity.MyPushActivity;
 import com.tongyuan.android.zhiquleyuan.activity.MySuggestionActivity;
 import com.tongyuan.android.zhiquleyuan.activity.MyUpdateActivity;
 import com.tongyuan.android.zhiquleyuan.activity.PlayListActivity;
+import com.tongyuan.android.zhiquleyuan.activity.SetUserInfoActivity;
 import com.tongyuan.android.zhiquleyuan.base.BaseFragment;
 import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListRequest;
 import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListResult;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
-import com.tongyuan.android.zhiquleyuan.utils.ZhiQuLeYuanApplication;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -47,7 +46,6 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static com.tongyuan.android.zhiquleyuan.R.id.iv_fragment_mine;
 import static com.tongyuan.android.zhiquleyuan.activity.ActivityLogin.LOGINOK;
 
 /**
@@ -99,10 +97,10 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void initData() {
-        mToken = SPUtils.getString(ZhiQuLeYuanApplication.context, "TOKEN", "");
-        mPhoneNum = SPUtils.getString(ZhiQuLeYuanApplication.context, "phoneNum", "");
-        mUsername = SPUtils.getString(ZhiQuLeYuanApplication.context, "username", "");
-        mUserimg = SPUtils.getString(ZhiQuLeYuanApplication.context, "userimg", "");
+        mToken = SPUtils.getString(getContext(), "TOKEN", "");
+        mPhoneNum = SPUtils.getString(getContext(), "phoneNum", "");
+        mUsername = SPUtils.getString(getContext(), "username", "");
+        mUserimg = SPUtils.getString(getContext(), "userimg", "");
         Log.i(TAG, "initData: mUsername "+ mUsername);
         Log.i(TAG, "initData: mUserimg "+ mUserimg);
 
@@ -210,33 +208,13 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                     ToastUtil.showToast(getActivity(), "进入登录信息页面");
 
                 } else {
+                    mIntent.setClass(getContext(),SetUserInfoActivity.class);
+                    startActivity(mIntent);
                     ToastUtil.showToast(getActivity(), "进入设置用户信息页面");
                 }
                 break;
             case R.id.ll_fragment_mine_baby:
-//                判断,如果有宝宝的列表item,yes,就进入"宝宝信息列表",no,就进入"添加宝宝信息"界面,添加宝宝,添加完以后,返回到"宝宝信息列表"
-//                并且,从"宝宝信息列表"进入"添加宝宝信息"界面以后,添加成功也要返回"宝宝信息列表";
-//                以什么作为判断呢?
                 getListInfo();
-
-//                Handler handler = new Handler();
-//                handler.postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        if (mLst.size() != 0) {
-//                            ToastUtil.showToast(getActivity(), "进入宝宝信息里列表");
-//
-//                            mIntent.setClass(getActivity(), BabyInfoListActivity.class);
-//                            startActivity(mIntent);
-//                        } else {
-//
-//                            mIntent.setClass(getActivity(), MyBabyActivity.class);
-//                            startActivity(mIntent);
-//                        }
-//                    }
-//                }, 300);
-
-
                 break;
             case R.id.ll_fragment_mine_collection:
                 mIntent.setClass(getActivity(), MyCollectionActivity.class);
@@ -302,10 +280,10 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                 });
                 builder.show();
                 break;
-            case iv_fragment_mine:
-                mIntent.setClass(getActivity(), AboutActivity.class);
-                startActivity(mIntent);
-                break;
+//            case iv_fragment_mine:
+//                mIntent.setClass(getActivity(), AboutActivity.class);
+//                startActivity(mIntent);
+//                break;
             default:
                 break;
         }
@@ -383,7 +361,9 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
 //        SPUtils.getString(getActivity(),"username","");
 //        SPUtils.getString(getActivity(),"userimg","");
         mToken = SPUtils.getString(getActivity(), "TOKEN", "");//重新赋值mToken
+
         Log.i(TAG, "minefragment:onResume: token" + mToken);
+
         showDifferentLoginInfo();
         Log.i("tag", "onResume: went");
     }
@@ -393,15 +373,17 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
         mToken=SPUtils.getString(getActivity(),"TOKEN","");
         Log.i(TAG, "onClick: mToken delelte3"+mToken);
         if (!mToken.equals("")) {
-            mUsername=SPUtils.getString(getActivity(),"username","");
+//            mUsername=SPUtils.getString(getActivity(),"username","");这个拿到的值是用户的id
+            Log.i(TAG, "showDifferentLoginInfo: "+mUsername);
             mUserimg=SPUtils.getString(getActivity(),"userimg","");
             mMyLogout.setVisibility(View.VISIBLE);
             mMineTitle.setText(mUsername);
+            mTv_fragment_mine_desc.setText("设置用户信息");
             Glide.with(getActivity()).load(mUserimg).asBitmap().into(mPic);
-
         } else {
             mMyLogout.setVisibility(View.GONE);
             mMineTitle.setText("点击登录");
+            mTv_fragment_mine_desc.setText("登录后设置机主的基本信息");
             Glide.with(getActivity()).load(R.mipmap.ic_launcher).asBitmap().into(mPic);
 
         }

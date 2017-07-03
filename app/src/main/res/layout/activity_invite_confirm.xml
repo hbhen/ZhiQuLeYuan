@@ -4,31 +4,31 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
+    <RelativeLayout
         android:id="@+id/rl_invite_two_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="@dimen/dp_44"
+        android:background="@color/titlebackground">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
 
             <ImageView
                 android:layout_width="10dp"
-                android:layout_height="20dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dp_7"
                 android:src="@drawable/arrow_left"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_gravity="center"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
                 android:text="邀请"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_18"/>
 
         </RelativeLayout>
-    </android.support.v7.widget.Toolbar>
 
     <ListView
         android:id="@+id/lv_listview_confirm"

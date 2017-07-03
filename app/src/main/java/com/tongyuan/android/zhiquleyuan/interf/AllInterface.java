@@ -16,6 +16,7 @@ import com.tongyuan.android.zhiquleyuan.bean.DeleteBabyInfoReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteMyCollectionResBean;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteMyPlayResBean;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteRecordingResBean;
+import com.tongyuan.android.zhiquleyuan.bean.DeleteToyResBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridItemBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridSecondaryResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListResultBean;
@@ -34,6 +35,7 @@ import com.tongyuan.android.zhiquleyuan.bean.QuerySingleUserInfoReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryToyMemberReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoRESBean;
 import com.tongyuan.android.zhiquleyuan.bean.UnbindBabyToToyResBean;
+import com.tongyuan.android.zhiquleyuan.bean.UserInfoResBean;
 import com.tongyuan.android.zhiquleyuan.request.base.SuperModel;
 
 import java.util.List;
@@ -51,7 +53,15 @@ import retrofit2.http.Query;
  */
 
 public interface AllInterface {
-    //    添加,修改宝宝(或者个人)的信息  3.4.9
+    //添加,修改宝宝(或者个人)的信息  3.4.9  此接口是设置用户的
+    @POST("busi")
+    Call<UserInfoResBean> sendUserInfoResult(@Query("params") String params);
+
+    @Multipart
+    @POST("busi")
+    Call<UserInfoResBean> USER_INFO_RES_BEAN_CALL(@Part List<MultipartBody.Part> partList);
+
+    //    添加,修改宝宝(或者个人)的信息  3.4.9   此接口是设置宝宝的
     @POST("busi")
     Call<BabyInfoResultBean> sendBabyInfoResult(@Query("params") String params);
 
@@ -207,6 +217,9 @@ public interface AllInterface {
 
     //心跳接口(手机端)3.4.6
     @GET("busi")
-    Call<PhoneHeartResBean> PHONEHEART_RES_BEAN_CALL (@Query("params") String params);
+    Call<PhoneHeartResBean> PHONEHEART_RES_BEAN_CALL(@Query("params") String params);
 
+    //3.4.12 删除玩具信息(用户退出玩具群)
+    @GET("busi")
+    Call<DeleteToyResBean> DELETE_TOY_RES_BEAN_CALL(@Query("params") String params);
 }

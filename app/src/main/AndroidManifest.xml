@@ -72,6 +72,9 @@
             android:name=".activity.BabyInfoListActivity"
             android:screenOrientation="portrait"/>
         <activity
+            android:name=".activity.SetUserInfoActivity"
+            android:screenOrientation="portrait"/>
+        <activity
             android:name=".zxing.app.CaptureActivity"
             android:screenOrientation="portrait"/>
         <activity

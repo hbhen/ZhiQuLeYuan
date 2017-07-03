@@ -2,66 +2,68 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-    <android.support.v7.widget.Toolbar
+    <RelativeLayout
         android:id="@+id/tb_history"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="@dimen/dp_44"
+        android:layout_gravity="center"
+        android:background="@color/titlebackground">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/arrow_left"/>
+        <!--<ImageView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:src="@drawable/arrow_left"/>-->
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_gravity="center"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
             android:text="通话历史"
             android:textColor="#000000"
             android:textSize="18sp"/>
-    </android.support.v7.widget.Toolbar>
+    </RelativeLayout>
 
     <!--<EditText-->
-        <!--android:id="@+id/et_history_search"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="35dp"-->
-        <!--android:layout_below="@id/tb_history"-->
-        <!--android:layout_marginLeft="10dp"-->
-        <!--android:layout_marginRight="10dp"-->
-        <!--android:background="#ffffff"-->
-        <!--android:drawableRight="@drawable/search_38ico"-->
-        <!--android:hint="世上只有爸爸好"-->
-        <!--android:textSize="12dp"-->
+    <!--android:id="@+id/et_history_search"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="35dp"-->
+    <!--android:layout_below="@id/tb_history"-->
+    <!--android:layout_marginLeft="10dp"-->
+    <!--android:layout_marginRight="10dp"-->
+    <!--android:background="#ffffff"-->
+    <!--android:drawableRight="@drawable/search_38ico"-->
+    <!--android:hint="世上只有爸爸好"-->
+    <!--android:textSize="12dp"-->
 
-        <!--/>-->
+    <!--/>-->
 
     <!--<com.tongyuan.android.zhiquleyuan.swipe.refreshlib.library.PullToRefreshScrollView-->
-        <!--xmlns:ptr="http://schemas.android.com/apk/res-auto"-->
-        <!--android:id="@+id/pulltorefreshscrollview"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_below="@id/et_history_search"-->
-        <!--android:fadingEdge="none"-->
-        <!--android:fadingEdgeLength="0dp"-->
-        <!--ptr:ptrAnimationStyle="flip"-->
-        <!--ptr:ptrHeaderBackground="@color/common_tab_bg_light_gray"-->
-        <!--ptr:ptrHeaderSubTextColor="@color/tips"-->
-        <!--ptr:ptrHeaderTextColor="@color/tips"-->
-        <!--ptr:ptrMode="both"-->
-        <!--ptr:ptrRefreshableViewBackground="@color/common_tab_bg_light_gray"-->
-        <!--ptr:ptrScrollingWhileRefreshingEnabled="false"-->
-        <!--&gt;-->
+    <!--xmlns:ptr="http://schemas.android.com/apk/res-auto"-->
+    <!--android:id="@+id/pulltorefreshscrollview"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_below="@id/et_history_search"-->
+    <!--android:fadingEdge="none"-->
+    <!--android:fadingEdgeLength="0dp"-->
+    <!--ptr:ptrAnimationStyle="flip"-->
+    <!--ptr:ptrHeaderBackground="@color/common_tab_bg_light_gray"-->
+    <!--ptr:ptrHeaderSubTextColor="@color/tips"-->
+    <!--ptr:ptrHeaderTextColor="@color/tips"-->
+    <!--ptr:ptrMode="both"-->
+    <!--ptr:ptrRefreshableViewBackground="@color/common_tab_bg_light_gray"-->
+    <!--ptr:ptrScrollingWhileRefreshingEnabled="false"-->
+    <!--&gt;-->
 
-        <com.tongyuan.android.zhiquleyuan.swipe.refreshlib.AbListView
-            android:layout_marginTop="10dp"
-            android:id="@+id/lv_fragment_history"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/tb_history"
-            android:background="#ffffff"
-            android:listSelector="@color/transparent">
-        </com.tongyuan.android.zhiquleyuan.swipe.refreshlib.AbListView>
+    <com.tongyuan.android.zhiquleyuan.swipe.refreshlib.AbListView
+        android:id="@+id/lv_fragment_history"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/tb_history"
+        android:layout_marginTop="10dp"
+        android:background="#ffffff"
+        android:listSelector="@color/transparent">
+    </com.tongyuan.android.zhiquleyuan.swipe.refreshlib.AbListView>
 
 
     <!--</com.tongyuan.android.zhiquleyuan.swipe.refreshlib.library.PullToRefreshScrollView>-->

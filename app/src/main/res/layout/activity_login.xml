@@ -8,14 +8,14 @@
     <RelativeLayout
         android:id="@+id/rl_title_register"
         android:layout_width="match_parent"
-        android:layout_height="53dp">
+        android:layout_height="@dimen/dp_44">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="10dp"
+            android:layout_height="20dp"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="@dimen/dp_7"
             android:background="@drawable/arrow_left" />
 
         <TextView
