@@ -132,6 +132,7 @@ class MultiPlayer implements MediaPlayer.OnErrorListener,
     void stop() {
         if (isPrepared)
             mCurrentMediaPlayer.stop();
+        playUrl = null;
     }
 
     void setLooping(boolean looping) {

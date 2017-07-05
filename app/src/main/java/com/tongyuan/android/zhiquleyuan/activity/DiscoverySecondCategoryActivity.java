@@ -89,6 +89,12 @@ public class DiscoverySecondCategoryActivity extends AppCompatActivity implement
         initData();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        adapter.onPause();
+    }
+
     private void initData() {
         Intent intent = getIntent();
         String img = intent.getStringExtra("img");

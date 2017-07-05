@@ -43,6 +43,13 @@ public class DiscoverySecondCategoryAdapter extends BaseAdapter {
         grayPlayDrawable.setBounds(0, 0, grayPlayDrawable.getMinimumWidth(), grayPlayDrawable.getMinimumHeight());//必须设置图片大小，否则不显示
     }
 
+    public void onPause() {
+        for (DiscoveryListResultBean.BODYBean.LSTBean bean : list) {
+            bean.isPlaying = false;
+        }
+        notifyDataSetChanged();
+    }
+
     public ArrayList<DiscoveryListResultBean.BODYBean.LSTBean> getList() {
         return (ArrayList<DiscoveryListResultBean.BODYBean.LSTBean>) list;
     }

@@ -73,6 +73,8 @@ public class MusicPlayerService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        if (intent == null)
+            return super.onStartCommand(intent, flags, startId);
         String musicId = intent.getStringExtra("musicId");
         boolean isStop = intent.getBooleanExtra("isStop", false);
         if(musicId != null) {
