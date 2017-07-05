@@ -16,7 +16,8 @@ import com.tongyuan.android.zhiquleyuan.bean.DeleteBabyInfoReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteMyCollectionResBean;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteMyPlayResBean;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteRecordingResBean;
-import com.tongyuan.android.zhiquleyuan.bean.DeleteToyResBean;
+import com.tongyuan.android.zhiquleyuan.bean.DeleteToyFromNormalUserResBean;
+import com.tongyuan.android.zhiquleyuan.bean.DeleteToyFromPowerUserResBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridItemBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridSecondaryResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListResultBean;
@@ -219,7 +220,11 @@ public interface AllInterface {
     @GET("busi")
     Call<PhoneHeartResBean> PHONEHEART_RES_BEAN_CALL(@Query("params") String params);
 
-    //3.4.12 删除玩具信息(用户退出玩具群)
+    //3.4.12 删除玩具信息(用户退出玩具群) 非管理员删除
     @GET("busi")
-    Call<DeleteToyResBean> DELETE_TOY_RES_BEAN_CALL(@Query("params") String params);
+    Call<DeleteToyFromNormalUserResBean> DELETE_TOY_FROM_NORMAL_USER_RES_BEAN_CALL(@Query("params") String params);
+
+    //3.4.47 玩具重置(恢复未激活状态,解散群等) 管理员删除
+    @GET("busi")
+    Call<DeleteToyFromPowerUserResBean> DELETE_TOY_FROM_POWER_USER_RES_BEAN_CALL(@Query("params") String params);
 }

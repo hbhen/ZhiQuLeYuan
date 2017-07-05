@@ -28,7 +28,7 @@ import com.tongyuan.android.zhiquleyuan.fragment.ToyAddFragment;
 import com.tongyuan.android.zhiquleyuan.fragment.ToyDetailsFragment;
 import com.tongyuan.android.zhiquleyuan.fragment.ToyManagerFragment;
 import com.tongyuan.android.zhiquleyuan.fragment.ToySelectorFragment;
-import com.tongyuan.android.zhiquleyuan.fragment.VideoFragment;
+//import com.tongyuan.android.zhiquleyuan.fragment.VideoFragment;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.interf.QueryToyInterface;
@@ -73,7 +73,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private String mMainphoneNum;
     public List<QueryToyResultBean.BODYBean.LSTBean> mList;
     public static boolean isLogin = false;
-    private VideoFragment mVideoFragment;
+//    private VideoFragment mVideoFragment;
     private CallWaitingConnectFragment mCallWaitingConnectFragment;
     private static final String TAG1 = "88888";
 
@@ -202,10 +202,12 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             showFragment(toyDetailsFragment, name);
             currentFragment = toyDetailsFragment;
 //            mFragmentTransaction.addToBackStack(name);
-        } else if (name.equals(VideoFragment.class.getSimpleName())) {
-            showFragment(mVideoFragment, name);
-            currentFragment = mVideoFragment;
-        } else if (name.equals(CallWaitingConnectFragment.class.getSimpleName())) {
+        }
+//        else if (name.equals(VideoFragment.class.getSimpleName())) {
+//            showFragment(mVideoFragment, name);
+//            currentFragment = mVideoFragment;
+//        }
+        else if (name.equals(CallWaitingConnectFragment.class.getSimpleName())) {
             showFragment(mCallWaitingConnectFragment, name);
             currentFragment = mCallWaitingConnectFragment;
         }
@@ -239,7 +241,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         historyFragment = new HistoryFragment();
         mineFragment = new MineFragment();
         toyDetailsFragment = new ToyDetailsFragment();
-        mVideoFragment = new VideoFragment();
+//        mVideoFragment = new VideoFragment();
         mCallWaitingConnectFragment = new CallWaitingConnectFragment();
         showFragment(DiscoveryFragment.class.getSimpleName());
     }
@@ -374,9 +376,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         if (lst !=null) {
             EventBus.getDefault().postSticky(new MessageEventToy(lst));
             //不为空,去玩具选择页面
-
-//            Bundle bundle = mToySelectorFragment.getBundle();
-//            bundle.getParcelable("response");
             showFragment(ToySelectorFragment.class.getSimpleName());
         } else {
             //为空,去玩具添加页面

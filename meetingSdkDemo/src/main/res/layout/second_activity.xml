@@ -16,14 +16,14 @@
             />
 
 
-        <info.emm.sdk.VideoView
-            android:layout_alignParentBottom="true"
-            android:id="@+id/surfaceView6"
-            android:layout_width="50dp"
-            android:layout_height="100dp"
-            android:background="@color/white"
+        <!--<info.emm.sdk.VideoView-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:id="@+id/surfaceView6"-->
+            <!--android:layout_width="50dp"-->
+            <!--android:layout_height="100dp"-->
+            <!--android:background="@color/white"-->
 
-            />
+            <!--/>-->
     </RelativeLayout>
 
 </FrameLayout>

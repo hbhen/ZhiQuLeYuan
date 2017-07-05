@@ -46,6 +46,7 @@ import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -54,6 +55,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import static com.tongyuan.android.zhiquleyuan.R.id.iv_toy_details_call;
+import static com.tongyuan.android.zhiquleyuan.R.id.tv_fragment_toy_details_babyName;
 
 /**
  * Created by android on 2017/1/9.
@@ -102,6 +104,8 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     private String mUserId;
     private static final int BIND_BABYTO_TOY = 3001;
     private String mBabyid;
+    private List<QueryBabyListFromToyIdRes.BODYBean.LSTBean> mLst;
+    private String mBabyName;
 
 
     @Nullable
@@ -120,7 +124,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         mIv_fragment_toy_details_babyImg = (ImageView) mToyDetails.findViewById(R.id.iv_fragment_toy_details_babyImg);
         mIv_fragment_toy_details_toyimg = (ImageView) mToyDetails.findViewById(R.id.iv_fragment_toy_details_toyimg);
         mTv_fragment_toy_details_acttime = (TextView) mToyDetails.findViewById(R.id.tv_fragment_toy_details_acttime);
-        mTv_fragment_toy_details_babyName = (TextView) mToyDetails.findViewById(R.id.tv_fragment_toy_details_babyName);
+        mTv_fragment_toy_details_babyName = (TextView) mToyDetails.findViewById(tv_fragment_toy_details_babyName);
         mTv_fragment_toy_details_toytype = (TextView) mToyDetails.findViewById(R.id.tv_fragment_toy_details_toytype);
         mUnbindToy = (TextView) mToyDetails.findViewById(R.id.tv_fragment_toy_details_unbind);//解绑玩具宝宝
         mBindToy = (TextView) mToyDetails.findViewById(R.id.tv_fragment_toy_details_bind);//绑定玩具宝宝
@@ -231,12 +235,18 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
             @Override
             public void onResponse(Call<QueryBabyListFromToyIdRes> call, Response<QueryBabyListFromToyIdRes> response) {
                 //如果当前的玩具绑定了宝宝,则显示"解绑宝宝",如果没有绑定宝宝,则显示"绑定宝宝"
-                if (response.body().getBODY().getLST().size() == 0) {
+                if (response == null) {
+                    return;
+                }
+                mLst = response.body().getBODY().getLST();
+                if (mLst.size() == 0) {
                     mBindToy.setVisibility(View.VISIBLE);
                     mUnbindToy.setVisibility(View.GONE);
                     initView();
                 } else {
-
+                    for (int i = 0; i < mLst.size(); i++) {
+                        mBabyName = mLst.get(i).getNAME();
+                    }
                     mBindToy.setVisibility(View.GONE);
                     mUnbindToy.setVisibility(View.VISIBLE);
                     initView();
@@ -255,12 +265,11 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
 
         if (mListviewRecommand == null)
             return;
-
         mTv_fragment_toy_details_acttime.setText(mFormatTime);
         mTv_fragment_toy_details_toytype.setText(mName);
         Glide.with(getActivity()).load(mImg).asBitmap().into(mIv_fragment_toy_details_toyimg);
 
-        if (mBabyimg == null) {
+        if (mBabyimg == null||mLst.size()==0) {
 
             Glide.with(getActivity()).load(R.mipmap.default_babyimage).asBitmap().into(new BitmapImageViewTarget(mIv_fragment_toy_details_babyImg) {
                 @Override
@@ -283,6 +292,11 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
             });
 
         }
+        if (mLst.size()==0){
+            mTv_fragment_toy_details_babyName.setText(mOwnername);
+        }else{
+            mTv_fragment_toy_details_babyName.setText(mBabyName);
+        }
 
 
         mCall.setOnClickListener(this);
@@ -304,7 +318,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                 ToastUtil.showToast(getActivity(), "跳转到玩具管理界面");
 //                if (SPUtils.getString(getActivity(), "ID", "").equals(mOwnerid)) {
                 //TODO setdat
-                mToyManagerFragment.setData(mResponse, mFormatTime, mBabyimg);
+                mToyManagerFragment.setData(mResponse, mFormatTime, mBabyimg,mBabyName,mOwnername,mLst,mOwnerid);
                 showFragment(mToyManagerFragment);
 //                } else {
 //                    ToastUtil.showToast(getActivity(), "您当前不是管理员,不能管理玩具");
@@ -472,14 +486,14 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     @Override
     public void onPause() {
         super.onPause();
-        SingleToyInfoRESBean.BODYBean response = mResponse;
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        checkStateInfo();
-        initView();
+//        checkStateInfo();
+//        initView();
     }
 
     @Override
@@ -492,8 +506,8 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         queryToyHasBindBaby();
-        initView();
         checkStateInfo();
+        initView();
     }
 
     //拉去玩具的状态信息

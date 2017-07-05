@@ -1,65 +1,53 @@
 package com.tongyuan.android.zhiquleyuan.bean;
 
-import com.google.gson.annotations.SerializedName;
-
 /**
- * Created by Android on 2017/7/3.
+ * Created by Android on 2017/7/5.
  */
 
-public class DeleteToyResBean {
-
+public class DeleteToyFromPowerUserReqBean {
     /**
-     * TYPE : RES
-     * CMD : DATOY
+     * TYPE : REQ
+     * CMD : RESET
      * ACCT : XXXX
-     * TIME : 20170703010237096
+     * TIME : 20161127101010000
+     * BODY : {"ID":"201706251204441016838782","CODE":"123400000000228"}
      * VERI :
+     * TOKEN : 802618b6-18d5-4ce9-a735-38fd41d74a2e
      * SEQ : 1
-     * CODE : 0
-     * MSG :
-     * BODY : {"":""}
-     * TOKEN : 44546000-81e4-47df-adc3-a9905305f1f6
      */
 
     private String TYPE;
     private String CMD;
     private String ACCT;
     private String TIME;
-    private String VERI;
-    private String SEQ;
-    private String CODE;
-    private String MSG;
     private BODYBean BODY;
+    private String VERI;
     private String TOKEN;
+    private String SEQ;
 
     @Override
     public String toString() {
-        return "DeleteToyResBean{" +
+        return "DeleteToyFromPowerUserReqBean{" +
                 "TYPE='" + TYPE + '\'' +
                 ", CMD='" + CMD + '\'' +
                 ", ACCT='" + ACCT + '\'' +
                 ", TIME='" + TIME + '\'' +
-                ", VERI='" + VERI + '\'' +
-                ", SEQ='" + SEQ + '\'' +
-                ", CODE='" + CODE + '\'' +
-                ", MSG='" + MSG + '\'' +
                 ", BODY=" + BODY +
+                ", VERI='" + VERI + '\'' +
                 ", TOKEN='" + TOKEN + '\'' +
+                ", SEQ='" + SEQ + '\'' +
                 '}';
     }
 
-    public DeleteToyResBean(String TYPE, String CMD, String ACCT, String TIME, String VERI, String SEQ, String CODE, String MSG, BODYBean BODY,
-                            String TOKEN) {
+    public DeleteToyFromPowerUserReqBean(String TYPE, String CMD, String ACCT, String TIME, BODYBean BODY, String VERI, String TOKEN, String SEQ) {
         this.TYPE = TYPE;
         this.CMD = CMD;
         this.ACCT = ACCT;
         this.TIME = TIME;
-        this.VERI = VERI;
-        this.SEQ = SEQ;
-        this.CODE = CODE;
-        this.MSG = MSG;
         this.BODY = BODY;
+        this.VERI = VERI;
         this.TOKEN = TOKEN;
+        this.SEQ = SEQ;
     }
 
     public String getTYPE() {
@@ -94,44 +82,20 @@ public class DeleteToyResBean {
         this.TIME = TIME;
     }
 
-    public String getVERI() {
-        return VERI;
-    }
-
-    public void setVERI(String VERI) {
-        this.VERI = VERI;
-    }
-
-    public String getSEQ() {
-        return SEQ;
-    }
-
-    public void setSEQ(String SEQ) {
-        this.SEQ = SEQ;
-    }
-
-    public String getCODE() {
-        return CODE;
-    }
-
-    public void setCODE(String CODE) {
-        this.CODE = CODE;
-    }
-
-    public String getMSG() {
-        return MSG;
-    }
-
-    public void setMSG(String MSG) {
-        this.MSG = MSG;
-    }
-
     public BODYBean getBODY() {
         return BODY;
     }
 
     public void setBODY(BODYBean BODY) {
         this.BODY = BODY;
+    }
+
+    public String getVERI() {
+        return VERI;
+    }
+
+    public void setVERI(String VERI) {
+        this.VERI = VERI;
     }
 
     public String getTOKEN() {
@@ -142,31 +106,50 @@ public class DeleteToyResBean {
         this.TOKEN = TOKEN;
     }
 
+    public String getSEQ() {
+        return SEQ;
+    }
+
+    public void setSEQ(String SEQ) {
+        this.SEQ = SEQ;
+    }
+
     public static class BODYBean {
         /**
-         *  :
+         * ID : 201706251204441016838782
+         * CODE : 123400000000228
          */
 
-        @SerializedName("")
-        private String _$63; // FIXME check this code
+        private String ID;
+        private String CODE;
 
         @Override
         public String toString() {
             return "BODYBean{" +
-                    "_$63='" + _$63 + '\'' +
+                    "ID='" + ID + '\'' +
+                    ", CODE='" + CODE + '\'' +
                     '}';
         }
 
-        public BODYBean(String _$63) {
-            this._$63 = _$63;
+        public BODYBean(String ID, String CODE) {
+            this.ID = ID;
+            this.CODE = CODE;
         }
 
-        public String get_$63() {
-            return _$63;
+        public String getID() {
+            return ID;
         }
 
-        public void set_$63(String _$63) {
-            this._$63 = _$63;
+        public void setID(String ID) {
+            this.ID = ID;
+        }
+
+        public String getCODE() {
+            return CODE;
+        }
+
+        public void setCODE(String CODE) {
+            this.CODE = CODE;
         }
     }
 }

@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import info.emm.meeting.MeetingUser;
+import info.emm.meeting.MeetingUserMgr;
 import info.emm.meeting.Session;
 import info.emm.meeting.SessionInterface;
 import info.emm.sdk.VideoView;
@@ -85,12 +86,15 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
     private int mVolumeInt;
     private ImageView mBabyImg;
     private TextView mBabyName;
+    private String mUserFlag;
+
 
     @Override
     protected void onCreate(Bundle arguments) {
         super.onCreate(arguments);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_videocall);
+        MeetingUserMgr meetingUserMgr = new MeetingUserMgr();
 
         //TODO  进来的时候还要获取一个玩具的初始音量 现在不加了
 
@@ -195,7 +199,7 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
 //        String meetingId = "777777";
         String meetingId = mRoomid;
         Session.getInstance().setWebHttpServerAddress(ip + ":" + port);
-
+        mUserFlag = "phone";
         Session.getInstance().switchCamera(usefront);
 //        Session.getInstance().setCameraQuality(_checkHQ.isChecked());
         Session.getInstance().setLoudSpeaker(true);
@@ -217,7 +221,8 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
         * paramMap:null即可
         * */
 
-        Session.getInstance().joinmeeting(ip, port, "user" + uid, meetingId, "", uid, 0, null);
+        Session.getInstance().joinmeeting(ip, port, mUserFlag + uid, meetingId, "", uid, 0, null);
+
     }
 
     @Override
@@ -237,7 +242,7 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
                 ToastUtil.showToast(this, "不看视频");
 //                Session.getInstance().unplayVideo(_watchingPeerID, 0);
                 //Session.getInstance().unwatchOtherVideo(_watchingPeerID,0);
-                Session.getInstance().PlayVideo(_myPeerID, false, mMy_video, 0, 0, 1, 1, 65, false, 1, 0);
+                Session.getInstance().PlayVideo(_myPeerID, false, mMy_video, 0, 0, 1, 1, 0, false, 1, 0);
 
 //                if (isShowVideo) {
 //                    isShowVideo = !isShowVideo;
@@ -327,7 +332,6 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
                     ToastUtil.showToast(getApplicationContext(), "玩具未登录,为获取到玩具DEVCODE");
                 } else if (response.body().getCode().equals("-10006")) {
                     ToastUtil.showToast(getApplicationContext(), "用户未登录");
-
                 }
             }
 
@@ -349,11 +353,11 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
             return;
 
         if (!_sendingVideo) {
-            Session.getInstance().PlayVideo(0, true, mMy_video, 0, 0, 1, 1, 0, false, 1, 0);
+            Session.getInstance().PlayVideo(0, true, mMy_video, 0, 0, 0, 0, 0, false, 0, 0);
             _sendingVideo = true;
 
         } else {
-            Session.getInstance().PlayVideo(0, false, mMy_video, 0, 0, 1, 1, 0, false, 1, 0);
+            Session.getInstance().PlayVideo(0, false, mMy_video, 0, 0, 0, 0, 0, true, 0, 0);
             _sendingVideo = false;
 
         }
@@ -361,17 +365,18 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
 
     private void seeYou() {
         Log.d("surfaceview", "surfaceview4 ");
+
         if (_userList.size() == 0)
             return;
-
         if (_watchingPeerID == 0) {
             int peerID = _userList.get(0);
-            Session.getInstance().PlayVideo(peerID, true, mMy_video, 0, 0, 1, 1, 1, false, 0, 0);
-//            Session.getInstance().watchOtherVideo(peerID, 0);
+            Session.getInstance().PlayVideo(peerID, true, mMy_video, 0, 0, 1, 1, 0, false, 1, 0);
+            Session.getInstance().requestSpeaking(peerID);
             Log.d("surfaceview", "surfaceview5 ");
             _watchingPeerID = peerID;
         } else {
-            Session.getInstance().PlayVideo(_watchingPeerID, false, mMy_video, 0, 0, 1, 1, 1, false, 1, 0);
+            Session.getInstance().PlayVideo(_watchingPeerID, true, mMy_video, 0, 0, 1, 1, 0, false, 1, 0);
+            Session.getInstance().requestSpeaking(_watchingPeerID);
             _watchingPeerID = 0;
         }
     }
@@ -422,31 +427,33 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onUserIn(int peerId, boolean b) {
         _userList.add(peerId);
+        MeetingUser user = Session.getInstance().getM_thisUserMgr().getUser(peerId);
+        String name = user.getName();
+        if (name.equals("toy")) {
+            seeYou();
 
-        seeYou();
-Session.getInstance().requestSpeaking(_watchingPeerID);
-//        if (!_serverMix && hasAudio)
-//            Session.getInstance().playAudio(peerId);
+        }
+        if (name.equals("tv")) {
+            seeYou();
+        }
     }
 
     @Override
     public void onUserOut(MeetingUser meetingUser) {
         _userList.remove(new Integer(meetingUser.getPeerID()));
-
         if (!_serverMix && hasAudio)
             Session.getInstance().unplayAudio(meetingUser.getPeerID());
         if (_watchingPeerID == meetingUser.getPeerID()) {
             _watchingPeerID = 0;
-
         }
     }
 
     @Override
     public void onEnablePresence(int peerID) {
         _myPeerID = peerID;
+        //画中画的时候可以开启
 //        seeMe();
         seeYou();
-        Session.getInstance().requestSpeaking(_myPeerID);
         _freeSpeak = true;
         sendText(0, "i am " + android.os.Build.MODEL + android.os.Build.VERSION.RELEASE, android.os.Build.MODEL);
     }
@@ -512,6 +519,7 @@ Session.getInstance().requestSpeaking(_watchingPeerID);
 
     @Override
     public void onPresentComplete() {
+        Session.getInstance().requestSpeaking(_myPeerID);
 
     }
 

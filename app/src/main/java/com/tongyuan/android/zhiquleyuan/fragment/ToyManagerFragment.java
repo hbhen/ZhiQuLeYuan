@@ -18,13 +18,13 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
-import com.tongyuan.android.zhiquleyuan.activity.BindBabyActivity;
 import com.tongyuan.android.zhiquleyuan.activity.NoDisturbActivity;
 import com.tongyuan.android.zhiquleyuan.activity.SetupWlanActivity;
 import com.tongyuan.android.zhiquleyuan.adapter.ToyMemberAdapter;
 import com.tongyuan.android.zhiquleyuan.base.BaseFragment;
 import com.tongyuan.android.zhiquleyuan.bean.GetInstantStateInfoReq;
 import com.tongyuan.android.zhiquleyuan.bean.GetInstantStateInfoRes;
+import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListFromToyIdRes;
 import com.tongyuan.android.zhiquleyuan.bean.QueryToyMemberReQBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryToyMemberReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoRESBean;
@@ -61,7 +61,7 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
     private TextView mTv_fragment_managetoy_acttime;
     //    private RecyclerView mRecyclerview_fragment_managetoy;
     private ImageView mBabyImg;
-    private TextView mBabyName;
+    private TextView mBabyNameView;
     private MyGridView mMygrid;
     private List<QueryToyMemberReSBean.BODYBean.LSTBean> lst = new ArrayList<>();
     ToyMemberAdapter toyMemberAdapter;
@@ -79,6 +79,11 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
     private ImageView mCallButtery;
     private ImageView mCallMIc;
     private ImageView mCallCamera;
+    private String mBabyName;
+    private String mOwnerName;
+    private List<QueryBabyListFromToyIdRes.BODYBean.LSTBean> mLst;
+    private String mCurrentUserId;
+    private String mOwnerId;
 
     @Nullable
     @Override
@@ -88,8 +93,8 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
         mBt_fragment_managetoy_setupwlan = (Button) fragment_manageToy.findViewById(R.id.bt_fragment_managetoy_setupwlan);
         mBt_fragment_managetoy_nodisturb = (Button) fragment_manageToy.findViewById(R.id.bt_fragment_managetoy_nodisturb);
         mTv_frament_managetoy_manager = (TextView) fragment_manageToy.findViewById(R.id.tv_frament_managetoy_manager);
-        mTv_fragment_toy_details_unbind = (TextView) fragment_manageToy.findViewById(R.id.tv_fragment_managetoy_unbindtoy);
-        mTv_fragment_toy_details_bind = (TextView) fragment_manageToy.findViewById(R.id.tv_fragment_managetoy_bindtoy);
+//        mTv_fragment_toy_details_unbind = (TextView) fragment_manageToy.findViewById(R.id.tv_fragment_managetoy_unbindtoy);
+//        mTv_fragment_toy_details_bind = (TextView) fragment_manageToy.findViewById(R.id.tv_fragment_managetoy_bindtoy);
 //        向id中添加数据内容
         mIv_fragmenft_managetoy_toyimg = (ImageView) fragment_manageToy.findViewById(R.id.iv_fragment_managetoy_toyimg);
         mTv_fragment_managetoy_toytype = (TextView) fragment_manageToy.findViewById(R.id.tv_fragment_managetoy_toytype);
@@ -108,7 +113,7 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
         mMygrid.setNumColumns(5);
         mMygrid.setAdapter(toyMemberAdapter);
         mBabyImg = (ImageView) fragment_manageToy.findViewById(R.id.iv_fragment_managetoy_babyhead);
-        mBabyName = (TextView) fragment_manageToy.findViewById(R.id.tv_fragment_managetoy_babyname);
+        mBabyNameView = (TextView) fragment_manageToy.findViewById(R.id.tv_fragment_managetoy_babyname);
         initData();
         initListener();
         Log.i("manager", "onCreateView");
@@ -123,6 +128,7 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
         mPhoneNum = SPUtils.getString(getActivity(), "phoneNum", "");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         mTime = simpleDateFormat.format(new Date());
+        mCurrentUserId = SPUtils.getString(getContext(), "ID", "");
         //获取成员信息,需要传什么参数,去访问哪个接口  3.4.48接口
         //getToyMember(mTime, mToken, mPhoneNum, mToyId, mToyCode);
         Log.i(TAG, "initData:toyimg ");
@@ -176,8 +182,8 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
         mBt_fragment_managetoy_nodisturb.setOnClickListener(this);
         mBt_fragment_managetoy_setupwlan.setOnClickListener(this);
         mTv_frament_managetoy_manager.setOnClickListener(this);
-        mTv_fragment_toy_details_unbind.setOnClickListener(this);
-        mTv_fragment_toy_details_bind.setOnClickListener(this);
+//        mTv_fragment_toy_details_unbind.setOnClickListener(this);
+//        mTv_fragment_toy_details_bind.setOnClickListener(this);
 
     }
 
@@ -194,18 +200,23 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
                 startActivity(intent1);
                 break;
             case R.id.tv_frament_managetoy_manager:
-                ToastUtil.showToast(getActivity(), "set manager");
+                if (mOwnerId.equals(mCurrentUserId)) {
+
+                    ToastUtil.showToast(getActivity(), "设置管理员");
+                } else {
+                    ToastUtil.showToast(getActivity(), "您不是该玩具的持有者,不能设置管理员");
+                }
                 break;
-            case R.id.tv_fragment_managetoy_unbindtoy:
-                ToastUtil.showToast(getActivity(), "Unbind");
-                break;
-            case R.id.tv_fragment_managetoy_bindtoy:
-                //这里添加玩具成功,需要去绑定宝宝的信息,所以跳转到宝宝绑定的页面
-                    Intent intent2 = new Intent();
-                    intent2.setClass(getContext(), BindBabyActivity.class);
-                    startActivity(intent2);
-                ToastUtil.showToast(getActivity(), "bind");
-                break;
+//            case R.id.tv_fragment_managetoy_unbindtoy:
+//                ToastUtil.showToast(getActivity(), "Unbind");
+//                break;
+//            case R.id.tv_fragment_managetoy_bindtoy:
+//                //这里添加玩具成功,需要去绑定宝宝的信息,所以跳转到宝宝绑定的页面
+//                    Intent intent2 = new Intent();
+//                    intent2.setClass(getContext(), BindBabyActivity.class);
+//                    startActivity(intent2);
+//                ToastUtil.showToast(getActivity(), "bind");
+//                break;
             default:
                 break;
         }
@@ -219,9 +230,12 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
         getToyMember(mTime, mToken, mPhoneNum, mToyId, mToyCode);
     }
 
-    public void setData(SingleToyInfoRESBean.BODYBean response, String formatTime, String babyimg) {
+    public void setData(SingleToyInfoRESBean.BODYBean response, String formatTime, String babyimg, String babyName, String ownerName,
+                        List<QueryBabyListFromToyIdRes.BODYBean.LSTBean> lst, String ownerId) {
         this.mResponse = response;
         this.mBabyimg = babyimg;
+        mLst = lst;
+        mOwnerId = ownerId;
         Log.i("manager", "setData");
         mToken = SPUtils.getString(getActivity(), "TOKEN", "");
         this.formatTime = formatTime;
@@ -234,6 +248,8 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
 
         mToyId = mResponse.getID();
         mToyCode = mResponse.getCODE();
+        mBabyName = babyName;
+        mOwnerName = ownerName;
 //        String acttime = arguments.getString("acttime");
 
         //获取成员信息,需要传什么参数,去访问哪个接口  3.4.48接口
@@ -246,27 +262,46 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
     }
 
     private void refreshView() {
-        if(mResponse == null)
+        if (mResponse == null)
             return;
-        mTv_fragment_managetoy_toytype.setText(mResponse.getCODE());
+        mTv_fragment_managetoy_toytype.setText(mResponse.getNAME());
         mTv_fragment_managetoy_acttime.setText(formatTime);
         String img = mResponse.getIMG();
         //玩具图片
         Glide.with(getActivity()).load(img).asBitmap().into(mIv_fragmenft_managetoy_toyimg);
         //baby头像
-        Glide.with(getActivity()).load(mBabyimg).asBitmap().centerCrop().into(new BitmapImageViewTarget(mBabyImg) {
-            @Override
-            protected void setResource(Bitmap resource) {
+        if (mBabyimg.equals("") || mLst.size() == 0) {
+            Glide.with(getActivity()).load(R.mipmap.default_babyimage).asBitmap().centerCrop().into(new BitmapImageViewTarget(mBabyImg) {
+                @Override
+                protected void setResource(Bitmap resource) {
 
-                RoundedBitmapDrawable mRoundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
-                mRoundedBitmapDrawable.setCircular(true);
-               mBabyImg.setImageDrawable(mRoundedBitmapDrawable);
-            }
-        });
+                    RoundedBitmapDrawable mRoundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
+                    mRoundedBitmapDrawable.setCircular(true);
+                    mBabyImg.setImageDrawable(mRoundedBitmapDrawable);
+                }
+            });
+        } else {
+            Glide.with(getActivity()).load(mBabyimg).asBitmap().centerCrop().into(new BitmapImageViewTarget(mBabyImg) {
+                @Override
+                protected void setResource(Bitmap resource) {
+
+                    RoundedBitmapDrawable mRoundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
+                    mRoundedBitmapDrawable.setCircular(true);
+                    mBabyImg.setImageDrawable(mRoundedBitmapDrawable);
+                }
+            });
+
+        }
+        if (mLst.size() == 0) {
+            mBabyNameView.setText(mOwnerName);
+        } else {
+            mBabyNameView.setText(mBabyName);
+        }
         if (toyMemberAdapter != null) {
             toyMemberAdapter.notifyDataSetChanged();
         }
     }
+
     private void checkStateInfo() {
         Retrofit retrofit = new Retrofit.Builder().baseUrl("http://120.27.41.179:8081/zqpland/m/iface/").addConverterFactory(GsonConverterFactory
                 .create())

@@ -9,10 +9,10 @@ import java.util.List;
  */
 
 public class MessageEventToy {
-    public List<QueryToyResultBean.BODYBean.LSTBean> mQueryBabyListResults;
+    public List<QueryToyResultBean.BODYBean.LSTBean> mQueryToyListResults;
 
-    public MessageEventToy(List<QueryToyResultBean.BODYBean.LSTBean> queryBabyListResults) {
-        this.mQueryBabyListResults = queryBabyListResults;
+    public MessageEventToy(List<QueryToyResultBean.BODYBean.LSTBean> queryToyListResults) {
+        this.mQueryToyListResults = queryToyListResults;
     }
 
 }

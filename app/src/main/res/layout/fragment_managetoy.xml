@@ -63,8 +63,8 @@
                         android:id="@+id/iv_fragment_managetoy_toyimg"
                         android:layout_width="145dp"
                         android:layout_height="200dp"
-                        android:scaleType="centerCrop"
-                        android:src="@mipmap/test"/>
+                        android:scaleType="fitCenter"
+                        android:src="@mipmap/default_babyimage"/>
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -193,28 +193,29 @@
                             android:text="设置免打扰"/>
                     </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/tv_fragment_managetoy_unbindtoy"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_above="@id/ll_fragment_managetoy_button"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginBottom="15dp"
-                        android:layout_marginRight="10dp"
-                        android:text="玩具解除绑定"
-                        android:textColor="#ff4511"
-                        android:textSize="18sp"
-                        android:visibility="gone"/>
+                    <!--<TextView-->
+                        <!--android:id="@+id/tv_fragment_managetoy_unbindtoy"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_above="@id/ll_fragment_managetoy_button"-->
+                        <!--android:layout_alignParentRight="true"-->
+                        <!--android:layout_marginBottom="15dp"-->
+                        <!--android:layout_marginRight="10dp"-->
+                        <!--android:text="玩具解除绑定"-->
+                        <!--android:textColor="#ff4511"-->
+                        <!--android:textSize="18sp"-->
+                        <!--android:visibility="gone"/>-->
 
-                    <TextView
-                        android:id="@+id/tv_fragment_managetoy_bindtoy"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_above="@id/ll_fragment_managetoy_button"
-                        android:layout_marginBottom="15dp"
-                        android:text="绑定宝宝"
-                        android:textColor="#ff4511"
-                        android:textSize="18sp"/>
+                    <!--<TextView-->
+                        <!---->
+                        <!--android:id="@+id/tv_fragment_managetoy_bindtoy"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_above="@id/ll_fragment_managetoy_button"-->
+                        <!--android:layout_marginBottom="15dp"-->
+                        <!--android:text="绑定宝宝"-->
+                        <!--android:textColor="#ff4511"-->
+                        <!--android:textSize="18sp"/>-->
 
 
                 </RelativeLayout>
@@ -277,7 +278,7 @@
                         android:layout_width="71dp"
                         android:layout_height="71dp"
                         android:scaleType="centerInside"
-                        android:src="@mipmap/test"/>
+                        android:src="@mipmap/default_babyimage"/>
 
                     <TextView
                         android:id="@+id/tv_fragment_managetoy_babyname"

@@ -1,5 +1,7 @@
 package com.tongyuan.android.zhiquleyuan.fragment;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -22,8 +24,10 @@ import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.activity.MainActivity;
 import com.tongyuan.android.zhiquleyuan.base.BaseFragment;
 import com.tongyuan.android.zhiquleyuan.bean.AddToyResultBean;
-import com.tongyuan.android.zhiquleyuan.bean.DeleteToyReqBean;
-import com.tongyuan.android.zhiquleyuan.bean.DeleteToyResBean;
+import com.tongyuan.android.zhiquleyuan.bean.DeleteToyFromNormalUserReqBean;
+import com.tongyuan.android.zhiquleyuan.bean.DeleteToyFromNormalUserResBean;
+import com.tongyuan.android.zhiquleyuan.bean.DeleteToyFromPowerUserReqBean;
+import com.tongyuan.android.zhiquleyuan.bean.DeleteToyFromPowerUserResBean;
 import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoREQBean;
 import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoRESBean;
 import com.tongyuan.android.zhiquleyuan.event.AddToyMessageEvent;
@@ -68,12 +72,8 @@ public class ToySelectorFragment extends BaseFragment {
     ArrayList<String> babyImg = new ArrayList<String>();
     ArrayList<String> toyId = new ArrayList<String>();
     ArrayList<String> toyCode = new ArrayList<String>();
+    ArrayList<String> ownerId = new ArrayList<String>();
     private SingleToyInfoRESBean body;
-//    List<Response<SingleToyInfoRESBean>> responseList;
-//    String mToycode = new String();//唯一标识
-//    String mActtime = new String();
-//    String mToyimg = new String();
-//    String mOwnername = new String();
 
     private ImageView mImageView;
     private Bundle mBundle;
@@ -81,6 +81,7 @@ public class ToySelectorFragment extends BaseFragment {
     private ImageView mIv_add;
     private ImageView mIv_delete;
     private int mCurrentposition;
+    private ViewGroup mContainer;
 
 
     @Nullable
@@ -109,8 +110,9 @@ public class ToySelectorFragment extends BaseFragment {
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
 //        final ToyDetailsFragment toyDetailsFragment = new ToyDetailsFragment();
+        //添加玩具
         mIv_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -123,28 +125,35 @@ public class ToySelectorFragment extends BaseFragment {
         });
 
         //不知道点击头像要跳到哪里,先添加一个点击事件吧
-        mHeadeImageview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ToastUtil.showToast(getActivity(), "点击的是头像");
-            }
+//        mHeadeImageview.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                ToastUtil.showToast(getActivity(), "点击的是头像");
+//            }
+//
+//        });
 
-        });
 
         mViewpagetToy.setPageMargin(20);
         mViewpagetToy.setOffscreenPageLimit(10);
 
 
         Log.i(TAG, "new MyPagerAdapter....");
-        mViewpagetToy.setAdapter(mPagerAdapter = new PagerAdapter() {
+
+        mPagerAdapter = new PagerAdapter() {
+
             @Override
             public Object instantiateItem(ViewGroup container, final int position) {
+                mCurrentposition = position;
+                mContainer = container;
                 mImageView = new ImageView(getActivity());
                 mImageView.setScaleType(ImageView.ScaleType.FIT_XY);
                 Log.i("111111", "instaniateItem " + toyImg.get(position));
                 Glide.with(getActivity()).load(toyImg.get(position)).asBitmap().into(mImageView);
                 container.addView(mImageView);
 
+
+                //点击玩具图片,处理的逻辑
                 mImageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -153,7 +162,7 @@ public class ToySelectorFragment extends BaseFragment {
                         * 需要传递的参数:1,玩具的图片; 2,玩具的型号; 3,玩具激活的时间; 4,玩具的状态
                         * 根据position来判断进入的是哪个玩具
                         * */
-
+                        ToastUtil.showToast(getContext(), "shanchu 上");
                         //TODO 从这里开始要处理数据!
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
                         String time = simpleDateFormat.format(new Date());
@@ -169,24 +178,59 @@ public class ToySelectorFragment extends BaseFragment {
                         Toast.makeText(getActivity(), "当前position" + position, Toast.LENGTH_SHORT).show();
                         Log.i(TAG, "onClick: toyid1" + mToyid);
 
-//                        new Handler().postDelayed(new Runnable() {
-//                            @Override
-//                            public void run() {
-
-//
-//                            }
-//                        }, 300);
                     }
                 });
                 //删除当前的玩具
                 mIv_delete.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        ToastUtil.showToast(getContext(), "sanchu wanju ");
-                        String deleteId = toyId.get(mCurrentposition);
-                        String deleteCode = toyCode.get(mCurrentposition);
-                        deleteToy(position, deleteId, deleteCode);
 
+                        final String deleteId = toyId.get(mCurrentposition);
+                        final String deleteCode = toyCode.get(mCurrentposition);
+                        String toyOwnerId = ownerId.get(mCurrentposition);
+
+                        if (toyOwnerId.equals(SPUtils.getString(getContext(), "ID", ""))) {
+                            //弹窗:提示用户当前是管理员,是否删除玩具,并解散玩具群 3.4.47
+                            final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                            builder.setMessage("您是当前玩具的管理员,确认删除玩具并解散群?");
+                            builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            });
+                            builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    mContainer.removeViewAt(position);
+//                                    mViewpagetToy.removeViewAt(position);
+                                    deleteToyFromPowerUser(mCurrentposition, deleteId, deleteCode);
+                                }
+                            });
+                            builder.show();
+
+                        } else {
+                            //弹窗:提示用户,是否删除玩具,并退出玩具群 3.4.12
+                            final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                            builder.setMessage("确认退出玩具群?");
+                            builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            });
+                            builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    mContainer.removeViewAt(position);
+//                                    mViewpagetToy.removeViewAt(position);
+                                    deleteToyFromNormalUser(mCurrentposition, deleteId, deleteCode);
+                                }
+                            });
+                            builder.show();
+
+                        }
+                        ToastUtil.showToast(getContext(), "shanchu 下");
                     }
 
 
@@ -203,11 +247,14 @@ public class ToySelectorFragment extends BaseFragment {
 
             @Override
             public void destroyItem(ViewGroup container, int position, Object object) {
+
                 container.removeView((View) object);
+
             }
 
             @Override
             public int getCount() {
+
                 return toyImg.size();
             }
 
@@ -216,10 +263,12 @@ public class ToySelectorFragment extends BaseFragment {
                 return view == (View) object;
             }
 
-        });
+        };
+        mViewpagetToy.setAdapter(mPagerAdapter);
         Log.i("111111", "mPagerAdapter=" + mPagerAdapter);
         mViewpagetToy.setPageTransformer(true, new ScaleInTransformer());
         mViewpagetToy.setCurrentItem(1);
+
         mViewpagetToy.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -233,7 +282,7 @@ public class ToySelectorFragment extends BaseFragment {
                 //获得宝宝的头像 , 滑到当前的position展示当前的玩具的宝宝,如果当前的玩具没有绑定宝宝,那么就让他显示默认的baby头像
                 //宝宝的头像从哪来?怎么确定宝宝的头像和玩具的关系
 
-                String s = babyImg.get(position);//获得宝宝的头像
+                String s = babyImg.get(mCurrentposition);//获得宝宝的头像
                 if (s == null) {
 //                    Glide.with(getContext()).load(R.drawable.ic_launcher).asBitmap().into(mHeadeImageview);
                     Glide.with(getContext()).load(R.drawable.ic_launcher).asBitmap().into(new BitmapImageViewTarget(mHeadeImageview) {
@@ -264,9 +313,7 @@ public class ToySelectorFragment extends BaseFragment {
         });
     }
 
-    //TODO 没做完,没有刷新页面
-
-    private void deleteToy(int position, String deleteId, String deleteCode) {
+    private void deleteToyFromPowerUser(int currentposition, String deleteId, String deleteCode) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         String time = simpleDateFormat.format(new Date());
         Retrofit retrofit = new Retrofit.Builder()
@@ -274,35 +321,65 @@ public class ToySelectorFragment extends BaseFragment {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
-        DeleteToyReqBean.BODYBean bodyBean = new DeleteToyReqBean.BODYBean(deleteId, deleteCode);
-        DeleteToyReqBean deleteToyReqBean = new DeleteToyReqBean("REQ", "DATOY", SPUtils.getString(getActivity(), "phoneNum", ""), time,
+        DeleteToyFromPowerUserReqBean.BODYBean bodyBean = new DeleteToyFromPowerUserReqBean.BODYBean(deleteId, deleteCode);
+        DeleteToyFromPowerUserReqBean deleteToyFromPowerUserReqBean = new DeleteToyFromPowerUserReqBean("REQ", "RESET", SPUtils.getString
+                (getActivity(), "phoneNum", ""), time,
+                bodyBean, "", SPUtils.getString(getActivity(), "TOKEN", ""), "1");
+
+        Gson gson = new Gson();
+        String s = gson.toJson(deleteToyFromPowerUserReqBean);
+        Call<DeleteToyFromPowerUserResBean> deleteToyFromPowerUserResBeanCall = allInterface.DELETE_TOY_FROM_POWER_USER_RES_BEAN_CALL(s);
+        deleteToyFromPowerUserResBeanCall.enqueue(new Callback<DeleteToyFromPowerUserResBean>() {
+            @Override
+            public void onResponse(Call<DeleteToyFromPowerUserResBean> call, Response<DeleteToyFromPowerUserResBean> response) {
+                mPagerAdapter.notifyDataSetChanged();
+                Log.i(TAG, "onResponse: respnose12" + response.body().toString());
+                ToastUtil.showToast(getContext(), "确实已经删除了222");
+
+            }
+
+            @Override
+            public void onFailure(Call<DeleteToyFromPowerUserResBean> call, Throwable t) {
+
+            }
+        });
+        ToastUtil.showToast(getContext(), "确实已经删除了2222");
+    }
+
+    //TODO 没做完,没有刷新页面
+
+    private void deleteToyFromNormalUser(int position, String deleteId, String deleteCode) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        String time = simpleDateFormat.format(new Date());
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constant.baseurl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        AllInterface allInterface = retrofit.create(AllInterface.class);
+        DeleteToyFromNormalUserReqBean.BODYBean bodyBean = new DeleteToyFromNormalUserReqBean.BODYBean(deleteId, deleteCode);
+        DeleteToyFromNormalUserReqBean deleteToyReqBean = new DeleteToyFromNormalUserReqBean("REQ", "DATOY", SPUtils.getString(getActivity(),
+                "phoneNum", ""), time,
                 bodyBean, "", SPUtils.getString(getActivity(), "TOKEN", ""), "1");
 
         Gson gson = new Gson();
         String s = gson.toJson(deleteToyReqBean);
-        Call<DeleteToyResBean> deleteToyResBeanCall = allInterface.DELETE_TOY_RES_BEAN_CALL(s);
-        deleteToyResBeanCall.enqueue(new Callback<DeleteToyResBean>() {
+        Call<DeleteToyFromNormalUserResBean> deleteToyFromNormalUserResBeanCall = allInterface.DELETE_TOY_FROM_NORMAL_USER_RES_BEAN_CALL(s);
+        deleteToyFromNormalUserResBeanCall.enqueue(new Callback<DeleteToyFromNormalUserResBean>() {
             @Override
-            public void onResponse(Call<DeleteToyResBean> call, Response<DeleteToyResBean> response) {
+            public void onResponse(Call<DeleteToyFromNormalUserResBean> call, Response<DeleteToyFromNormalUserResBean> response) {
+                mPagerAdapter.notifyDataSetChanged();
+                Log.i(TAG, "onResponse: respnose12" + response.body().toString());
                 ToastUtil.showToast(getContext(), "确实已经删除了111");
 
             }
 
             @Override
-            public void onFailure(Call<DeleteToyResBean> call, Throwable t) {
+            public void onFailure(Call<DeleteToyFromNormalUserResBean> call, Throwable t) {
 
             }
         });
-        ToastUtil.showToast(getContext(), "确实已经删除了");
+        ToastUtil.showToast(getContext(), "确实已经删除了1111");
     }
-////获取数据
-//    public Bundle getBundle() {
-//        return mBundle;
-//    }
-////设置数据
-//    public void setBundle(Bundle bundle) {
-//        this.mBundle = bundle;
-//    }
 
     //查询单个玩具的信息
     private void QuerySingleToyInfo(String toyid, String toycode, String time, final int position) {
@@ -336,8 +413,8 @@ public class ToySelectorFragment extends BaseFragment {
 
                     MainActivity mainActivity = (MainActivity) getActivity();
 
+                    Log.i(TAG, "onResponse: babyimg" + "0" + babyImg.get(position));
                     mainActivity.getToyDetailsFragment().setData(body.getBODY(), babyImg.get(position));
-
                     showFragment(ToyDetailsFragment.class.getSimpleName());
                     Log.i(TAG, "onResponse: +toyselelctorfragment+body" + body.getBODY().toString());
 
@@ -363,7 +440,7 @@ public class ToySelectorFragment extends BaseFragment {
      * 的,只是传递的数据不同,要在这里做判断.
      */
 
-    //接收并处理从activity传过来的数据
+    //接收并处理从Mainactivity传过来的数据 (所有的玩具信息
     @Subscribe(threadMode = ThreadMode.POSTING, sticky = true)
     public void onToyMessage(MessageEventToy messageEventToy) {
 
@@ -379,21 +456,26 @@ public class ToySelectorFragment extends BaseFragment {
         toyImg.clear();
         toyId.clear();
         toyCode.clear();
-        for (int i = 0; i < messageEventToy.mQueryBabyListResults.size(); i++) {
+        ownerId.clear();
 
-            String imgBaby = messageEventToy.mQueryBabyListResults.get(i).getBABYIMG();
-            String imgToy = messageEventToy.mQueryBabyListResults.get(i).getIMG();
-            String ownername = messageEventToy.mQueryBabyListResults.get(i).getOWNERNAME();
-            String ownerId = messageEventToy.mQueryBabyListResults.get(i).getOWNERID();
-            String code = messageEventToy.mQueryBabyListResults.get(i).getCODE();
-            String idToy = messageEventToy.mQueryBabyListResults.get(i).getID();
-            String timeAct = messageEventToy.mQueryBabyListResults.get(i).getACTTIME();
+        for (int i = 0; i < messageEventToy.mQueryToyListResults.size(); i++) {
+
+            String imgBaby = messageEventToy.mQueryToyListResults.get(i).getBABYIMG();
+            String imgToy = messageEventToy.mQueryToyListResults.get(i).getIMG();
+            String ownername = messageEventToy.mQueryToyListResults.get(i).getOWNERNAME();
+            String toyOwnerId = messageEventToy.mQueryToyListResults.get(i).getOWNERID();
+            String code = messageEventToy.mQueryToyListResults.get(i).getCODE();
+            String idToy = messageEventToy.mQueryToyListResults.get(i).getID();
+            String timeAct = messageEventToy.mQueryToyListResults.get(i).getACTTIME();
 
             //TODO 需不需要在这个界面就把玩具的状态信息拿到?
             babyImg.add(imgBaby);
             toyImg.add(imgToy);
             toyId.add(idToy);
             toyCode.add(code);
+            ownerId.add(toyOwnerId);
+
+
         }
 
         Log.i(TAG, "babyImg=====" + babyImg);
@@ -416,8 +498,6 @@ public class ToySelectorFragment extends BaseFragment {
         String img = addToyMessageEvent.mAddToyResultBeanResponse.body().getBODY().getIMG();
         String id = addToyMessageEvent.mAddToyResultBeanResponse.body().getBODY().getID();
         String code = addToyMessageEvent.mAddToyResultBeanResponse.body().getCODE();
-//        String code = addToyMessageEvent.mAddToyResultBeanResponse.body().getBABYIMG();
-//        String imgBaby = addToyMessageEvent.mAddToyResultBeanResponse.body().getBODY().get;
         Log.i("111111", "onGetToyAddMessage: " + toyId.size());
         //这里应该做个判断,判断当前的list里面有没有这个玩具,有就不添加
         boolean isAdd = true;
@@ -431,7 +511,7 @@ public class ToySelectorFragment extends BaseFragment {
             toyImg.add(img);
             toyId.add(id);
             toyCode.add(code);
-//            babyImg.add(imgBaby);
+
         }
 //        Log.i("111111", Thread.currentThread().getName() + " mPagerAdapre" + mPagerAdapter);
         Log.i("111111", " toyId.size2" + toyId.size());
@@ -448,14 +528,13 @@ public class ToySelectorFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-//        MainActivity mainactivity = (MainActivity) getActivity();
-//        mainactivity.getToyDetailsFragment().setArguments();
 
     }
 
     @Override
     public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
+
+        mPagerAdapter.notifyDataSetChanged();
 
     }
 }

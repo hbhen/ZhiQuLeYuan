@@ -240,7 +240,8 @@
 ////        _pager.setCanScroll(true);
 //        if(status == 0){
 //            int meetingType = Session.getInstance().getMeetingType();
-//            if(meetingType == 0 || meetingType == 1 || meetingType == 2 || meetingType == 3 || meetingType == 4 || meetingType == 5 || meetingType == 6){
+//            if(meetingType == 0 || meetingType == 1 || meetingType == 2 || meetingType == 3 || meetingType == 4 || meetingType == 5 ||
+// meetingType == 6){
 //            }else{
 //                Session.getInstance().LeaveMeeting();
 //                Toast.makeText(this, getString(R.string.meeting),Toast.LENGTH_LONG).show();
@@ -551,7 +552,8 @@ import info.emm.meeting.SessionInterface;
 /**
  * Created by lenovo on 2017/2/8.
  */
-public class VideoActivity extends AppCompatActivity implements SessionInterface, View.OnClickListener, Face_Share_Fragment.penClickListener, View.OnTouchListener {
+public class VideoActivity extends AppCompatActivity implements SessionInterface, View.OnClickListener, Face_Share_Fragment.penClickListener, View
+        .OnTouchListener {
 
     static public int WEIYI_VIDEO_OUT_SLOW = 1;       //视频发送速度慢
     static public int WEIYI_VIDEO_OUT_DISCONNECT = 2; //视频发送连接断开重连
@@ -587,6 +589,7 @@ public class VideoActivity extends AppCompatActivity implements SessionInterface
     private boolean change = false;
     private int _xDelta;
     private int _yDelta;
+    public String userFlag = "phone";
 //    private PercentRelativeLayout _root;
 //    private CircleImageView call_toy;
 
@@ -606,19 +609,14 @@ public class VideoActivity extends AppCompatActivity implements SessionInterface
         Session.getInstance().registerWhiteBroad(SharePadMgr.getInstance());
 
 
-
-
-
     }
-
-
 
 
     private void initView() {
 //        _root = (PercentRelativeLayout) findViewById(R.id._root);
-        other_video = (info.emm.sdk.VideoView) findViewById(R.id.surfaceView6);
+//        other_video = (info.emm.sdk.VideoView) findViewById(R.id.surfaceView6);
 //        other_video.setOnTouchListener(this);
-        my_video = (info.emm.sdk.VideoView) findViewById(R.id.surfaceView5);
+        other_video = (info.emm.sdk.VideoView) findViewById(R.id.surfaceView5);
 //        bottom_action_end_call = (ImageView) findViewById(R.id.bottom_action_end_call);
 //        call_toy = (CircleImageView) findViewById(R.id.call_toy);
 //        String wanju = SharePrefUtil.getString(this,"wanjuHead","");
@@ -630,23 +628,24 @@ public class VideoActivity extends AppCompatActivity implements SessionInterface
     private void initListener() {
 
 
-        other_video.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (!change) {
-                    Log.d("surfaceview", "surfaceview: +change1");
-                    Session.getInstance().PlayVideo(0, true, other_video, 0, 0, 1, 1, 0, false, 1, 0);
-                    Session.getInstance().PlayVideo(_watchingPeerID, true, my_video, 0, 0, 1, 1, 65, false, 1, 0);
-                    change = true;
-                } else {
-                    Log.d("surfaceview", "surfaceview: +change2");
-                    Session.getInstance().PlayVideo(0, true, my_video, 0, 0, 1, 1, 0, false, 1, 0);
-                    Session.getInstance().PlayVideo(_watchingPeerID, true, other_video, 0, 0, 1, 1, 65, false, 1, 0);
-                    change = false;
-                }
-            }
-        });
+//        other_video.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                if (!change) {
+//                    Log.d("surfaceview", "surfaceview: +change1");
+//
+//                    Session.getInstance().PlayVideo(0, true, other_video, 0, 0, 1, 1, 0, false, 1, 0);
+//                    Session.getInstance().PlayVideo(_watchingPeerID, true, my_video, 0, 0, 1, 1, 65, false, 1, 0);
+//                    change = true;
+//                } else {
+//                    Log.d("surfaceview", "surfaceview: +change2");
+//                    Session.getInstance().PlayVideo(0, true, my_video, 0, 0, 1, 1, 0, false, 1, 0);
+//                    Session.getInstance().PlayVideo(_watchingPeerID, true, other_video, 0, 0, 1, 1, 65, false, 1, 0);
+//                    change = false;
+//                }
+//            }
+//        });
 
 //        bottom_action_end_call.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -815,11 +814,11 @@ public class VideoActivity extends AppCompatActivity implements SessionInterface
             return;
 
         if (!_sendingVideo) {
-            Session.getInstance().PlayVideo(0, true, my_video, 0, 0, 1, 1, 0, false, 1, 0);
+            Session.getInstance().PlayVideo(0, true, other_video, 0, 0, 1, 1, 0, false, 1, 0);
             _sendingVideo = true;
 
         } else {
-            Session.getInstance().PlayVideo(0, false, my_video, 0, 0, 1, 1, 0, false, 1, 0);
+            Session.getInstance().PlayVideo(0, false, other_video, 0, 0, 1, 1, 0, false, 1, 0);
             _sendingVideo = false;
 
         }
@@ -877,7 +876,8 @@ public class VideoActivity extends AppCompatActivity implements SessionInterface
 
         if (status == 0) {
             int meetingType = Session.getInstance().getMeetingType();
-            if (meetingType == 0 || meetingType == 1 || meetingType == 2 || meetingType == 3 || meetingType == 4 || meetingType == 5 || meetingType == 6) {
+            if (meetingType == 0 || meetingType == 1 || meetingType == 2 || meetingType == 3 || meetingType == 4 || meetingType == 5 || meetingType
+                    == 6) {
 
             } else {
                 Session.getInstance().LeaveMeeting();
@@ -923,8 +923,8 @@ public class VideoActivity extends AppCompatActivity implements SessionInterface
     @Override
     public void onEnablePresence(int peerID) {
         _myPeerID = peerID;
-        seeMe();
-//        seeYou();
+//        seeMe();
+        seeYou();
         Session.getInstance().requestSpeaking(_myPeerID);
         _freeSpeak = true;
         sendText(0, "i am " + android.os.Build.MODEL + android.os.Build.VERSION.RELEASE, android.os.Build.MODEL);
@@ -1040,6 +1040,7 @@ public class VideoActivity extends AppCompatActivity implements SessionInterface
     public void OnPenClick(boolean b) {
 
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();

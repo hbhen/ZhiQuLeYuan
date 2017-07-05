@@ -51,8 +51,8 @@
                 android:id="@+id/iv_fragment_toy_details_toyimg"
                 android:layout_width="148dp"
                 android:layout_height="210dp"
-                android:scaleType="centerCrop"
-                android:src="@mipmap/test"/>
+                android:scaleType="fitCenter"
+                android:src="@mipmap/default_babyimage"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -113,7 +113,7 @@
                 android:layout_height="70dp"
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="center_horizontal"
-                android:src="@mipmap/ic_launcher"/>
+                android:src="@mipmap/default_babyimage"/>
 
             <TextView
                 android:id="@+id/tv_fragment_toy_details_babyName"
