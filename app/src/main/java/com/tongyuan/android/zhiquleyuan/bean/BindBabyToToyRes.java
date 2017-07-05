@@ -1,11 +1,14 @@
 package com.tongyuan.android.zhiquleyuan.bean;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by Android on 2017/5/16.
  */
-public class BindBabyToToyRes {
+public class BindBabyToToyRes implements Parcelable {
     /**
      * TYPE : RES
      * CMD : TOYB
@@ -140,7 +143,7 @@ public class BindBabyToToyRes {
         this.MSG = MSG;
     }
 
-    public static class BODYBean {
+    public static class BODYBean implements Parcelable {
         /**
          *  :
          */
@@ -155,5 +158,78 @@ public class BindBabyToToyRes {
         public void set_$215(String _$215) {
             this._$215 = _$215;
         }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(this._$215);
+        }
+
+        public BODYBean() {
+        }
+
+        protected BODYBean(Parcel in) {
+            this._$215 = in.readString();
+        }
+
+        public static final Parcelable.Creator<BODYBean> CREATOR = new Parcelable.Creator<BODYBean>() {
+            @Override
+            public BODYBean createFromParcel(Parcel source) {
+                return new BODYBean(source);
+            }
+
+            @Override
+            public BODYBean[] newArray(int size) {
+                return new BODYBean[size];
+            }
+        };
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.TYPE);
+        dest.writeString(this.CMD);
+        dest.writeString(this.ACCT);
+        dest.writeString(this.TIME);
+        dest.writeParcelable(this.BODY, flags);
+        dest.writeString(this.VERI);
+        dest.writeString(this.TOKEN);
+        dest.writeString(this.SEQ);
+        dest.writeString(this.CODE);
+        dest.writeString(this.MSG);
+    }
+
+    protected BindBabyToToyRes(Parcel in) {
+        this.TYPE = in.readString();
+        this.CMD = in.readString();
+        this.ACCT = in.readString();
+        this.TIME = in.readString();
+        this.BODY = in.readParcelable(BODYBean.class.getClassLoader());
+        this.VERI = in.readString();
+        this.TOKEN = in.readString();
+        this.SEQ = in.readString();
+        this.CODE = in.readString();
+        this.MSG = in.readString();
+    }
+
+    public static final Parcelable.Creator<BindBabyToToyRes> CREATOR = new Parcelable.Creator<BindBabyToToyRes>() {
+        @Override
+        public BindBabyToToyRes createFromParcel(Parcel source) {
+            return new BindBabyToToyRes(source);
+        }
+
+        @Override
+        public BindBabyToToyRes[] newArray(int size) {
+            return new BindBabyToToyRes[size];
+        }
+    };
 }

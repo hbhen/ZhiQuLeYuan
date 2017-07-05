@@ -4,18 +4,17 @@
                 android:layout_height="match_parent"
                 android:background="#f1f1f1f1">
 
-    <android.support.v7.widget.Toolbar
+    <RelativeLayout
         android:id="@+id/tb_toy_details"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
+        android:layout_height="@dimen/dp_44"
         android:background="#f1f1f1">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_7"
+            android:layout_centerVertical="true"
+            android:layout_width="@dimen/dp_10"
+            android:layout_height="match_parent"
             android:src="@drawable/arrow_left"/>
 
         <TextView
@@ -26,7 +25,7 @@
             android:text="玩具"
             android:textColor="#000000"
             android:textSize="18sp"/>
-    </android.support.v7.widget.Toolbar>
+    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/rl_toy_details"
@@ -54,11 +53,12 @@
                 android:layout_height="210dp"
                 android:scaleType="centerCrop"
                 android:src="@mipmap/test"/>
+
             <RelativeLayout
-                android:layout_gravity="center_vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_alignRight="@id/iv_fragment_toy_details_toyimg">
+                android:layout_alignRight="@id/iv_fragment_toy_details_toyimg"
+                android:layout_gravity="center_vertical">
 
                 <ImageView
                     android:id="@+id/iv_fragment_toy_details_call_mic"
@@ -90,9 +90,9 @@
                     android:id="@+id/iv_fragment_toy_details_call_signal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
                     android:layout_marginLeft="10dp"
                     android:layout_toRightOf="@id/iv_fragment_toy_details_call_buttery"
-                    android:layout_centerVertical="true"
                     android:src="@drawable/toy_signal_2"/>
 
 
@@ -184,9 +184,10 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="20dp"
                 android:text="玩具解除绑定"
-                android:visibility="gone"
                 android:textColor="#ff4511"
-                android:textSize="19sp"/>
+                android:textSize="19sp"
+                android:visibility="gone"/>
+
             <TextView
                 android:id="@+id/tv_fragment_toy_details_bind"
                 android:layout_width="wrap_content"
@@ -244,97 +245,169 @@
         android:textSize="16sp"/>
     <!--这里要添加推荐的内容,在代码里动态的添加推荐内容的item布局-->
     <!--这个布局的显示在点击某个东西的时候弹出,需要动画,可见不可见-->
-    <FrameLayout
+
+    <RelativeLayout
         android:id="@+id/fl_fragment_toy_details_playcontrol"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/rl_toy_details"
         android:layout_marginTop="39dp"
-        android:visibility="gone">
+        android:background="#ffffff"
+        >
 
         <RelativeLayout
+            android:id="@+id/rl_fragment_recording_playrecording"
             android:layout_width="match_parent"
-            android:layout_height="216dp"
-            android:layout_below="@id/tv_toy_details_playing"
-            android:background="#ffffff">
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tv_fragment_playrecoding_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="录音文件名称"
+                android:textColor="#000000"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:layout_marginRight="@dimen/dp_10"
+                android:id="@+id/ib_fragment_recoding_setvolume"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+               android:text="00:45"
+                />
 
             <RelativeLayout
-                android:id="@+id/rl_toy_details_control"
+                android:id="@+id/rl_fragment_recording_control"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp">
-
-                <LinearLayout
-                    android:id="@+id/ll_toy_details_control"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/play_before_pressed_104"/>
-
-                    <!--要外层的的边框换成彩色的,并且有转动的动画-->
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="82dp"
-                        android:layout_marginRight="82dp"
-                        android:src="@drawable/play_stop_pressed240"/>
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/play_after_pressed_104"/>
-                </LinearLayout>
+                android:layout_centerInParent="true"
+                android:layout_marginTop="40dp">
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/iv_fragment_playrecording_back"
+                    android:layout_width="21dp"
+                    android:layout_height="21dp"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="10dp"
                     android:src="@drawable/arrow_left"/>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="68dp">
+
+                    <ImageView
+                        android:id="@+id/iv_recoding_prev"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_centerInParent="true"
+                        android:src="@drawable/play_recording_prev_3x"/>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rl_playrecording_play"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true">
+
+                    <ImageView
+                        android:id="@+id/iv_recoding_play"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_centerInParent="true"
+                        android:src="@drawable/recording_listener_3x"/>
+
+                    <ImageView
+                        android:id="@+id/iv_recoding_stop"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:src="@drawable/recordpause_3x"
+                        android:visibility="invisible"/>
+
+                    <ImageView
+                        android:id="@+id/iv_recoding_stopcircle"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_centerInParent="true"
+                        android:src="@drawable/colorcircle_3x"
+                        android:visibility="gone"/>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="70dp">
+
+                    <ImageView
+                        android:id="@+id/iv_recoding_next"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_centerInParent="true"
+                        android:src="@drawable/play_recording_next_3x"/>
+
+                </RelativeLayout>
+
             </RelativeLayout>
 
-            <LinearLayout
+            <RelativeLayout
+                android:id="@+id/rl_fragment_recoding_seekbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/rl_toy_details_control"
-                android:layout_centerHorizontal="true"
-                android:gravity="center">
+                android:layout_below="@id/rl_fragment_recording_control">
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/volume_small_reduction_pressed"/>
+                <TextView
+                    android:id="@+id/tv_fragment_recoding_begintime"
+                    android:layout_width="56sp"
+                    android:layout_height="17sp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="24dp"
+                    android:gravity="center"
+                    android:text="00:00"/>
 
                 <SeekBar
+                    android:id="@+id/seekbar"
                     android:layout_width="200dp"
-                    android:layout_height="2dp"/>
-
-                <ImageView
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/volume_big_add_pressed"/>
+                    android:layout_toRightOf="@id/tv_fragment_recoding_begintime"
+                    android:focusable="true"
+                    android:maxHeight="1.7dp"
+                    android:minHeight="1.7dp"
+                    android:progressDrawable="@drawable/po_seekbar"
+                    android:thumb="@drawable/seekbar_bar_3x"/>
 
-            </LinearLayout>
-
-
+                <TextView
+                    android:id="@+id/tv_fragment_recoding_endtime"
+                    android:layout_width="56sp"
+                    android:layout_height="17sp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="24dp"
+                    android:layout_toRightOf="@id/seekbar"
+                    android:gravity="center"
+                    android:text="00:45"/>
+            </RelativeLayout>
         </RelativeLayout>
-    </FrameLayout>
+        <ListView
+            android:id="@+id/lv_fragment_toy_details_recommand"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="@null"
+            android:visibility="visible"/>
+
+    </RelativeLayout>
+
     <!--把这个分出去 ,另外创建一个fragment,因为这里有两个fragment的切换-->
 
 
-    <ListView
-        android:id="@+id/lv_fragment_toy_details_recommand"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_toy_details_playing"
-        android:divider="@null"/>
+
 
 
 </RelativeLayout>

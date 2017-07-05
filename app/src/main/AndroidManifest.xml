@@ -9,6 +9,10 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.FLASHLIGHT"/>
 
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_LOGS" />
+
     <application
         android:name="android.support.multidex.MultiDexApplication"
         android:allowBackup="true"
@@ -68,6 +72,9 @@
             android:name=".activity.BabyInfoListActivity"
             android:screenOrientation="portrait"/>
         <activity
+            android:name=".activity.SetUserInfoActivity"
+            android:screenOrientation="portrait"/>
+        <activity
             android:name=".zxing.app.CaptureActivity"
             android:screenOrientation="portrait"/>
         <activity
@@ -90,7 +97,8 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".activity.OtherActivity"/>
 
-        <service android:name=".service.MusicPlayerService"
+        <service
+            android:name=".service.MusicPlayerService"
             android:enabled="true"
             android:exported="true"/>
 
@@ -106,6 +114,10 @@
         <activity android:name=".activity.SetInitVolumeActivity">
         </activity>
         <activity android:name=".activity.PlayListActivity">
+        </activity>
+        <activity
+            android:name=".activity.UnBindBabyActivity"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 

@@ -7,38 +7,44 @@
     <com.daimajia.swipe.SwipeLayout
         android:id="@+id/Swipe_babyinfolist"
         android:layout_width="match_parent"
-        android:layout_alignParentTop="true"
+        android:layout_height="80dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_height="60dp">
+        android:layout_alignParentTop="true">
 
-            <Button
-                android:id="@+id/swipe_babyinfolist_delete"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:textSize="18sp"
-                android:background="@android:color/holo_red_dark"
-                android:gravity="center"
-                android:text="删除"
-                android:textColor="@android:color/white"/>
+        <Button
+            android:id="@+id/swipe_babyinfolist_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:color/holo_red_dark"
+            android:gravity="center"
+            android:text="删除"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"/>
 
 
         <!--右边的结构  其中右边的结构又分为title上,音量居右,性别等信息下-->
         <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_width="match_parent"
+            android:layout_height="80dp">
             <!--左边的结构-->
 
             <ImageView
                 android:id="@+id/iv_item_babyinfolist"
                 android:layout_width="60dp"
-                android:layout_height="match_parent"
+                android:layout_height="60dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dp_10"
                 android:src="@drawable/ic_launcher"/>
+
             <RelativeLayout
-                android:layout_toRightOf="@id/iv_item_babyinfolist"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_toRightOf="@id/iv_item_babyinfolist"
+                android:paddingLeft="@dimen/dp_10"
+                android:paddingTop="@dimen/dp_10">
+
                 <TextView
                     android:id="@+id/tv_title_item_babyinfolist"
                     android:layout_width="wrap_content"
@@ -48,12 +54,13 @@
                     android:textSize="16sp"/>
                 <!--音量等内容的布局-->
                 <LinearLayout
-                    android:layout_alignParentRight="true"
                     android:id="@+id/ll_down_item_babyinfolist"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
+                    android:layout_alignParentRight="true"
                     android:layout_below="@id/tv_title_item_babyinfolist"
+                    android:layout_marginRight="@dimen/dp_10"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <ImageView
@@ -65,28 +72,33 @@
                         android:id="@+id/tv_item_babyinfolist_primarysound"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dp_3"
                         android:text="初始音量"
                         android:textSize="12sp"/>
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dp_10"
                         android:src="@drawable/babyinvite_3x"/>
 
                     <TextView
                         android:id="@+id/tv_item_babyinfolist_invite"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dp_3"
                         android:text="邀请"
                         android:textSize="12sp"/>
                 </LinearLayout>
+
                 <LinearLayout
-                    android:layout_alignParentBottom="true"
-                    android:gravity="center_vertical"
-                    android:layout_below="@id/ll_down_item_babyinfolist"
                     android:layout_width="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_below="@id/ll_down_item_babyinfolist"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -96,28 +108,36 @@
                         android:id="@+id/tv_item_babyinfolist_sexy"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dp_3"
                         android:text="男"
                         android:textSize="12sp"/>
 
                     <ImageView
-                        android:layout_marginLeft="10dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
                         android:src="@drawable/babybirthday_3x"/>
 
                     <TextView
                         android:id="@+id/tv_item_babyinfolist_birthday"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dp_3"
                         android:text="2012/02/01"
                         android:textSize="12sp"/>
+
                 </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/color_8f8f8f"/>
             </RelativeLayout>
 
         </RelativeLayout>
-       <!-- </LinearLayout>-->
+        <!-- </LinearLayout>-->
     </com.daimajia.swipe.SwipeLayout>
-
 
 
 </LinearLayout>

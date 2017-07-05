@@ -2,7 +2,10 @@ package com.tongyuan.android.zhiquleyuan.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.BaseSwipeAdapter;
 import com.google.gson.Gson;
@@ -104,7 +108,14 @@ public class BabyInfoListAdapter extends BaseSwipeAdapter {
                 swipeLayout.close();// 删除成功后需要关闭侧滑
             }
         });
-        Glide.with(mContext).load(mLSTBeen.get(pos).getIMG()).into(mIv_item_babyinfolist);
+        Glide.with(mContext).load(mLSTBeen.get(pos).getIMG()).asBitmap().centerCrop().into(new BitmapImageViewTarget(mIv_item_babyinfolist) {
+            @Override
+            protected void setResource(Bitmap resource) {
+                RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(mContext.getResources(), resource);
+                roundedBitmapDrawable.setCircular(true);
+                mIv_item_babyinfolist.setImageDrawable(roundedBitmapDrawable);
+            }
+        });
         mTv_title_item_babyinfolist.setText(mLSTBeen.get(pos).getNAME());
         mTv_item_babyinfolist_sexy.setText(mLSTBeen.get(pos).getSEX());
         mTv_item_babyinfolist_birthday.setText(mLSTBeen.get(pos).getBIRTHDAY());

@@ -6,7 +6,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.OnScrollListener;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +29,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
 
 /**
  * 先加载布局,再在布局里面添加数据.布局从哪个生命周期开始加载?数据从哪个生命周期开始加载?
@@ -152,6 +152,7 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
                         discoveryListViewList.clear();
                         currPage = 1;
                     }
+                    //Log.i(TAG, "onResponse: "+response.body().toString());
                     discoveryListViewList.addAll(response.body().BODY.getLST());
                     mAdapter.notifyDataSetChanged();
                 } else {

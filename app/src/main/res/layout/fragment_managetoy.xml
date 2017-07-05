@@ -3,31 +3,28 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
     <!--toolbar-->
-    <android.support.v7.widget.Toolbar
+    <RelativeLayout
         android:id="@+id/rl_managetoy_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="@dimen/dp_44"
+        android:background="@color/titlebackground">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
 
-            <ImageView
-                android:layout_width="10dp"
-                android:layout_height="20dp"
-                android:src="@drawable/arrow_left"/>
+        <ImageView
+            android:layout_width="10dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/dp_7"
+            android:src="@drawable/arrow_left"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_gravity="center"
-                android:text="玩具管理"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_18"/>
-
-        </RelativeLayout>
-    </android.support.v7.widget.Toolbar>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:text="玩具管理"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_18"/>
+    </RelativeLayout>
 
     <!--scrollview只能嵌套一层-->
     <ScrollView
@@ -205,9 +202,10 @@
                         android:layout_marginBottom="15dp"
                         android:layout_marginRight="10dp"
                         android:text="玩具解除绑定"
-                        android:visibility="gone"
                         android:textColor="#ff4511"
-                        android:textSize="18sp"/>
+                        android:textSize="18sp"
+                        android:visibility="gone"/>
+
                     <TextView
                         android:id="@+id/tv_fragment_managetoy_bindtoy"
                         android:layout_width="wrap_content"

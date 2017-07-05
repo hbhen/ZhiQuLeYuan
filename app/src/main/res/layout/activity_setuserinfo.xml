@@ -2,18 +2,20 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-
     <RelativeLayout
-        android:id="@+id/tb_addbatyinfo"
+        android:id="@+id/tb_setuserinfo"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_44">
+        android:layout_height="@dimen/dp_44"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true">
 
         <ImageView
             android:id="@+id/baby_back"
-            android:layout_marginLeft="@dimen/dp_7"
+            android:layout_width="10dp"
+            android:layout_height="21dp"
             android:layout_centerVertical="true"
-            android:layout_width="@dimen/dp_10"
-            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/dp_10"
             android:src="@drawable/arrow_left"/>
 
         <TextView
@@ -21,41 +23,40 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
-            android:text="添加宝宝信息"
-            android:textColor="#000000"
-            android:textSize="18dp"/>
+            android:text="@string/setuserinfo"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_18"/>
     </RelativeLayout>
-
     <ImageView
-        android:id="@+id/iv_addbabyinfo"
+        android:id="@+id/iv_setuserinfo"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_below="@id/tb_addbatyinfo"
+        android:layout_below="@id/tb_setuserinfo"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="19dp"
         android:src="@mipmap/ic_launcher"/>
 
     <EditText
-        android:id="@+id/et_addbabyinfo"
+        android:id="@+id/et_setuserinfo"
         android:layout_width="330dp"
         android:layout_height="40dp"
-        android:layout_below="@id/iv_addbabyinfo"
+        android:layout_below="@id/iv_setuserinfo"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:background="@drawable/shape_baby_edit"
+        android:gravity="center"
+        android:hint="请输入用户昵称"
         android:textColor="@color/black"
         android:textColorHint="@color/divide"
-        android:textSize="16sp"
-        android:gravity="center"
-        android:hint="请输入宝宝昵称"/>
+        android:textSize="16sp"/>
 
     <RadioGroup
-        android:id="@+id/rg_addbabyinfo"
+        android:id="@+id/rg_setuserinfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/et_setuserinfo"
         android:layout_marginTop="19dp"
         android:gravity="center_horizontal"
-        android:layout_below="@id/et_addbabyinfo"
         android:orientation="horizontal">
 
         <RadioButton
@@ -89,42 +90,32 @@
 
 
     <TextView
-        android:id="@+id/tv_addbabyinfo_hint_up"
+        android:id="@+id/tv_setuserinfo_hint_up"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/rg_addbabyinfo"
+        android:layout_below="@id/rg_setuserinfo"
         android:layout_marginTop="18dp"
         android:gravity="center"
-        android:text="请选择宝宝的出生年月日"
+        android:text="请选择用户的出生年月日"
         android:textColor="@color/black"
         android:textSize="16sp"
         android:textStyle="bold"/>
 
-    <TextView
-        android:id="@+id/tv_addbabyinfo_hint_down"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_addbabyinfo_hint_up"
-        android:layout_marginTop="3dp"
-        android:gravity="center"
-        android:text="我们将为您推荐合适的玩具及音频"
-        android:textColor="#8f8f8f"
-        android:textSize="16sp"/>
 
     <TextView
-        android:id="@+id/tv_activity_addbabyinfo_date"
+        android:id="@+id/tv_activity_setuserinfo_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_addbabyinfo_hint_down"
+        android:layout_below="@id/tv_setuserinfo_hint_up"
         android:layout_marginTop="17dp"
         android:gravity="center_horizontal"
         android:text="日期选择"
         android:textColor="@color/black"
         android:textSize="16sp"/>
 
-    <!--这里放一个三级缓存的插件,用第三方的年月日-->
+
     <Button
-        android:id="@+id/bt_activity_addbabyinfo_confirm"
+        android:id="@+id/bt_activity_setuserinfo_confirm"
         android:layout_width="80dp"
         android:layout_height="40dp"
         android:layout_alignParentBottom="true"
@@ -135,5 +126,7 @@
         android:text="确定"
         android:textColor="@color/black"
         android:textSize="16sp"/>
+
+
 
 </RelativeLayout>

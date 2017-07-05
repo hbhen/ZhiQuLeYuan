@@ -122,7 +122,6 @@ public class MyPlayActivity extends BaseActivity {
         mToken = SPUtils.getString(this, "TOKEN", "");
         list = getIntent().getParcelableArrayListExtra("list");
         playPosition = getIntent().getIntExtra("position", 0);
-
         playMusic(true);
         mRotateObjectAnimator = ObjectAnimator.ofFloat(mImageView, "rotation", 0, 360);
         mRotateObjectAnimator.setDuration(20000);

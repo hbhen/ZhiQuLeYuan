@@ -3,8 +3,6 @@ package com.tongyuan.android.zhiquleyuan.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -91,12 +89,14 @@ public class AddMemberToGroup extends AppCompatActivity implements View.OnClickL
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.et_addmembertogroup:
-                mPhone = mEt_addmembertogroup.getText().toString().trim();
+
                 //TODO 判断是不是手机号的逻辑
 
 
                 break;
             case R.id.bt_addmembertogroup:
+                mPhone = mEt_addmembertogroup.getText().toString().trim();
+                ToastUtil.showToast(this,"phone"+mPhone);
                 QuerySingleUserInfo(mPhone);
                 break;
             default:
@@ -123,7 +123,6 @@ public class AddMemberToGroup extends AppCompatActivity implements View.OnClickL
             public void onResponse(Call<QuerySingleUserInfoReSBean> call, Response<QuerySingleUserInfoReSBean> response) {
                 if (!response.body().toString().isEmpty() && response.body().getCODE().equals("-201")) {
                     ToastUtil.showToast(getApplicationContext(), "当前用户不存在,发送注册链接给用户");
-
                     mIntent.setClass(getApplicationContext(), UnRegisterUserInvite.class);
                     startActivity(mIntent);
                 } else if (!response.body().toString().isEmpty() && response.body().getCODE().equals("0")) {
@@ -170,10 +169,11 @@ public class AddMemberToGroup extends AppCompatActivity implements View.OnClickL
         addMemberToGroupReSBeanCall.enqueue(new Callback<AddMemberToGroupReSBean>() {
             @Override
             public void onResponse(Call<AddMemberToGroupReSBean> call, Response<AddMemberToGroupReSBean> response) {
-                FragmentManager supportFragmentManager = getSupportFragmentManager();
-                FragmentTransaction transaction = supportFragmentManager.beginTransaction();
-                transaction.add(R.id.fl_fragmentcontainer, new ToyManagerFragment());
-                transaction.commit();
+//                FragmentManager supportFragmentManager = getSupportFragmentManager();
+//                FragmentTransaction transaction = supportFragmentManager.beginTransaction();
+//                transaction.add(R.id.fl_fragmentcontainer, new ToyManagerFragment());
+//                transaction.commit();
+                finish();
             }
 
             @Override

@@ -11,7 +11,7 @@
         android:padding="10dp">
 
         <ImageView
-            android:id="@+id/iv_item_bindbaby_babyimg"
+            android:id="@+id/iv_item_unbindbaby_babyimg"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:scaleType="centerCrop"
@@ -25,7 +25,7 @@
         android:layout_marginLeft="10dp">
 
         <TextView
-            android:id="@+id/tv_item_bindbaby_babyname"
+            android:id="@+id/tv_item_unbindbaby_babyname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -36,43 +36,43 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tv_item_bindbaby_babyname"
+            android:layout_below="@id/tv_item_unbindbaby_babyname"
             android:layout_marginTop="20dp">
 
             <ImageView
-                android:id="@+id/iv_item_bindbaby_sex"
+                android:id="@+id/iv_item_unbindbaby_sex"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:src="@drawable/signs_man"/>
 
             <TextView
-                android:id="@+id/tv_item_bindbaby_sex"
+                android:id="@+id/tv_item_unbindbaby_sex"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="3dp"
-                android:layout_toRightOf="@id/iv_item_bindbaby_sex"
+                android:layout_toRightOf="@id/iv_item_unbindbaby_sex"
                 android:text="男"
                 android:textColor="#000000"
                 android:textSize="16sp"/>
 
             <ImageView
-                android:id="@+id/iv_item_bindbaby_birthday"
+                android:id="@+id/iv_item_unbindbaby_birthday"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="5dp"
-                android:layout_toRightOf="@id/tv_item_bindbaby_sex"
+                android:layout_toRightOf="@id/tv_item_unbindbaby_sex"
                 android:src="@drawable/baby_birthday_3x"/>
 
             <TextView
-                android:id="@+id/tv_item_bindbaby_birthday"
+                android:id="@+id/tv_item_unbindbaby_birthday"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="3dp"
-                android:layout_toRightOf="@id/iv_item_bindbaby_birthday"
+                android:layout_toRightOf="@id/iv_item_unbindbaby_birthday"
                 android:text="2012/02/01"
                 android:textColor="#000000"
                 android:textSize="16sp"/>
@@ -89,7 +89,7 @@
         <!--android:layout_centerVertical="true"/>-->
 
         <ImageButton
-            android:id="@+id/iv_item_bindbaby_checked"
+            android:id="@+id/iv_item_unbindbaby_checked"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_alignParentRight="true"

@@ -8,10 +8,8 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.RemoteException;
-import android.util.Log;
 
 import com.tongyuan.android.zhiquleyuan.IMusicAidl;
-import com.tongyuan.android.zhiquleyuan.IRemoteServiceCallback;
 import com.tongyuan.android.zhiquleyuan.service.MusicPlayerService;
 
 import java.util.WeakHashMap;
@@ -80,11 +78,11 @@ public class MusicPlayer {
         }
     }
 
-    public static void openAndStart(String path) {
+    public static void openAndStart(String id) {
         if(mService == null)
             return;
         try {
-            mService.openAndStart(path);
+            mService.openAndStart(id);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
