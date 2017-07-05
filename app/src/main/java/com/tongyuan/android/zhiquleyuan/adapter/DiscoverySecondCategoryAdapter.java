@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListResultBean;
 import com.tongyuan.android.zhiquleyuan.holder.SecondaryCategoryHolder;
+import com.tongyuan.android.zhiquleyuan.player.MusicPlayer;
 import com.tongyuan.android.zhiquleyuan.service.MusicPlayerService;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
@@ -115,7 +116,7 @@ public class DiscoverySecondCategoryAdapter extends BaseAdapter {
         holder.textviewTitle.setText(list.get(position).getNAME());
         holder.playView.setTag(position);
         holder.favoriteView.setTag(position);
-        if(list.get(position).isPlaying) {
+        if(list.get(position).isPlaying /*&& MusicPlayerService.isPlayUrl(list.get(position).getID())*/) {
             holder.playView.setCompoundDrawables(playingDrawable, null, null, null);
             holder.playView.setTextColor(mContext.getResources().getColor(R.color.redFont));
         } else {
@@ -136,16 +137,19 @@ public class DiscoverySecondCategoryAdapter extends BaseAdapter {
                     return;
                 }
                 String musicId = list.get(position).getID();
-                /*if(list.get(position).isPlaying) {
+                if(list.get(position).isPlaying && MusicPlayerService.isPlayUrl(list.get(position).getID())) {
                     MusicPlayerService.stopService(mContext, true);
-                } else {*/
+                    for (DiscoveryListResultBean.BODYBean.LSTBean bean : list) {
+                        bean.isPlaying = false;
+                    }
+                } else {
                     MusicPlayerService.launchService(mContext, musicId);
                     for (DiscoveryListResultBean.BODYBean.LSTBean bean : list) {
                         bean.isPlaying = false;
                     }
                     list.get(position).isPlaying = true;
-                    notifyDataSetChanged();
-                //}
+                }
+                notifyDataSetChanged();
 
             } else if(v.getId() == R.id.dis_sub_item_favorite) {
                 ToastUtil.showToast(mContext, "favorite");

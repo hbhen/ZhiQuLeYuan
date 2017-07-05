@@ -40,4 +40,6 @@ interface IMusicAidl {
     void registerCallback(IRemoteServiceCallback cb);
 
     void release();
+
+    boolean isPlayUrl(String musicId);
 }

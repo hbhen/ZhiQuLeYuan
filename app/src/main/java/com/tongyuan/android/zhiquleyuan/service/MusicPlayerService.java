@@ -16,7 +16,7 @@ import com.tongyuan.android.zhiquleyuan.player.MusicAidlStub;
  */
 
 public class MusicPlayerService extends Service {
-    private MusicAidlStub musicAidlStub ;
+    private static MusicAidlStub musicAidlStub ;
     //private NotificationManager mNotificationManager;
     public static final int CODE_prepared = 1;
     public static final int CODE_error    = 2;
@@ -58,16 +58,32 @@ public class MusicPlayerService extends Service {
 
     public static void stopService(Context mContext , boolean isStop) {
         Intent it = new Intent(mContext, MusicPlayerService.class);
-        it.putExtra("musicId", isStop);
+        it.putExtra("isStop", isStop);
         mContext.startService(it);
+    }
+
+    public static boolean isPlayUrl(String musicId) {
+        try {
+            return musicAidlStub.isPlayUrl(musicId);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         String musicId = intent.getStringExtra("musicId");
+        boolean isStop = intent.getBooleanExtra("isStop", false);
         if(musicId != null) {
             try {
                 musicAidlStub.openAndStart(musicId);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        } else if(isStop) {
+            try {
+                musicAidlStub.stop();
             } catch (RemoteException e) {
                 e.printStackTrace();
             }

@@ -95,5 +95,10 @@ public class MusicAidlStub extends IMusicAidl.Stub {
         multiPlayer.release();
     }
 
+    @Override
+    public boolean isPlayUrl(String musicId) throws RemoteException {
+        return multiPlayer.isPlayUrl(musicId);
+    }
+
 
 }

@@ -22,7 +22,6 @@ public class MusicPlayer {
 
     private static IMusicAidl mService;
     private static final WeakHashMap<Context, ServiceBinder> mConnectionMap;
-//    private static final long[] sEmptyList;
 
     public static final class ServiceToken {
         private ContextWrapper mWrappedContext;
@@ -33,7 +32,6 @@ public class MusicPlayer {
 
     static {
         mConnectionMap = new WeakHashMap<>();
-        //sEmptyList = new long[0];
     }
 
     public static ServiceToken bindToService(Context context, ServiceConnection connection) {
@@ -220,5 +218,6 @@ public class MusicPlayer {
             e.printStackTrace();
         }
     }
+
 
 }

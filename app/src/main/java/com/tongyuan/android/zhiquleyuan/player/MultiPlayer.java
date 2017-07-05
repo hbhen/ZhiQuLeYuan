@@ -180,6 +180,18 @@ class MultiPlayer implements MediaPlayer.OnErrorListener,
         mService.get().sendBroadCastToReceiver(MusicPlayerService.CODE_prepared);
     }
 
+    /**
+     * 判断当前有没有正在播放该URL视频
+     * @param musicId  视频的ID
+     * @return
+     */
+    public boolean isPlayUrl(String musicId) {
+        if(urlMap.containsKey(musicId) && urlMap.get(musicId).equals(playUrl) && isPlaying()) {
+            return true;
+        }
+        return false;
+    }
+
     public void release(){
         urlMap.clear();
         urlMap = null;
