@@ -29,12 +29,14 @@ import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListResultBean;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.player.MusicPlayer;
+import com.tongyuan.android.zhiquleyuan.service.MusicPlayerService;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.StatusBarUtils;
 import com.tongyuan.android.zhiquleyuan.utils.Util;
 import com.tongyuan.android.zhiquleyuan.view.IconTextView;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -69,12 +71,19 @@ public class MyPlayActivity extends BaseActivity {
     ImageView mPlayBtn;
     @BindView(R.id.iv_playing_details_slide)
     ImageView mImageView;
+    @BindView(R.id.player_loop)
+    ImageView loopView;
+
+    private final static int single = 1;
+    private final static int circle = 2;
+    private final static int random = 3;
+    private int playState = single;
 
     //更新播放进度的显示
     private static final int UPDATE_PLAY_PROGRESS_SHOW = 1;
 
     private ObjectAnimator mRotateObjectAnimator;
-    private boolean isLooping = false;
+//    private boolean isLooping = false;
 
     private final static String TAG = "gengen";
 
@@ -127,6 +136,14 @@ public class MyPlayActivity extends BaseActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if(MusicPlayer.isPlaying()) {
+            showStartView();
+        }
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
         showPauseView();
@@ -159,8 +176,22 @@ public class MyPlayActivity extends BaseActivity {
                 playOrPause();
                 break;
             case R.id.player_loop:
-                MusicPlayer.setLooping(!isLooping);
-                isLooping = !isLooping;
+                if(playState == single) {
+                    playState=circle;
+                    loopView.setImageResource(R.drawable.play_cycle);
+                } else if(playState == circle) {
+                    playState = random;
+                    loopView.setImageResource(R.drawable.play_random);
+                } else if(playState == random){
+                    playState = single;
+                    loopView.setImageResource(R.drawable.play_single);
+                }
+
+                if(playState == circle) {
+                    MusicPlayer.setLooping(true);
+                } else {
+                    MusicPlayer.setLooping(false);
+                }
                 break;
             case R.id.player_pre:
                 if(playPosition==0) {
@@ -202,6 +233,7 @@ public class MyPlayActivity extends BaseActivity {
         if(!isBound)
             return;
         if(!MusicPlayer.isPrepared()) {
+            MusicPlayer.openAndStart(list.get(playPosition).getID());
             return;
         }
         if (!MusicPlayer.isPlaying()) {
@@ -259,7 +291,15 @@ public class MyPlayActivity extends BaseActivity {
 
     @Override
     protected void onCompleted() {
-        showPauseView();
+        if(playState == single) {
+            showPauseView();
+            progressBar.setProgress(MusicPlayer.getDuration());
+            startTimeView.setText(Util.formatMillis(MusicPlayer.getDuration()));
+        } else if(playState == random) {
+            Random random = new Random(47);
+            int index = random.nextInt(list.size());
+            MusicPlayer.openAndStart(list.get(index).getID());
+        }
     }
 
     @Override

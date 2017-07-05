@@ -55,7 +55,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            text:titleIcon="@drawable/phone_ico_light_3x"
+            text:titleIcon="@drawable/selector_player_bottom_phone"
             text:titleText="@string/player_phone"
             text:titleTextColor="@drawable/selector_main_bottom_color"
             text:titleTextSize="18sp"
@@ -72,7 +72,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:padding="10dp"
-            text:titleIcon="@drawable/toy_rabbit_ico_light_3x"
+            text:titleIcon="@drawable/selector_player_bottom_toy"
             text:titleText="@string/player_toy"
             text:titleTextColor="@drawable/selector_main_bottom_color"
             text:titleTextSize="18sp"
@@ -178,7 +178,7 @@
             android:layout_width="20dp"
             android:layout_height="14dp"
             android:layout_weight="1"
-            android:src="@drawable/play_cycle"/>
+            android:src="@drawable/play_single"/>
 
 
         <ImageView
