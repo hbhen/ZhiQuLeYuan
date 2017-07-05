@@ -70,9 +70,6 @@ public class MyPlayActivity extends BaseActivity {
     @BindView(R.id.iv_playing_details_slide)
     ImageView mImageView;
 
-//    @Bind(R.id.player_lighting)
-//    ImageView lightingView;
-
     //更新播放进度的显示
     private static final int UPDATE_PLAY_PROGRESS_SHOW = 1;
 
@@ -104,7 +101,6 @@ public class MyPlayActivity extends BaseActivity {
      * @param playPosition  播放列表中哪一项
      */
     public static void launch(Context context, ArrayList<DiscoveryListResultBean.BODYBean.LSTBean> list, int playPosition) {
-        Log.e("gengen", "list.size="+list.size() + "playPosition="+playPosition);
         Intent it = new Intent(context, MyPlayActivity.class);
         it.putParcelableArrayListExtra("list", list);
         it.putExtra("position", playPosition);
@@ -155,7 +151,6 @@ public class MyPlayActivity extends BaseActivity {
                 phoneView.setSelected(false);
                 toyView.setSelected(true);
                 pushMusicToToy();
-                //ToastUtil.showToast(this,"玩具");
                 break;
             case R.id.player_collection:
 
@@ -204,7 +199,6 @@ public class MyPlayActivity extends BaseActivity {
     }
 
     private void playOrPause() {
-        Log.i("gengen", "playOrPause " + isBound);
         if(!isBound)
             return;
         if(!MusicPlayer.isPrepared()) {
@@ -249,6 +243,7 @@ public class MyPlayActivity extends BaseActivity {
 
     @Override
     protected void onPrepared() {
+        showStartView();
         int duration = MusicPlayer.getDuration();
         if(duration != 0) {
             if(progressBar != null)
@@ -283,7 +278,7 @@ public class MyPlayActivity extends BaseActivity {
         if(mMusicId != null) {
             MusicPlayer.openAndStart(mMusicId);
         }
-        showStartView();
+        //showStartView();
     }
 
     @Override

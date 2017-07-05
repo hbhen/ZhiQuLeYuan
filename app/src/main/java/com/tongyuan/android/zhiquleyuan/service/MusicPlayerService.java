@@ -1,6 +1,7 @@
 package com.tongyuan.android.zhiquleyuan.service;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.os.RemoteException;
@@ -49,9 +50,28 @@ public class MusicPlayerService extends Service {
         sendBroadcast(intent);
     }
 
+    public static void launchService(Context mContext , String musicId) {
+        Intent it = new Intent(mContext, MusicPlayerService.class);
+        it.putExtra("musicId", musicId);
+        mContext.startService(it);
+    }
+
+    public static void stopService(Context mContext , boolean isStop) {
+        Intent it = new Intent(mContext, MusicPlayerService.class);
+        it.putExtra("musicId", isStop);
+        mContext.startService(it);
+    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        String musicId = intent.getStringExtra("musicId");
+        if(musicId != null) {
+            try {
+                musicAidlStub.openAndStart(musicId);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
         return super.onStartCommand(intent, flags, startId);
     }
 

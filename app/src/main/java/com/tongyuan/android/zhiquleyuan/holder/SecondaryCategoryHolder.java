@@ -13,6 +13,8 @@ public class SecondaryCategoryHolder {
     public TextView textviewLike;
     public TextView listen;
     public TextView collect;
+    public TextView favoriteView;
+    public TextView playView;
 
 
 }

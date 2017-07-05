@@ -277,6 +277,7 @@ public class DiscoveryListResultBean implements Parcelable {
             private String TYPE;
             private String COLNAME;
             private String DUR;
+            public boolean isPlaying = false;
 
             @Override
             public String toString() {

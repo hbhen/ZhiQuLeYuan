@@ -76,14 +76,10 @@ class MultiPlayer implements MediaPlayer.OnErrorListener,
 
     private void setDataSource(String url) {
         playUrl = url;
-        //第一次进来
-        //第二次进来，正在播放前一个音乐，或者暂停
-        Log.e("gengen", "openMediaPlayer.."+url);
         isPrepared = false;
         mCurrentMediaPlayer.reset();
         try {
             mCurrentMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-//            mCurrentMediaPlayer.setNextMediaPlayer(mNextMediaPlayer);
             mCurrentMediaPlayer.setDataSource(playUrl);
             mCurrentMediaPlayer.setOnPreparedListener(this);
             mCurrentMediaPlayer.setOnBufferingUpdateListener(this);
@@ -96,7 +92,6 @@ class MultiPlayer implements MediaPlayer.OnErrorListener,
     }
 
     private void getPlayUrlByMusicID(final Context context, final String musicId) {
-        Log.e("gengen", "getPlayurlId = " + musicId);
         LocalPlayApplyReqBean.BODYBean bodyBean1 = new LocalPlayApplyReqBean.BODYBean(musicId);
         BaseRequest baseRequest = new BaseRequest(context, bodyBean1, "PLAY");
         Call<SuperModel<LocalPlayApplyResBean>> localPlayApplyResBeanCall = RequestManager.getInstance().requestMusicDetail(baseRequest);
@@ -121,7 +116,6 @@ class MultiPlayer implements MediaPlayer.OnErrorListener,
     }
 
     void start() {
-        Log.e("gengen", "openAndStart.."+isPrepared);
         if (!isPrepared)
             return;
         if (!mCurrentMediaPlayer.isPlaying())
@@ -174,14 +168,12 @@ class MultiPlayer implements MediaPlayer.OnErrorListener,
 
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
-        Log.e("gengen", "onError");
         mService.get().sendBroadCastToReceiver(MusicPlayerService.CODE_error);
         return false;
     }
 
     @Override
     public void onPrepared(MediaPlayer mp) {
-        Log.e("gengen", "onPrepared...");
         isPrepared = true;
         if(openAndStart)
             start();

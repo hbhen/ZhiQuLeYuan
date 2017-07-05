@@ -1,6 +1,7 @@
 package com.tongyuan.android.zhiquleyuan.adapter;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,9 +12,11 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.tongyuan.android.zhiquleyuan.R;
-import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridSecondaryResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListResultBean;
 import com.tongyuan.android.zhiquleyuan.holder.SecondaryCategoryHolder;
+import com.tongyuan.android.zhiquleyuan.service.MusicPlayerService;
+import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
+import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,11 +28,18 @@ public class DiscoverySecondCategoryAdapter extends BaseAdapter {
     private Context mContext;
     private final LayoutInflater mInflater;
     private List<DiscoveryListResultBean.BODYBean.LSTBean> list ;
+    private Drawable playingDrawable;
+    private Drawable grayPlayDrawable;
+
 
     public DiscoverySecondCategoryAdapter(Context context, List<DiscoveryListResultBean.BODYBean.LSTBean> list) {
         this.mContext = context;
         this.mInflater = LayoutInflater.from(context);
         this.list = list;
+        playingDrawable = context.getResources().getDrawable(R.drawable.dis_sub_item_played);
+        playingDrawable.setBounds(0, 0, playingDrawable.getMinimumWidth(), playingDrawable.getMinimumHeight());//必须设置图片大小，否则不显示
+        grayPlayDrawable = context.getResources().getDrawable(R.drawable.audition_list_gray_ico);
+        grayPlayDrawable.setBounds(0, 0, grayPlayDrawable.getMinimumWidth(), grayPlayDrawable.getMinimumHeight());//必须设置图片大小，否则不显示
     }
 
     public ArrayList<DiscoveryListResultBean.BODYBean.LSTBean> getList() {
@@ -61,6 +71,10 @@ public class DiscoverySecondCategoryAdapter extends BaseAdapter {
             holder.itemalumbimg = (ImageView) convertView.findViewById(R.id.iv_album_details_two);
             holder.textviewAge = (TextView) convertView.findViewById(R.id.tv_item_album_details_two_age);
             holder.textviewLike = (TextView) convertView.findViewById(R.id.tv_itemt_album_details_two_like);
+            holder.playView = (TextView) convertView.findViewById(R.id.dis_sub_item_play);
+            holder.favoriteView = (TextView) convertView.findViewById(R.id.dis_sub_item_favorite);
+            holder.playView.setOnClickListener(clickView);
+            holder.favoriteView.setOnClickListener(clickView);
             convertView.setTag(holder);
         }else{
             holder= (SecondaryCategoryHolder) convertView.getTag();
@@ -99,7 +113,43 @@ public class DiscoverySecondCategoryAdapter extends BaseAdapter {
         Uri parse = Uri.parse(list.get(position).getIMG());
         Glide.with(mContext).load(parse).into(holder.itemalumbimg);
         holder.textviewTitle.setText(list.get(position).getNAME());
-
+        holder.playView.setTag(position);
+        holder.favoriteView.setTag(position);
+        if(list.get(position).isPlaying) {
+            holder.playView.setCompoundDrawables(playingDrawable, null, null, null);
+            holder.playView.setTextColor(mContext.getResources().getColor(R.color.redFont));
+        } else {
+            holder.playView.setCompoundDrawables(grayPlayDrawable, null, null, null);
+            holder.playView.setTextColor(mContext.getResources().getColor(R.color.grayFont));
+        }
         return convertView;
     }
+
+    private View.OnClickListener clickView = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            int position = (int) v.getTag();
+            if (v.getId() == R.id.dis_sub_item_play) {
+                String mToken = SPUtils.getString(mContext, "TOKEN", "");
+                if("".equals(mToken)) {
+                    ToastUtil.showToast(mContext, R.string.user_no_login);
+                    return;
+                }
+                String musicId = list.get(position).getID();
+                /*if(list.get(position).isPlaying) {
+                    MusicPlayerService.stopService(mContext, true);
+                } else {*/
+                    MusicPlayerService.launchService(mContext, musicId);
+                    for (DiscoveryListResultBean.BODYBean.LSTBean bean : list) {
+                        bean.isPlaying = false;
+                    }
+                    list.get(position).isPlaying = true;
+                    notifyDataSetChanged();
+                //}
+
+            } else if(v.getId() == R.id.dis_sub_item_favorite) {
+                ToastUtil.showToast(mContext, "favorite");
+            }
+        }
+    };
 }
