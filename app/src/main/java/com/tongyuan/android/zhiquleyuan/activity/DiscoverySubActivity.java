@@ -14,7 +14,7 @@
 //import com.bumptech.glide.Glide;
 //import com.tongyuan.android.zhiquleyuan.R;
 //import com.tongyuan.android.zhiquleyuan.adapter.DiscoverySecondCategoryAdapter;
-//import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridSecondaryRequestBean;
+//import com.tongyuan.android.zhiquleyuan.bean.DiscoverySubReqBean;
 //import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridSecondaryResultBean;
 //import com.tongyuan.android.zhiquleyuan.bean.LocalPlayApplyReqBean;
 //import com.tongyuan.android.zhiquleyuan.bean.LocalPlayApplyResBean;
@@ -40,7 +40,7 @@
 //public class DiscoverySubActivity extends AppCompatActivity implements View.OnClickListener , AdapterView.OnItemClickListener{
 //
 //    private DiscoverySecondCategoryAdapter adapter;
-//    private ImageView mIv_discoverysecondcategory;
+//    private ImageView coverImageView;
 //    private Button mSubscribeButton;
 //    private List<DiscoveryGridSecondaryResultBean.LSTBean> list = new ArrayList<>();
 //
@@ -56,7 +56,7 @@
 //    }
 //
 //    private void initView() {
-//        mIv_discoverysecondcategory = (ImageView) findViewById(R.id.iv_album_details_one);
+//        coverImageView = (ImageView) findViewById(R.id.iv_album_details_one);
 //        mSubscribeButton = (Button) findViewById(R.id.bt_item_album_details_one_subscribe);
 //
 //        ListView listview = (ListView) findViewById(R.id.lv_activity_discovery_secondcategory);
@@ -76,13 +76,13 @@
 //        String img = intent.getStringExtra("img");
 //        String colid = intent.getStringExtra("colid");
 //        Uri parse = Uri.parse(img);
-//        Glide.with(this).load(parse).asBitmap().into(mIv_discoverysecondcategory);
+//        Glide.with(this).load(parse).asBitmap().into(coverImageView);
 //        getIdColSecondaryInfo(colid);
 //    }
 //
 //
 //    private void getIdColSecondaryInfo(String colid) {
-//        BaseRequest request = new BaseRequest<>(getApplicationContext(), new DiscoveryGridSecondaryRequestBean(colid, "10", "1"), "QRYRES");
+//        BaseRequest request = new BaseRequest<>(getApplicationContext(), new DiscoverySubReqBean(colid, "10", "1"), "QRYRES");
 //        Call<SuperModel<DiscoveryGridSecondaryResultBean>> discoveryGridSecondaryResult = RequestManager.getInstance().getDiscoveryGridSecondaryResult(request);
 //        discoveryGridSecondaryResult.enqueue(new Callback<SuperModel<DiscoveryGridSecondaryResultBean>>() {
 //            @Override

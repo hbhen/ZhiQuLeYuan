@@ -85,8 +85,8 @@ public class BindBabyActivity extends AppCompatActivity implements View.OnClickL
 
 //        AddToyResultBean addtoyresultbean = bundle.getParcelable("addtoyresultbean");//3.4.11接口
 //        AddToyResultBean.BODYBean body = addtoyresultbean.getBODY();
-        mToyCode = body.getCODE();
-        mToyId = body.getID();
+//        mToyCode = body.getCODE();
+//        mToyId = body.getID();
         mPhoneNum = SPUtils.getString(this, "phoneNum", "");
         mToken = SPUtils.getString(this, "TOKEN", "");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");

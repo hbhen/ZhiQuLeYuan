@@ -6,7 +6,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -14,18 +17,19 @@ import android.widget.ListView;
 import com.bumptech.glide.Glide;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.adapter.DiscoverySecondCategoryAdapter;
-import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridSecondaryRequestBean;
+import com.tongyuan.android.zhiquleyuan.bean.DiscoverySubReqBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridSecondaryResultBean;
+import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListResultBean;
 import com.tongyuan.android.zhiquleyuan.request.RequestManager;
-import com.tongyuan.android.zhiquleyuan.request.base.BaseRequest;
 import com.tongyuan.android.zhiquleyuan.request.base.SuperModel;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.StatusBarUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import retrofit2.Call;
@@ -34,13 +38,23 @@ import retrofit2.Response;
 
 
 /**
+ * 发现页二级目录
  * Created by android on 2017/3/11.
  */
 
-public class DiscoverySecondCategoryActivity extends AppCompatActivity implements View.OnClickListener {
+public class DiscoverySecondCategoryActivity extends AppCompatActivity implements View.OnClickListener, AbsListView.OnScrollListener {
 
-    private ListView mListviewSecondCategory;
-    private ImageView mIv_discoverysecondcategory;
+    @BindView(R.id.lv_activity_discovery_secondcategory)
+    ListView listView;
+    @BindView(R.id.iv_album_details_one)
+    ImageView coverImageView;
+    private View footerView;
+
+    private DiscoverySecondCategoryAdapter adapter;
+    private String token;
+    private String colid;
+    private List<DiscoveryListResultBean.BODYBean.LSTBean> list = new ArrayList<>();
+    private int currPage = 1;
 
     public static void launch(Context context, String imgPath, String colId) {
         Intent intent = new Intent(context, DiscoverySecondCategoryActivity.class);
@@ -55,132 +69,77 @@ public class DiscoverySecondCategoryActivity extends AppCompatActivity implement
         setContentView(R.layout.activity_discovery_secondcategory);
         ButterKnife.bind(this);
         StatusBarUtils.setStatusBarLightMode(this, getResources().getColor(R.color.main_top_bg));
-        initView();
-        //initListener();
+
+        adapter = new DiscoverySecondCategoryAdapter(this, list);
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+                if("".equals(token)) {
+                    ToastUtil.showToast(getApplicationContext(), R.string.user_no_login);
+                    return;
+                }
+                MyPlayActivity.launch(DiscoverySecondCategoryActivity.this, adapter.getList(), position);
+            }
+        });
+        listView.setOnScrollListener(this);
+        footerView = LayoutInflater.from(this).inflate(R.layout.discovery_sub_item_foot, null);
+        footerView.setVisibility(View.GONE);
+        listView.addFooterView(footerView);
         initData();
-
-    }
-
-    private void initView() {
-
-        mIv_discoverysecondcategory = (ImageView) findViewById(R.id.iv_album_details_one);
-
-        mListviewSecondCategory = (ListView) findViewById(R.id.lv_activity_discovery_secondcategory);
     }
 
     private void initData() {
         Intent intent = getIntent();
         String img = intent.getStringExtra("img");
-        String colid = intent.getStringExtra("colid");
+        colid = intent.getStringExtra("colid");
         Uri parse = Uri.parse(img);
-        Glide.with(this).load(parse).asBitmap().into(mIv_discoverysecondcategory);
-        String phoneNum = SPUtils.getString(this, "phoneNum", "");
-        String token = SPUtils.getString(this, "TOKEN", "");
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-        String formatTime = simpleDateFormat.format(new Date());
-        getIdColSecondaryInfo(colid, phoneNum, formatTime, token);
-
-
+        Glide.with(this).load(parse).asBitmap().into(coverImageView);
+        token = SPUtils.getString(this, "TOKEN", "");
+        getIdColSecondaryInfo(colid, false);
     }
 
 
-    private void getIdColSecondaryInfo(String colid, final String phoneNum, final String formatTime, final String token) {
-
-//        final Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
-//                .addConverterFactory(GsonConverterFactory.create())
-//                .build();
-//        final AllInterface allInterface = retrofit.create(AllInterface.class);
-
-        DiscoveryGridSecondaryRequestBean bodyBean = new DiscoveryGridSecondaryRequestBean(colid, "10", "1");
-//        Log.d("aaaaaa", "colid " + colid);
-//        DiscoveryGridSecondaryRequestBean discoveryGridSecondaryRequestBean = new DiscoveryGridSecondaryRequestBean("REQ", "QRYRES", phoneNum,
-//                formatTime, bodyBean, "", token, "1");
-//        final Gson gson = new Gson();
-//        String s = gson.toJson(discoveryGridSecondaryRequestBean);
-//        Call<DiscoveryGridSecondaryResultBean> discoveryGridSecondaryResult = allInterface.getDiscoveryGridSecondaryResult(s);
-        BaseRequest baseRequest = new BaseRequest(getApplicationContext(), bodyBean, "QRYRES");
-        Call<SuperModel<DiscoveryGridSecondaryResultBean>> discoveryGridSecondaryResult = RequestManager.getInstance().getDiscoveryGridSecondaryResult
-                (baseRequest);
-        discoveryGridSecondaryResult.enqueue(new Callback<SuperModel<DiscoveryGridSecondaryResultBean>>() {
+    private void getIdColSecondaryInfo(String colid, final boolean isLoadMore) {
+        int page = currPage;
+        if(isLoadMore) {
+            page ++;
+        }
+        DiscoverySubReqBean bodyBean = new DiscoverySubReqBean(colid, "10", String.valueOf(page));
+        Call<SuperModel<DiscoveryGridSecondaryResultBean>> result = RequestManager.getInstance().
+                getDiscoverySubList(this, bodyBean);
+        result.enqueue(new Callback<SuperModel<DiscoveryGridSecondaryResultBean>>() {
             @Override
-            public void onResponse(Call<SuperModel<DiscoveryGridSecondaryResultBean>> call, final Response<SuperModel<DiscoveryGridSecondaryResultBean>> response) {
-
-                if (response.body() != null && response.body().CODE.equals("0")) {
-                    //Log.d("aaaaaa", "onResponse: " + response.body().toString());
-//                    mResponse = response;
-                    final DiscoverySecondCategoryAdapter discoverySecondCategoryAdapter = new DiscoverySecondCategoryAdapter(getApplicationContext(), response.body().BODY.LST);
-                    mListviewSecondCategory.setAdapter(discoverySecondCategoryAdapter);
-                    mListviewSecondCategory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                            /*DiscoveryGridSecondaryResultBean.LSTBean lstBean = response.body().BODY.LST.get(position);
-                            //本机播放需要播放申请,3.4.48   网络请求
-//                            getLocalPlayApplication(position,phoneNum,formatTime,token);
-                            Intent intent = new Intent();
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable("secondcategorylistbean",lstBean);
-                            intent.putExtras(bundle);
-
-                            intent.setClass(getApplicationContext(), MyPlayActivity.class);
-                            startActivity(intent);*/
-                            MyPlayActivity.launch(DiscoverySecondCategoryActivity.this, discoverySecondCategoryAdapter.getList(), position);
-
-                            //ToastUtil.showToast(getApplicationContext(), "aldfkalsdf点击的是" + position);
-                        }
-                    });
+            public void onResponse(Call<SuperModel<DiscoveryGridSecondaryResultBean>> call, Response<SuperModel<DiscoveryGridSecondaryResultBean>> response) {
+                if("0".equals(response.body().CODE)) {
+                    if(isLoadMore) {
+                        currPage ++;
+                    } else {
+                        list.clear();
+                        currPage = 1;
+                    }
+                    list.addAll(response.body().BODY.LST);
+                    if("0".equals(response.body().BODY.NC)) {
+                        footerView.setVisibility(View.GONE);
+                    } else {
+                        footerView.setVisibility(View.VISIBLE);
+                    }
+                    adapter.notifyDataSetChanged();
                 } else {
-                    ToastUtil.showToast(getApplicationContext(), "没有获取到response");
+                    ToastUtil.showToast(getApplicationContext(), response.body().MSG);
+                    footerView.setVisibility(View.GONE);
                 }
+                isLoading = false;
             }
 
             @Override
             public void onFailure(Call<SuperModel<DiscoveryGridSecondaryResultBean>> call, Throwable t) {
                 ToastUtil.showToast(getApplicationContext(), "联网失败");
+                isLoading = false;
             }
         });
 
     }
-    //本机播放需要播放申请,3.4.48   网络请求
-//    private void getLocalPlayApplication(final int position, String phoneNum, String formatTime, String token) {
-//        Retrofit retrofit2 = new Retrofit.Builder().baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
-//                .addConverterFactory(GsonConverterFactory.create())
-//                .build();
-//        AllInterface allInterface1 = retrofit2.create(AllInterface.class);
-//        Gson gson1 = new Gson();
-//
-//        //本机播放需要播放申请,3.4.48   网络请求
-//        LocalPlayApplyReqBean.BODYBean bodyBean1 = new LocalPlayApplyReqBean.BODYBean(mResponse.body().getBODY().getLST().get
-//                (position).getID());
-//        LocalPlayApplyReqBean localPlayApplyReqBean = new LocalPlayApplyReqBean("REQ", "PLAY", phoneNum, formatTime, bodyBean1,
-//                "", token, "1");
-//        String s1 = gson1.toJson(localPlayApplyReqBean);
-//        Call<LocalPlayApplyResBean> localPlayApplyResBeanCall = allInterface1.LOCAL_PLAY_APPLY_RES_BEAN_CALL(s1);
-//        localPlayApplyResBeanCall.enqueue(new Callback<LocalPlayApplyResBean>() {
-//            @Override
-//            public void onResponse(Call<LocalPlayApplyResBean> call, Response<LocalPlayApplyResBean> response) {
-//                if (response.body().getCODE().equals("-700")) {
-//                    ToastUtil.showToast(getApplicationContext(), "资源不存在");
-//                    return;
-//                } else if (response.body().getCODE().equals("0")) {
-//                    Intent intent = new Intent();
-//                    intent.putExtra("musicimg", mResponse.body().getBODY().getLST().get(position).getIMG());
-//                    intent.putExtra("musicname", mResponse.body().getBODY().getLST().get(position).getNAME());
-//                    Bundle bundle = new Bundle();
-//                    bundle.putParcelable("musicinfo", response.body());
-//                    intent.putExtras(bundle);
-//                    intent.setClass(getApplicationContext(), MyPlayActivity.class);
-//                    startActivity(intent);
-//                    ToastUtil.showToast(getApplicationContext(), "didi");
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<LocalPlayApplyResBean> call, Throwable t) {
-//
-//            }
-//        });
-//    }
 
     @OnClick({R.id.sub_discovery_back, R.id.bt_item_album_details_one_subscribe})
     public void onClick(View v) {
@@ -193,6 +152,25 @@ public class DiscoverySecondCategoryActivity extends AppCompatActivity implement
                 break;
         }
 
+    }
+
+    private int totalItemCount;
+    private int lastItem;
+    private boolean isLoading = false;
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+        if (!isLoading && lastItem == totalItemCount && scrollState == SCROLL_STATE_IDLE) {
+            //显示加载更多
+            isLoading = true;
+            getIdColSecondaryInfo(colid, true);
+        }
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        lastItem = firstVisibleItem + visibleItemCount;
+        this.totalItemCount = totalItemCount;
     }
 }
 

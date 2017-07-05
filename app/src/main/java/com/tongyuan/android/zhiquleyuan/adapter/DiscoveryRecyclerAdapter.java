@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +19,7 @@ import com.tongyuan.android.zhiquleyuan.activity.MyPlayActivity;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridItemBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListResultBean;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
+import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +32,7 @@ import static com.tongyuan.android.zhiquleyuan.R.id.tv_desc_detailstimes;
  */
 public class DiscoveryRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context mContext;
-    private MyItemClickListener mMyItemClickListener;
+    //private MyItemClickListener mMyItemClickListener;
     public static final String TAG = "sshhsshh";
     private List<DiscoveryGridItemBean.LSTBean> mDiscoveryGridViewList;
     private List<DiscoveryListResultBean.BODYBean.LSTBean> mDiscoveryListViewList;
@@ -42,6 +42,8 @@ public class DiscoveryRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
     private static final int TYPE_TYPE1 = 0xff02;
     private static final int TYPE_TYPE2_HEAD = 0xff03;
     private static final int TYPE_TYPE2 = 0xff04;
+    private static final int TYPE_FOOTER = 0xff05;
+    private boolean hasFootView = false;
 
     private LayoutInflater inflate;
     private String mToken = "";
@@ -71,6 +73,9 @@ public class DiscoveryRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
                         null));
             case TYPE_TYPE2:
                 return new HolderListView(inflate.inflate(R.layout.item_discovery_listview, null));
+            case TYPE_FOOTER:
+                View view = inflate.inflate(R.layout.discovery_sub_item_foot, parent, false);
+                return new FootViewHolde(view);
             default:
                 //Log.d("error", "viewholder is null");
                 return null;
@@ -95,6 +100,8 @@ public class DiscoveryRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
                             return gridManager.getSpanCount();
                         case TYPE_TYPE1:
                             return 2;
+                        case TYPE_FOOTER:
+                            return 6;
                         default:
                             return 3;
                     }
@@ -124,11 +131,14 @@ public class DiscoveryRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
     }
 
     private void bindListHold(HolderListView holder, int position) {
-        int realPosition;
+        int realPosition = position - mDiscoveryGridViewList.size();
         if("".equals(mToken)) {
-            realPosition = position - mDiscoveryGridViewList.size() - 2;
+            realPosition -= 2;
         } else {
-            realPosition = position - mDiscoveryGridViewList.size() - 1;
+            realPosition -= 1;
+        }
+        if(realPosition == mDiscoveryListViewList.size()) {
+            return;
         }
         Glide.with(mContext).load(mDiscoveryListViewList.get(realPosition).
                 getIMG()).asBitmap().placeholder(R.drawable.player_cover_default).into(holder.iv_desc);
@@ -147,6 +157,8 @@ public class DiscoveryRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
                 return TYPE_TYPE1;
             } else if (position == (1 + mDiscoveryGridViewList.size())) {
                 return TYPE_TYPE2_HEAD;
+            } else if ((position == getItemCount()-1) && hasFootView) {
+                return TYPE_FOOTER;
             } else {
                 return TYPE_TYPE2;
             }
@@ -155,23 +167,30 @@ public class DiscoveryRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
                 return TYPE_TYPE1;
             } else if(position == mDiscoveryGridViewList.size()) {
                 return TYPE_TYPE2_HEAD;
+            } else if((position == getItemCount()-1) && hasFootView) {
+                return TYPE_FOOTER;
             } else {
                 return TYPE_TYPE2;
             }
         }
-
-
     }
 
     @Override
     public int getItemCount() {
-        //Log.i(TAG, "getItemCount: " + (mDiscoveryGridViewList.size() + mDiscoveryListViewList.size()));
-        //Log.i(TAG, "getItemCount: " + mDiscoveryGridViewList.size() + mDiscoveryListViewList.size() + 2);
-        if("".equals(mToken)) {
-            return mDiscoveryGridViewList.size() + mDiscoveryListViewList.size() + 2;
-        } else {
-            return mDiscoveryGridViewList.size() + mDiscoveryListViewList.size() + 1;
+        if(mDiscoveryGridViewList.size() == 0 && mDiscoveryListViewList.size()==0) {
+            return 0;
         }
+        int count;
+        if("".equals(mToken)) {
+            count = mDiscoveryGridViewList.size() + mDiscoveryListViewList.size() + 2;
+        } else {
+            count = mDiscoveryGridViewList.size() + mDiscoveryListViewList.size()+1;
+        }
+
+        if(hasFootView) {
+            count += 1;
+        }
+        return count;
     }
 
 
@@ -209,14 +228,9 @@ public class DiscoveryRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
 
         @Override
         public void onClick(View v) {
-//            if (mMyItemClickListener!=null){
-//                mMyItemClickListener.onItemClick(v,getLayoutPosition());
-//            }
-            int position;
+            int position = getLayoutPosition();
             if("".equals(mToken)) {
-                position = getLayoutPosition() - 1;
-            } else {
-                position = getLayoutPosition();
+                position -= 1;
             }
             DiscoveryGridItemBean.LSTBean bean = mDiscoveryGridViewList.get(position);
             DiscoverySecondCategoryActivity.launch(mContext, bean.IMG, bean.ID);
@@ -245,9 +259,10 @@ public class DiscoveryRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
 
         @Override
         public void onClick(View v) {
-//            if (mMyItemClickListener!=null){
-//                mMyItemClickListener.onItemClick(v,getLayoutPosition());
-//            }
+            if("".equals(mToken)) {
+                ToastUtil.showToast(mContext, R.string.user_no_login);
+                return;
+            }
             int position;
             if("".equals(mToken)) {
                 position = getLayoutPosition() - 2 - mDiscoveryGridViewList.size();
@@ -258,11 +273,11 @@ public class DiscoveryRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         }
     }
 
-    interface MyItemClickListener {
-         void onItemClick(View view, int position);
-    }
-    public void setOnItemClickListener(MyItemClickListener listener){
-        this.mMyItemClickListener = listener;
+    private class FootViewHolde extends RecyclerView.ViewHolder {
+
+        public FootViewHolde(View itemView) {
+            super(itemView);
+        }
     }
 
     public boolean isLogin() {
@@ -270,4 +285,16 @@ public class DiscoveryRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         return (!"".equals(mToken));
     }
 
+    /**
+     * 是否加载更多
+     * @param isLoad true就显示FootView
+     */
+    public void isLoadMore(boolean isLoad) {
+        this.hasFootView = isLoad;
+        notifyDataSetChanged();
+    }
+
+    public boolean isHasFootView() {
+        return hasFootView;
+    }
 }

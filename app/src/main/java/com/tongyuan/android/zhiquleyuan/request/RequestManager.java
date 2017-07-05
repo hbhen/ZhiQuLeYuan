@@ -5,6 +5,7 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridItemBean;
+import com.tongyuan.android.zhiquleyuan.bean.DiscoverySubReqBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridSecondaryResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListRequsetBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListResultBean;
@@ -52,8 +53,9 @@ public class RequestManager {
         return serves.getDiscoveryGridResult(json);
     }
 
-    public Call<SuperModel<DiscoveryGridSecondaryResultBean>>  getDiscoveryGridSecondaryResult(BaseRequest params) {
-        String json = mGson.toJson(params);
+    public Call<SuperModel<DiscoveryGridSecondaryResultBean>> getDiscoverySubList(Context cxt, DiscoverySubReqBean bodyBean) {
+        BaseRequest baseRequest = new BaseRequest<>(cxt, bodyBean, "QRYRES");
+        String json = mGson.toJson(baseRequest);
         return serves.getDiscoveryGridSecondaryResult(json);
     }
 
@@ -67,7 +69,7 @@ public class RequestManager {
 //    }
 
     public Call<SuperModel<DiscoveryListResultBean.BODYBean>> getDiscoveryListResult(Context context, DiscoveryListRequsetBean.BODYBean params) {
-        final BaseRequest request = new BaseRequest<>(context, params, "QRYREC");
+        BaseRequest request = new BaseRequest<>(context, params, "QRYREC");
         String json = mGson.toJson(request);
         return serves.getDiscoveryListResult2(json);
     }

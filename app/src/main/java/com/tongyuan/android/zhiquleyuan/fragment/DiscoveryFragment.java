@@ -5,6 +5,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.OnScrollListener;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,16 +35,19 @@ import retrofit2.Response;
  * 先加载布局,再在布局里面添加数据.布局从哪个生命周期开始加载?数据从哪个生命周期开始加载?
  * Created by android on 2016/12/3.
  */
-public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener, View.OnClickListener {
+public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener, View.OnClickListener{
     //public static final int REQUEST_CODE_LOGIN = 1001;
     //public static final String TAG = "discovery";
     private View mDiscoveryRoot;
-    private SwipeRefreshLayout mSwiperefresh_discovery;
-    private RecyclerView mRecyclerView_discovery;
-    private DiscoveryRecyclerAdapter mDiscoveryRecyclerAdapter;
+    private SwipeRefreshLayout mSwiperefresh;
+    private RecyclerView mRecyclerView;
+    private DiscoveryRecyclerAdapter mAdapter;
     private List<DiscoveryListResultBean.BODYBean.LSTBean> discoveryListViewList = new ArrayList<>();
     private List<DiscoveryGridItemBean.LSTBean> discoveryGridViewList = new ArrayList<>();
     private SpacesItemDecoration spacesItemDecoration;
+    private boolean isLoading =true;
+    private int currPage = 1;
+    private String NC ="0"; // 0代表没有更多推荐数据
 
     @Nullable
     @Override
@@ -53,29 +58,49 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
     }
 
     private void initView() {
-        mSwiperefresh_discovery = (SwipeRefreshLayout) mDiscoveryRoot.findViewById(R.id.swiperefresh_discovery);
-        mSwiperefresh_discovery.setOnRefreshListener(this);
-        mRecyclerView_discovery = (RecyclerView) mDiscoveryRoot.findViewById(R.id.recyclerView_discovery);
+        mSwiperefresh = (SwipeRefreshLayout) mDiscoveryRoot.findViewById(R.id.swiperefresh_discovery);
+        mSwiperefresh.setOnRefreshListener(this);
+        mRecyclerView = (RecyclerView) mDiscoveryRoot.findViewById(R.id.recyclerView_discovery);
 
-        mDiscoveryRecyclerAdapter = new DiscoveryRecyclerAdapter(getContext(), discoveryGridViewList, discoveryListViewList);
-        mRecyclerView_discovery.setLayoutManager(new GridLayoutManager(mRecyclerView_discovery.getContext(), 6, GridLayoutManager.VERTICAL,
-                false));
-        mRecyclerView_discovery.setAdapter(mDiscoveryRecyclerAdapter);
+        mAdapter = new DiscoveryRecyclerAdapter(getContext(), discoveryGridViewList, discoveryListViewList);
+        final GridLayoutManager layoutManager = new GridLayoutManager(mRecyclerView.getContext(), 6, GridLayoutManager.VERTICAL,false);
+        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setAdapter(mAdapter);
         int spacingInPixels = (int) getResources().getDimension(R.dimen.discovery_grid_space);
         spacesItemDecoration = new SpacesItemDecoration(spacingInPixels);
-        mRecyclerView_discovery.addItemDecoration(spacesItemDecoration);
-        /*mDiscoveryRecyclerAdapter.setOnItemClickListener(new DiscoveryRecyclerAdapter.MyItemClickListener() {
+        mRecyclerView.addItemDecoration(spacesItemDecoration);
+        mRecyclerView.addOnScrollListener(new OnScrollListener() {
             @Override
-            public void onItemClick(View view, int position) {
-                *//*if (position == 0) {
-                    ToastUtil.showToast(getContext(), "" + position);
-                } else if (position >= 1 && position <= 9) {
-                    ToastUtil.showToast(getContext(), "ninegrid" + position);
-                } else if (position >= 10) {
-                    ToastUtil.showToast(getContext(), "listview" + position);
-                }*//*
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
             }
-        });*/
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
+                //Log.i("gengen", "lastVisibleItemPosition + 1==" +(lastVisibleItemPosition+1) + " count="+mAdapter.getItemCount());
+                if (lastVisibleItemPosition + 1 == mAdapter.getItemCount()) {
+                    /*boolean isRefreshing = mSwiperefresh.isRefreshing();
+                    if (isRefreshing) {
+                        mAdapter.notifyItemRemoved(mAdapter.getItemCount());
+                        return;
+                    }*/
+
+                    /*if(NC.equals("0")) {
+                        mAdapter.notifyItemRemoved(mAdapter.getItemCount());
+                        return;
+                    }*/
+
+                    if(!isLoading && (!"0".endsWith(NC))) {
+                        isLoading = true;
+                        mAdapter.isLoadMore(true);
+                        getListRaw(true);
+                    }
+                }
+            }
+        });
     }
 
 
@@ -101,35 +126,47 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
     }
 
     private void checkLoginState() {
-        if (mDiscoveryRecyclerAdapter != null) {
-            boolean isLogin = mDiscoveryRecyclerAdapter.isLogin();
+        if (mAdapter != null) {
+            boolean isLogin = mAdapter.isLogin();
             spacesItemDecoration.isLogin(isLogin);
-            mDiscoveryRecyclerAdapter.notifyDataSetChanged();
+            mAdapter.notifyDataSetChanged();
         }
     }
 
     //拿到list的数据
-    private void getListRaw() {
-        DiscoveryListRequsetBean.BODYBean request = new DiscoveryListRequsetBean.BODYBean("10", "1");
+    private void getListRaw(final boolean isLoadMore) {
+        int page = currPage;
+        if(isLoadMore) {
+            ++page;
+        }
+        DiscoveryListRequsetBean.BODYBean request = new DiscoveryListRequsetBean.BODYBean("10", String.valueOf(page));
         Call<SuperModel<DiscoveryListResultBean.BODYBean>> discoveryListResult = RequestManager.getInstance().getDiscoveryListResult(getContext(), request);
         discoveryListResult.enqueue(new Callback<SuperModel<DiscoveryListResultBean.BODYBean>>() {
             @Override
             public void onResponse(Call<SuperModel<DiscoveryListResultBean.BODYBean>> call, Response<SuperModel<DiscoveryListResultBean.BODYBean>> response) {
+                NC = response.body().BODY.getNC();
                 if ("0".equals(response.body().CODE)) {
-                    discoveryListViewList.clear();
-
+                    if(isLoadMore) {
+                        ++currPage;
+                    } else {
+                        discoveryListViewList.clear();
+                        currPage = 1;
+                    }
                     discoveryListViewList.addAll(response.body().BODY.getLST());
-                    mDiscoveryRecyclerAdapter.notifyDataSetChanged();
+                    mAdapter.notifyDataSetChanged();
                 } else {
                     ToastUtil.showToast(getActivity(), response.body().MSG);
                 }
-                mSwiperefresh_discovery.setRefreshing(false);
+                mSwiperefresh.setRefreshing(false);
+                isLoading = false;
+                mAdapter.isLoadMore(false);
             }
 
             @Override
             public void onFailure(Call<SuperModel<DiscoveryListResultBean.BODYBean>> call, Throwable t) {
                 ToastUtil.showToast(getActivity(), "网络请求失败");
-                mSwiperefresh_discovery.setRefreshing(false);
+                mSwiperefresh.setRefreshing(false);
+                isLoading = false;
             }
         });
     }
@@ -145,20 +182,20 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
                     if (response.body().BODY != null && response.body().BODY.LST != null) {
                         discoveryGridViewList.clear();
                         discoveryGridViewList.addAll(response.body().BODY.LST);
-                        mDiscoveryRecyclerAdapter.notifyDataSetChanged();
+                        mAdapter.notifyDataSetChanged();
                         //Log.i(TAG, "onResponse: grid" + discoveryGridViewList);
-                        getListRaw();
+                        getListRaw(false);
                     }
                 } else {
                     ToastUtil.showToast(getActivity(), response.body().MSG);
-                    mSwiperefresh_discovery.setRefreshing(false);
+                    mSwiperefresh.setRefreshing(false);
                 }
             }
 
             @Override
             public void onFailure(Call<SuperModel<DiscoveryGridItemBean>> call, Throwable t) {
                 ToastUtil.showToast(getActivity(), "网络请求失败");
-                mSwiperefresh_discovery.setRefreshing(false);
+                mSwiperefresh.setRefreshing(false);
             }
         });
     }
