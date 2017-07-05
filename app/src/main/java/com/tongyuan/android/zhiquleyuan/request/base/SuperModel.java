@@ -21,7 +21,7 @@ public class SuperModel<T> {
 
     @Override
     public String toString() {
-        return "SuperModel{" +
+        return "SingleToyInfoRESBean{" +
                 "TYPE='" + TYPE + '\'' +
                 ", CMD='" + CMD + '\'' +
                 ", ACCT='" + ACCT + '\'' +
@@ -30,6 +30,8 @@ public class SuperModel<T> {
                 ", VERI='" + VERI + '\'' +
                 ", TOKEN='" + TOKEN + '\'' +
                 ", SEQ='" + SEQ + '\'' +
+                ", CODE='" + CODE + '\'' +
+                ", MSG='" + MSG + '\'' +
                 '}';
     }
 }

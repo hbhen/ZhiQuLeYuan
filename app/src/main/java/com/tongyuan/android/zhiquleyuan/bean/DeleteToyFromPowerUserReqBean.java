@@ -16,7 +16,7 @@ public class DeleteToyFromPowerUserReqBean {
      * SEQ : 1
      */
 
-    private String TYPE;
+    /*private String TYPE;
     private String CMD;
     private String ACCT;
     private String TIME;
@@ -112,13 +112,13 @@ public class DeleteToyFromPowerUserReqBean {
 
     public void setSEQ(String SEQ) {
         this.SEQ = SEQ;
-    }
+    }*/
 
-    public static class BODYBean {
-        /**
+    /*public static class BODYBean {
+        *//**
          * ID : 201706251204441016838782
          * CODE : 123400000000228
-         */
+         *//*
 
         private String ID;
         private String CODE;
@@ -151,5 +151,13 @@ public class DeleteToyFromPowerUserReqBean {
         public void setCODE(String CODE) {
             this.CODE = CODE;
         }
+    }*/
+
+    public String ID;
+    public String CODE;
+
+    public DeleteToyFromPowerUserReqBean(String ID, String CODE) {
+        this.ID = ID;
+        this.CODE = CODE;
     }
 }

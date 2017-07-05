@@ -24,7 +24,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static com.tongyuan.android.zhiquleyuan.fragment.ToySelectorFragment.mToyid;
+import static com.tongyuan.android.zhiquleyuan.fragment.ToySelectorFragment.mToyId;
 
 public class SetInitVolumeActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -198,7 +198,7 @@ public class SetInitVolumeActivity extends AppCompatActivity implements View.OnC
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
-        ControlToyVolumeReq.ParamBean paramBean = new ControlToyVolumeReq.ParamBean(mToyid, volume);
+        ControlToyVolumeReq.ParamBean paramBean = new ControlToyVolumeReq.ParamBean(mToyId, volume);
         ControlToyVolumeReq controlToyVolumeReq = new ControlToyVolumeReq("volume", paramBean, mToken);
         Gson gson = new Gson();
         String s = gson.toJson(controlToyVolumeReq);

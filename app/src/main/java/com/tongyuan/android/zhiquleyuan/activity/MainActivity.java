@@ -361,7 +361,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             public void onResponse(Call<QueryToyResultBean> call, Response<QueryToyResultBean> response) {
                 //只有list有想要的数据,所以只传list就行
                 mList = response.body().getBODY().getLST();
-//                Log.i(TAG, "MainActivity+onResponse:list1" + mList.toString());
+                //Log.i(TAG, "MainActivity+onResponse:list1" + mList.toString());
+                Log.i("gengen", "MainActivity+onResponse:list1" + mList.toString());
                 showDifferentToyFragment(mList);
             }
 

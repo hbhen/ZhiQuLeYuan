@@ -39,4 +39,18 @@ public class BaseRequest<T> {
         this.CMD = cmd;
     }
 
+    @Override
+    public String toString() {
+        return "BaseRequest{" +
+                "TYPE='" + TYPE + '\'' +
+                ", CMD='" + CMD + '\'' +
+                ", ACCT='" + ACCT + '\'' +
+                ", TIME='" + TIME + '\'' +
+                ", BODY=" + BODY +
+                ", VERI='" + VERI + '\'' +
+                ", TOKEN='" + TOKEN + '\'' +
+                ", SEQ='" + SEQ + '\'' +
+                '}';
+    }
+
 }

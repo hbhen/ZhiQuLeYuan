@@ -117,7 +117,7 @@ public interface AllInterface {
 
     //查询单个玩具信息 3.4.21
     @GET("busi")
-    Call<SingleToyInfoRESBean> getSingleToyInfoResult(@Query("params") String params);
+    Call<SuperModel<SingleToyInfoRESBean.BODYBean>> getSingleToyInfoResult(@Query("params") String params);
 
     //查询群成员(根据玩具ID) 3.4.48
     @GET("busi")
@@ -222,9 +222,9 @@ public interface AllInterface {
 
     //3.4.12 删除玩具信息(用户退出玩具群) 非管理员删除
     @GET("busi")
-    Call<DeleteToyFromNormalUserResBean> DELETE_TOY_FROM_NORMAL_USER_RES_BEAN_CALL(@Query("params") String params);
+    Call<SuperModel<DeleteToyFromNormalUserResBean.BODYBean>> DELETE_TOY_FROM_NORMAL_USER_RES_BEAN_CALL(@Query("params") String params);
 
     //3.4.47 玩具重置(恢复未激活状态,解散群等) 管理员删除
     @GET("busi")
-    Call<DeleteToyFromPowerUserResBean> DELETE_TOY_FROM_POWER_USER_RES_BEAN_CALL(@Query("params") String params);
+    Call<SuperModel<DeleteToyFromPowerUserResBean.BODYBean>> DELETE_TOY_FROM_POWER_USER_RES_BEAN_CALL(@Query("params") String params);
 }

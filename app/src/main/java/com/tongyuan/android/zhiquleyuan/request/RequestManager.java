@@ -4,12 +4,18 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.tongyuan.android.zhiquleyuan.bean.DeleteToyFromNormalUserReqBean;
+import com.tongyuan.android.zhiquleyuan.bean.DeleteToyFromNormalUserResBean;
+import com.tongyuan.android.zhiquleyuan.bean.DeleteToyFromPowerUserReqBean;
+import com.tongyuan.android.zhiquleyuan.bean.DeleteToyFromPowerUserResBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridItemBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoverySubReqBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridSecondaryResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListRequsetBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.LocalPlayApplyResBean;
+import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoREQBean;
+import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoRESBean;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.request.base.BaseRequest;
 import com.tongyuan.android.zhiquleyuan.request.base.SuperModel;
@@ -72,5 +78,32 @@ public class RequestManager {
         BaseRequest request = new BaseRequest<>(context, params, "QRYREC");
         String json = mGson.toJson(request);
         return serves.getDiscoveryListResult2(json);
+    }
+
+    /**
+     * 请求玩具详情页数据
+     */
+    public Call<SuperModel<SingleToyInfoRESBean.BODYBean>> getToyDetail(Context context, SingleToyInfoREQBean.BODYBean params) {
+        BaseRequest request = new BaseRequest<>(context, params, "QTOY");
+        String json = mGson.toJson(request);
+        return serves.getSingleToyInfoResult(json);
+    }
+
+    /**
+     * 删除玩具
+     */
+    public Call<SuperModel<DeleteToyFromPowerUserResBean.BODYBean>> deleteSeletedToy(Context context, DeleteToyFromPowerUserReqBean params) {
+        BaseRequest request = new BaseRequest<>(context, params, "RESET");
+        String json = mGson.toJson(request);
+        return serves.DELETE_TOY_FROM_POWER_USER_RES_BEAN_CALL(json);
+    }
+
+    /**
+     * 删除普通玩具
+     */
+    public Call<SuperModel<DeleteToyFromNormalUserResBean.BODYBean>> deleteSeletedNormalToy(Context context, DeleteToyFromNormalUserReqBean.BODYBean params) {
+        BaseRequest request = new BaseRequest<>(context, params, "DATOY");
+        String json = mGson.toJson(request);
+        return serves.DELETE_TOY_FROM_NORMAL_USER_RES_BEAN_CALL(json);
     }
 }

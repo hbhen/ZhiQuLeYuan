@@ -134,8 +134,8 @@ public class HistoryFragment extends BaseFragment {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             if (position == 0) {
-                                if (ToySelectorFragment.mToyid != null) {
-                                    CallManager.CallToToy(ToySelectorFragment.mToyid, getActivity());
+                                if (ToySelectorFragment.mToyId != null) {
+                                    CallManager.CallToToy(ToySelectorFragment.mToyId, getActivity());
 //                                    ToastUtil.showToast(getContext(), "点击的是" + position);
                                 } else {
                                     ToastUtil.showToast(getActivity(), "toyid为空,请选择玩具");

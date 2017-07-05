@@ -325,7 +325,7 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
             //推送到玩具
             case R.id.iv_fragent_recording_toy:
                 //判断当前的布局是不是播放的布局,如果是播放的布局才能推送给玩具
-                String mToyid = ToySelectorFragment.mToyid;
+                String mToyid = ToySelectorFragment.mToyId;
                 if (mToyid == null) {
                     ToastUtil.showToast(getContext(), "当前没有选中玩具");
                     return;
@@ -428,7 +428,7 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
-        System.out.println("mtoyid" + ToySelectorFragment.mToyid);
+        System.out.println("mtoyid" + ToySelectorFragment.mToyId);
 
         ControlToyPlayRecordingReqBean.ParamBean paramBean = new ControlToyPlayRecordingReqBean.ParamBean(mToyid, "1", mRecordingId,
                 "0");

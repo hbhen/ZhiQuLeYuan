@@ -76,7 +76,7 @@
 //    private boolean isShowVideo = true;
 //    private String mRoomid;
 //    private String mToken;
-//    private String mToyid;
+//    private String mToyId;
 //
 //    View viewById;
 //    View viewById1;
@@ -107,7 +107,7 @@
 //
 //        mRoomid = arguments.getString("roomid");
 //        mToken = arguments.getString("token");
-//        mToyid = arguments.getString("toyid");
+//        mToyId = arguments.getString("toyid");
 //
 //
 //        return videoCallView;
@@ -441,7 +441,7 @@
 //                .addConverterFactory(GsonConverterFactory.create())
 //                .build();
 //        AllInterface allInterface = retrofit.create(AllInterface.class);
-//        CallToToyReq.ParamBean paramBean = new CallToToyReq.ParamBean(mToyid, "2", mRoomid);
+//        CallToToyReq.ParamBean paramBean = new CallToToyReq.ParamBean(mToyId, "2", mRoomid);
 //        CallToToyReq callToToyReq = new CallToToyReq("contact_toy", paramBean, mToken);
 //        Gson gson = new Gson();
 //        String s = gson.toJson(callToToyReq);

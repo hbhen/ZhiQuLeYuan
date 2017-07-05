@@ -27,8 +27,6 @@
         android:layout_centerInParent="true"
         android:clipChildren="false">
 
-
-
         <RelativeLayout
             android:id="@+id/rl_fragment_toy_addtoy"
             android:layout_width="match_parent"
@@ -51,7 +49,6 @@
                 android:layout_toRightOf="@id/iv_add"
                 android:src="@drawable/selector_deletetoy_3x"/>
         </RelativeLayout>
-
 
         <android.support.v4.view.ViewPager
             android:id="@+id/id_viewpager"
