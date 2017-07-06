@@ -51,7 +51,7 @@ dependencies {
     compile 'com.squareup.retrofit2:converter-scalars:2.0.1'
     //ConverterFactory的String依赖包
     compile project(':meetingSdkDemo')
-//    compile project(':library')
+    //    compile project(':library')
     compile files('libs/zxing.jar')
     compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.3'
     //鸿洋viewpager引用 用于玩具的selector
@@ -64,4 +64,5 @@ dependencies {
     //bugly
     compile 'com.tencent.bugly:crashreport:2.6.5'
     compile files('libs/bugly_crash_release.jar')
+    compile project(':sinVoiceDemo')
 }
