@@ -70,13 +70,6 @@ public class ToySelectorFragment extends BaseFragment {
     ImageView mHeadImageView;
     @BindView(R.id.id_viewpager)
     ViewPager mViewPageToy;
-//    @BindView(R.id.iv_add)
-//    ImageView mIv_add;
-//    @BindView(R.id.iv_delete)
-//    ImageView mIv_delete;
-//    private ImageView mImageView;
-
-
     private static final String TAG = "222222";
     public static String mToyId;
 
@@ -86,7 +79,7 @@ public class ToySelectorFragment extends BaseFragment {
 //    ArrayList<String> toyCode = new ArrayList<String>();
 //    ArrayList<String> ownerId = new ArrayList<String>();
     private List<QueryToyResultBean.BODYBean.LSTBean> toyList = new ArrayList<>();
-    private SingleToyInfoRESBean body;
+    //private SingleToyInfoRESBean body;
     private ToySelectPagerAdapter mPagerAdapter;
     private int mCurrentPosition;
 //    private ViewGroup mContainer;
@@ -110,68 +103,6 @@ public class ToySelectorFragment extends BaseFragment {
         mViewPageToy.setPageMargin(20);
         mViewPageToy.setOffscreenPageLimit(10);
 
-        /*mPagerAdapter = new PagerAdapter() {
-
-            @Override
-            public Object instantiateItem(ViewGroup container, final int position) {
-                mCurrentPosition = position;
-                mContainer = container;
-                mImageView = new ImageView(getActivity());
-                mImageView.setScaleType(ImageView.ScaleType.FIT_XY);
-                //Log.i("111111", "instaniateItem " + toyImg.get(position));
-                Glide.with(getActivity()).load(toyImg.get(position)).asBitmap().into(mImageView);
-                container.addView(mImageView);
-
-
-                //点击玩具图片,处理的逻辑
-                mImageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        *//*
-                        * 这里点击不同的图片都要进入toydetailsfragment里面,但是传递的数据是不一样的,intent bundle
-                        * 需要传递的参数:1,玩具的图片; 2,玩具的型号; 3,玩具激活的时间; 4,玩具的状态
-                        * 根据position来判断进入的是哪个玩具
-                        * *//*
-                        ToastUtil.showToast(getContext(), "shanchu 上");
-                        //TODO 从这里开始要处理数据!
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-                        String time = simpleDateFormat.format(new Date());
-
-                        mToyId = toyId.get(position);
-                        Log.i(TAG, "onClick:toyid " + mToyId);
-                        SPUtils.putString(getActivity(), "toyidtopush", mToyId);
-                        String toycode = toyCode.get(position);
-                        Log.i(TAG, "onClick:toycode " + toycode);
-
-                        QuerySingleToyInfo(mToyId, toycode, time, position);
-
-                        Toast.makeText(getActivity(), "当前position" + position, Toast.LENGTH_SHORT).show();
-                        Log.i(TAG, "onClick: toyid1" + mToyId);
-
-                    }
-                });
-                return mImageView;
-            }
-
-            @Override
-            public void destroyItem(ViewGroup container, int position, Object object) {
-
-                container.removeView((View) object);
-
-            }
-
-            @Override
-            public int getCount() {
-
-                return toyImg.size();
-            }
-
-            @Override
-            public boolean isViewFromObject(View view, Object object) {
-                return view == (View) object;
-            }
-
-        };*/
         mPagerAdapter = new ToySelectPagerAdapter(getActivity(), toyList);
         mPagerAdapter.setOnItemClick(new ToySelectPagerAdapter.OnItemClick() {
             @Override
@@ -215,7 +146,7 @@ public class ToySelectorFragment extends BaseFragment {
      */
     private void displayBabyHead(int position) {
         String s = toyList.get(position).getBABYIMG();//获得宝宝的头像
-        if (s == null) {
+        /*if (s == null) {
             Glide.with(getContext()).load(R.drawable.ic_launcher).asBitmap().into(new BitmapImageViewTarget(mHeadImageView) {
                 @Override
                 protected void setResource(Bitmap resource) {
@@ -225,7 +156,7 @@ public class ToySelectorFragment extends BaseFragment {
                 }
             });
             return;
-        }
+        }*/
         Glide.with(getContext()).load(s).asBitmap().placeholder(R.drawable.ic_launcher).into(new BitmapImageViewTarget(mHeadImageView) {
             @Override
             protected void setResource(Bitmap resource) {
@@ -352,7 +283,6 @@ public class ToySelectorFragment extends BaseFragment {
                 ToastUtil.showToast(getContext(), R.string.network_error);
             }
         });
-        //ToastUtil.showToast(getContext(), "确实已经删除了1111");
     }
 
     //查询单个玩具的信息
@@ -363,33 +293,16 @@ public class ToySelectorFragment extends BaseFragment {
             @Override
             public void onResponse(Call<SuperModel<SingleToyInfoRESBean.BODYBean>> call, Response<SuperModel<SingleToyInfoRESBean.BODYBean>> response) {
                 if (response.body().CODE.equals("0")) {
-                    /*String toycode = response.body().getBODY().getCODE();
-                    Log.i(TAG, "toycode:235 " + toycode);
-                    String acttime = response.body().getBODY().getACTTIME();
-                    String toyimg = response.body().getBODY().getIMG();
-                    String ownername = response.body().getBODY().getOWNERNAME();
-
-                    mToycode = toycode;
-                    Log.i(TAG, "mToycode241: " + mToycode);
-                    mActtime = acttime;
-                    mToyimg = toyimg;
-                    mOwnername = ownername;
-                    body = response.body();*/
-
                     MainActivity mainActivity = (MainActivity) getActivity();
                     mainActivity.getToyDetailsFragment().setData(response.body().BODY, toyList.get(position).getBABYIMG());
                     showFragment(ToyDetailsFragment.class.getSimpleName());
-                    //Log.i(TAG, "onResponse: +toyselelctorfragment+body" + body.getBODY().toString());
-
                 } else {
                     ToastUtil.showToast(getActivity(), response.body().MSG);
-                    //Log.d(TAG, "onResponse: 为空,请检查网络");
                 }
             }
 
             @Override
             public void onFailure(Call<SuperModel<SingleToyInfoRESBean.BODYBean>> call, Throwable t) {
-                //Log.i(TAG, "onFailure: " + t.toString());
                 ToastUtil.showToast(getActivity(), "Response为空,请检查网络");
             }
         });
@@ -407,35 +320,6 @@ public class ToySelectorFragment extends BaseFragment {
     //接收并处理从Mainactivity传过来的数据 (所有的玩具信息
     @Subscribe(threadMode = ThreadMode.POSTING, sticky = true)
     public void onToyMessage(MessageEventToy messageEventToy) {
-        /*babyImg.clear();
-        toyId.clear();
-        toyImg.clear();
-        toyId.clear();
-        toyCode.clear();
-        ownerId.clear();
-
-        for (int i = 0; i < messageEventToy.mQueryToyListResults.size(); i++) {
-            String imgBaby = messageEventToy.mQueryToyListResults.get(i).getBABYIMG();
-            String imgToy = messageEventToy.mQueryToyListResults.get(i).getIMG();
-            String ownername = messageEventToy.mQueryToyListResults.get(i).getOWNERNAME();
-            String toyOwnerId = messageEventToy.mQueryToyListResults.get(i).getOWNERID();
-            String code = messageEventToy.mQueryToyListResults.get(i).getCODE();
-            String idToy = messageEventToy.mQueryToyListResults.get(i).getID();
-            String timeAct = messageEventToy.mQueryToyListResults.get(i).getACTTIME();
-
-            //TODO 需不需要在这个界面就把玩具的状态信息拿到?
-            babyImg.add(imgBaby);
-            toyImg.add(imgToy);
-            toyId.add(idToy);
-            toyCode.add(code);
-            ownerId.add(toyOwnerId);
-
-
-        }
-
-        Log.i(TAG, "babyImg=====" + babyImg);
-        Log.i(TAG, "toyImg size=====" + toyImg.size());
-        Log.i(TAG, "onToyMessage: adapter1" + mPagerAdapter);*/
         toyList.clear();
         toyList.addAll(messageEventToy.mQueryToyListResults);
         if (mPagerAdapter != null)
@@ -446,15 +330,10 @@ public class ToySelectorFragment extends BaseFragment {
     //获取从ToyAddFragment传过来的response数据.
     @Subscribe(threadMode = ThreadMode.POSTING, sticky = false)
     public void onGetToyAddMessage(AddToyMessageEvent addToyMessageEvent) {
-//        Response<AddToyResultBean> addToyResultBeanResponse = addToyMessageEvent.mAddToyResultBeanResponse;
-
-        //拿到从ToyAddFragment传过来的response数据
-        //List<Response<AddToyResultBean>> responseList = new ArrayList<>();
-
         String img = addToyMessageEvent.mAddToyResultBeanResponse.body().getBODY().getIMG();
         String id = addToyMessageEvent.mAddToyResultBeanResponse.body().getBODY().getID();
         String code = addToyMessageEvent.mAddToyResultBeanResponse.body().getCODE();
-        //Log.i("111111", "onGetToyAddMessage: " + toyId.size());
+        String ownerId = addToyMessageEvent.mAddToyResultBeanResponse.body().getBODY().getOWNERID();
         //这里应该做个判断,判断当前的list里面有没有这个玩具,有就不添加
         boolean isAdd = true;
         for (int i = 0; i < toyList.size(); i++) {
@@ -468,17 +347,12 @@ public class ToySelectorFragment extends BaseFragment {
             bean.setIMG(img);
             bean.setID(id);
             bean.setCODE(code);
+            bean.setOWNERID(ownerId);
             toyList.add(bean);
-
-            /*toyImg.add(img);
-            toyId.add(id);
-            toyCode.add(code);*/
 
             if (mPagerAdapter != null)
                 mPagerAdapter.notifyDataSetChanged();
         }
-        //Log.i("111111", Thread.currentThread().getName() + " mPagerAdapre" + mPagerAdapter);
-        //Log.i("111111", " toyId.size2" + toyId.size());
     }
 
     @Override
