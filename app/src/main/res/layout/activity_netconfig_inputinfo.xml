@@ -1,40 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#f1f1f1">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#f1f1f1">
 
-    <android.support.v7.widget.Toolbar
+    <RelativeLayout
         android:id="@+id/tb_netconfig_inputinfo_name"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#f1f1f1"
-        android:gravity="center">
+        android:layout_height="@dimen/dp_44"
+        android:background="@color/titlebackground"
+        >
 
         <ImageView
-
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/arrow_left" />
+            android:id="@+id/iv_back"
+            android:layout_width="@dimen/dp_10"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:src="@drawable/arrow_left"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:layout_gravity="center"
+            android:layout_centerVertical="true"
             android:text="配置网络连接"
             android:textColor="#000000"
-            android:textSize="60px" />
-    </android.support.v7.widget.Toolbar>
+            android:textSize="@dimen/sp_18"/>
+    </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/rl_netconfig_inputinfo_name"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_40"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/tb_netconfig_inputinfo_name"
-        android:layout_marginTop="180px"
-        android:id="@+id/rl_netconfig_inputinfo_name"
+        android:layout_marginTop="@dimen/dp_40"
         android:background="#ffffff">
 
         <TextView
@@ -42,29 +44,31 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="30px"
+            android:layout_marginLeft="@dimen/dp_10"
             android:text="名称"
             android:textColor="#000000"
-            android:textSize="54px" />
+            android:textSize="@dimen/sp_16"/>
 
         <EditText
+            android:id="@+id/et_setwlanname"
             android:layout_width="match_parent"
-            android:layout_height="160px"
+            android:layout_height="@dimen/dp_40"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="120px"
+            android:layout_marginLeft="@dimen/dp_9"
             android:layout_toRightOf="@id/tv_netconfig_inputinfo_name"
             android:hint="网络名称"
             android:textColor="#d1d1d1"
-            android:textSize="54px" />
+            android:textSize="@dimen/sp_16"/>
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/rl_secret"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_40"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/rl_netconfig_inputinfo_name"
-        android:layout_marginTop="120px"
+        android:layout_marginTop="@dimen/dp_20"
         android:background="#ffffff">
 
         <TextView
@@ -72,19 +76,32 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="30px"
+            android:layout_marginLeft="@dimen/dp_10"
             android:text="密码"
             android:textColor="#000000"
-            android:textSize="54px" />
+            android:textSize="@dimen/sp_16"/>
 
         <EditText
+            android:id="@+id/et_setwlan"
             android:layout_width="match_parent"
-            android:layout_height="160px"
+            android:layout_height="@dimen/dp_40"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="120px"
+            android:layout_marginLeft="@dimen/dp_9"
             android:layout_toRightOf="@id/tv_netconfig_inputinfo_psd"
             android:hint="请输入密码"
             android:textColor="#d1d1d1"
-            android:textSize="54px" />
+            android:textSize="@dimen/sp_16"/>
     </RelativeLayout>
+
+    <Button
+        android:id="@+id/bt_confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_40"
+        android:layout_below="@id/rl_secret"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dp_40"
+        android:background="@drawable/shape_baby_edit"
+        android:text="确定"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp_16"/>
 </RelativeLayout>

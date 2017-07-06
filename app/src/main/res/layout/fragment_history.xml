@@ -6,7 +6,6 @@
         android:id="@+id/tb_history"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_44"
-        android:layout_gravity="center"
         android:background="@color/titlebackground">
 
         <!--<ImageView-->
@@ -17,11 +16,11 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"
             android:layout_centerVertical="true"
             android:text="通话历史"
             android:textColor="#000000"
-            android:textSize="18sp"/>
+            android:textSize="@dimen/sp_18"/>
     </RelativeLayout>
 
     <!--<EditText-->
