@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -17,6 +18,8 @@ import com.libra.sinvoice.SinVoiceRecognition;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.List;
 
@@ -58,6 +61,9 @@ public class SetUpWlanActivityStepTwo extends AppCompatActivity implements SinVo
     private SinVoicePlayer mSinVoicePlayer;
     private String mWlanname;
     private String mWlansecret;
+    private String mReturnStr;
+    private String mString2;
+    private StringBuilder mAppend;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -81,8 +87,18 @@ public class SetUpWlanActivityStepTwo extends AppCompatActivity implements SinVo
                 break;
             case R.id.bt_sendvoice:
                 String text = mWlanname + "|" + mWlansecret;
-                String returnStr = returnStr(text);
-                mSinVoicePlayer.play(returnStr);
+                try {
+                    String encode = URLEncoder.encode(text, "UTF-8");
+                    String returnStr = returnStr(encode);
+                    mSinVoicePlayer.play(returnStr);
+                    Log.i(TAG, "onViewClicked: returnStr" + returnStr);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+//                Log.i(TAG, "onViewClicked: append" + mAppend);
+//                Log.i(TAG, "onViewClicked: string2" + mString2);
+
+
                 break;
             case R.id.tv_netconfig_retry2_sendvoice:
 
