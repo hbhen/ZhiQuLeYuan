@@ -348,6 +348,7 @@ public class ToySelectorFragment extends BaseFragment {
             bean.setID(id);
             bean.setCODE(code);
             bean.setOWNERID(ownerId);
+            bean.setBABYIMG(img);
             toyList.add(bean);
 
             if (mPagerAdapter != null)

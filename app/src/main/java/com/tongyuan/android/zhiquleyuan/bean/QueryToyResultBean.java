@@ -318,6 +318,7 @@ public class QueryToyResultBean implements Parcelable{
                 this.ACTTIME = ACTTIME;
                 this.ONLINE = ONLINE;
                 this.OWNERID = OWNERID;
+
             }
 
             /**
