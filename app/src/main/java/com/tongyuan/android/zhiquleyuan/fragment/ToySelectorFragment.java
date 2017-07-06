@@ -226,7 +226,7 @@ public class ToySelectorFragment extends BaseFragment {
             });
             return;
         }
-        Glide.with(getContext()).load(s).asBitmap().into(new BitmapImageViewTarget(mHeadImageView) {
+        Glide.with(getContext()).load(s).asBitmap().placeholder(R.drawable.ic_launcher).into(new BitmapImageViewTarget(mHeadImageView) {
             @Override
             protected void setResource(Bitmap resource) {
                 RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
@@ -446,7 +446,7 @@ public class ToySelectorFragment extends BaseFragment {
     //获取从ToyAddFragment传过来的response数据.
     @Subscribe(threadMode = ThreadMode.POSTING, sticky = false)
     public void onGetToyAddMessage(AddToyMessageEvent addToyMessageEvent) {
-        Response<AddToyResultBean> addToyResultBeanResponse = addToyMessageEvent.mAddToyResultBeanResponse;
+//        Response<AddToyResultBean> addToyResultBeanResponse = addToyMessageEvent.mAddToyResultBeanResponse;
 
         //拿到从ToyAddFragment传过来的response数据
         //List<Response<AddToyResultBean>> responseList = new ArrayList<>();
@@ -463,15 +463,22 @@ public class ToySelectorFragment extends BaseFragment {
             }
         }
 
-        /*if (isAdd) {
-            toyImg.add(img);
+        if (isAdd) {
+            QueryToyResultBean.BODYBean.LSTBean bean = new QueryToyResultBean.BODYBean.LSTBean();
+            bean.setIMG(img);
+            bean.setID(id);
+            bean.setCODE(code);
+            toyList.add(bean);
+
+            /*toyImg.add(img);
             toyId.add(id);
-            toyCode.add(code);
-        }*/
+            toyCode.add(code);*/
+
+            if (mPagerAdapter != null)
+                mPagerAdapter.notifyDataSetChanged();
+        }
         //Log.i("111111", Thread.currentThread().getName() + " mPagerAdapre" + mPagerAdapter);
         //Log.i("111111", " toyId.size2" + toyId.size());
-        if (mPagerAdapter != null)
-            mPagerAdapter.notifyDataSetChanged();
     }
 
     @Override

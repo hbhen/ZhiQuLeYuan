@@ -15,6 +15,7 @@ public abstract class AbstractViewPagerAdapter<T> extends PagerAdapter {
 
     protected List<T> mData;
     private SparseArray<View> mViews;
+    private int mChildCount = 0;
 
     public AbstractViewPagerAdapter(List<T> data) {
         mData = data;
@@ -52,4 +53,19 @@ public abstract class AbstractViewPagerAdapter<T> extends PagerAdapter {
     public T getItem(int position) {
         return mData.get(position);
     }
+
+    @Override
+    public int getItemPosition(Object object) {
+        /*if ( mChildCount > 0) {
+            mChildCount --;
+            return POSITION_NONE;
+        }*/
+        return POSITION_NONE;
+    }
+
+    /*@Override
+    public void notifyDataSetChanged() {
+        mChildCount = getCount();
+        super.notifyDataSetChanged();
+    }*/
 }
