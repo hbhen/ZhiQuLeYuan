@@ -1,2 +1,3 @@
 include ':app', ':sdktest_android', ':meetingSdkDemo', ':whitePad', ':outInterFace'
 //include ':library'
+include ':sinVoiceDemo'
