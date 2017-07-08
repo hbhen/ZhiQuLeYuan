@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.tongyuan.android.zhiquleyuan.bean.ControlToyPlayMusicReqBean;
+import com.tongyuan.android.zhiquleyuan.bean.ControlToyPlayMusicResBean;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteToyFromNormalUserReqBean;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteToyFromNormalUserResBean;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteToyFromPowerUserReqBean;
@@ -19,6 +21,7 @@ import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoRESBean;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.request.base.BaseRequest;
 import com.tongyuan.android.zhiquleyuan.request.base.SuperModel;
+import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -65,15 +68,17 @@ public class RequestManager {
         return serves.getDiscoveryGridSecondaryResult(json);
     }
 
+    /**
+     * 请求音乐详情页
+     */
     public  Call<SuperModel<LocalPlayApplyResBean>> requestMusicDetail(BaseRequest params) {
         String json = mGson.toJson(params);
         return serves.LOCAL_PLAY_APPLY_RES_BEAN_CALL(json);
     }
-//    public  Call<SuperModel<QueryRecordingResBean>> queryRecordingResBean (BaseRequest params) {
-//        String json = mGson.toJson(params);
-//        return serves.QUERY_RECORDING_RES_BEAN_CALL(json);
-//    }
 
+    /**
+     * 请求发现列表页数据
+     */
     public Call<SuperModel<DiscoveryListResultBean.BODYBean>> getDiscoveryListResult(Context context, DiscoveryListRequsetBean.BODYBean params) {
         BaseRequest request = new BaseRequest<>(context, params, "QRYREC");
         String json = mGson.toJson(request);
@@ -105,5 +110,16 @@ public class RequestManager {
         BaseRequest request = new BaseRequest<>(context, params, "DATOY");
         String json = mGson.toJson(request);
         return serves.DELETE_TOY_FROM_NORMAL_USER_RES_BEAN_CALL(json);
+    }
+
+    /**
+     * 向玩具端发送指令，播放
+     */
+    public Call<ControlToyPlayMusicResBean> ToyPlayCommand(Context context, ControlToyPlayMusicReqBean.ParamBean paramBean) {
+        String mToken = SPUtils.getString(context, "TOKEN", "");
+        ControlToyPlayMusicReqBean control_play = new ControlToyPlayMusicReqBean("control_play", paramBean, mToken);
+        Gson gson=new Gson();
+        String json = gson.toJson(control_play);
+        return serves.CONTROL_TOY_PLAY_MUSIC_RES_BEAN_CALL(json);
     }
 }

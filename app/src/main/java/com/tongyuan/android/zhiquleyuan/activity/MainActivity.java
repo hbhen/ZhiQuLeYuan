@@ -51,7 +51,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends FragmentActivity implements View.OnClickListener {
 
-    public static int LOGIN_SUCCESS = 00;//默认是没有登录的状态
+//    public static int LOGIN_SUCCESS = 00;//默认是没有登录的状态
     public static final String TAG = "333333";
     private LinearLayout rb_discovery;
     private LinearLayout rb_recoding;
@@ -72,7 +72,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private String mMainToken;
     private String mMainphoneNum;
     public List<QueryToyResultBean.BODYBean.LSTBean> mList;
-    public static boolean isLogin = false;
+//    public static boolean isLogin = false;
 //    private VideoFragment mVideoFragment;
     private CallWaitingConnectFragment mCallWaitingConnectFragment;
     private static final String TAG1 = "88888";
@@ -89,7 +89,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         StatusBarUtils.setStatusBarLightMode(this, getResources().getColor(R.color.main_top_bg));
-
+        Log.i("gengen", "MainActivity onCreate...");
 
         CrashReport.initCrashReport(getApplicationContext(),"4d4412e3f1",true);
 //        CrashReport.testJavaCrash();
@@ -117,19 +117,13 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         mMainphoneNum = SPUtils.getString(this, "phoneNum", "");
         mList = new ArrayList<QueryToyResultBean.BODYBean.LSTBean>();
 
-        checkNewToken();
-
     }
 
-    private void checkNewToken() {
-        Retrofit retrofit=new Retrofit.Builder()
-                .baseUrl(Constant.baseurl)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        AllInterface allInterface = retrofit.create(AllInterface.class);
-
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Log.i("gengen", "MainActivity onNewIntent...");
     }
-
 
     private void initView() {
         rb_discovery = (LinearLayout) findViewById(R.id.rb_discovery);

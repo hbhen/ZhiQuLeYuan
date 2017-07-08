@@ -416,32 +416,31 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
         querySingleUserInfoResult.enqueue(new Callback<QuerySingleUserInfoReSBean>() {
             @Override
             public void onResponse(retrofit2.Call<QuerySingleUserInfoReSBean> call, Response<QuerySingleUserInfoReSBean> response) {
-                if (response != null) {
+                if("".equals(response.body().getCODE())) {
                     String name = response.body().getBODY().getNAME();
                     String img = response.body().getBODY().getIMG();
 
-                    Log.i(TAG, "activitylogin:onResponse: userinfo" + response.body().toString());
-                    Log.i(TAG, "activitylogin:onResponse: userinfo" + name);
-                    Log.i(TAG, "activitylogin:onResponse: userinfo" + img);
+                    //Log.i(TAG, "activitylogin:onResponse: userinfo" + response.body().toString());
+                    //Log.i(TAG, "activitylogin:onResponse: userinfo" + name);
+                    //Log.i(TAG, "activitylogin:onResponse: userinfo" + img);
 
                     SPUtils.putString(getApplicationContext(),"username",name);
                     SPUtils.putString(getApplicationContext(),"userimg",img);
+                    SPUtils.putString(getApplicationContext(),"toyID",response.body().getBODY().getID());
 
                     Intent data = new Intent();
                     Bundle bundle = new Bundle();
                     bundle.putString("username", name);
                     bundle.putString("userimg", img);
                     data.putExtras(bundle);
-
-
                 } else {
-                    ToastUtil.showToast(getApplicationContext(), "不知所措");
+                    ToastUtil.showToast(getApplicationContext(), response.body().getMSG());
                 }
             }
 
             @Override
             public void onFailure(retrofit2.Call<QuerySingleUserInfoReSBean> call, Throwable t) {
-
+                ToastUtil.showToast(getApplicationContext(), R.string.network_error);
             }
         });
 

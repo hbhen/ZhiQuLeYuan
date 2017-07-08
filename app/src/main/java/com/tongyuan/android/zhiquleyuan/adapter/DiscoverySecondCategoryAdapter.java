@@ -119,7 +119,7 @@ public class DiscoverySecondCategoryAdapter extends BaseAdapter {
          * }
          */
         Uri parse = Uri.parse(list.get(position).getIMG());
-        Glide.with(mContext).load(parse).into(holder.itemalumbimg);
+        Glide.with(mContext).load(parse).placeholder(R.drawable.player_cover_default).into(holder.itemalumbimg);
         holder.textviewTitle.setText(list.get(position).getNAME());
         holder.playView.setTag(position);
         holder.favoriteView.setTag(position);

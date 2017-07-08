@@ -29,9 +29,11 @@ import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListResultBean;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.player.MusicPlayer;
+import com.tongyuan.android.zhiquleyuan.request.RequestManager;
 import com.tongyuan.android.zhiquleyuan.service.MusicPlayerService;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.StatusBarUtils;
+import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 import com.tongyuan.android.zhiquleyuan.utils.Util;
 import com.tongyuan.android.zhiquleyuan.view.IconTextView;
 
@@ -81,10 +83,7 @@ public class MyPlayActivity extends BaseActivity {
 
     //更新播放进度的显示
     private static final int UPDATE_PLAY_PROGRESS_SHOW = 1;
-
     private ObjectAnimator mRotateObjectAnimator;
-//    private boolean isLooping = false;
-
     private final static String TAG = "gengen";
 
     private Handler mHandler = new Handler() {
@@ -99,7 +98,6 @@ public class MyPlayActivity extends BaseActivity {
         }
     };
 
-    private String mToken;
     private ArrayList<DiscoveryListResultBean.BODYBean.LSTBean> list;
     private int playPosition;
 
@@ -124,7 +122,6 @@ public class MyPlayActivity extends BaseActivity {
         ButterKnife.bind(this);
         StatusBarUtils.setStatusBarLightMode(this, getResources().getColor(R.color.main_top_bg));
 
-        mToken = SPUtils.getString(this, "TOKEN", "");
         list = getIntent().getParcelableArrayListExtra("list");
         playPosition = getIntent().getIntExtra("position", 0);
         playMusic(true);
@@ -165,8 +162,8 @@ public class MyPlayActivity extends BaseActivity {
                 //推送当前正在播放的或者当前的歌曲给玩具,如果没有播放(后台的接口写的是传玩具ID和资源ID),所以,播不播放都可以推送,
                 //1,能推送,那能不能取消推送呢?
                 //2,推送到玩具以后,应该跳转的界面是哪个?
-                phoneView.setSelected(false);
-                toyView.setSelected(true);
+//                phoneView.setSelected(false);
+//                toyView.setSelected(true);
                 pushMusicToToy();
                 break;
             case R.id.player_collection:
@@ -327,28 +324,31 @@ public class MyPlayActivity extends BaseActivity {
         showStartView();
     }
 
-
+    /**
+     * 推送到玩具播放
+     */
     private void pushMusicToToy() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constant.baseurl)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        AllInterface allInterface = retrofit.create(AllInterface.class);
-        ControlToyPlayMusicReqBean.ParamBean paramBean = new ControlToyPlayMusicReqBean.ParamBean("201705081005211016644025", "1", "201705151824191016803202",
-                "0");
-        ControlToyPlayMusicReqBean control_play = new ControlToyPlayMusicReqBean("control_play", paramBean, mToken);
-        Gson gson=new Gson();
-        String s = gson.toJson(control_play);
-        Call<ControlToyPlayMusicResBean> controlToyPlayMusicResBeanCall = allInterface.CONTROL_TOY_PLAY_MUSIC_RES_BEAN_CALL(s);
-        controlToyPlayMusicResBeanCall.enqueue(new Callback<ControlToyPlayMusicResBean>() {
+        //String toyId = "201705081005211016644025";
+        String toyId = SPUtils.getString(getApplicationContext(),"toyID","");
+        String resId = list.get(playPosition).getID();  //"201705151824191016803202"
+        ControlToyPlayMusicReqBean.ParamBean paramBean = new ControlToyPlayMusicReqBean.ParamBean(toyId, "1", resId, "0");
+        Call<ControlToyPlayMusicResBean> result = RequestManager.getInstance().ToyPlayCommand(mContext, paramBean);
+        result.enqueue(new Callback<ControlToyPlayMusicResBean>() {
             @Override
             public void onResponse(Call<ControlToyPlayMusicResBean> call, Response<ControlToyPlayMusicResBean> response) {
                 System.out.println(response.body().toString());
+                if("0".equals(response.body().getCode())) {
+                    MusicPlayer.stop();
+                    Intent it = new Intent(MyPlayActivity.this, MainActivity.class);
+                    startActivity(it);
+                } else {
+                    ToastUtil.showToast(mContext, response.body().getMsg());
+                }
             }
 
             @Override
             public void onFailure(Call<ControlToyPlayMusicResBean> call, Throwable t) {
-
+                ToastUtil.showToast(mContext, R.string.network_error);
             }
         });
 

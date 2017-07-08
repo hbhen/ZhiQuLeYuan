@@ -146,17 +146,6 @@ public class ToySelectorFragment extends BaseFragment {
      */
     private void displayBabyHead(int position) {
         String s = toyList.get(position).getBABYIMG();//获得宝宝的头像
-        /*if (s == null) {
-            Glide.with(getContext()).load(R.drawable.ic_launcher).asBitmap().into(new BitmapImageViewTarget(mHeadImageView) {
-                @Override
-                protected void setResource(Bitmap resource) {
-                    RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
-                    roundedBitmapDrawable.setCircular(true);
-                    mHeadImageView.setImageDrawable(roundedBitmapDrawable);
-                }
-            });
-            return;
-        }*/
         Glide.with(getContext()).load(s).asBitmap().placeholder(R.drawable.ic_launcher).into(new BitmapImageViewTarget(mHeadImageView) {
             @Override
             protected void setResource(Bitmap resource) {
@@ -233,7 +222,7 @@ public class ToySelectorFragment extends BaseFragment {
             builder.show();
 
         }
-        ToastUtil.showToast(getContext(), "shanchu 下");
+        //ToastUtil.showToast(getContext(), "shanchu 下");
     }
 
     private void deleteToyFromPowerUser(final int currentPosition, String deleteId, String deleteCode) {
@@ -247,7 +236,7 @@ public class ToySelectorFragment extends BaseFragment {
                     toyList.remove(currentPosition);
                     mPagerAdapter.notifyDataSetChanged();
                     //Log.i(TAG, "onResponse: respnose12" + response.body().toString());
-                    ToastUtil.showToast(getContext(), "确实已经删除了222");
+                    //ToastUtil.showToast(getContext(), "确实已经删除了222");
                 } else {
                     ToastUtil.showToast(getContext(), response.body().MSG);
                 }
@@ -271,7 +260,7 @@ public class ToySelectorFragment extends BaseFragment {
                     toyList.remove(position);
                     mPagerAdapter.notifyDataSetChanged();
                     //Log.i(TAG, "onResponse: respnose12" + response.body().toString());
-                    ToastUtil.showToast(getContext(), "确实已经删除了111");
+                    //ToastUtil.showToast(getContext(), "确实已经删除了111");
                 } else {
                     ToastUtil.showToast(getContext(), response.body().MSG);
                 }
