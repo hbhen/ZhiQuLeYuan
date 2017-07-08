@@ -8,18 +8,17 @@ import android.support.v4.app.FragmentActivity;
 import com.tongyuan.android.zhiquleyuan.activity.MainActivity;
 
 /**
- * Created by android on 2016/12/5.
+ * Created by Android on 2017/7/8.
  */
 
-public abstract class BaseFragment extends Fragment {
-
+public class BaseFragment extends Fragment {
     public FragmentActivity mActivity;
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //拿到acitivity对象,获得context
         mActivity = getActivity();
+
 
     }
 
@@ -60,16 +59,4 @@ public abstract class BaseFragment extends Fragment {
 
         }
     }
-
-//    public void removeFragment(String name) {
-//        if (getActivity() instanceof MainActivity) {
-//            ((MainActivity) getActivity()).removeFragment(name);
-//        }
-//    }
-//
-//    public void hide() {
-//
-//    }
-
-
 }

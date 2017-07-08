@@ -8,6 +8,7 @@ import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
@@ -39,7 +40,7 @@ import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.adapter.RecordAdapter;
 import com.tongyuan.android.zhiquleyuan.adapter.RecordingListAdapter;
-import com.tongyuan.android.zhiquleyuan.base.BaseFragment;
+import com.tongyuan.android.zhiquleyuan.base.BaseRecordingFragment;
 import com.tongyuan.android.zhiquleyuan.bean.AddRecordingReqBean;
 import com.tongyuan.android.zhiquleyuan.bean.AddRecordingResBean;
 import com.tongyuan.android.zhiquleyuan.bean.ChangeRecordingNameReqBean;
@@ -55,11 +56,13 @@ import com.tongyuan.android.zhiquleyuan.bean.QueryRecordingResBean;
 import com.tongyuan.android.zhiquleyuan.db.DBHelper;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.interf.Constant;
+import com.tongyuan.android.zhiquleyuan.player.MusicPlayer;
 import com.tongyuan.android.zhiquleyuan.request.RequestManager;
 import com.tongyuan.android.zhiquleyuan.request.base.BaseRequest;
 import com.tongyuan.android.zhiquleyuan.request.base.SuperModel;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
+import com.tongyuan.android.zhiquleyuan.utils.Util;
 
 import java.io.File;
 import java.io.IOException;
@@ -79,7 +82,6 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static com.nostra13.universalimageloader.core.ImageLoader.TAG;
 import static java.lang.System.currentTimeMillis;
 
 //import com.tongyuan.android.zhiquleyuan.adapter.RecordAdapter;
@@ -89,8 +91,8 @@ import static java.lang.System.currentTimeMillis;
  * Created by android on 2016/12/3.
  */
 
-public class RecodingFragment extends BaseFragment implements View.OnClickListener {
-
+public class RecodingFragment extends BaseRecordingFragment implements View.OnClickListener {
+    private static final String TAG = "222222";
     private ImageView mRecordingButton;
     private ListView mLv_recoding;
     private File mFile;
@@ -160,6 +162,24 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
     private int RECORDING = 1;
     private int PLAYRECORDING = 2;
     private int RRCORDINGCOMPLETE = 3;
+    private List<QueryRecordingResBean.BODYBean.LSTBean> mLst;
+
+    public RecodingFragment() {
+    }
+    private static final int UPDATE_PLAY_PROGRESS_SHOW = 1;
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case UPDATE_PLAY_PROGRESS_SHOW:
+                    //一收到msg消息就走更新播放进度的方法
+                    updatePlayProgressShow();
+                    break;
+            }
+        }
+    };
+
+
 
     @Nullable
     @Override
@@ -280,6 +300,8 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
         super.onActivityCreated(savedInstanceState);
         initData();
         initListener();
+
+
         Log.i("circlelife", "recordingfragment:onActivityCreated: went");
         //TODO 展示本地的recording,没有就去网络获取
 
@@ -308,6 +330,10 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
         mBackArrow.setOnClickListener(this);
         mPlayStop.setOnClickListener(this);
         mPlayBack.setOnClickListener(this);
+        mPlaySeekBar.setOnClickListener(this);
+        mPlay.setOnClickListener(this);
+        mPlayPrev.setOnClickListener(this);
+        mPlayNext.setOnClickListener(this);
     }
 
     @Override
@@ -325,15 +351,18 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
             //推送到玩具
             case R.id.iv_fragent_recording_toy:
                 //判断当前的布局是不是播放的布局,如果是播放的布局才能推送给玩具
-                String mToyid = ToySelectorFragment.mToyId;
-                if (mToyid == null) {
+//                String toyid = ToySelectorFragment.mToyId;
+
+//                Log.i(TAG, "itemClick:recordingfragment mToyId"+toyid);
+
+                if (ToySelectorFragment.mToyId == null) {
                     ToastUtil.showToast(getContext(), "当前没有选中玩具");
                     return;
                 } else if (selectedPosition == -1) {
                     ToastUtil.showToast(getContext(), "当前没有选中的item,请选择item之后再推送给玩具");
                     return;
                 }
-                sendRecordingToToy(mToyid);
+                sendRecordingToToy(ToySelectorFragment.mToyId);
                 ToastUtil.showToast(getContext(), "点击了send2toy");
 
                 break;
@@ -388,6 +417,7 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
                 stopPlayRecord();
                 Log.i("555555", "isplaying1: ");
 //                    isRecordingPlaying = false;
+
                 ToastUtil.showToast(getContext(), "结束试听");
                 break;
             //重录
@@ -408,29 +438,85 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
                 mRecordingFrag.setVisibility(View.VISIBLE);
                 mCompleteFrag.setVisibility(View.INVISIBLE);
                 break;
+
             //播放界面的播放按钮
             case R.id.iv_recoding_play:
-                playListRecordingItem();
+                if (selectedPosition==-1){
+                    return;
+                }
+                playOrPause();
+                ToastUtil.showToast(getContext(), "点击播放");
+                break;
+            case R.id.iv_recoding_stop:
+                playOrPause();
 
+                break;
+            case R.id.iv_recoding_prev:
+                if (selectedPosition==-1){
+                    return;
+                }
+                if (selectedPosition==0){
+                    return;
+                }
+                --selectedPosition;
+                playMusic(false);
+                break;
+            case R.id.iv_recoding_next:
+                if(selectedPosition == mLst.size() - 1) {
+                    return;
+                }
+                ++selectedPosition;
+                playMusic(false);
                 break;
             //播放界面的返回
             case R.id.iv_fragment_playrecording_back:
                 showRecordingPlayView(false);
                 selectedPosition = -1;
+            case R.id.seekbar:
             default:
                 break;
         }
     }
 
-    private void sendRecordingToToy(String mToyid) {
+    private void playMusic(boolean isFromCreate) {
+        if (!isFromCreate){
+            openAndStart();
+        }
+    }
+
+    private void openAndStart() {
+        if (mRecordingId!=null){
+            MusicPlayer.openAndStart(mRecordingId);
+        }
+    }
+
+    private void playOrPause() {
+        if(!isBound)
+            return;
+        if(!MusicPlayer.isPrepared()) {
+            MusicPlayer.openAndStart(mLst.get(selectedPosition).getID());
+            return;
+        }
+        if (!MusicPlayer.isPlaying()) {
+            MusicPlayer.start();
+            showStartView();
+        } else {
+            MusicPlayer.pause();
+            showPauseView();
+        }
+    }
+
+
+
+    private void sendRecordingToToy(String toyid) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constant.baseurl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
-        System.out.println("mtoyid" + ToySelectorFragment.mToyId);
+        System.out.println("mtoyid" + toyid);
 
-        ControlToyPlayRecordingReqBean.ParamBean paramBean = new ControlToyPlayRecordingReqBean.ParamBean(mToyid, "1", mRecordingId,
+        ControlToyPlayRecordingReqBean.ParamBean paramBean = new ControlToyPlayRecordingReqBean.ParamBean(toyid, "1", mRecordingId,
                 "0");
         ControlToyPlayRecordingReqBean controlToyPlayRecordingReqBean = new ControlToyPlayRecordingReqBean("control_play", paramBean, mToken);
         Gson gson = new Gson();
@@ -544,7 +630,7 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
         Call<QueryRecordingResBean> babyListResult = allInterface.QUERY_RECORDING_RES_BEAN_CALL(babyListJson);
         babyListResult.enqueue(new Callback<QueryRecordingResBean>() {
 
-            private List<QueryRecordingResBean.BODYBean.LSTBean> mLst;
+
             private RecordingListAdapter mRecordingListAdapter;
 
             @Override
@@ -552,9 +638,10 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
                 if (response.body() != null && response.body().getCODE().equals("0")) {
                     Log.i("1111111", "queryRecordingList:response" + response.body().getBODY().toString());
                     mLst = response.body().getBODY().getLST();//这里拿的是所有的录音的列表
+                    Log.i(TAG, "onResponse: mlist" + mLst.toString());
                     final List<String> list = new ArrayList<String>();
 
-                    for (int i = 0; i < mLst.size() - 1; i++) {
+                    for (int i = 0; i < mLst.size(); i++) {
                         String id = mLst.get(i).getID();
                         list.add(id);
                     }
@@ -582,7 +669,9 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
                             selectedPosition = position;
                             //拿到item的信息(name,duration),展示到播放界面上
                             //播放的id
-                            mRecordingId = list.get(position);
+//                            Log.i(TAG, "onItemClick: list"+list.toString());
+                            mRecordingId = list.get(selectedPosition);
+                            Log.i(TAG, "onItemClick: mrecoding" + mRecordingId);
                             //2,拿到item的信息(name,duration),展示到播放界面上
                             mPlayName = mLst.get(position).getNAME();
                             String dur = mLst.get(position).getDUR();
@@ -591,7 +680,7 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
 //                            //带着id 去服务器申请本地播放
 //                            getLocalPlayApply(mToken, mPhoneNum, mRecordingId, mTime);
 
-                            ToastUtil.showToast(getContext(), "点击的是:" + position);
+                            ToastUtil.showToast(getContext(), "点击的是:" + selectedPosition);
 
                         }
                     });
@@ -665,10 +754,7 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
 
     }
 
-    private void playListRecordingItem() {
 
-
-    }
 
     private void showRecordingPlayView(boolean b) {
         if (b == true) {
@@ -709,7 +795,6 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
         });
     }
 
-
     private void editRecordingFile() {
 
         mSwipelistview.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
@@ -727,6 +812,7 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
 //        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mControl, "Y", heightPixels - measuredHeight, heightPixels);
 //        objectAnimator.setDuration(300);
 //        objectAnimator.start();
+
         if (mBottomControl.getVisibility() == View.VISIBLE) {
             mBottomControl.setVisibility(View.GONE);
         } else {
@@ -1003,11 +1089,6 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
 
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.i("circlelife", "recordingfragment:onPause: went");
-    }
 
     private Handler mhalder;
 
@@ -1029,18 +1110,80 @@ public class RecodingFragment extends BaseFragment implements View.OnClickListen
             }
         }).start();
         Log.i("circlelife", "recordingfragment:onResume: went");
+        if(MusicPlayer.isPlaying()) {
+            showStartView();
+        }
+    }
+    @Override
+    public void onPause() {
+        super.onPause();
+        showPauseView();
     }
 
+    @Override
+    public void onPrepared() {
+        showStartView();
+        int duration = MusicPlayer.getDuration();
+        if(duration != 0) {
+            if(mPlaySeekBar != null)
+                mPlaySeekBar.setMax(MusicPlayer.getDuration());
+            mPlayendTime.setText(Util.formatMillis(duration));
+        }
+    }
+
+    @Override
+    public void onError() {
+
+    }
+
+    @Override
+    public void onCompleted() {
+//        if(playState == single) {
+            showPauseView();
+            mPlaySeekBar.setProgress(MusicPlayer.getDuration());
+            mPlayBeginTime.setText(Util.formatMillis(MusicPlayer.getDuration()));
+//        } else if(playState == random) {
+//            Random random = new Random(47);
+//            int index = random.nextInt(list.size());
+//            MusicPlayer.openAndStart(list.get(index).getID());
+//        }
+    }
+
+    @Override
+    public void bindSuccess() {
+        openAndStart();
+    }
+
+    @Override
+    public void isSimplePlayUrl() {
+        onPrepared();
+        showStartView();
+    }
+
+    private void showStartView() {
+        mPlay.setVisibility(View.GONE);
+        mStop.setVisibility(View.VISIBLE);
+        mStopCircle.setVisibility(View.VISIBLE);
+    }
+    private void showPauseView() {
+        mPlay.setVisibility(View.VISIBLE);
+        mStop.setVisibility(View.GONE);
+        mStopCircle.setVisibility(View.GONE);
+    }
+    public interface EditListener {
+        void EditRecordingName();
+    }
 
     @Override
     public void onStop() {
         super.onStop();
         Log.i("circlelife", "recordingfragment:onStop: went");
     }
-
-
-    public interface EditListener {
-        void EditRecordingName();
+    private void updatePlayProgressShow() {
+        int currentPosition = MusicPlayer.getCurrentPosition();
+        mPlayBeginTime.setText(Util.formatMillis(currentPosition));
+        mPlaySeekBar.setProgress(currentPosition);
+        mHandler.removeMessages(UPDATE_PLAY_PROGRESS_SHOW);
+        mHandler.sendEmptyMessageDelayed(UPDATE_PLAY_PROGRESS_SHOW, 1000);
     }
-
 }

@@ -469,7 +469,7 @@
 //        _myPeerID = 0;
 //        _watchingPeerID = 0;
 //        _userList.clear();
-////        startActivity(new Intent(getActivity(), OtherActivity.class));
+////        startActivity(new Intent(getActivity(), class));
 ////        showFragment(ToyDetailsFragment.class.getSimpleName());
 ////        ToyDetailsFragment toyDetailsFragment = new ToyDetailsFragment();
 ////        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();

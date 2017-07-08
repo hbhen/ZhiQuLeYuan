@@ -7,23 +7,19 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.activity.MainActivity;
 import com.tongyuan.android.zhiquleyuan.adapter.ToySelectPagerAdapter;
 import com.tongyuan.android.zhiquleyuan.base.BaseFragment;
-import com.tongyuan.android.zhiquleyuan.bean.AddToyResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteToyFromNormalUserReqBean;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteToyFromNormalUserResBean;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteToyFromPowerUserReqBean;
@@ -33,8 +29,6 @@ import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoREQBean;
 import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoRESBean;
 import com.tongyuan.android.zhiquleyuan.event.AddToyMessageEvent;
 import com.tongyuan.android.zhiquleyuan.event.MessageEventToy;
-import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
-import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.request.RequestManager;
 import com.tongyuan.android.zhiquleyuan.request.base.SuperModel;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
@@ -45,9 +39,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -56,8 +48,6 @@ import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  *
@@ -107,7 +97,8 @@ public class ToySelectorFragment extends BaseFragment {
         mPagerAdapter.setOnItemClick(new ToySelectPagerAdapter.OnItemClick() {
             @Override
             public void itemClick(int position) {
-                String mToyId = toyList.get(position).getID();
+                mToyId = toyList.get(position).getID();
+                Log.i(TAG, "itemClick:toyselectorfragment mToyId"+mToyId);
                 //Log.i(TAG, "onClick:toyid " + mToyId);
                 SPUtils.putString(getActivity(), "toyidtopush", mToyId);
                 String toycode = toyList.get(position).getCODE();

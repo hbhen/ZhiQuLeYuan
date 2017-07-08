@@ -107,7 +107,6 @@
         <activity
             android:name=".activity.SetUpWlanActivityStepFour"
             android:screenOrientation="portrait"/>
-        <activity android:name=".activity.OtherActivity"/>
 
         <service
             android:name=".service.MusicPlayerService"
