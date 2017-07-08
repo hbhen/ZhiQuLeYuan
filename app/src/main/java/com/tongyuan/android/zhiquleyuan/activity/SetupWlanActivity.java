@@ -47,7 +47,6 @@ public class SetupWlanActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_netconfig_inputinfo);
         ButterKnife.bind(this);
-        //TODO 完成设置网络的逻辑. 未完成
 
 
     }
@@ -68,10 +67,6 @@ public class SetupWlanActivity extends AppCompatActivity {
                 SPUtils.putString(this, "wlanname", wlanName);
                 SPUtils.putString(this, "wlansecret", wlanSecret);
                 Intent intent = new Intent();
-//                Bundle bundle=new Bundle();
-//                bundle.putString("wlanname",wlanName);
-//                bundle.putString("wlansecret",wlanSecret);
-//                intent.putExtra("bundle",bundle);
                 intent.setClass(this, SetUpWlanActivityStepOne.class);
                 startActivity(intent);
                 break;

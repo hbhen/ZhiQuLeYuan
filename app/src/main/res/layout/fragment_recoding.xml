@@ -28,11 +28,11 @@
         android:layout_below="@id/tb_recoding">
 
         <TextView
-            android:padding="@dimen/dp_5"
-            android:gravity="center_vertical"
             android:id="@+id/tv_recordinglist_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:padding="@dimen/dp_5"
             android:text="录音列表"/>
 
         <android.support.v4.widget.SwipeRefreshLayout
@@ -131,7 +131,7 @@
         <FrameLayout
             android:id="@+id/fl_fragment_recording_control"
             android:layout_width="match_parent"
-            android:layout_height="230dp"
+            android:layout_height="200dp"
             android:layout_below="@id/ll_recoding_tool_title"
             android:background="#f1f1f1"
             android:clickable="true">
@@ -229,7 +229,7 @@
                             android:layout_height="80dp"
                             android:scaleType="centerInside"
                             android:src="@drawable/recordpause_3x"
-                            android:visibility="visible"/>
+                            android:visibility="gone"/>
 
                         <ImageView
                             android:id="@+id/iv_recoding_tool_trylistener_stopcircle"
@@ -284,7 +284,7 @@
                 android:layout_below="@id/ll_recoding_tool_title"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="26dp"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -295,11 +295,11 @@
                     android:orientation="vertical">
 
                     <ImageView
-                        android:layout_marginTop="14dp"
                         android:id="@+id/iv_recoding_tool_startrecoding"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
+                        android:layout_marginTop="14dp"
                         android:src="@drawable/recording_pressed_240"/>
 
                     <TextView
@@ -321,7 +321,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <TextView
                     android:id="@+id/tv_fragment_playrecoding_desc"
@@ -344,6 +344,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
+
                     android:layout_marginTop="40dp">
 
                     <ImageView
@@ -354,26 +355,19 @@
                         android:layout_centerVertical="true"
                         android:src="@drawable/arrow_left"/>
 
-                    <RelativeLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="68dp">
+
 
                         <ImageView
+                            android:layout_marginLeft="68dp"
                             android:id="@+id/iv_recoding_prev"
                             android:layout_width="30dp"
                             android:layout_height="30dp"
-                            android:layout_centerInParent="true"
+                            android:layout_centerVertical="true"
                             android:src="@drawable/play_recording_prev_3x"/>
 
-                    </RelativeLayout>
 
-                    <RelativeLayout
-                        android:id="@+id/rl_playrecording_play"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true">
+
+
 
                         <ImageView
                             android:id="@+id/iv_recoding_play"
@@ -398,23 +392,17 @@
                             android:src="@drawable/colorcircle_3x"
                             android:visibility="gone"/>
 
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginRight="70dp">
 
                         <ImageView
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="70dp"
                             android:id="@+id/iv_recoding_next"
                             android:layout_width="30dp"
                             android:layout_height="30dp"
-                            android:layout_centerInParent="true"
                             android:src="@drawable/play_recording_next_3x"/>
 
-                    </RelativeLayout>
+
 
                 </RelativeLayout>
 
@@ -434,11 +422,12 @@
                         android:text="00:00"/>
 
                     <SeekBar
+
                         android:id="@+id/seekbar"
                         android:layout_width="200dp"
                         android:layout_height="wrap_content"
                         android:layout_toRightOf="@id/tv_fragment_recoding_begintime"
-                        android:focusable="true"
+
                         android:maxHeight="1.7dp"
                         android:minHeight="1.7dp"
                         android:progressDrawable="@drawable/po_seekbar"
@@ -446,7 +435,7 @@
 
                     <TextView
                         android:id="@+id/tv_fragment_recoding_endtime"
-                        android:layout_width="56sp"
+                        android:layout_width="wrap_content"
                         android:layout_height="17sp"
                         android:layout_alignParentRight="true"
                         android:layout_marginRight="24dp"

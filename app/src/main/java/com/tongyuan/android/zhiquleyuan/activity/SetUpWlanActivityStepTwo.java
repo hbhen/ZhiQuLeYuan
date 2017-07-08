@@ -75,8 +75,6 @@ public class SetUpWlanActivityStepTwo extends AppCompatActivity implements SinVo
         mWlansecret = SPUtils.getString(this, "wlansecret", "");
         mSinVoicePlayer = new SinVoicePlayer(CODEBOOK);
         mSinVoicePlayer.setListener(this);
-
-
     }
 
     @OnClick({R.id.iv_back, R.id.bt_sendvoice, R.id.tv_netconfig_retry2_sendvoice})
@@ -86,18 +84,17 @@ public class SetUpWlanActivityStepTwo extends AppCompatActivity implements SinVo
                 finish();
                 break;
             case R.id.bt_sendvoice:
-                String text = mWlanname + "|" + mWlansecret;
                 try {
-                    String encode = URLEncoder.encode(text, "UTF-8");
+
+                    String wlanName = URLEncoder.encode(mWlanname, "UTF-8");
+                    String wlanSecret = URLEncoder.encode(mWlansecret, "UTF-8");
+                    String encode = wlanName + "|" + wlanSecret;
                     String returnStr = returnStr(encode);
                     mSinVoicePlayer.play(returnStr);
                     Log.i(TAG, "onViewClicked: returnStr" + returnStr);
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
-//                Log.i(TAG, "onViewClicked: append" + mAppend);
-//                Log.i(TAG, "onViewClicked: string2" + mString2);
-
 
                 break;
             case R.id.tv_netconfig_retry2_sendvoice:
