@@ -164,7 +164,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                     mListviewRecommand.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            MyPlayActivity.launch(getActivity(), mLAdapter.getList(), position);
+                            MyPlayActivity.launch(getActivity(), mLAdapter.getList(), position - 1);
                         }
                     });
                 } else {
@@ -181,6 +181,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
 
 
     public void setData(SingleToyInfoRESBean.BODYBean response, String image) {
+        Log.i("timedate", "setData: went");
         mUserId = SPUtils.getString(getContext(), "ID", "");
         Log.i(TAG, "setData: went");
         this.mResponse = response;
@@ -262,7 +263,8 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     }
 
     private void initView() {
-
+        checkStateInfo();
+        Log.i("timedate", "initView: went");
         if (mListviewRecommand == null)
             return;
         mTv_fragment_toy_details_acttime.setText(mFormatTime);
@@ -422,6 +424,8 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                 bundle.putString("roomid", mRoomid);
                 bundle.putString("token", token);
                 bundle.putString("toyid", mId);
+                bundle.putString("babyimg",mBabyimg);
+                bundle.putString("babyname",mBabyName);
 
                 startActivity(new Intent(getActivity(), VideoActivity.class).putExtras(bundle));
                 ToastUtil.showToast(getActivity(), "roomid" + mRoomid);
@@ -506,7 +510,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         queryToyHasBindBaby();
-        checkStateInfo();
+//        checkStateInfo();
         initView();
     }
 

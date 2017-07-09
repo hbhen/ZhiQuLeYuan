@@ -254,6 +254,8 @@ public class DiscoveryListResultBean implements Parcelable {
         }
 
         public static class LSTBean implements Parcelable {
+
+            public LSTBean() {}
             /**
              * ID : 201705151824191016803202
              * REMARK :
@@ -295,19 +297,7 @@ public class DiscoveryListResultBean implements Parcelable {
                         '}';
             }
 
-            public LSTBean(String ID, String REMARK, String SIZE, String IMG, String COLID, String TIMES, String NAME, String TYPE, String COLNAME,
-                           String DUR) {
-                this.ID = ID;
-                this.REMARK = REMARK;
-                this.SIZE = SIZE;
-                this.IMG = IMG;
-                this.COLID = COLID;
-                this.TIMES = TIMES;
-                this.NAME = NAME;
-                this.TYPE = TYPE;
-                this.COLNAME = COLNAME;
-                this.DUR = DUR;
-            }
+
 
             public String getID() {
                 return ID;

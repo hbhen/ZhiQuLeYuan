@@ -1,5 +1,6 @@
 package com.tongyuan.android.zhiquleyuan.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -46,7 +47,8 @@ public class SetUpWlanActivityStepFour extends AppCompatActivity {
                 break;
             case R.id.tv_netconfig_again:
                 ToastUtil.showToast(this,"返回inputinfo页面");
-
+                Intent it = new Intent(this, SetupWlanActivity.class);
+                startActivity(it);
                 break;
         }
     }

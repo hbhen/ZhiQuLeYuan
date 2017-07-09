@@ -34,7 +34,9 @@
         android:layout_below="@id/tb_setuserinfo"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="19dp"
-        android:src="@mipmap/ic_launcher"/>
+        android:scaleType="centerInside"
+        android:background="@drawable/babyimagebackground_3x"
+        android:src="@drawable/player_cover_default"/>
 
     <EditText
         android:id="@+id/et_setuserinfo"

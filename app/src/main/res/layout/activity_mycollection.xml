@@ -9,6 +9,7 @@
         android:layout_height="@dimen/dp_44">
 
         <ImageView
+            android:id="@+id/iv_collection_back"
             android:layout_marginLeft="@dimen/dp_7"
             android:layout_centerVertical="true"
             android:layout_width="10dp"

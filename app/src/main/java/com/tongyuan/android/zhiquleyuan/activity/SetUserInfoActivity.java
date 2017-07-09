@@ -358,7 +358,7 @@ public class SetUserInfoActivity extends AppCompatActivity {
         Log.i("pengyounihen6", "uploadPic: "+userInfoBody.toString());
         String s = gson.toJson(userInfoReqBean);
 
-        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        final RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
 
         MultipartBody.Builder builder = new MultipartBody.Builder();
         builder.setType(MultipartBody.FORM);
@@ -374,7 +374,10 @@ public class SetUserInfoActivity extends AppCompatActivity {
                 String code = response.body().getCODE();
                 if (code.equals("0")) {
                     String name = response.body().getBODY().getNAME();
+                    String img = response.body().getBODY().getIMG();
+                    SPUtils.putString(getApplicationContext(),"userimg",img);
                     SPUtils.putString(getApplicationContext(),"username",name);
+                    String username=SPUtils.getString(getApplicationContext(),"username","");
                     finish();
                 }
             }

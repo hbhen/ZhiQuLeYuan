@@ -33,7 +33,7 @@ import com.tongyuan.android.zhiquleyuan.request.RequestManager;
 import com.tongyuan.android.zhiquleyuan.request.base.SuperModel;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
-import com.zhy.magicviewpager.transformer.ScaleInTransformer;
+import com.tongyuan.android.zhiquleyuan.view.SelectorPagerTransformer;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -81,6 +81,7 @@ public class ToySelectorFragment extends BaseFragment {
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
+        Log.i("gengen", "onCreateView");
 
         View toyRoot = inflater.inflate(R.layout.fragment_toy, container, false);
         ButterKnife.bind(this, toyRoot);
@@ -90,8 +91,10 @@ public class ToySelectorFragment extends BaseFragment {
 
     @Override
     public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
-        mViewPageToy.setPageMargin(20);
+        int margin = (int) getResources().getDimension(R.dimen.dp_20);
+        mViewPageToy.setPageMargin(margin);
         mViewPageToy.setOffscreenPageLimit(10);
+        Log.i("gengen", "onViewCreated");
 
         mPagerAdapter = new ToySelectPagerAdapter(getActivity(), toyList);
         mPagerAdapter.setOnItemClick(new ToySelectPagerAdapter.OnItemClick() {
@@ -107,8 +110,9 @@ public class ToySelectorFragment extends BaseFragment {
             }
         });
         mViewPageToy.setAdapter(mPagerAdapter);
-        mViewPageToy.setPageTransformer(true, new ScaleInTransformer());
-        mViewPageToy.setCurrentItem(1);
+//        mViewPageToy.setPageTransformer(true, new ScaleInTransformer());
+        mViewPageToy.setPageTransformer(true, new SelectorPagerTransformer());
+        mViewPageToy.setCurrentItem(0);
         displayBabyHead(1);
         mViewPageToy.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -119,6 +123,7 @@ public class ToySelectorFragment extends BaseFragment {
             @Override
             public void onPageSelected(int position) {
                 mCurrentPosition = position;
+                Log.i("gengen", "onPageSelected "+position);
                 //获得宝宝的头像 , 滑到当前的position展示当前的玩具的宝宝,如果当前的玩具没有绑定宝宝,那么就让他显示默认的baby头像
                 //宝宝的头像从哪来?怎么确定宝宝的头像和玩具的关系
                 displayBabyHead(position);
@@ -129,6 +134,13 @@ public class ToySelectorFragment extends BaseFragment {
 
             }
         });
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+
     }
 
     /**
@@ -148,7 +160,7 @@ public class ToySelectorFragment extends BaseFragment {
             });
             return;
         }*/
-        Glide.with(getContext()).load(s).asBitmap().placeholder(R.drawable.ic_launcher).into(new BitmapImageViewTarget(mHeadImageView) {
+        Glide.with(getContext()).load(s).asBitmap().placeholder(R.drawable.player_cover_default).into(new BitmapImageViewTarget(mHeadImageView) {
             @Override
             protected void setResource(Bitmap resource) {
                 RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
@@ -161,12 +173,17 @@ public class ToySelectorFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
+        Log.i("gengen", "onResume");
         mPagerAdapter.notifyDataSetChanged();
+        mViewPageToy.setCurrentItem(mCurrentPosition);
     }
 
     @Override
     public void onHiddenChanged(boolean hidden) {
-        mPagerAdapter.notifyDataSetChanged();
+        if (!hidden)
+            mPagerAdapter.notifyDataSetChanged();
+        mViewPageToy.setCurrentItem(mCurrentPosition);
+        Log.i("gengen", "onHiddenChanged");
     }
 
     @OnClick({R.id.iv_add, R.id.iv_delete})
@@ -236,7 +253,10 @@ public class ToySelectorFragment extends BaseFragment {
             public void onResponse(Call<SuperModel<DeleteToyFromPowerUserResBean.BODYBean>> call, Response<SuperModel<DeleteToyFromPowerUserResBean.BODYBean>> response) {
                 if("0".equals(response.body().CODE)) {
                     toyList.remove(currentPosition);
+                    mCurrentPosition --;
+                    mViewPageToy.setCurrentItem(mCurrentPosition);
                     mPagerAdapter.notifyDataSetChanged();
+
                     //Log.i(TAG, "onResponse: respnose12" + response.body().toString());
                     ToastUtil.showToast(getContext(), "确实已经删除了222");
                 } else {
@@ -259,7 +279,9 @@ public class ToySelectorFragment extends BaseFragment {
             public void onResponse(Call<SuperModel<DeleteToyFromNormalUserResBean.BODYBean>> call, Response<SuperModel<DeleteToyFromNormalUserResBean.BODYBean>> response) {
 
                 if("0".equals(response.body().CODE)) {
+                    mCurrentPosition --;
                     toyList.remove(position);
+                    mViewPageToy.setCurrentItem(mCurrentPosition);
                     mPagerAdapter.notifyDataSetChanged();
                     //Log.i(TAG, "onResponse: respnose12" + response.body().toString());
                     ToastUtil.showToast(getContext(), "确实已经删除了111");
@@ -313,8 +335,12 @@ public class ToySelectorFragment extends BaseFragment {
     public void onToyMessage(MessageEventToy messageEventToy) {
         toyList.clear();
         toyList.addAll(messageEventToy.mQueryToyListResults);
+        Log.i("gengen", "onToyMessage notifyDataSetChangeed...");
+
         if (mPagerAdapter != null)
             mPagerAdapter.notifyDataSetChanged();
+        //mViewPageToy.setCurrentItem(1);
+        mViewPageToy.setCurrentItem(mCurrentPosition);
         //Log.i(TAG, "onToyMessage: adapter" + mPagerAdapter);
     }
 
@@ -342,6 +368,7 @@ public class ToySelectorFragment extends BaseFragment {
             bean.setBABYIMG(img);
             toyList.add(bean);
 
+            Log.i("gengen", "onGetToyAddMessage notifyDataSetChangeed...");
             if (mPagerAdapter != null)
                 mPagerAdapter.notifyDataSetChanged();
         }

@@ -2,6 +2,7 @@ package com.tongyuan.android.zhiquleyuan.fragment;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.DataSetObservable;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
@@ -38,6 +39,7 @@ import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
+import com.tongyuan.android.zhiquleyuan.activity.SetInitVolumeActivity;
 import com.tongyuan.android.zhiquleyuan.adapter.RecordAdapter;
 import com.tongyuan.android.zhiquleyuan.adapter.RecordingListAdapter;
 import com.tongyuan.android.zhiquleyuan.base.BaseRecordingFragment;
@@ -60,6 +62,7 @@ import com.tongyuan.android.zhiquleyuan.player.MusicPlayer;
 import com.tongyuan.android.zhiquleyuan.request.RequestManager;
 import com.tongyuan.android.zhiquleyuan.request.base.BaseRequest;
 import com.tongyuan.android.zhiquleyuan.request.base.SuperModel;
+import com.tongyuan.android.zhiquleyuan.service.MusicPlayerService;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 import com.tongyuan.android.zhiquleyuan.utils.Util;
@@ -163,9 +166,11 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
     private int PLAYRECORDING = 2;
     private int RRCORDINGCOMPLETE = 3;
     private List<QueryRecordingResBean.BODYBean.LSTBean> mLst;
+    private String mDur;
 
     public RecodingFragment() {
     }
+
     private static final int UPDATE_PLAY_PROGRESS_SHOW = 1;
     private Handler mHandler = new Handler() {
         @Override
@@ -178,7 +183,6 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
             }
         }
     };
-
 
 
     @Nullable
@@ -334,6 +338,8 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
         mPlay.setOnClickListener(this);
         mPlayPrev.setOnClickListener(this);
         mPlayNext.setOnClickListener(this);
+        mStop.setOnClickListener(this);
+        mSetVolume.setOnClickListener(this);
     }
 
     @Override
@@ -441,31 +447,33 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
 
             //播放界面的播放按钮
             case R.id.iv_recoding_play:
-                if (selectedPosition==-1){
+                if (selectedPosition == -1) {
                     return;
                 }
-                playOrPause();
+                playOrPause(true);
                 ToastUtil.showToast(getContext(), "点击播放");
                 break;
             case R.id.iv_recoding_stop:
-                playOrPause();
+                playOrPause(false);
 
                 break;
             case R.id.iv_recoding_prev:
-                if (selectedPosition==-1){
+                if (selectedPosition == -1) {
                     return;
                 }
-                if (selectedPosition==0){
+                if (selectedPosition == 0) {
                     return;
                 }
                 --selectedPosition;
+                mRecordingId = mLst.get(selectedPosition).getID();
                 playMusic(false);
                 break;
             case R.id.iv_recoding_next:
-                if(selectedPosition == mLst.size() - 1) {
+                if (selectedPosition == mLst.size() - 1) {
                     return;
                 }
                 ++selectedPosition;
+                mRecordingId = mLst.get(selectedPosition).getID();
                 playMusic(false);
                 break;
             //播放界面的返回
@@ -473,39 +481,49 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
                 showRecordingPlayView(false);
                 selectedPosition = -1;
             case R.id.seekbar:
+                break;
+            case R.id.ib_fragment_recoding_setvolume:
+                Intent intent = new Intent();
+
+                intent.setClass(getContext(), SetInitVolumeActivity.class);
+                startActivity(intent);
+                break;
             default:
                 break;
         }
     }
 
     private void playMusic(boolean isFromCreate) {
-        if (!isFromCreate){
+        if (!isFromCreate) {
             openAndStart();
         }
     }
 
     private void openAndStart() {
-        if (mRecordingId!=null){
+        if (mRecordingId != null) {
             MusicPlayer.openAndStart(mRecordingId);
         }
     }
 
-    private void playOrPause() {
-        if(!isBound)
+    private void playOrPause(boolean isPlay) {
+        if (!isBound)
             return;
-        if(!MusicPlayer.isPrepared()) {
+        if (!MusicPlayer.isPrepared() && isPlay) {
             MusicPlayer.openAndStart(mLst.get(selectedPosition).getID());
             return;
         }
-        if (!MusicPlayer.isPlaying()) {
-            MusicPlayer.start();
+        if (isPlay) {
+            if (MusicPlayerService.isPlayUrl(mRecordingId)) {
+                MusicPlayer.start();
+            } else {
+                MusicPlayer.openAndStart(mLst.get(selectedPosition).getID());
+            }
             showStartView();
         } else {
             MusicPlayer.pause();
             showPauseView();
         }
     }
-
 
 
     private void sendRecordingToToy(String toyid) {
@@ -664,9 +682,10 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
                             mSwipelistview.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
                             mSwipelistview.setItemChecked(position, true);
                             //1,点击item,显示录音播放界面
-                            showRecordingPlayView(true);
+
                             //保存position
                             selectedPosition = position;
+                            showRecordingPlayView(true);
                             //拿到item的信息(name,duration),展示到播放界面上
                             //播放的id
 //                            Log.i(TAG, "onItemClick: list"+list.toString());
@@ -674,9 +693,9 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
                             Log.i(TAG, "onItemClick: mrecoding" + mRecordingId);
                             //2,拿到item的信息(name,duration),展示到播放界面上
                             mPlayName = mLst.get(position).getNAME();
-                            String dur = mLst.get(position).getDUR();
+                            mDur = mLst.get(position).getDUR();
                             mPlayRecordingDesc.setText(mPlayName);
-                            mPlayendTime.setText(dur);
+                            mPlayendTime.setText(mDur);
 //                            //带着id 去服务器申请本地播放
 //                            getLocalPlayApply(mToken, mPhoneNum, mRecordingId, mTime);
 
@@ -755,13 +774,13 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
     }
 
 
-
     private void showRecordingPlayView(boolean b) {
-        if (b == true) {
+        if (b) {
             mPlayRecordingFrag.setVisibility(View.VISIBLE);
             mCompleteFrag.setVisibility(View.GONE);
             mRecordingFrag.setVisibility(View.GONE);
             mBottomControl.setVisibility(View.VISIBLE);
+            playOrPause(false);
         } else {
             mPlayRecordingFrag.setVisibility(View.GONE);
             mCompleteFrag.setVisibility(View.GONE);
@@ -1110,10 +1129,12 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
             }
         }).start();
         Log.i("circlelife", "recordingfragment:onResume: went");
-        if(MusicPlayer.isPlaying()) {
+
+        if (MusicPlayer.isPlaying() && MusicPlayerService.isPlayUrl(mRecordingId)) {
             showStartView();
         }
     }
+
     @Override
     public void onPause() {
         super.onPause();
@@ -1124,10 +1145,12 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
     public void onPrepared() {
         showStartView();
         int duration = MusicPlayer.getDuration();
-        if(duration != 0) {
-            if(mPlaySeekBar != null)
+        if (duration != 0) {
+            if (mPlaySeekBar != null)
                 mPlaySeekBar.setMax(MusicPlayer.getDuration());
             mPlayendTime.setText(Util.formatMillis(duration));
+            mHandler.removeMessages(UPDATE_PLAY_PROGRESS_SHOW);
+            mHandler.sendEmptyMessage(UPDATE_PLAY_PROGRESS_SHOW);
         }
     }
 
@@ -1139,9 +1162,9 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
     @Override
     public void onCompleted() {
 //        if(playState == single) {
-            showPauseView();
-            mPlaySeekBar.setProgress(MusicPlayer.getDuration());
-            mPlayBeginTime.setText(Util.formatMillis(MusicPlayer.getDuration()));
+        showPauseView();
+//            mPlaySeekBar.setProgress(MusicPlayer.getDuration());
+//            mPlayBeginTime.setText(Util.formatMillis(MusicPlayer.getDuration()));
 //        } else if(playState == random) {
 //            Random random = new Random(47);
 //            int index = random.nextInt(list.size());
@@ -1164,12 +1187,19 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
         mPlay.setVisibility(View.GONE);
         mStop.setVisibility(View.VISIBLE);
         mStopCircle.setVisibility(View.VISIBLE);
+
     }
+
     private void showPauseView() {
         mPlay.setVisibility(View.VISIBLE);
         mStop.setVisibility(View.GONE);
         mStopCircle.setVisibility(View.GONE);
+        mHandler.removeMessages(UPDATE_PLAY_PROGRESS_SHOW);
+        mPlaySeekBar.setProgress(0);
+        mPlayBeginTime.setText(Util.formatMillis(0));
+        mPlayendTime.setText(mDur);
     }
+
     public interface EditListener {
         void EditRecordingName();
     }
@@ -1179,8 +1209,11 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
         super.onStop();
         Log.i("circlelife", "recordingfragment:onStop: went");
     }
+
     private void updatePlayProgressShow() {
+
         int currentPosition = MusicPlayer.getCurrentPosition();
+        Log.i("handler", "position=" + currentPosition);
         mPlayBeginTime.setText(Util.formatMillis(currentPosition));
         mPlaySeekBar.setProgress(currentPosition);
         mHandler.removeMessages(UPDATE_PLAY_PROGRESS_SHOW);

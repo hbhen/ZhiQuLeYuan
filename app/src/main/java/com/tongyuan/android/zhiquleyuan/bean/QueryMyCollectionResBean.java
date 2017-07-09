@@ -6,19 +6,21 @@ import java.util.List;
  * Created by Android on 2017/6/14.
  */
 public class QueryMyCollectionResBean {
+
     /**
      * TYPE : RES
      * CMD : MYFAV
-     * ACCT : 15239184643
-     * TIME : 20170614104015357
+     * ACCT : XXXX
+     * TIME : 20170709182701564
      * VERI :
      * SEQ : 1
      * CODE : 0
      * MSG :
-     * BODY : {"PN":"1","PS":"10","NC":"0","LST":[{"COLID":"201610301737481016432787 ","TYPE":"音频文件","REMARK":"","ID":"201705151810551016803172",
-     * "NAME":"丝路驼铃","SIZE":"9.78MB","IMG":"http://120.27.41.179:8081/zqpland/resource/thumbnail/5/jpg/20170515/201705151812531016803177.jpg",
-     * "DUR":"0:07:07","TIMES":"123","COLNAME":"儿童歌谣 "}],"CNT":"1"}
-     * TOKEN : 8f57181e-47f6-4c81-8bee-df29b677df9c
+     * BODY : {"PN":"1","PS":"10","CNT":"2","LST":[{"SIZE":"2.05MB","COLID":"201702091131241016563468 ","REMARK":"","COLNAME":"睡前故事 ",
+     * "TYPE":"音频文件","NAME":"小斑马过河","IMG":"http://120.27.41.179:8081/zqpland/resource/thumbnail/5/jpg/20170515/201705151810031016803168.jpg",
+     * "ID":"201705151810031016803167","TIMES":"78","DUR":"0:04:28"},{"COLNAME":"睡前故事 ","REMARK":"","SIZE":"954.95KB","TYPE":"音频文件",
+     * "DUR":"0:02:02","ID":"201706041509200000012266","COLID":"201702091131241016563468 ","TIMES":"23","NAME":"愚公移山","IMG":""}],"NC":"0"}
+     * TOKEN : 2a9f39b9-489c-4f29-a4f4-3e8da79dc08e
      */
 
     private String TYPE;
@@ -146,17 +148,18 @@ public class QueryMyCollectionResBean {
         /**
          * PN : 1
          * PS : 10
+         * CNT : 2
+         * LST : [{"SIZE":"2.05MB","COLID":"201702091131241016563468 ","REMARK":"","COLNAME":"睡前故事 ","TYPE":"音频文件","NAME":"小斑马过河","IMG":"http://120
+         * .27.41.179:8081/zqpland/resource/thumbnail/5/jpg/20170515/201705151810031016803168.jpg","ID":"201705151810031016803167","TIMES":"78",
+         * "DUR":"0:04:28"},{"COLNAME":"睡前故事 ","REMARK":"","SIZE":"954.95KB","TYPE":"音频文件","DUR":"0:02:02","ID":"201706041509200000012266",
+         * "COLID":"201702091131241016563468 ","TIMES":"23","NAME":"愚公移山","IMG":""}]
          * NC : 0
-         * LST : [{"COLID":"201610301737481016432787 ","TYPE":"音频文件","REMARK":"","ID":"201705151810551016803172","NAME":"丝路驼铃","SIZE":"9.78MB",
-         * "IMG":"http://120.27.41.179:8081/zqpland/resource/thumbnail/5/jpg/20170515/201705151812531016803177.jpg","DUR":"0:07:07","TIMES":"123",
-         * "COLNAME":"儿童歌谣 "}]
-         * CNT : 1
          */
 
         private String PN;
         private String PS;
-        private String NC;
         private String CNT;
+        private String NC;
         private List<LSTBean> LST;
 
         @Override
@@ -164,17 +167,17 @@ public class QueryMyCollectionResBean {
             return "BODYBean{" +
                     "PN='" + PN + '\'' +
                     ", PS='" + PS + '\'' +
-                    ", NC='" + NC + '\'' +
                     ", CNT='" + CNT + '\'' +
+                    ", NC='" + NC + '\'' +
                     ", LST=" + LST +
                     '}';
         }
 
-        public BODYBean(String PN, String PS, String NC, String CNT, List<LSTBean> LST) {
+        public BODYBean(String PN, String PS, String CNT, String NC, List<LSTBean> LST) {
             this.PN = PN;
             this.PS = PS;
-            this.NC = NC;
             this.CNT = CNT;
+            this.NC = NC;
             this.LST = LST;
         }
 
@@ -194,20 +197,20 @@ public class QueryMyCollectionResBean {
             this.PS = PS;
         }
 
-        public String getNC() {
-            return NC;
-        }
-
-        public void setNC(String NC) {
-            this.NC = NC;
-        }
-
         public String getCNT() {
             return CNT;
         }
 
         public void setCNT(String CNT) {
             this.CNT = CNT;
+        }
+
+        public String getNC() {
+            return NC;
+        }
+
+        public void setNC(String NC) {
+            this.NC = NC;
         }
 
         public List<LSTBean> getLST() {
@@ -220,97 +223,57 @@ public class QueryMyCollectionResBean {
 
         public static class LSTBean {
             /**
-             * COLID : 201610301737481016432787
-             * TYPE : 音频文件
+             * SIZE : 2.05MB
+             * COLID : 201702091131241016563468
              * REMARK :
-             * ID : 201705151810551016803172
-             * NAME : 丝路驼铃
-             * SIZE : 9.78MB
-             * IMG : http://120.27.41.179:8081/zqpland/resource/thumbnail/5/jpg/20170515/201705151812531016803177.jpg
-             * DUR : 0:07:07
-             * TIMES : 123
-             * COLNAME : 儿童歌谣
+             * COLNAME : 睡前故事
+             * TYPE : 音频文件
+             * NAME : 小斑马过河
+             * IMG : http://120.27.41.179:8081/zqpland/resource/thumbnail/5/jpg/20170515/201705151810031016803168.jpg
+             * ID : 201705151810031016803167
+             * TIMES : 78
+             * DUR : 0:04:28
              */
 
-            private String COLID;
-            private String TYPE;
-            private String REMARK;
-            private String ID;
-            private String NAME;
             private String SIZE;
-            private String IMG;
-            private String DUR;
-            private String TIMES;
+            private String COLID;
+            private String REMARK;
             private String COLNAME;
+            private String TYPE;
+            private String NAME;
+            private String IMG;
+            private String ID;
+            private String TIMES;
+            private String DUR;
 
             @Override
             public String toString() {
                 return "LSTBean{" +
-                        "COLID='" + COLID + '\'' +
-                        ", TYPE='" + TYPE + '\'' +
+                        "SIZE='" + SIZE + '\'' +
+                        ", COLID='" + COLID + '\'' +
                         ", REMARK='" + REMARK + '\'' +
-                        ", ID='" + ID + '\'' +
-                        ", NAME='" + NAME + '\'' +
-                        ", SIZE='" + SIZE + '\'' +
-                        ", IMG='" + IMG + '\'' +
-                        ", DUR='" + DUR + '\'' +
-                        ", TIMES='" + TIMES + '\'' +
                         ", COLNAME='" + COLNAME + '\'' +
+                        ", TYPE='" + TYPE + '\'' +
+                        ", NAME='" + NAME + '\'' +
+                        ", IMG='" + IMG + '\'' +
+                        ", ID='" + ID + '\'' +
+                        ", TIMES='" + TIMES + '\'' +
+                        ", DUR='" + DUR + '\'' +
                         '}';
             }
 
-            public LSTBean(String COLID, String TYPE, String REMARK, String ID, String NAME, String SIZE, String IMG, String DUR, String TIMES,
-                           String COLNAME) {
-                this.COLID = COLID;
-                this.TYPE = TYPE;
-                this.REMARK = REMARK;
-                this.ID = ID;
-                this.NAME = NAME;
+            public LSTBean(String SIZE, String COLID, String REMARK, String COLNAME, String TYPE, String NAME, String IMG, String ID, String TIMES,
+                           String DUR) {
                 this.SIZE = SIZE;
-                this.IMG = IMG;
-                this.DUR = DUR;
-                this.TIMES = TIMES;
-                this.COLNAME = COLNAME;
-            }
-
-            public String getCOLID() {
-                return COLID;
-            }
-
-            public void setCOLID(String COLID) {
                 this.COLID = COLID;
-            }
-
-            public String getTYPE() {
-                return TYPE;
-            }
-
-            public void setTYPE(String TYPE) {
-                this.TYPE = TYPE;
-            }
-
-            public String getREMARK() {
-                return REMARK;
-            }
-
-            public void setREMARK(String REMARK) {
                 this.REMARK = REMARK;
-            }
-
-            public String getID() {
-                return ID;
-            }
-
-            public void setID(String ID) {
-                this.ID = ID;
-            }
-
-            public String getNAME() {
-                return NAME;
-            }
-
-            public void setNAME(String NAME) {
+                this.COLNAME = COLNAME;
+                this.TYPE = TYPE;
                 this.NAME = NAME;
+                this.IMG = IMG;
+                this.ID = ID;
+                this.TIMES = TIMES;
+                this.DUR = DUR;
             }
 
             public String getSIZE() {
@@ -321,6 +284,46 @@ public class QueryMyCollectionResBean {
                 this.SIZE = SIZE;
             }
 
+            public String getCOLID() {
+                return COLID;
+            }
+
+            public void setCOLID(String COLID) {
+                this.COLID = COLID;
+            }
+
+            public String getREMARK() {
+                return REMARK;
+            }
+
+            public void setREMARK(String REMARK) {
+                this.REMARK = REMARK;
+            }
+
+            public String getCOLNAME() {
+                return COLNAME;
+            }
+
+            public void setCOLNAME(String COLNAME) {
+                this.COLNAME = COLNAME;
+            }
+
+            public String getTYPE() {
+                return TYPE;
+            }
+
+            public void setTYPE(String TYPE) {
+                this.TYPE = TYPE;
+            }
+
+            public String getNAME() {
+                return NAME;
+            }
+
+            public void setNAME(String NAME) {
+                this.NAME = NAME;
+            }
+
             public String getIMG() {
                 return IMG;
             }
@@ -329,12 +332,12 @@ public class QueryMyCollectionResBean {
                 this.IMG = IMG;
             }
 
-            public String getDUR() {
-                return DUR;
+            public String getID() {
+                return ID;
             }
 
-            public void setDUR(String DUR) {
-                this.DUR = DUR;
+            public void setID(String ID) {
+                this.ID = ID;
             }
 
             public String getTIMES() {
@@ -345,12 +348,12 @@ public class QueryMyCollectionResBean {
                 this.TIMES = TIMES;
             }
 
-            public String getCOLNAME() {
-                return COLNAME;
+            public String getDUR() {
+                return DUR;
             }
 
-            public void setCOLNAME(String COLNAME) {
-                this.COLNAME = COLNAME;
+            public void setDUR(String DUR) {
+                this.DUR = DUR;
             }
         }
     }

@@ -1,8 +1,11 @@
 package com.tongyuan.android.zhiquleyuan.activity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.hardware.Camera;
 import android.os.Bundle;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -12,6 +15,8 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.bean.CallToToyReq;
@@ -87,6 +92,8 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
     private ImageView mBabyImg;
     private TextView mBabyName;
     private String mUserFlag;
+    private String mBabyimgString;
+    private String mBabynameString;
 
 
     @Override
@@ -133,6 +140,32 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
         mRoomid = extras.getString("roomid");
         mToken = extras.getString("token");
         mToyid = extras.getString("toyid");
+        mBabyimgString = extras.getString("babyimg");
+        mBabynameString = extras.getString("babyname");
+
+        if (mBabyimgString.equals("")){
+            Glide.with(this).load(R.mipmap.default_babyimage).asBitmap().centerCrop().into(new BitmapImageViewTarget(mBabyImg) {
+                @Override
+                protected void setResource(Bitmap resource) {
+
+                    RoundedBitmapDrawable mRoundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getApplicationContext().getResources(), resource);
+                    mRoundedBitmapDrawable.setCircular(true);
+                    mBabyImg.setImageDrawable(mRoundedBitmapDrawable);
+                }
+            });
+        }else{
+            Glide.with(this).load(mBabyimgString).asBitmap().centerCrop().into(new BitmapImageViewTarget(mBabyImg) {
+                @Override
+                protected void setResource(Bitmap resource) {
+
+                    RoundedBitmapDrawable mRoundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getApplicationContext().getResources(), resource);
+                    mRoundedBitmapDrawable.setCircular(true);
+                    mBabyImg.setImageDrawable(mRoundedBitmapDrawable);
+                }
+            });
+        }
+        mBabyName.setText(mBabynameString);
+
 
         usefront = hasfront = Session.getInstance().Init(this, "demo", "", true);
         mCams = Session.getInstance().getCameraInfo();

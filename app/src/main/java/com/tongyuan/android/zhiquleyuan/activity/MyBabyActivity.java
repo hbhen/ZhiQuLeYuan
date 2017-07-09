@@ -10,7 +10,6 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -19,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -62,7 +62,7 @@ public class MyBabyActivity extends AppCompatActivity {
 
 
     @BindView(R.id.tb_addbatyinfo)
-    Toolbar mTbAddbatyinfo;
+    RelativeLayout mTbAddbatyinfo;
     @BindView(R.id.iv_addbabyinfo)
     ImageView mIvAddbabyinfo;
     @BindView(R.id.et_addbabyinfo)

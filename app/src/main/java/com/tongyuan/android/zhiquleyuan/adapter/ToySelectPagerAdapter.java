@@ -1,33 +1,14 @@
 package com.tongyuan.android.zhiquleyuan.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
-import com.tongyuan.android.zhiquleyuan.activity.MainActivity;
 import com.tongyuan.android.zhiquleyuan.bean.QueryToyResultBean;
-import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoREQBean;
-import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoRESBean;
-import com.tongyuan.android.zhiquleyuan.fragment.ToyDetailsFragment;
-import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
-import com.tongyuan.android.zhiquleyuan.request.RequestManager;
-import com.tongyuan.android.zhiquleyuan.request.base.SuperModel;
-import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
-import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  *

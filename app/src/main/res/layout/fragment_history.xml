@@ -1,6 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:background="#f1f1f1">
 
     <RelativeLayout
         android:id="@+id/tb_history"
@@ -16,7 +17,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+            android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:text="通话历史"
             android:textColor="#000000"
@@ -53,16 +54,66 @@
     <!--ptr:ptrRefreshableViewBackground="@color/common_tab_bg_light_gray"-->
     <!--ptr:ptrScrollingWhileRefreshingEnabled="false"-->
     <!--&gt;-->
+    <RelativeLayout
 
-    <com.tongyuan.android.zhiquleyuan.swipe.refreshlib.AbListView
-        android:id="@+id/lv_fragment_history"
+        android:background="#ffffff"
+        android:id="@+id/rl_history_title"
+        android:layout_below="@id/tb_history"
+        android:layout_width="match_parent"
+        android:layout_height="80dp">
+
+        <LinearLayout
+            android:id="@+id/ll_left"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_80"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:text="通话"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_24"/>
+
+            <ImageView
+                android:id="@+id/iv_history_call"
+                android:layout_width="@dimen/dp_60"
+                android:layout_height="@dimen/dp_60"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/dp_13"
+                android:src="@drawable/my_call_ico_60_3x"/>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_80"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_toRightOf="@id/ll_left">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                android:background="#8f8f8f"/>
+        </RelativeLayout>
+
+    </RelativeLayout>
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swiperefresh_history"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/tb_history"
-        android:layout_marginTop="10dp"
-        android:background="#ffffff"
-        android:listSelector="@color/transparent">
-    </com.tongyuan.android.zhiquleyuan.swipe.refreshlib.AbListView>
+        android:layout_below="@id/rl_history_title">
+
+        <com.tongyuan.android.zhiquleyuan.swipe.refreshlib.AbListView
+            android:id="@+id/lv_fragment_history"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#ffffff"
+            android:listSelector="@color/transparent">
+        </com.tongyuan.android.zhiquleyuan.swipe.refreshlib.AbListView>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 
     <!--</com.tongyuan.android.zhiquleyuan.swipe.refreshlib.library.PullToRefreshScrollView>-->

@@ -28,7 +28,6 @@ import com.tongyuan.android.zhiquleyuan.fragment.ToyAddFragment;
 import com.tongyuan.android.zhiquleyuan.fragment.ToyDetailsFragment;
 import com.tongyuan.android.zhiquleyuan.fragment.ToyManagerFragment;
 import com.tongyuan.android.zhiquleyuan.fragment.ToySelectorFragment;
-//import com.tongyuan.android.zhiquleyuan.fragment.VideoFragment;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.interf.QueryToyInterface;
@@ -48,6 +47,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+//import com.tongyuan.android.zhiquleyuan.fragment.VideoFragment;
 
 public class MainActivity extends FragmentActivity implements View.OnClickListener {
 
@@ -158,9 +159,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
         if (!TextUtils.isEmpty(name)) {
             //TODO xiangrangshei baocun zai stack limian panduan yixia
-//            if (name.equals(toyDetailsFragment)) {
-//                transaction.addToBackStack(null);
-//            }
+            if (name.equals(toyDetailsFragment)) {
+                transaction.addToBackStack(null);
+            }
 //            if (name.equals(discoveryFragment)){
 //                transaction.addToBackStack(name);
 //            }else{
@@ -174,6 +175,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         }
         transaction.commitAllowingStateLoss();
     }
+
+
 
     private Fragment currentFragment;
     private FragmentTransaction mFragmentTransaction;
@@ -344,33 +347,38 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     }
 
     private void chargeHasToy(String token) {
-        Retrofit retrofit1 = new Retrofit.Builder()
-                .baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        QueryToyInterface queryToyInterface = retrofit1.create(QueryToyInterface.class);
-        QueryToyRequestBean.BODYBean queryToyRequestBody = new QueryToyRequestBean.BODYBean("0", "", "", "-1", "1");
-        QueryToyRequestBean queryToyRequestBean = new QueryToyRequestBean("REQ", "QRYTOYS", mMainphoneNum, mCurrentTime, queryToyRequestBody, "",
-                token, "1");
-        Gson mainGson = new Gson();
-        String queryToyjson = mainGson.toJson(queryToyRequestBean);
-        Log.i(TAG, "chargeHasToy: " + queryToyjson);
-        Call<QueryToyResultBean> toyResult = queryToyInterface.getToyResult(queryToyjson);
-        toyResult.enqueue(new Callback<QueryToyResultBean>() {
-            @Override
-            public void onResponse(Call<QueryToyResultBean> call, Response<QueryToyResultBean> response) {
-                //只有list有想要的数据,所以只传list就行
-                mList = response.body().getBODY().getLST();
-                //Log.i(TAG, "MainActivity+onResponse:list1" + mList.toString());
-                Log.i("gengen", "MainActivity+onResponse:list1" + mList.toString());
-                showDifferentToyFragment(mList);
-            }
+        if (mList == null || mList.size() == 0) {
+            Retrofit retrofit1 = new Retrofit.Builder()
+                    .baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+            QueryToyInterface queryToyInterface = retrofit1.create(QueryToyInterface.class);
+            QueryToyRequestBean.BODYBean queryToyRequestBody = new QueryToyRequestBean.BODYBean("0", "", "", "-1", "1");
+            QueryToyRequestBean queryToyRequestBean = new QueryToyRequestBean("REQ", "QRYTOYS", mMainphoneNum, mCurrentTime, queryToyRequestBody, "",
+                    token, "1");
+            Gson mainGson = new Gson();
+            String queryToyjson = mainGson.toJson(queryToyRequestBean);
+            Log.i(TAG, "chargeHasToy: " + queryToyjson);
+            Call<QueryToyResultBean> toyResult = queryToyInterface.getToyResult(queryToyjson);
+            toyResult.enqueue(new Callback<QueryToyResultBean>() {
+                @Override
+                public void onResponse(Call<QueryToyResultBean> call, Response<QueryToyResultBean> response) {
+                    //只有list有想要的数据,所以只传list就行
+                    mList = response.body().getBODY().getLST();
+                    //Log.i(TAG, "MainActivity+onResponse:list1" + mList.toString());
+                    //Log.i("gengen", "MainActivity+onResponse:list1" + mList.toString());
+                    showDifferentToyFragment(mList);
+                }
 
-            @Override
-            public void onFailure(Call<QueryToyResultBean> call, Throwable t) {
-                ToastUtil.showToast(getApplicationContext(), "失败,网络异常");
-            }
-        });
+                @Override
+                public void onFailure(Call<QueryToyResultBean> call, Throwable t) {
+                    ToastUtil.showToast(getApplicationContext(), "失败,网络异常");
+                }
+            });
+        } else {
+            showFragment(ToySelectorFragment.class.getSimpleName());
+        }
+
     }
 
     private void showDifferentToyFragment(List<QueryToyResultBean.BODYBean.LSTBean> lst) {
