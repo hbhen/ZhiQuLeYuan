@@ -5,26 +5,6 @@ package com.tongyuan.android.zhiquleyuan.bean;
  */
 
 public class QueryMyPushReqBean {
-    /**
-     * TYPE : REQ
-     * CMD : MYPUSH
-     * ACCT : XXXX
-     * TIME : 20161127101010000
-     * BODY : {"TOYID":"","RESID":"","PS":"10","PN":"1"}
-     * VERI :
-     * TOKEN :
-     * SEQ : 1
-     */
-
-    private String TYPE;
-    private String CMD;
-    private String ACCT;
-    private String TIME;
-    private BODYBean BODY;
-    private String VERI;
-    private String TOKEN;
-    private String SEQ;
-
     @Override
     public String toString() {
         return "QueryMyPushReqBean{" +
@@ -49,6 +29,26 @@ public class QueryMyPushReqBean {
         this.TOKEN = TOKEN;
         this.SEQ = SEQ;
     }
+
+    /**
+     * TYPE : REQ
+     * CMD : MYPUSH
+     * ACCT : XXXX
+     * TIME : 20161127101010000
+     * BODY : {"WORD":"","TOYID":"","RESID":"","PS":"10","PN":"1"}
+     * VERI :
+     * TOKEN : 5e2d5649-6030-47c8-9efc-f02487df1b6a
+     * SEQ : 1
+     */
+
+    private String TYPE;
+    private String CMD;
+    private String ACCT;
+    private String TIME;
+    private BODYBean BODY;
+    private String VERI;
+    private String TOKEN;
+    private String SEQ;
 
     public String getTYPE() {
         return TYPE;
@@ -116,12 +116,14 @@ public class QueryMyPushReqBean {
 
     public static class BODYBean {
         /**
+         * WORD :
          * TOYID :
          * RESID :
          * PS : 10
          * PN : 1
          */
 
+        private String WORD;
         private String TOYID;
         private String RESID;
         private String PS;
@@ -130,18 +132,28 @@ public class QueryMyPushReqBean {
         @Override
         public String toString() {
             return "BODYBean{" +
-                    "TOYID='" + TOYID + '\'' +
+                    "WORD='" + WORD + '\'' +
+                    ", TOYID='" + TOYID + '\'' +
                     ", RESID='" + RESID + '\'' +
                     ", PS='" + PS + '\'' +
                     ", PN='" + PN + '\'' +
                     '}';
         }
 
-        public BODYBean(String TOYID, String RESID, String PS, String PN) {
-            this.TOYID = TOYID;
+        public BODYBean(String RESID, String PS, String PN, String WORD, String TOYID) {
             this.RESID = RESID;
             this.PS = PS;
             this.PN = PN;
+            this.WORD = WORD;
+            this.TOYID = TOYID;
+        }
+
+        public String getWORD() {
+            return WORD;
+        }
+
+        public void setWORD(String WORD) {
+            this.WORD = WORD;
         }
 
         public String getTOYID() {

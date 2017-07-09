@@ -70,7 +70,7 @@ public class HistoryAdapter extends BaseAdapter {
 
         Glide.with(mContext).load(mList.get(position).getTOYIMG().toString()).asBitmap().into(historyHolder.toyPic);
 
-        historyHolder.toyId.setText(mList.get(position).getTOYNICK().toString());
+        historyHolder.toyId.setText(mList.get(position).getUSERNAME().toString());
         String begintime = mList.get(position).getBEGINTIME();
         mFormattime = begintime;
 

@@ -1,6 +1,13 @@
 package com.tongyuan.android.zhiquleyuan.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.AbsoluteSizeSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,10 +15,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.BaseSwipeAdapter;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.bean.QueryMyPushResBean;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 import retrofit2.Response;
 
@@ -21,6 +32,7 @@ import retrofit2.Response;
 public class MyPushAdapter extends BaseSwipeAdapter {
     private Context mContext;
     private Response<QueryMyPushResBean> response;
+    private String mFormattime;
 
     public MyPushAdapter(Context myPushActivity, Response<QueryMyPushResBean> response) {
         this.mContext = myPushActivity;
@@ -56,11 +68,44 @@ public class MyPushAdapter extends BaseSwipeAdapter {
             }
         });
 
+        String begintime = response.body().getBODY().getLST().get(position).getBEGINTIME();
+        mFormattime = begintime;
+
+        //先处理传过来的日期内容,把格式转换成日(大),月(小); 这个方法可以抽取成一个工具类
+        String substringDate = mFormattime.substring(4, 8);
+        String month = substringDate.substring(0, 2);
+        String day = substringDate.substring(2, substringDate.length());
+        String newDate = day + month;
+        SpannableString spannableString = new SpannableString(newDate + "月");
+        spannableString.setSpan(new AbsoluteSizeSpan(48), 0, 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannableString.setSpan(new AbsoluteSizeSpan(24), 2, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannableString.setSpan(new ForegroundColorSpan(Color.BLACK), 0, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);  //设置前景色为洋红色
+        spannableString.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);  //粗体
+        tv_item_mypush_time.setText(spannableString);
+
+        Log.i("444444", "getView:substringDate " + substringDate + ";");
+        Log.i("444444", "getView:month " + month + ";");
+        Log.i("444444", "getView:day " + day + ";");
+        Log.i("444444", "getView:newDate " + newDate + ";");
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HHmm");
+        SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("HH:mm");
+
+
+        try {
+            mFormattime = simpleDateFormat.format(simpleDateFormat1.parse(begintime));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        tv_item_mypush_subject.setText(mFormattime);
+        Glide.with(mContext).load(response.body().getBODY().getLST().get(position).getIMG().toString()).asBitmap().into(iv_item_mypush);
+
+
     }
 
     @Override
     public int getCount() {
-        return 3;
+        return response.body().getBODY().getLST().size();
     }
 
     @Override

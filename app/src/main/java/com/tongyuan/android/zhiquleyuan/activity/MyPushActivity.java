@@ -83,7 +83,7 @@ public class MyPushActivity extends AppCompatActivity implements View.OnClickLis
 
         AllInterface allInterface = retrofit.create(AllInterface.class);
         //TODO 我的页面下的推送是查看当前玩具的推送,还是该用户的所有推送???
-        QueryMyPushReqBean.BODYBean bodyBean = new QueryMyPushReqBean.BODYBean(mToyid, "", "10", "1");
+        QueryMyPushReqBean.BODYBean bodyBean = new QueryMyPushReqBean.BODYBean("",mToyid, "", "10", "1");
         QueryMyPushReqBean queryMyPushReqBean = new QueryMyPushReqBean("REQ", "MYPUSH", phoneNum, time, bodyBean, "", token, "1");
         Gson gson = new Gson();
         String s = gson.toJson(queryMyPushReqBean);

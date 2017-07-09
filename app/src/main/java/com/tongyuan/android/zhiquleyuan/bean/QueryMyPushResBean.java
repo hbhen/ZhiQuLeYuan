@@ -7,29 +7,52 @@ import java.util.List;
  */
 
 public class QueryMyPushResBean {
+
+
     /**
      * TYPE : RES
      * CMD : MYPUSH
-     * ACCT : 13628327181
-     * TIME : 20170412164226237
-     * BODY : {"LST":[],"NC":"0","CNT":"0","PS":"10","PN":"1"}
+     * ACCT : XXXX
+     * TIME : 20170709200554300
      * VERI :
-     * TOKEN : bc7eebde-ad97-417c-8d3b-872889d21c4f
      * SEQ : 1
      * CODE : 0
      * MSG :
+     * BODY : {"LST":[{"IMG":"","ID":"201707091103161016840374","RCDID":"201707092004111016840471","DUR":"0:00:08","TIMES":"13","COLNAME":"",
+     * "TYPE":"","COLID":"","NAME":"2017年07月09日 11时02分52秒.mp3","SIZE":"13.52KB","ENDTIME":"","REMARK":"","BEGINTIME":"20170709200411"},{"IMG":"",
+     * "TYPE":"","RCDID":"201707092003541016840470","BEGINTIME":"20170709200355","TIMES":"4","DUR":"0:00:01","REMARK":"","NAME":"2017年07月09日
+     * 11时50分50秒.mp3","COLID":"","ID":"201707091151021016840390","SIZE":"3.48KB","COLNAME":"","ENDTIME":""},{"ID":"201707091103161016840374",
+     * "BEGINTIME":"20170709110330","NAME":"2017年07月09日 11时02分52秒.mp3","REMARK":"","COLID":"","DUR":"0:00:08","IMG":"","TIMES":"13","TYPE":"",
+     * "ENDTIME":"","COLNAME":"","SIZE":"13.52KB","RCDID":"201707091103301016840377"},{"ID":"201707080933031016840316","NAME":"2017年07月08日09:32",
+     * "TYPE":"","REMARK":"","SIZE":"25.40KB","COLID":"","RCDID":"201707080934341016840331","TIMES":"11","BEGINTIME":"20170708093435",
+     * "DUR":"0:00:06","COLNAME":"","ENDTIME":"","IMG":""},{"COLNAME":"","COLID":"","DUR":"0:00:06","TIMES":"11","NAME":"2017年07月08日09:32",
+     * "SIZE":"25.40KB","IMG":"","RCDID":"201707080933441016840328","BEGINTIME":"20170708093345","TYPE":"","REMARK":"","ENDTIME":"",
+     * "ID":"201707080933031016840316"},{"ID":"201706041509200000003908","DUR":"0:03:18","REMARK":"","TYPE":"音频文件","IMG":"","ENDTIME":"",
+     * "NAME":"感动未来mp3","RCDID":"201707021849391016839698","SIZE":"3.04MB","BEGINTIME":"20170702184939","COLNAME":"儿童歌谣 ",
+     * "COLID":"201610301737481016432787 ","TIMES":"7"},{"COLID":"201610301737481016432787 ","DUR":"0:02:01","IMG":"","COLNAME":"儿童歌谣 ",
+     * "RCDID":"201707021849161016839697","REMARK":"","ID":"201706041509200000003907","ENDTIME":"","BEGINTIME":"20170702184917","TIMES":"19",
+     * "SIZE":"2.53MB","TYPE":"音频文件","NAME":"小螺号mp3"},{"COLID":"201702091131341016563469 ","TIMES":"306","ID":"201705151824191016803202",
+     * "RCDID":"201706291256311016839289","COLNAME":"绘本故事 ","DUR":"0:10:33","NAME":"猪八戒吃西瓜","SIZE":"9.68MB","ENDTIME":"","TYPE":"音频文件",
+     * "BEGINTIME":"20170629125631","REMARK":"","IMG":"http://120.27.41.179:8081/zqpland/resource/thumbnail/5/jpg/20170515/201705151824401016803206
+     * .jpg"},{"COLNAME":"绘本故事 ","TIMES":"306","RCDID":"201706291256291016839288","SIZE":"9.68MB","REMARK":"","IMG":"http://120.27.41
+     * .179:8081/zqpland/resource/thumbnail/5/jpg/20170515/201705151824401016803206.jpg","BEGINTIME":"20170629125629","NAME":"猪八戒吃西瓜",
+     * "DUR":"0:10:33","ENDTIME":"","ID":"201705151824191016803202","TYPE":"音频文件","COLID":"201702091131341016563469 "},{"TYPE":"音频文件",
+     * "COLNAME":"儿童歌谣 ","ID":"201706041509200000003906","RCDID":"201706222052311016837779","NAME":"捉泥鳅","REMARK":"","TIMES":"39","IMG":"http://120
+     * .27.41.179:8081/zqpland/resource/thumbnail/5/jpg/20170702/201707021625101016839670.jpg","ENDTIME":"","SIZE":"7.71MB","DUR":"0:03:21",
+     * "BEGINTIME":"20170622205231","COLID":"201610301737481016432787 "}],"PN":"1","CNT":"75","NC":"65","PS":"10"}
+     * TOKEN : 5e2d5649-6030-47c8-9efc-f02487df1b6a
      */
 
     private String TYPE;
     private String CMD;
     private String ACCT;
     private String TIME;
-    private BODYBean BODY;
     private String VERI;
-    private String TOKEN;
     private String SEQ;
     private String CODE;
     private String MSG;
+    private BODYBean BODY;
+    private String TOKEN;
 
     @Override
     public String toString() {
@@ -38,27 +61,27 @@ public class QueryMyPushResBean {
                 ", CMD='" + CMD + '\'' +
                 ", ACCT='" + ACCT + '\'' +
                 ", TIME='" + TIME + '\'' +
-                ", BODY=" + BODY +
                 ", VERI='" + VERI + '\'' +
-                ", TOKEN='" + TOKEN + '\'' +
                 ", SEQ='" + SEQ + '\'' +
                 ", CODE='" + CODE + '\'' +
                 ", MSG='" + MSG + '\'' +
+                ", BODY=" + BODY +
+                ", TOKEN='" + TOKEN + '\'' +
                 '}';
     }
 
-    public QueryMyPushResBean(String TYPE, String CMD, String ACCT, String TIME, BODYBean BODY, String VERI, String TOKEN, String SEQ, String CODE,
-                              String MSG) {
+    public QueryMyPushResBean(String TYPE, String CMD, String ACCT, String TIME, String VERI, String SEQ, String CODE, String MSG, BODYBean BODY,
+                              String TOKEN) {
         this.TYPE = TYPE;
         this.CMD = CMD;
         this.ACCT = ACCT;
         this.TIME = TIME;
-        this.BODY = BODY;
         this.VERI = VERI;
-        this.TOKEN = TOKEN;
         this.SEQ = SEQ;
         this.CODE = CODE;
         this.MSG = MSG;
+        this.BODY = BODY;
+        this.TOKEN = TOKEN;
     }
 
     public String getTYPE() {
@@ -93,28 +116,12 @@ public class QueryMyPushResBean {
         this.TIME = TIME;
     }
 
-    public BODYBean getBODY() {
-        return BODY;
-    }
-
-    public void setBODY(BODYBean BODY) {
-        this.BODY = BODY;
-    }
-
     public String getVERI() {
         return VERI;
     }
 
     public void setVERI(String VERI) {
         this.VERI = VERI;
-    }
-
-    public String getTOKEN() {
-        return TOKEN;
-    }
-
-    public void setTOKEN(String TOKEN) {
-        this.TOKEN = TOKEN;
     }
 
     public String getSEQ() {
@@ -141,62 +148,76 @@ public class QueryMyPushResBean {
         this.MSG = MSG;
     }
 
+    public BODYBean getBODY() {
+        return BODY;
+    }
+
+    public void setBODY(BODYBean BODY) {
+        this.BODY = BODY;
+    }
+
+    public String getTOKEN() {
+        return TOKEN;
+    }
+
+    public void setTOKEN(String TOKEN) {
+        this.TOKEN = TOKEN;
+    }
+
     public static class BODYBean {
         /**
-         * LST : []
-         * NC : 0
-         * CNT : 0
-         * PS : 10
+         * LST : [{"IMG":"","ID":"201707091103161016840374","RCDID":"201707092004111016840471","DUR":"0:00:08","TIMES":"13","COLNAME":"","TYPE":"",
+         * "COLID":"","NAME":"2017年07月09日 11时02分52秒.mp3","SIZE":"13.52KB","ENDTIME":"","REMARK":"","BEGINTIME":"20170709200411"},{"IMG":"",
+         * "TYPE":"","RCDID":"201707092003541016840470","BEGINTIME":"20170709200355","TIMES":"4","DUR":"0:00:01","REMARK":"","NAME":"2017年07月09日
+         * 11时50分50秒.mp3","COLID":"","ID":"201707091151021016840390","SIZE":"3.48KB","COLNAME":"","ENDTIME":""},{"ID":"201707091103161016840374",
+         * "BEGINTIME":"20170709110330","NAME":"2017年07月09日 11时02分52秒.mp3","REMARK":"","COLID":"","DUR":"0:00:08","IMG":"","TIMES":"13","TYPE":"",
+         * "ENDTIME":"","COLNAME":"","SIZE":"13.52KB","RCDID":"201707091103301016840377"},{"ID":"201707080933031016840316",
+         * "NAME":"2017年07月08日09:32","TYPE":"","REMARK":"","SIZE":"25.40KB","COLID":"","RCDID":"201707080934341016840331","TIMES":"11",
+         * "BEGINTIME":"20170708093435","DUR":"0:00:06","COLNAME":"","ENDTIME":"","IMG":""},{"COLNAME":"","COLID":"","DUR":"0:00:06","TIMES":"11",
+         * "NAME":"2017年07月08日09:32","SIZE":"25.40KB","IMG":"","RCDID":"201707080933441016840328","BEGINTIME":"20170708093345","TYPE":"",
+         * "REMARK":"","ENDTIME":"","ID":"201707080933031016840316"},{"ID":"201706041509200000003908","DUR":"0:03:18","REMARK":"","TYPE":"音频文件",
+         * "IMG":"","ENDTIME":"","NAME":"感动未来mp3","RCDID":"201707021849391016839698","SIZE":"3.04MB","BEGINTIME":"20170702184939","COLNAME":"儿童歌谣
+         * ","COLID":"201610301737481016432787 ","TIMES":"7"},{"COLID":"201610301737481016432787 ","DUR":"0:02:01","IMG":"","COLNAME":"儿童歌谣 ",
+         * "RCDID":"201707021849161016839697","REMARK":"","ID":"201706041509200000003907","ENDTIME":"","BEGINTIME":"20170702184917","TIMES":"19",
+         * "SIZE":"2.53MB","TYPE":"音频文件","NAME":"小螺号mp3"},{"COLID":"201702091131341016563469 ","TIMES":"306","ID":"201705151824191016803202",
+         * "RCDID":"201706291256311016839289","COLNAME":"绘本故事 ","DUR":"0:10:33","NAME":"猪八戒吃西瓜","SIZE":"9.68MB","ENDTIME":"","TYPE":"音频文件",
+         * "BEGINTIME":"20170629125631","REMARK":"","IMG":"http://120.27.41
+         * .179:8081/zqpland/resource/thumbnail/5/jpg/20170515/201705151824401016803206.jpg"},{"COLNAME":"绘本故事 ","TIMES":"306",
+         * "RCDID":"201706291256291016839288","SIZE":"9.68MB","REMARK":"","IMG":"http://120.27.41
+         * .179:8081/zqpland/resource/thumbnail/5/jpg/20170515/201705151824401016803206.jpg","BEGINTIME":"20170629125629","NAME":"猪八戒吃西瓜",
+         * "DUR":"0:10:33","ENDTIME":"","ID":"201705151824191016803202","TYPE":"音频文件","COLID":"201702091131341016563469 "},{"TYPE":"音频文件",
+         * "COLNAME":"儿童歌谣 ","ID":"201706041509200000003906","RCDID":"201706222052311016837779","NAME":"捉泥鳅","REMARK":"","TIMES":"39",
+         * "IMG":"http://120.27.41.179:8081/zqpland/resource/thumbnail/5/jpg/20170702/201707021625101016839670.jpg","ENDTIME":"","SIZE":"7.71MB",
+         * "DUR":"0:03:21","BEGINTIME":"20170622205231","COLID":"201610301737481016432787 "}]
          * PN : 1
+         * CNT : 75
+         * NC : 65
+         * PS : 10
          */
 
-        private String NC;
-        private String CNT;
-        private String PS;
         private String PN;
-        private List<?> LST;
+        private String CNT;
+        private String NC;
+        private String PS;
+        private List<LSTBean> LST;
 
         @Override
         public String toString() {
             return "BODYBean{" +
-                    "NC='" + NC + '\'' +
+                    "PN='" + PN + '\'' +
                     ", CNT='" + CNT + '\'' +
+                    ", NC='" + NC + '\'' +
                     ", PS='" + PS + '\'' +
-                    ", PN='" + PN + '\'' +
                     ", LST=" + LST +
                     '}';
         }
 
-        public BODYBean(String NC, String CNT, String PS, String PN, List<?> LST) {
-            this.NC = NC;
-            this.CNT = CNT;
-            this.PS = PS;
+        public BODYBean(String PN, String CNT, String NC, String PS, List<LSTBean> LST) {
             this.PN = PN;
-            this.LST = LST;
-        }
-
-        public String getNC() {
-            return NC;
-        }
-
-        public void setNC(String NC) {
-            this.NC = NC;
-        }
-
-        public String getCNT() {
-            return CNT;
-        }
-
-        public void setCNT(String CNT) {
             this.CNT = CNT;
-        }
-
-        public String getPS() {
-            return PS;
-        }
-
-        public void setPS(String PS) {
+            this.NC = NC;
             this.PS = PS;
+            this.LST = LST;
         }
 
         public String getPN() {
@@ -207,13 +228,208 @@ public class QueryMyPushResBean {
             this.PN = PN;
         }
 
-        public List<?> getLST() {
+        public String getCNT() {
+            return CNT;
+        }
+
+        public void setCNT(String CNT) {
+            this.CNT = CNT;
+        }
+
+        public String getNC() {
+            return NC;
+        }
+
+        public void setNC(String NC) {
+            this.NC = NC;
+        }
+
+        public String getPS() {
+            return PS;
+        }
+
+        public void setPS(String PS) {
+            this.PS = PS;
+        }
+
+        public List<LSTBean> getLST() {
             return LST;
         }
 
-        public void setLST(List<?> LST) {
+        public void setLST(List<LSTBean> LST) {
             this.LST = LST;
         }
-    }
 
+        public static class LSTBean {
+            /**
+             * IMG :
+             * ID : 201707091103161016840374
+             * RCDID : 201707092004111016840471
+             * DUR : 0:00:08
+             * TIMES : 13
+             * COLNAME :
+             * TYPE :
+             * COLID :
+             * NAME : 2017年07月09日 11时02分52秒.mp3
+             * SIZE : 13.52KB
+             * ENDTIME :
+             * REMARK :
+             * BEGINTIME : 20170709200411
+             */
+
+            private String IMG;
+            private String ID;
+            private String RCDID;
+            private String DUR;
+            private String TIMES;
+            private String COLNAME;
+            private String TYPE;
+            private String COLID;
+            private String NAME;
+            private String SIZE;
+            private String ENDTIME;
+            private String REMARK;
+            private String BEGINTIME;
+
+            @Override
+            public String toString() {
+                return "LSTBean{" +
+                        "IMG='" + IMG + '\'' +
+                        ", ID='" + ID + '\'' +
+                        ", RCDID='" + RCDID + '\'' +
+                        ", DUR='" + DUR + '\'' +
+                        ", TIMES='" + TIMES + '\'' +
+                        ", COLNAME='" + COLNAME + '\'' +
+                        ", TYPE='" + TYPE + '\'' +
+                        ", COLID='" + COLID + '\'' +
+                        ", NAME='" + NAME + '\'' +
+                        ", SIZE='" + SIZE + '\'' +
+                        ", ENDTIME='" + ENDTIME + '\'' +
+                        ", REMARK='" + REMARK + '\'' +
+                        ", BEGINTIME='" + BEGINTIME + '\'' +
+                        '}';
+            }
+
+            public LSTBean(String IMG, String ID, String RCDID, String DUR, String TIMES, String COLNAME, String TYPE, String COLID, String NAME,
+                           String SIZE, String ENDTIME, String REMARK, String BEGINTIME) {
+                this.IMG = IMG;
+                this.ID = ID;
+                this.RCDID = RCDID;
+                this.DUR = DUR;
+                this.TIMES = TIMES;
+                this.COLNAME = COLNAME;
+                this.TYPE = TYPE;
+                this.COLID = COLID;
+                this.NAME = NAME;
+                this.SIZE = SIZE;
+                this.ENDTIME = ENDTIME;
+                this.REMARK = REMARK;
+                this.BEGINTIME = BEGINTIME;
+            }
+
+            public String getIMG() {
+                return IMG;
+            }
+
+            public void setIMG(String IMG) {
+                this.IMG = IMG;
+            }
+
+            public String getID() {
+                return ID;
+            }
+
+            public void setID(String ID) {
+                this.ID = ID;
+            }
+
+            public String getRCDID() {
+                return RCDID;
+            }
+
+            public void setRCDID(String RCDID) {
+                this.RCDID = RCDID;
+            }
+
+            public String getDUR() {
+                return DUR;
+            }
+
+            public void setDUR(String DUR) {
+                this.DUR = DUR;
+            }
+
+            public String getTIMES() {
+                return TIMES;
+            }
+
+            public void setTIMES(String TIMES) {
+                this.TIMES = TIMES;
+            }
+
+            public String getCOLNAME() {
+                return COLNAME;
+            }
+
+            public void setCOLNAME(String COLNAME) {
+                this.COLNAME = COLNAME;
+            }
+
+            public String getTYPE() {
+                return TYPE;
+            }
+
+            public void setTYPE(String TYPE) {
+                this.TYPE = TYPE;
+            }
+
+            public String getCOLID() {
+                return COLID;
+            }
+
+            public void setCOLID(String COLID) {
+                this.COLID = COLID;
+            }
+
+            public String getNAME() {
+                return NAME;
+            }
+
+            public void setNAME(String NAME) {
+                this.NAME = NAME;
+            }
+
+            public String getSIZE() {
+                return SIZE;
+            }
+
+            public void setSIZE(String SIZE) {
+                this.SIZE = SIZE;
+            }
+
+            public String getENDTIME() {
+                return ENDTIME;
+            }
+
+            public void setENDTIME(String ENDTIME) {
+                this.ENDTIME = ENDTIME;
+            }
+
+            public String getREMARK() {
+                return REMARK;
+            }
+
+            public void setREMARK(String REMARK) {
+                this.REMARK = REMARK;
+            }
+
+            public String getBEGINTIME() {
+                return BEGINTIME;
+            }
+
+            public void setBEGINTIME(String BEGINTIME) {
+                this.BEGINTIME = BEGINTIME;
+            }
+        }
+    }
 }
