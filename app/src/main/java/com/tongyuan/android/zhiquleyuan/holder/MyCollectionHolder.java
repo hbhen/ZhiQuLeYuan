@@ -11,5 +11,6 @@ public class MyCollectionHolder {
     public TextView textViewTitle;
     public TextView textViewTimes;
     public TextView textViewCategory;
+    public TextView textViewCategoryDesc;
 
 }

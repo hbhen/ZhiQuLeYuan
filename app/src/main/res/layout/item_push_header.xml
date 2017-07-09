@@ -15,6 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="推送"
+            android:textColor="@color/black"
             android:textSize="24sp" />
 
         <ImageView
@@ -22,7 +23,7 @@
             android:layout_gravity="center_vertical"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:src="@drawable/my_call_ico_60_3x" />
+            android:src="@drawable/my_push_3x" />
     </LinearLayout>
 
     <View

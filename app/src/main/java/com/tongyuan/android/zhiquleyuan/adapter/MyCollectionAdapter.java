@@ -60,7 +60,8 @@ public class MyCollectionAdapter extends BaseAdapter {
             mMCHolder.imageView = (ImageView) convertView.findViewById(R.id.iv_item_mycollection);
             mMCHolder.textViewTitle = (TextView) convertView.findViewById(R.id.tv_item_mycollection);
             mMCHolder.textViewTimes = (TextView) convertView.findViewById(R.id.tv_item_mycollection_detailstimes);
-            mMCHolder.textViewCategory = (TextView) convertView.findViewById(R.id.tv_item_mycollection_detailscategory);
+            mMCHolder.textViewCategory = (TextView) convertView.findViewById(R.id.tv_item_mycollection_category);
+            mMCHolder.textViewCategoryDesc = (TextView) convertView.findViewById(R.id.tv_item_mycollection_detailscategory);
             convertView.setTag(mMCHolder);
         } else {
             mMCHolder = (MyCollectionHolder) convertView.getTag();
@@ -73,9 +74,9 @@ public class MyCollectionAdapter extends BaseAdapter {
         mMCHolder.textViewTitle.setText(name);
 //        mMCHolder.textViewTimes.setText("212");
         mMCHolder.textViewTimes.setText(times);
-
+        mMCHolder.textViewCategory.setText("所属品类");
 //        mMCHolder.textViewCategory.setText("儿童歌谣");
-        mMCHolder.textViewCategory.setText(colname);
+        mMCHolder.textViewCategoryDesc.setText(colname);
 
 
         return convertView;
