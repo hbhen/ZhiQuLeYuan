@@ -17,6 +17,7 @@ import com.tongyuan.android.zhiquleyuan.bean.QueryMyPushResBean;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.swipe.refreshlib.AbListView;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
+import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -91,10 +92,14 @@ public class MyPushActivity extends AppCompatActivity implements View.OnClickLis
         queryMyPushResult.enqueue(new Callback<QueryMyPushResBean>() {
             @Override
             public void onResponse(Call<QueryMyPushResBean> call, Response<QueryMyPushResBean> response) {
-                MyPushAdapter myPushAdapter = new MyPushAdapter(getApplicationContext(), response);
+                if (response.body().getCODE().equals("0")){
+                    MyPushAdapter myPushAdapter = new MyPushAdapter(getApplicationContext(), response);
 
-                mLv_myPush.addHeaderView(mMyPushHeader);
-                mLv_myPush.setAdapter(myPushAdapter);
+                    mLv_myPush.addHeaderView(mMyPushHeader);
+                    mLv_myPush.setAdapter(myPushAdapter);
+                }else {
+                    ToastUtil.showToast(getApplicationContext(),response.body().getMSG());
+                }
             }
 
             @Override

@@ -21,9 +21,6 @@ import com.daimajia.swipe.adapters.BaseSwipeAdapter;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.bean.QueryMyPushResBean;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-
 import retrofit2.Response;
 
 /**
@@ -88,15 +85,15 @@ public class MyPushAdapter extends BaseSwipeAdapter {
         Log.i("444444", "getView:day " + day + ";");
         Log.i("444444", "getView:newDate " + newDate + ";");
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HHmm");
-        SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("HH:mm");
-
-
-        try {
-            mFormattime = simpleDateFormat.format(simpleDateFormat1.parse(begintime));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HHmm");
+//        SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("HH:mm");
+//
+//
+//        try {
+//            mFormattime = simpleDateFormat.format(simpleDateFormat1.parse(begintime));
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
         tv_item_mypush_subject.setText(mFormattime);
         Glide.with(mContext).load(response.body().getBODY().getLST().get(position).getIMG().toString()).asBitmap().into(iv_item_mypush);
 

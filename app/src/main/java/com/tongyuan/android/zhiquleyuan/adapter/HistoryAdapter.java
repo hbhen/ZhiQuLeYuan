@@ -19,8 +19,6 @@ import com.bumptech.glide.Glide;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.bean.CallHistoryResultBean;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 /**
@@ -91,15 +89,15 @@ public class HistoryAdapter extends BaseAdapter {
         Log.i("444444", "getView:day " + day + ";");
         Log.i("444444", "getView:newDate " + newDate + ";");
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HHmm");
-        SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("HH:mm");
+//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HHmm");
+//        SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("HH:mm");
 
-        try {
-            mFormattime = simpleDateFormat.format(simpleDateFormat1.parse(begintime));
-            historyHolder.callDuration.setText(mFormattime);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            mFormattime = simpleDateFormat.format(simpleDateFormat1.parse(begintime));
+//            historyHolder.callDuration.setText(mFormattime);
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
 
         return convertView;
     }

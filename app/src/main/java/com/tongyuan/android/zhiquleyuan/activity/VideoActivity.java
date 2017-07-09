@@ -1,5 +1,6 @@
 package com.tongyuan.android.zhiquleyuan.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.hardware.Camera;
@@ -95,7 +96,17 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
     private String mBabyimgString;
     private String mBabynameString;
 
+public static void launch(Context context, String babyimgString, String babynameString, String roomid,  String token, String toyId){
+    Intent it = new Intent(context, VideoActivity.class);
+    it.putExtra("babyimgString",babyimgString);
+    it.putExtra("babynameString",babynameString);
+    it.putExtra("roomid",roomid);
+    it.putExtra("token",token);
+    it.putExtra("toyId",toyId);
 
+    context.startActivity(it);
+
+}
     @Override
     protected void onCreate(Bundle arguments) {
         super.onCreate(arguments);
@@ -133,16 +144,22 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
         //宝宝的名字
         mBabyName = (TextView) findViewById(R.id.tv_activity_videocall_babyname);
 
-
+//
+//        Intent intent = getIntent();
+//        Bundle extras = intent.getExtras();
+//
+//        mRoomid = extras.getString("roomid");
+//        mToken = extras.getString("token");
+//        mToyid = extras.getString("toyid");
+//        mBabyimgString = extras.getString("babyimg");
+//        mBabynameString = extras.getString("babyname");
         Intent intent = getIntent();
-        Bundle extras = intent.getExtras();
 
-        mRoomid = extras.getString("roomid");
-        mToken = extras.getString("token");
-        mToyid = extras.getString("toyid");
-        mBabyimgString = extras.getString("babyimg");
-        mBabynameString = extras.getString("babyname");
-
+        mBabyimgString = intent.getStringExtra("babyimgString");
+        mBabynameString= intent.getStringExtra("babynameString");
+        mRoomid = intent.getStringExtra("roomid");
+        mToken = intent.getStringExtra("token");
+        mToyid= intent.getStringExtra("toyId");
         if (mBabyimgString.equals("")){
             Glide.with(this).load(R.mipmap.default_babyimage).asBitmap().centerCrop().into(new BitmapImageViewTarget(mBabyImg) {
                 @Override

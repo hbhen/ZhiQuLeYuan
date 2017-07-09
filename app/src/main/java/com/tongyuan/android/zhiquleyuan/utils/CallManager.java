@@ -1,8 +1,6 @@
 package com.tongyuan.android.zhiquleyuan.utils;
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -53,12 +51,15 @@ public class CallManager {
                     }
                     return;
                 }
-                Bundle bundle = new Bundle();
-                bundle.putString("roomid", roomId);
-                bundle.putString("token", token);
-                bundle.putString("toyid", toyId);
-
-                context.startActivity(new Intent(context, VideoActivity.class).putExtras(bundle));
+//                Bundle bundle = new Bundle();
+//                bundle.putString("roomid", roomId);
+//                bundle.putString("token", token);
+//                bundle.putString("toyid", toyId);
+//
+//                context.startActivity(new Intent(context, VideoActivity.class).putExtras(bundle));
+                String babyname = SPUtils.getString(context, "babyname", "");
+                String babyimg = SPUtils.getString(context, "babyimg", "");
+                VideoActivity.launch(context,babyimg,babyname,roomId,token,toyId);
             }
 
             @Override

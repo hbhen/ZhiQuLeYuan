@@ -188,6 +188,8 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         Log.i(TAG, "setData: went");
         this.mResponse = response;
         this.mBabyimg = image;
+        //要传给videoactivity的宝宝头像
+        SPUtils.putString(getContext(),"babyimg",mBabyimg);
         mToyId = response.getID();
         mToken = SPUtils.getString(getContext(), "TOKEN", "");
         mPhoneNum = SPUtils.getString(getContext(), "phoneNum", "");
@@ -250,6 +252,8 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                     for (int i = 0; i < mLst.size(); i++) {
                         mBabyName = mLst.get(i).getNAME();
                     }
+                    //要传给videoactivity的宝宝的名字
+                    SPUtils.putString(getContext(),"babyname",mBabyName);
                     mBindToy.setVisibility(View.GONE);
                     mUnbindToy.setVisibility(View.VISIBLE);
                     initView();
@@ -430,14 +434,15 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                     }
                     return;
                 }
-                Bundle bundle = new Bundle();
-                bundle.putString("roomid", mRoomid);
-                bundle.putString("token", token);
-                bundle.putString("toyid", mId);
-                bundle.putString("babyimg",mBabyimg);
-                bundle.putString("babyname",mBabyName);
-
-                startActivity(new Intent(getActivity(), VideoActivity.class).putExtras(bundle));
+                VideoActivity.launch(mContext,mBabyimg,mBabyName,mRoomid,mToken,mToyId);
+//                Bundle bundle = new Bundle();
+//                bundle.putString("roomid", mRoomid);
+//                bundle.putString("token", token);
+//                bundle.putString("toyid", mId);
+//                bundle.putString("babyimg",mBabyimg);
+//                bundle.putString("babyname",mBabyName);
+//
+//                startActivity(new Intent(getActivity(), VideoActivity.class).putExtras(bundle));
                 ToastUtil.showToast(getActivity(), "roomid" + mRoomid);
                 Log.i("555555", "onResponse:+mRoomid " + mRoomid);
 
