@@ -39,7 +39,6 @@ public class DiscoveryListViewAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        Log.i("adapter", "list.size=" + list.size());
         return list.size();
     }
 
