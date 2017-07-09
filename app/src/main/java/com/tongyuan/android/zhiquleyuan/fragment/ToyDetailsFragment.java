@@ -46,6 +46,7 @@ import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -105,7 +106,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     private String mUserId;
     private static final int BIND_BABYTO_TOY = 3001;
     private String mBabyid;
-    private List<QueryBabyListFromToyIdRes.BODYBean.LSTBean> mLst;
+    private List<QueryBabyListFromToyIdRes.BODYBean.LSTBean> mLst = new ArrayList<>();
     private String mBabyName;
 
 
@@ -507,7 +508,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     public void onResume() {
         super.onResume();
 //        checkStateInfo();
-//        initView();
+        initView();
     }
 
     @Override
