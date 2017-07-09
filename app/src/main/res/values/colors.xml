@@ -38,4 +38,6 @@
 
     <color name="main_top_bg">#f1f1f1</color>
     <color name="main_top_edit_stroke">#d1d1d1</color>
+    <!--recording fragment -->
+    <color name="record_arrow_bg">#ffdbdb</color>
 </resources>

@@ -172,4 +172,7 @@
     <string name="setuserinfo">设置用户信息</string>
     <string name="network_error">网络请求失败</string>
 
+    <!--recording fragment-->
+    <string name="record_click_start">点击开始录音</string>
+
 </resources>

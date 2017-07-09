@@ -11,6 +11,7 @@
         android:background="#f1f1f1">
 
         <ImageView
+            android:id="@+id/back_btn"
             android:layout_marginLeft="@dimen/dp_7"
             android:layout_centerVertical="true"
             android:layout_width="@dimen/dp_10"

@@ -89,7 +89,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         StatusBarUtils.setStatusBarLightMode(this, getResources().getColor(R.color.main_top_bg));
-        Log.i("gengen", "MainActivity onCreate...");
 
         CrashReport.initCrashReport(getApplicationContext(),"4d4412e3f1",true);
 //        CrashReport.testJavaCrash();
@@ -122,7 +121,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        Log.i("gengen", "MainActivity onNewIntent...");
     }
 
     private void initView() {
@@ -134,10 +132,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
     }
 
+    FragmentManager fragmentManager;
     private void showFragment(Fragment f, String name) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        List<Fragment> fragmentList = fragmentManager.getFragments();
+        /*List<Fragment> fragmentList = fragmentManager.getFragments();
         if (fragmentList != null) {
             for (Fragment fragment : fragmentManager.getFragments()) {
                 transaction.hide(fragment);
@@ -150,23 +149,20 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             transaction.add(R.id.fl_fragmentcontainer, f).show(f);
         }
 
-        if (!TextUtils.isEmpty(name)) {
-            //TODO xiangrangshei baocun zai stack limian panduan yixia
-//            if (name.equals(toyDetailsFragment)) {
-//                transaction.addToBackStack(null);
-//            }
-//            if (name.equals(discoveryFragment)){
-//                transaction.addToBackStack(name);
-//            }else{
-//
-//            transaction.addToBackStack(null);
-//            }
-//            transaction.addToBackStack(null);
-//            if (currentFragment==mToySelectorFragment && f==toyAddFragment) {
-//                transaction.addToBackStack(null);
-//            }
+
+        }*/
+
+        transaction.replace(R.id.fl_fragmentcontainer, f);
+        if(name != null) {
+            if(name.equals(ToyDetailsFragment.class.getSimpleName())) {
+                transaction.addToBackStack(null);
+            } else if (name.equals(ToyManagerFragment.class.getSimpleName())) {
+                transaction.addToBackStack(null);
+            } else if(name.equals(ToyAddFragment.class.getSimpleName())) {
+                transaction.addToBackStack(null);
+            }
         }
-        transaction.commitAllowingStateLoss();
+        transaction.commit();
     }
 
     private Fragment currentFragment;
@@ -195,7 +191,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         } else if (name.equals(ToyDetailsFragment.class.getSimpleName())) {
             showFragment(toyDetailsFragment, name);
             currentFragment = toyDetailsFragment;
-//            mFragmentTransaction.addToBackStack(name);
         }
 //        else if (name.equals(VideoFragment.class.getSimpleName())) {
 //            showFragment(mVideoFragment, name);
@@ -206,6 +201,14 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             currentFragment = mCallWaitingConnectFragment;
         }
 
+    }
+
+    public void backToTop() {
+        if (getSupportFragmentManager().popBackStackImmediate()) {
+//            showBackAnimation();
+        } else {
+            moveTaskToBack(false);
+        }
     }
 
     public void showFragment(Fragment fragment) {
@@ -266,7 +269,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 if (recodingFragment == null) {
                     recodingFragment = new RecodingFragment();
                 }
-                showFragment(recodingFragment, null);
+                showFragment(recodingFragment, RecodingFragment.class.getSimpleName());
                 break;
             case R.id.rb_history:
                 rb_discovery.setSelected(false);
@@ -356,7 +359,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 //只有list有想要的数据,所以只传list就行
                 mList = response.body().getBODY().getLST();
                 //Log.i(TAG, "MainActivity+onResponse:list1" + mList.toString());
-                Log.i("gengen", "MainActivity+onResponse:list1" + mList.toString());
+                //Log.i("gengen", "MainActivity+onResponse:list1" + mList.toString());
                 showDifferentToyFragment(mList);
             }
 
@@ -408,6 +411,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     protected void onDestroy() {
         super.onDestroy();
         Log.i(TAG1, "mainactivity : onDestroy went");
+    }
+
+    @Override
+    public void onBackPressed() {
+        backToTop();
     }
 
 }

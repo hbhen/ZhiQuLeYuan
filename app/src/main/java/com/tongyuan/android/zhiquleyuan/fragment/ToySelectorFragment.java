@@ -93,22 +93,9 @@ public class ToySelectorFragment extends BaseFragment {
         mViewPageToy.setPageMargin(20);
         mViewPageToy.setOffscreenPageLimit(10);
 
-        mPagerAdapter = new ToySelectPagerAdapter(getActivity(), toyList);
-        mPagerAdapter.setOnItemClick(new ToySelectPagerAdapter.OnItemClick() {
-            @Override
-            public void itemClick(int position) {
-                mToyId = toyList.get(position).getID();
-                Log.i(TAG, "itemClick:toyselectorfragment mToyId"+mToyId);
-                //Log.i(TAG, "onClick:toyid " + mToyId);
-                SPUtils.putString(getActivity(), "toyidtopush", mToyId);
-                String toycode = toyList.get(position).getCODE();
-                //Log.i(TAG, "onClick:toycode " + toycode);
-                QuerySingleToyInfo(mToyId, toycode, position);
-            }
-        });
-        mViewPageToy.setAdapter(mPagerAdapter);
+        refreshPagerAdapter();
         mViewPageToy.setPageTransformer(true, new ScaleInTransformer());
-        mViewPageToy.setCurrentItem(1);
+        //mViewPageToy.setCurrentItem(1);
         displayBabyHead(1);
         mViewPageToy.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -150,12 +137,18 @@ public class ToySelectorFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        mPagerAdapter.notifyDataSetChanged();
+        Log.i("gengen", "onResume");
+//        mPagerAdapter.notifyDataSetChanged();
+        refreshPagerAdapter();
     }
 
     @Override
     public void onHiddenChanged(boolean hidden) {
-        mPagerAdapter.notifyDataSetChanged();
+        if(!hidden) {
+            Log.i("gengen", "onHiddenChanged");
+//            mPagerAdapter.notifyDataSetChanged();
+            refreshPagerAdapter();
+        }
     }
 
     @OnClick({R.id.iv_add, R.id.iv_delete})
@@ -225,7 +218,11 @@ public class ToySelectorFragment extends BaseFragment {
             public void onResponse(Call<SuperModel<DeleteToyFromPowerUserResBean.BODYBean>> call, Response<SuperModel<DeleteToyFromPowerUserResBean.BODYBean>> response) {
                 if("0".equals(response.body().CODE)) {
                     toyList.remove(currentPosition);
-                    mPagerAdapter.notifyDataSetChanged();
+
+//                    mPagerAdapter.destroyItem(mViewPageToy, currentPosition, mPagerAdapter.mViews.get(currentPosition));
+//                    mPagerAdapter.mViews.remove(currentPosition);
+                    //mPagerAdapter.notifyDataSetChanged();
+                    refreshPagerAdapter();
                     //Log.i(TAG, "onResponse: respnose12" + response.body().toString());
                     //ToastUtil.showToast(getContext(), "确实已经删除了222");
                 } else {
@@ -249,7 +246,10 @@ public class ToySelectorFragment extends BaseFragment {
 
                 if("0".equals(response.body().CODE)) {
                     toyList.remove(position);
-                    mPagerAdapter.notifyDataSetChanged();
+//                    mPagerAdapter.destroyItem(mViewPageToy, position, mPagerAdapter.mViews.get(position));
+//                    mPagerAdapter.mViews.remove(position);
+                    //mPagerAdapter.notifyDataSetChanged();
+                    refreshPagerAdapter();
                     //Log.i(TAG, "onResponse: respnose12" + response.body().toString());
                     //ToastUtil.showToast(getContext(), "确实已经删除了111");
                 } else {
@@ -302,8 +302,11 @@ public class ToySelectorFragment extends BaseFragment {
     public void onToyMessage(MessageEventToy messageEventToy) {
         toyList.clear();
         toyList.addAll(messageEventToy.mQueryToyListResults);
-        if (mPagerAdapter != null)
-            mPagerAdapter.notifyDataSetChanged();
+        Log.i("gengen", "onToyMessage "+toyList.size());
+        if (mPagerAdapter != null) {
+            refreshPagerAdapter();
+            //mPagerAdapter.notifyDataSetChanged();
+        }
         //Log.i(TAG, "onToyMessage: adapter" + mPagerAdapter);
     }
 
@@ -332,7 +335,8 @@ public class ToySelectorFragment extends BaseFragment {
             toyList.add(bean);
 
             if (mPagerAdapter != null)
-                mPagerAdapter.notifyDataSetChanged();
+                refreshPagerAdapter();
+                //mPagerAdapter.notifyDataSetChanged();
         }
     }
 
@@ -340,6 +344,26 @@ public class ToySelectorFragment extends BaseFragment {
     public void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(getActivity());
+    }
+
+    private void refreshPagerAdapter() {
+        mPagerAdapter = new ToySelectPagerAdapter(getActivity(), toyList);
+        mPagerAdapter.setOnItemClick(new ToySelectPagerAdapter.OnItemClick() {
+            @Override
+            public void itemClick(int position) {
+                mToyId = toyList.get(position).getID();
+                mViewPageToy.setCurrentItem(position);
+
+                Log.i(TAG, "itemClick:toyselectorfragment mToyId"+mToyId);
+                //Log.i(TAG, "onClick:toyid " + mToyId);
+                SPUtils.putString(getActivity(), "toyidtopush", mToyId);
+                String toycode = toyList.get(position).getCODE();
+                //Log.i(TAG, "onClick:toycode " + toycode);
+                QuerySingleToyInfo(mToyId, toycode, position);
+            }
+        });
+        mViewPageToy.setAdapter(mPagerAdapter);
+        mViewPageToy.setCurrentItem(mCurrentPosition);
     }
 
 

@@ -1,5 +1,6 @@
 package com.tongyuan.android.zhiquleyuan.base;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,11 +14,14 @@ import com.tongyuan.android.zhiquleyuan.activity.MainActivity;
 
 public class BaseFragment extends Fragment {
     public FragmentActivity mActivity;
+    protected Context mContext;
+    protected boolean isDestory = false;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //拿到acitivity对象,获得context
         mActivity = getActivity();
+        mContext = getActivity().getApplicationContext();
 
 
     }
@@ -58,5 +62,12 @@ public class BaseFragment extends Fragment {
             ((MainActivity) getActivity()).showFragment(fragment);
 
         }
+    }
+
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        isDestory = true;
     }
 }

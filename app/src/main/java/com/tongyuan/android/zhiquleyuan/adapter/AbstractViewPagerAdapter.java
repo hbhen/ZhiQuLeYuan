@@ -13,8 +13,8 @@ import java.util.List;
 
 public abstract class AbstractViewPagerAdapter<T> extends PagerAdapter {
 
-    protected List<T> mData;
-    private SparseArray<View> mViews;
+    public List<T> mData;
+    public SparseArray<View> mViews;
     //private int mChildCount = 0;
 
     public AbstractViewPagerAdapter(List<T> data) {

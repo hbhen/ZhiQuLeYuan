@@ -20,6 +20,7 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.activity.BindBabyActivity;
+import com.tongyuan.android.zhiquleyuan.activity.MainActivity;
 import com.tongyuan.android.zhiquleyuan.activity.MyPlayActivity;
 import com.tongyuan.android.zhiquleyuan.activity.UnBindBabyActivity;
 import com.tongyuan.android.zhiquleyuan.activity.VideoActivity;
@@ -135,6 +136,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         mCallCamera = (ImageView) mToyDetails.findViewById(R.id.iv_fragment_toy_details_call_camera);
 
         mToyIsPlaying = (TextView) mToyDetails.findViewById(R.id.tv_toy_details_playing);
+        mToyDetails.findViewById(R.id.back_btn).setOnClickListener(this);
 
         mToyManagerFragment = new ToyManagerFragment();
 
@@ -267,13 +269,15 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
             return;
         mTv_fragment_toy_details_acttime.setText(mFormatTime);
         mTv_fragment_toy_details_toytype.setText(mName);
-        Glide.with(getActivity()).load(mImg).asBitmap().into(mIv_fragment_toy_details_toyimg);
+        Glide.with(mContext).load(mImg).asBitmap().into(mIv_fragment_toy_details_toyimg);
 
         if (mBabyimg == null||mLst.size()==0) {
 
-            Glide.with(getActivity()).load(R.mipmap.default_babyimage).asBitmap().into(new BitmapImageViewTarget(mIv_fragment_toy_details_babyImg) {
+            Glide.with(mContext).load(R.mipmap.default_babyimage).asBitmap().into(new BitmapImageViewTarget(mIv_fragment_toy_details_babyImg) {
                 @Override
                 protected void setResource(Bitmap resource) {
+                    if(isDestory)
+                        return;
                     RoundedBitmapDrawable mRoundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
                     mRoundedBitmapDrawable.setCircular(true);
                     mIv_fragment_toy_details_babyImg.setImageDrawable(mRoundedBitmapDrawable);
@@ -282,9 +286,11 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
 
         } else {
 
-            Glide.with(getActivity()).load(mBabyimg).asBitmap().into(new BitmapImageViewTarget(mIv_fragment_toy_details_babyImg) {
+            Glide.with(mContext).load(mBabyimg).asBitmap().into(new BitmapImageViewTarget(mIv_fragment_toy_details_babyImg) {
                 @Override
                 protected void setResource(Bitmap resource) {
+                    if(isDestory)
+                        return;
                     RoundedBitmapDrawable mRoundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
                     mRoundedBitmapDrawable.setCircular(true);
                     mIv_fragment_toy_details_babyImg.setImageDrawable(mRoundedBitmapDrawable);
@@ -365,7 +371,11 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
 //                startActivity(intent);
                 ToastUtil.showToast(getActivity(), "details  bind");
                 break;
-
+            case R.id.back_btn:
+                MainActivity mainActivity = (MainActivity) getActivity();
+                mainActivity.backToTop();
+                ToastUtil.showToast(getActivity(), "back");
+                break;
         }
 
     }
