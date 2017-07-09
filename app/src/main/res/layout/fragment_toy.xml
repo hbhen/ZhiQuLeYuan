@@ -21,6 +21,7 @@
     </RelativeLayout>
 
     <FrameLayout
+        android:background="#f1f1f1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/tb_toy"

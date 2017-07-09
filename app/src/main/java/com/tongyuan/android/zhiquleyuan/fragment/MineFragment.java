@@ -33,6 +33,7 @@ import com.tongyuan.android.zhiquleyuan.base.BaseFragment;
 import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListRequest;
 import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListResult;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
+import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
@@ -248,6 +249,8 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                  * 退出登录的详细逻辑是:1,点击退出登录,执行清除token的功能.
                  * 2,先执行弹窗的提示,确认就清除,并且返回"点击登录的那个"mine"的界面;取消就返回之前的界面.
                  * */
+                //有退出登录的接口 3.4.54
+                LogOut();
                 //弹窗提示
                 final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 builder.setTitle("确认退出");
@@ -287,6 +290,15 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
             default:
                 break;
         }
+    }
+
+    private void LogOut() {
+        Retrofit retrofit=new Retrofit.Builder()
+                .baseUrl(Constant.baseurl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        //TODO 用户退出登录的接口  未完成2017/07/09 15:57
+
     }
 
     private void getListInfo() {
@@ -373,7 +385,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
         mToken=SPUtils.getString(getActivity(),"TOKEN","");
         Log.i(TAG, "onClick: mToken delelte3"+mToken);
         if (!mToken.equals("")) {
-//            mUsername=SPUtils.getString(getActivity(),"username","");这个拿到的值是用户的id
+            mUsername=SPUtils.getString(getActivity(),"username","");//这个拿到的值是用户的id
             Log.i(TAG, "showDifferentLoginInfo: "+mUsername);
             mUserimg=SPUtils.getString(getActivity(),"userimg","");
             mMyLogout.setVisibility(View.VISIBLE);

@@ -33,6 +33,7 @@ import com.tongyuan.android.zhiquleyuan.request.RequestManager;
 import com.tongyuan.android.zhiquleyuan.request.base.SuperModel;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
+import com.tongyuan.android.zhiquleyuan.view.SelectorPagerTransformer;
 import com.zhy.magicviewpager.transformer.ScaleInTransformer;
 
 import org.greenrobot.eventbus.EventBus;
@@ -81,6 +82,7 @@ public class ToySelectorFragment extends BaseFragment {
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
+        Log.i("gengen", "onCreateView");
 
         View toyRoot = inflater.inflate(R.layout.fragment_toy, container, false);
         ButterKnife.bind(this, toyRoot);
@@ -90,12 +92,14 @@ public class ToySelectorFragment extends BaseFragment {
 
     @Override
     public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
-        mViewPageToy.setPageMargin(20);
+        int margin = (int) getResources().getDimension(R.dimen.dp_20);
+        mViewPageToy.setPageMargin(margin);
         mViewPageToy.setOffscreenPageLimit(10);
+        Log.i("gengen", "onViewCreated");
 
         refreshPagerAdapter();
         mViewPageToy.setPageTransformer(true, new ScaleInTransformer());
-        //mViewPageToy.setCurrentItem(1);
+        mViewPageToy.setCurrentItem(0);
         displayBabyHead(1);
         mViewPageToy.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -106,6 +110,7 @@ public class ToySelectorFragment extends BaseFragment {
             @Override
             public void onPageSelected(int position) {
                 mCurrentPosition = position;
+                Log.i("gengen", "onPageSelected "+position);
                 //获得宝宝的头像 , 滑到当前的position展示当前的玩具的宝宝,如果当前的玩具没有绑定宝宝,那么就让他显示默认的baby头像
                 //宝宝的头像从哪来?怎么确定宝宝的头像和玩具的关系
                 displayBabyHead(position);
@@ -118,13 +123,31 @@ public class ToySelectorFragment extends BaseFragment {
         });
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+
+    }
+
     /**
      * 显示baby的头像
      * @param position pager的位置
      */
     private void displayBabyHead(int position) {
         String s = toyList.get(position).getBABYIMG();//获得宝宝的头像
-        Glide.with(getContext()).load(s).asBitmap().placeholder(R.drawable.ic_launcher).into(new BitmapImageViewTarget(mHeadImageView) {
+        /*if (s == null) {
+            Glide.with(getContext()).load(R.drawable.ic_launcher).asBitmap().into(new BitmapImageViewTarget(mHeadImageView) {
+                @Override
+                protected void setResource(Bitmap resource) {
+                    RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
+                    roundedBitmapDrawable.setCircular(true);
+                    mHeadImageView.setImageDrawable(roundedBitmapDrawable);
+                }
+            });
+            return;
+        }*/
+        Glide.with(getContext()).load(s).asBitmap().placeholder(R.drawable.player_cover_default).into(new BitmapImageViewTarget(mHeadImageView) {
             @Override
             protected void setResource(Bitmap resource) {
                 RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
@@ -137,16 +160,12 @@ public class ToySelectorFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.i("gengen", "onResume");
-//        mPagerAdapter.notifyDataSetChanged();
         refreshPagerAdapter();
     }
 
     @Override
     public void onHiddenChanged(boolean hidden) {
         if(!hidden) {
-            Log.i("gengen", "onHiddenChanged");
-//            mPagerAdapter.notifyDataSetChanged();
             refreshPagerAdapter();
         }
     }
@@ -218,10 +237,6 @@ public class ToySelectorFragment extends BaseFragment {
             public void onResponse(Call<SuperModel<DeleteToyFromPowerUserResBean.BODYBean>> call, Response<SuperModel<DeleteToyFromPowerUserResBean.BODYBean>> response) {
                 if("0".equals(response.body().CODE)) {
                     toyList.remove(currentPosition);
-
-//                    mPagerAdapter.destroyItem(mViewPageToy, currentPosition, mPagerAdapter.mViews.get(currentPosition));
-//                    mPagerAdapter.mViews.remove(currentPosition);
-                    //mPagerAdapter.notifyDataSetChanged();
                     refreshPagerAdapter();
                     //Log.i(TAG, "onResponse: respnose12" + response.body().toString());
                     //ToastUtil.showToast(getContext(), "确实已经删除了222");
@@ -245,6 +260,7 @@ public class ToySelectorFragment extends BaseFragment {
             public void onResponse(Call<SuperModel<DeleteToyFromNormalUserResBean.BODYBean>> call, Response<SuperModel<DeleteToyFromNormalUserResBean.BODYBean>> response) {
 
                 if("0".equals(response.body().CODE)) {
+                    mCurrentPosition --;
                     toyList.remove(position);
 //                    mPagerAdapter.destroyItem(mViewPageToy, position, mPagerAdapter.mViews.get(position));
 //                    mPagerAdapter.mViews.remove(position);
@@ -334,6 +350,7 @@ public class ToySelectorFragment extends BaseFragment {
             bean.setBABYIMG(img);
             toyList.add(bean);
 
+            Log.i("gengen", "onGetToyAddMessage notifyDataSetChangeed...");
             if (mPagerAdapter != null)
                 refreshPagerAdapter();
                 //mPagerAdapter.notifyDataSetChanged();

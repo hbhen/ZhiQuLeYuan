@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
@@ -31,9 +32,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by android on 2016/12/23.
  */
 
-public class MyPushActivity extends AppCompatActivity {
+public class MyPushActivity extends AppCompatActivity implements View.OnClickListener {
 
     private AbListView mLv_myPush;
+    private ImageView mPush_back;
     private View mMyPushHeader;
     private List<QueryBabyListResult.BODYBean.LSTBean> mLst;
     private String mToyid;
@@ -45,10 +47,16 @@ public class MyPushActivity extends AppCompatActivity {
         setContentView(R.layout.activity_mypush);
         initView();
         initDate();
+        initListener();
 
 
     }
+    private void initView() {
 
+        mLv_myPush = (AbListView) findViewById(R.id.rv_mypush);
+        mPush_back = (ImageView) findViewById(R.id.iv_push_back);
+        mMyPushHeader = LayoutInflater.from(this).inflate(R.layout.item_push_header, null);
+    }
     private void initDate() {
         mToyid = SPUtils.getString(this, "toyidtopush", "");
         Intent intent = getIntent();
@@ -61,6 +69,11 @@ public class MyPushActivity extends AppCompatActivity {
 
         getMyPushData(time, token, phoneNum);
     }
+    private void initListener() {
+        mPush_back.setOnClickListener(this);
+    }
+
+
 
     private void getMyPushData(String time, String token, String phoneNum) {
         Retrofit retrofit = new Retrofit.Builder()
@@ -91,8 +104,13 @@ public class MyPushActivity extends AppCompatActivity {
         });
     }
 
-    private void initView() {
-        mLv_myPush = (AbListView) findViewById(R.id.rv_mypush);
-        mMyPushHeader = LayoutInflater.from(this).inflate(R.layout.item_push_header, null);
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.iv_push_back:
+                finish();
+                break;
+        }
     }
 }

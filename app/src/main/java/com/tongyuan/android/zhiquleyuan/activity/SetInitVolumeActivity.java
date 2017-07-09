@@ -1,11 +1,13 @@
 package com.tongyuan.android.zhiquleyuan.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -28,6 +30,7 @@ import static com.tongyuan.android.zhiquleyuan.fragment.ToySelectorFragment.mToy
 
 public class SetInitVolumeActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private ImageView mVolume_back;
     private TextView mVolumeValue;
     private Button mPlayReduce;
     private Button mPlay;
@@ -42,14 +45,22 @@ public class SetInitVolumeActivity extends AppCompatActivity implements View.OnC
     private static boolean isLock = false;
     private String mBabyid;
 
+
+    public static void launch(Context context, String babyid) {
+        Intent it = new Intent(context, SetInitVolumeActivity.class);
+        it.putExtra("babyid", babyid);
+        context.startActivity(it);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setinitvolume);
         Intent intent = getIntent();
-        Bundle bundle = intent.getExtras();
-        mBabyid = bundle.getString("babyid");
+        mBabyid = intent.getStringExtra("babyid");
         //TODO   设置初始音量
+
+        mVolume_back = (ImageView) findViewById(R.id.iv_initvolum_back);
         mVolumeValue = (TextView) findViewById(R.id.tv_activity_setinitvolume_value);
         mVolumeSeekBar = (SeekBar) findViewById(R.id.sb_activity_setinitvolume);
         mVolumeReduce = (ImageButton) findViewById(R.id.ib_activity_setinitvolume_reduce);
@@ -62,7 +73,7 @@ public class SetInitVolumeActivity extends AppCompatActivity implements View.OnC
         mVolumeConfirm = (Button) findViewById(R.id.bt_activity_setinitvolume_confirm);
 
         mToken = SPUtils.getString(this, "TOKEN", "");
-        if (isLock==true){
+        if (isLock == true) {
             //显示一种lock图标
         }
         //显示另一种没有锁定的图标
@@ -119,6 +130,7 @@ public class SetInitVolumeActivity extends AppCompatActivity implements View.OnC
         mPlayAdd.setOnClickListener(this);
         mVolumeLock.setOnClickListener(this);
         mVolumeConfirm.setOnClickListener(this);
+        mVolume_back.setOnClickListener(this);
 
     }
 
@@ -126,6 +138,9 @@ public class SetInitVolumeActivity extends AppCompatActivity implements View.OnC
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.iv_initvolum_back:
+                finish();
+                break;
             case R.id.ib_activity_setinitvolume_reduce:
                 //先过去seekbar的progress的值
 
@@ -168,7 +183,7 @@ public class SetInitVolumeActivity extends AppCompatActivity implements View.OnC
                     mVolumeAdd.setClickable(false);
                     mVolumeSeekBar.setClickable(false);
                     isLock = false;
-                    SPUtils.remove(this,"islock");
+                    SPUtils.remove(this, "islock");
                     ToastUtil.showToast(this, "当前音量锁定,请点击解锁键解锁");
 //                    mPlayReduce
 //                    mPlay
@@ -180,7 +195,7 @@ public class SetInitVolumeActivity extends AppCompatActivity implements View.OnC
                     mVolumeAdd.setClickable(true);
                     mVolumeSeekBar.setClickable(true);
                     isLock = true;
-                    SPUtils.putBoolean(this,"islock",isLock);
+                    SPUtils.putBoolean(this, "islock", isLock);
                 }
                 break;
             case R.id.bt_activity_setinitvolume_confirm:
@@ -208,6 +223,7 @@ public class SetInitVolumeActivity extends AppCompatActivity implements View.OnC
             public void onResponse(Call<ControlToyVolumeRes> call, Response<ControlToyVolumeRes> response) {
                 if (response.body().getCode().equals("0")) {
                     ToastUtil.showToast(getApplicationContext(), "成功");
+                    finish();
                 } else if (response.body().getCode().equals("-10009")) {
                     ToastUtil.showToast(getApplicationContext(), "玩具未登录,为获取到玩具DEVCODE");
                 } else if (response.body().getCode().equals("-10006")) {

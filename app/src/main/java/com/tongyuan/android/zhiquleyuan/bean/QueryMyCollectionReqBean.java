@@ -5,14 +5,15 @@ package com.tongyuan.android.zhiquleyuan.bean;
  */
 
 public class QueryMyCollectionReqBean {
+
     /**
      * TYPE : REQ
      * CMD : MYFAV
-     * ACCT : 15239184643
+     * ACCT : XXXX
      * TIME : 20161127101010000
-     * BODY : {"RESID":"","PS":"10","PN":"1"}
+     * BODY : {"WORD":"","RESID":"","PS":"10","PN":"1"}
      * VERI :
-     * TOKEN : 8f57181e-47f6-4c81-8bee-df29b677df9c
+     * TOKEN : 2a9f39b9-489c-4f29-a4f4-3e8da79dc08e
      * SEQ : 1
      */
 
@@ -116,11 +117,13 @@ public class QueryMyCollectionReqBean {
 
     public static class BODYBean {
         /**
+         * WORD :
          * RESID :
          * PS : 10
          * PN : 1
          */
 
+        private String WORD;
         private String RESID;
         private String PS;
         private String PN;
@@ -128,16 +131,26 @@ public class QueryMyCollectionReqBean {
         @Override
         public String toString() {
             return "BODYBean{" +
-                    "RESID='" + RESID + '\'' +
+                    "WORD='" + WORD + '\'' +
+                    ", RESID='" + RESID + '\'' +
                     ", PS='" + PS + '\'' +
                     ", PN='" + PN + '\'' +
                     '}';
         }
 
-        public BODYBean(String RESID, String PS, String PN) {
+        public BODYBean(String WORD, String RESID, String PS, String PN) {
+            this.WORD = WORD;
             this.RESID = RESID;
             this.PS = PS;
             this.PN = PN;
+        }
+
+        public String getWORD() {
+            return WORD;
+        }
+
+        public void setWORD(String WORD) {
+            this.WORD = WORD;
         }
 
         public String getRESID() {

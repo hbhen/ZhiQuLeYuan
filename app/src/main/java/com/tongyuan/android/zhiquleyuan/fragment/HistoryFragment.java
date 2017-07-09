@@ -3,12 +3,14 @@ package com.tongyuan.android.zhiquleyuan.fragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
@@ -40,7 +42,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by android on 2016/12/3.
  */
 
-public class HistoryFragment extends BaseFragment {
+public class HistoryFragment extends BaseFragment implements View.OnClickListener {
 
     private AbListView lv_fragment_history;
     private ImageView iv_item_history_pic;
@@ -51,7 +53,7 @@ public class HistoryFragment extends BaseFragment {
     private int start = 0; // 当前页数
     private int limit = 8; // 为每页显示数据数目
     private int totalCount = 50;
-    private View mItem_history_header;
+    private RelativeLayout mItem_history_header;
     private PullToRefreshScrollView mPulltorefreshscrollview;
     private Handler mHandler;
     private HistorySwipeAdapter mHistorySwipeAdapter;
@@ -59,6 +61,9 @@ public class HistoryFragment extends BaseFragment {
     private PullToRefreshBase.Mode mCurrentMode;
     private List<String> listData = new ArrayList<>();
     private List<String> listDataMore = new ArrayList<>();
+    private SwipeRefreshLayout mSwipeRefresh;
+    private String mToken;
+    private ImageView mHistory_call;
 
     @Nullable
     @Override
@@ -66,26 +71,40 @@ public class HistoryFragment extends BaseFragment {
         View historyRoot = inflater.inflate(R.layout.fragment_history, null);
         lv_fragment_history = (AbListView) historyRoot.findViewById(R.id.lv_fragment_history);
         iv_item_history_pic = (ImageView) lv_fragment_history.findViewById(R.id.iv_item_history_pic);
-        mItem_history_header = inflater.inflate(R.layout.item_history_header, null);
+        mItem_history_header = (RelativeLayout) historyRoot.findViewById(R.id.rl_history_title);
+        mHistory_call = (ImageView) mItem_history_header.findViewById(R.id.iv_history_call);
+//        mItem_history_header = inflater.inflate(R.layout.item_history_header, null);
+
+        mSwipeRefresh = (SwipeRefreshLayout) historyRoot.findViewById(R.id.swiperefresh_history);
 //        mPulltorefreshscrollview = (PullToRefreshScrollView) historyRoot.findViewById(R.id.pulltorefreshscrollview);
 
-
+        mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getData(mPhoneNum, mTime, mToken);
+                mSwipeRefresh.setRefreshing(false);
+            }
+        });
         return historyRoot;
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         initData();
+        initListener();
+    }
 
-//        showData();
+    private void initListener() {
+        mItem_history_header.setOnClickListener(this);
     }
 
 
     private void initData() {
-        String token = SPUtils.getString(getActivity(), "TOKEN", "");
+        mToken = SPUtils.getString(getActivity(), "TOKEN", "");
         mPhoneNum = SPUtils.getString(getActivity(), "phoneNum", "");
         mTime = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
-        getData(mPhoneNum, mTime, token);
+        getData(mPhoneNum, mTime, mToken);
     }
 
 
@@ -128,24 +147,15 @@ public class HistoryFragment extends BaseFragment {
 
                     HistoryAdapter historyAdapter = new HistoryAdapter(getContext(), mLst);
                     lv_fragment_history.setAdapter(historyAdapter);
-                    lv_fragment_history.addHeaderView(mItem_history_header);
+//                    lv_fragment_history.addHeaderView(mItem_history_header);
                     lv_fragment_history.setDivider(null);
                     lv_fragment_history.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            if (position == 0) {
-                                if (ToySelectorFragment.mToyId != null) {
-                                    CallManager.CallToToy(ToySelectorFragment.mToyId, getActivity());
-//                                    ToastUtil.showToast(getContext(), "点击的是" + position);
-                                } else {
-                                    ToastUtil.showToast(getActivity(), "toyid为空,请选择玩具");
-                                }
 
-                            } else {
+                            String toyid = mResponseCallHist.body().getBODY().getLST().get(position).getTOYID();
+                            CallManager.CallToToy(toyid, getActivity());
 
-                                String toyid = mResponseCallHist.body().getBODY().getLST().get(position-1).getTOYID();
-                                CallManager.CallToToy(toyid, getActivity());
-                            }
                         }
                     });
 
@@ -255,4 +265,19 @@ public class HistoryFragment extends BaseFragment {
     }
 
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.rl_history_title:
+                if (ToySelectorFragment.mToyId != null) {
+                    CallManager.CallToToy(ToySelectorFragment.mToyId, getActivity());
+//                                    ToastUtil.showToast(getContext(), "点击的是" + position);
+                } else {
+                    ToastUtil.showToast(getActivity(), "toyid为空,请选择玩具");
+                }
+                break;
+            default:
+                break;
+        }
+    }
 }

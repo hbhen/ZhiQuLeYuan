@@ -1,9 +1,7 @@
 package com.tongyuan.android.zhiquleyuan.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.os.Bundle;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.view.LayoutInflater;
@@ -129,13 +127,7 @@ public class BabyInfoListAdapter extends BaseSwipeAdapter {
             @Override
             public void onClick(View v) {
                 //TODO 拿错数据了,应该要toyid,给setinitvolume传过了已经,要改正 2017 6月9 0:10
-                Intent intent = new Intent();
-                intent.setClass(mContext, SetInitVolumeActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("babaid", mLSTBeen.get(pos).getID());
-                intent.putExtras(bundle);
-                mContext.startActivity(intent);
-
+                SetInitVolumeActivity.launch(mContext, mLSTBeen.get(pos).getID());
                 ToastUtil.showToast(mContext, "点击的是设置音量");
             }
         });

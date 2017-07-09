@@ -1,5 +1,6 @@
 package com.tongyuan.android.zhiquleyuan.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -9,8 +10,11 @@ import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.tongyuan.android.zhiquleyuan.R;
+import com.tongyuan.android.zhiquleyuan.activity.SearchActivity;
 import com.tongyuan.android.zhiquleyuan.adapter.DiscoveryRecyclerAdapter;
 import com.tongyuan.android.zhiquleyuan.base.BaseFragment;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridItemBean;
@@ -35,7 +39,7 @@ import retrofit2.Response;
  * 先加载布局,再在布局里面添加数据.布局从哪个生命周期开始加载?数据从哪个生命周期开始加载?
  * Created by android on 2016/12/3.
  */
-public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener, View.OnClickListener{
+public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener, View.OnClickListener {
     //public static final int REQUEST_CODE_LOGIN = 1001;
     //public static final String TAG = "discovery";
     private View mDiscoveryRoot;
@@ -45,25 +49,38 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
     private List<DiscoveryListResultBean.BODYBean.LSTBean> discoveryListViewList = new ArrayList<>();
     private List<DiscoveryGridItemBean.LSTBean> discoveryGridViewList = new ArrayList<>();
     private SpacesItemDecoration spacesItemDecoration;
-    private boolean isLoading =true;
+    private boolean isLoading = true;
     private int currPage = 1;
-    private String NC ="0"; // 0代表没有更多推荐数据
+    private String NC = "0"; // 0代表没有更多推荐数据
+    private TextView mSearchTitle;
+    private ImageView mListeningTitle;
+
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mDiscoveryRoot = inflater.inflate(R.layout.fragment_discovery_recycleview, null);
         initView();
+        initListener();
         return mDiscoveryRoot;
+    }
+
+    private void initListener() {
+        mSearchTitle.setOnClickListener(this);
+        mListeningTitle.setOnClickListener(this);
     }
 
     private void initView() {
         mSwiperefresh = (SwipeRefreshLayout) mDiscoveryRoot.findViewById(R.id.swiperefresh_discovery);
+
+        mSearchTitle = (TextView) mDiscoveryRoot.findViewById(R.id.et_home_title);
+        mListeningTitle = (ImageView) mDiscoveryRoot.findViewById(R.id.iv_home_title);
+
         mSwiperefresh.setOnRefreshListener(this);
         mRecyclerView = (RecyclerView) mDiscoveryRoot.findViewById(R.id.recyclerView_discovery);
 
         mAdapter = new DiscoveryRecyclerAdapter(getContext(), discoveryGridViewList, discoveryListViewList);
-        final GridLayoutManager layoutManager = new GridLayoutManager(mRecyclerView.getContext(), 6, GridLayoutManager.VERTICAL,false);
+        final GridLayoutManager layoutManager = new GridLayoutManager(mRecyclerView.getContext(), 6, GridLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setAdapter(mAdapter);
         int spacingInPixels = (int) getResources().getDimension(R.dimen.discovery_grid_space);
@@ -93,7 +110,7 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
                         return;
                     }*/
 
-                    if(!isLoading && (!"0".endsWith(NC))) {
+                    if (!isLoading && (!"0".endsWith(NC))) {
                         isLoading = true;
                         mAdapter.isLoadMore(true);
                         getListRaw(true);
@@ -136,17 +153,19 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
     //拿到list的数据
     private void getListRaw(final boolean isLoadMore) {
         int page = currPage;
-        if(isLoadMore) {
+        if (isLoadMore) {
             ++page;
         }
         DiscoveryListRequsetBean.BODYBean request = new DiscoveryListRequsetBean.BODYBean("10", String.valueOf(page));
-        Call<SuperModel<DiscoveryListResultBean.BODYBean>> discoveryListResult = RequestManager.getInstance().getDiscoveryListResult(getContext(), request);
+        Call<SuperModel<DiscoveryListResultBean.BODYBean>> discoveryListResult = RequestManager.getInstance().getDiscoveryListResult(getContext(),
+                request);
         discoveryListResult.enqueue(new Callback<SuperModel<DiscoveryListResultBean.BODYBean>>() {
             @Override
-            public void onResponse(Call<SuperModel<DiscoveryListResultBean.BODYBean>> call, Response<SuperModel<DiscoveryListResultBean.BODYBean>> response) {
+            public void onResponse(Call<SuperModel<DiscoveryListResultBean.BODYBean>> call, Response<SuperModel<DiscoveryListResultBean.BODYBean>>
+                    response) {
                 NC = response.body().BODY.getNC();
                 if ("0".equals(response.body().CODE)) {
-                    if(isLoadMore) {
+                    if (isLoadMore) {
                         ++currPage;
                     } else {
                         discoveryListViewList.clear();
@@ -204,14 +223,17 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.et_home_title) {
-
-//        } else if (v.getId() == R.id.tv_gridview_title) {
-//            Intent intent = new Intent(getActivity(), ActivityLogin.class);
-//            //需不需要intent传参数出去再说吧
-//            startActivityForResult(intent, REQUEST_CODE_LOGIN);
+        switch (v.getId()) {
+            case R.id.et_home_title:
+                Intent intent = new Intent();
+                intent.setClass(getContext(), SearchActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.iv_home_title:
+                break;
+            default:
+                break;
         }
-        //Log.i("tagd", "onResume: went");
     }
 
     @Override

@@ -9,6 +9,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.baoyz.swipemenulistview.SwipeMenu;
@@ -42,11 +43,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by android on 2016/12/23.
  */
 
-public class MyCollectionActivity extends AppCompatActivity {
+public class MyCollectionActivity extends AppCompatActivity implements View.OnClickListener {
 
     private ListView lv_mycollection;
     private SwipeRefreshLayout mSpRefresh;
     private SwipeMenuListView mSwipeListview;
+    private ImageView mCollection_back;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,6 +63,7 @@ public class MyCollectionActivity extends AppCompatActivity {
         mSpRefresh = (SwipeRefreshLayout) findViewById(R.id.sprefresh);
         mSwipeListview = (SwipeMenuListView) findViewById(R.id.lv_mycollection);
         lv_mycollection = (ListView) findViewById(R.id.lv_mycollection);
+        mCollection_back = (ImageView) findViewById(R.id.iv_collection_back);
     }
 
     private void initData() {
@@ -68,6 +71,7 @@ public class MyCollectionActivity extends AppCompatActivity {
     }
 
     private void initListener() {
+        mCollection_back.setOnClickListener(this);
         mSpRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -75,6 +79,7 @@ public class MyCollectionActivity extends AppCompatActivity {
                 mSpRefresh.setRefreshing(false);
             }
         });
+
     }
 
     private void getMyCollection() {
@@ -88,8 +93,8 @@ public class MyCollectionActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
-        QueryMyCollectionReqBean.BODYBean bodyBean = new QueryMyCollectionReqBean.BODYBean("", "10", "1");
-        QueryMyCollectionReqBean queryMyCollectionReqBean = new QueryMyCollectionReqBean("REQ", "MYREC", phoneNum, time, bodyBean, "", token, "1");
+        QueryMyCollectionReqBean.BODYBean bodyBean = new QueryMyCollectionReqBean.BODYBean("","", "10", "1");
+        QueryMyCollectionReqBean queryMyCollectionReqBean = new QueryMyCollectionReqBean("REQ", "MYFAV", phoneNum, time, bodyBean, "", token, "1");
 
         Gson gson = new Gson();
         String babyListJson = gson.toJson(queryMyCollectionReqBean);
@@ -187,5 +192,14 @@ public class MyCollectionActivity extends AppCompatActivity {
     private int dp2px(int dp) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
                 getResources().getDisplayMetrics());
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.iv_collection_back:
+                finish();
+                break;
+        }
     }
 }

@@ -86,6 +86,7 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name=".activity.SetupWlanActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".activity.AddMemberToGroup"
@@ -131,6 +132,10 @@
             android:name=".activity.UnBindBabyActivity"
             android:screenOrientation="portrait">
         </activity>
+        <activity
+            android:name=".activity.SearchActivity"
+            android:screenOrientation="portrait"
+            ></activity>
     </application>
 
 </manifest>

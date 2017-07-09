@@ -8,6 +8,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 
 import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
@@ -18,6 +19,7 @@ import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.adapter.PlayListAdapter;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteMyPlayReqBean;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteMyPlayResBean;
+import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryMyCollectionReqBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryMyPlayResBean;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
@@ -36,10 +38,12 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class PlayListActivity extends AppCompatActivity {
+public class PlayListActivity extends AppCompatActivity implements View.OnClickListener {
 
     private SwipeMenuListView mSwipelistview;
     private SwipeRefreshLayout sprefresh;
+    private ImageView mBack;
+    ArrayList<DiscoveryListResultBean.BODYBean.LSTBean> mList = new ArrayList<DiscoveryListResultBean.BODYBean.LSTBean>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +57,7 @@ public class PlayListActivity extends AppCompatActivity {
     private void initView() {
         sprefresh = (SwipeRefreshLayout) findViewById(R.id.sprefresh);
         mSwipelistview = (SwipeMenuListView) findViewById(R.id.sp_activity_play_list);
+        mBack = (ImageView) findViewById(R.id.baby_back);
     }
 
     private void initData() {
@@ -70,12 +75,13 @@ public class PlayListActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
-        QueryMyCollectionReqBean.BODYBean bodyBean = new QueryMyCollectionReqBean.BODYBean("", "10", "1");
-        QueryMyCollectionReqBean queryMyCollectionReqBean = new QueryMyCollectionReqBean("REQ", "MYFAV", phoneNum, time, bodyBean, "", token, "1");
+        QueryMyCollectionReqBean.BODYBean bodyBean = new QueryMyCollectionReqBean.BODYBean("","", "10", "1");
+        QueryMyCollectionReqBean queryMyCollectionReqBean = new QueryMyCollectionReqBean("REQ", "MYPLAY", phoneNum, time, bodyBean, "", token, "1");
 
         Gson gson = new Gson();
         String babyListJson = gson.toJson(queryMyCollectionReqBean);
         Call<QueryMyPlayResBean> babyListResult = allInterface.QUERY_MYPLAY_RES_BEAN_CALL(babyListJson);
+
         babyListResult.enqueue(new Callback<QueryMyPlayResBean>() {
 
             private List<QueryMyPlayResBean.BODYBean.LSTBean> mLst;
@@ -86,14 +92,22 @@ public class PlayListActivity extends AppCompatActivity {
                 if (response.body() != null && response.body().getCODE().equals("0")) {
                     Log.i("555555", "queryRecordingList:response" + response.body().getBODY().toString());
                     //TODO 考虑一下,这时候,
+
                     mLst = response.body().getBODY().getLST();
+                    for (QueryMyPlayResBean.BODYBean.LSTBean bean : mLst) {
+                        DiscoveryListResultBean.BODYBean.LSTBean listBean = new DiscoveryListResultBean.BODYBean.LSTBean();
+                        listBean.setID(bean.getID());
+                        listBean.setIMG(bean.getIMG());
+                        listBean.setNAME(bean.getNAME());
+                        mList.add(listBean);
+                    }
                     // 如果list为空怎么办??2017.6.14   傻呀!!做判断就行了!!!
                     mPlayListAdapter = new PlayListAdapter(getApplicationContext(), mLst);
                     mSwipelistview.setAdapter(mPlayListAdapter);
                     mSwipelistview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                            MyPlayActivity.launch(getApplicationContext(), mList,position);
                             ToastUtil.showToast(getApplicationContext(), "点击的是:" + position);
 
                         }
@@ -172,6 +186,7 @@ public class PlayListActivity extends AppCompatActivity {
     }
 
     private void initListener() {
+        mBack.setOnClickListener(this);
         sprefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 
             @Override
@@ -186,5 +201,14 @@ public class PlayListActivity extends AppCompatActivity {
     private int dp2px(int dp) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
                 getResources().getDisplayMetrics());
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.baby_back:
+                finish();
+                break;
+        }
     }
 }

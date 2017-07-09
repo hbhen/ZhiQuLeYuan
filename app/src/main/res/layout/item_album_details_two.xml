@@ -8,6 +8,7 @@
         android:id="@+id/iv_album_details_two"
         android:layout_width="60dp"
         android:layout_height="60dp"
+        android:background="@drawable/player_cover_default"
         android:scaleType="centerCrop" />
 
     <TextView
