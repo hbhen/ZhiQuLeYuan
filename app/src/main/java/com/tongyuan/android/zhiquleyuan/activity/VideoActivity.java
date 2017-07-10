@@ -103,7 +103,7 @@ public static void launch(Context context, String babyimgString, String babyname
     it.putExtra("roomid",roomid);
     it.putExtra("token",token);
     it.putExtra("toyId",toyId);
-
+    it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     context.startActivity(it);
 
 }

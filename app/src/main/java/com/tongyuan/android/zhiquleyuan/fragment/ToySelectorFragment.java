@@ -33,7 +33,6 @@ import com.tongyuan.android.zhiquleyuan.request.RequestManager;
 import com.tongyuan.android.zhiquleyuan.request.base.SuperModel;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
-import com.tongyuan.android.zhiquleyuan.view.SelectorPagerTransformer;
 import com.zhy.magicviewpager.transformer.ScaleInTransformer;
 
 import org.greenrobot.eventbus.EventBus;
@@ -100,7 +99,7 @@ public class ToySelectorFragment extends BaseFragment {
         refreshPagerAdapter();
         mViewPageToy.setPageTransformer(true, new ScaleInTransformer());
         mViewPageToy.setCurrentItem(0);
-        displayBabyHead(1);
+        displayBabyHead(mCurrentPosition);
         mViewPageToy.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -135,6 +134,9 @@ public class ToySelectorFragment extends BaseFragment {
      * @param position pager的位置
      */
     private void displayBabyHead(int position) {
+        if (toyList==null||toyList.size()==0){
+            return;
+        }
         String s = toyList.get(position).getBABYIMG();//获得宝宝的头像
         /*if (s == null) {
             Glide.with(getContext()).load(R.drawable.ic_launcher).asBitmap().into(new BitmapImageViewTarget(mHeadImageView) {
@@ -147,14 +149,17 @@ public class ToySelectorFragment extends BaseFragment {
             });
             return;
         }*/
-        Glide.with(getContext()).load(s).asBitmap().placeholder(R.drawable.player_cover_default).into(new BitmapImageViewTarget(mHeadImageView) {
-            @Override
-            protected void setResource(Bitmap resource) {
-                RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
-                roundedBitmapDrawable.setCircular(true);
-                mHeadImageView.setImageDrawable(roundedBitmapDrawable);
-            }
-        });
+        if (s.equals("")){
+            Glide.with(getContext()).load(s).asBitmap().placeholder(R.drawable.player_cover_default).into(new BitmapImageViewTarget(mHeadImageView) {
+                @Override
+                protected void setResource(Bitmap resource) {
+                    RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
+                    roundedBitmapDrawable.setCircular(true);
+                    mHeadImageView.setImageDrawable(roundedBitmapDrawable);
+                }
+            });
+        }
+
     }
 
     @Override
@@ -327,7 +332,7 @@ public class ToySelectorFragment extends BaseFragment {
     }
 
     //获取从ToyAddFragment传过来的response数据.
-    @Subscribe(threadMode = ThreadMode.POSTING, sticky = false)
+    @Subscribe(threadMode = ThreadMode.POSTING, sticky = true)
     public void onGetToyAddMessage(AddToyMessageEvent addToyMessageEvent) {
         String img = addToyMessageEvent.mAddToyResultBeanResponse.body().getBODY().getIMG();
         String id = addToyMessageEvent.mAddToyResultBeanResponse.body().getBODY().getID();
@@ -342,7 +347,7 @@ public class ToySelectorFragment extends BaseFragment {
         }
 
         if (isAdd) {
-            QueryToyResultBean.BODYBean.LSTBean bean = new QueryToyResultBean.BODYBean.LSTBean();
+            QueryToyResultBean.BODYBean.LSTBean bean =  new QueryToyResultBean.BODYBean.LSTBean();
             bean.setIMG(img);
             bean.setID(id);
             bean.setCODE(code);
@@ -365,6 +370,7 @@ public class ToySelectorFragment extends BaseFragment {
 
     private void refreshPagerAdapter() {
         mPagerAdapter = new ToySelectPagerAdapter(getActivity(), toyList);
+
         mPagerAdapter.setOnItemClick(new ToySelectPagerAdapter.OnItemClick() {
             @Override
             public void itemClick(int position) {

@@ -44,7 +44,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ActivityLogin extends AppCompatActivity implements View.OnClickListener {
     public static final int LOGINOK = 5011;
-    public static final int SAVETOKEN=5012;
+    public static final int SAVETOKEN = 5012;
     //界面控件
     private EditText et_login_smscode;
     private EditText et_login_phone;
@@ -68,7 +68,6 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
 
 
     }
-
 
 
     private void initView() {
@@ -129,8 +128,6 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
                 break;
         }
     }
-
-
 
 
     private void getSmsCode(String phoneNum) {
@@ -382,25 +379,26 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
         String telRegex = "[1][3578]\\d{9}";
         return phoneNum.matches(telRegex);
     }
+
     private void confirmLogin() {
 
-        String loginToken = SPUtils.getString(this, "TOKEN", "");
-        Log.i("444444", "logintoken: " + loginToken);
+//        String loginToken = SPUtils.getString(this, "TOKEN", "");
+//        Log.i("444444", "logintoken: " + loginToken);
         String phoneNum = SPUtils.getString(this, "phoneNum", "");
-        if (!(loginToken.isEmpty())) {
+        if (!mTokenSave.isEmpty()) {
             ToastUtil.showToast(this, "登录成功");
-            this.finish();
+
 //            LOGIN_SUCCESS = 01;//登录成功的值
 
             //token不为空,在点击确认登录的时候去查询user信息
-            QueryUserInfo(phoneNum, loginToken);
+            QueryUserInfo(phoneNum, mTokenSave);
 
         } else {
             ToastUtil.showToast(this, "登录失败");
         }
     }
 
-    private void QueryUserInfo(String phoneNum, String loginToken) {
+    private void QueryUserInfo(String phoneNum, String mTokenSave) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         String format = simpleDateFormat.format(new Date());
         Retrofit retrofit = new Retrofit.Builder().baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
@@ -409,14 +407,14 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
         AllInterface allInterface = retrofit.create(AllInterface.class);
         QuerySingleUserInfoReQBean.BODYBean bodyBean = new QuerySingleUserInfoReQBean.BODYBean(phoneNum);
         QuerySingleUserInfoReQBean querySingleUserInfoReQBean = new QuerySingleUserInfoReQBean("REQ", "QRYUSER", phoneNum, format, bodyBean, "",
-                loginToken, "1");
+                mTokenSave, "1");
         Gson gson = new Gson();
         String params = gson.toJson(querySingleUserInfoReQBean);
         retrofit2.Call<QuerySingleUserInfoReSBean> querySingleUserInfoResult = allInterface.getQuerySingleUserInfoResult(params);
         querySingleUserInfoResult.enqueue(new Callback<QuerySingleUserInfoReSBean>() {
             @Override
             public void onResponse(retrofit2.Call<QuerySingleUserInfoReSBean> call, Response<QuerySingleUserInfoReSBean> response) {
-                if("".equals(response.body().getCODE())) {
+                if (response.body().getCODE().equals("0")) {
                     String name = response.body().getBODY().getNAME();
                     String img = response.body().getBODY().getIMG();
 
@@ -424,15 +422,20 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
                     //Log.i(TAG, "activitylogin:onResponse: userinfo" + name);
                     //Log.i(TAG, "activitylogin:onResponse: userinfo" + img);
 
-                    SPUtils.putString(getApplicationContext(),"username",name);
-                    SPUtils.putString(getApplicationContext(),"userimg",img);
-                    SPUtils.putString(getApplicationContext(),"toyID",response.body().getBODY().getID());
+                    SPUtils.putString(getApplicationContext(), "username", name);
+                    SPUtils.putString(getApplicationContext(), "userimg", img);
+                    SPUtils.putString(getApplicationContext(), "toyID", response.body().getBODY().getID());
+                    String username = SPUtils.getString(getApplicationContext(), "username", "");
+                    String userimg = SPUtils.getString(getApplicationContext(), "userimg", "");
+                    String toyID = SPUtils.getString(getApplicationContext(), "toyID", "");
+                    Log.i(TAG, "onResponse: " + "username" + username + "userimg" + userimg + "toyID" + toyID);
 
                     Intent data = new Intent();
                     Bundle bundle = new Bundle();
                     bundle.putString("username", name);
                     bundle.putString("userimg", img);
                     data.putExtras(bundle);
+                    finish();
                 } else {
                     ToastUtil.showToast(getApplicationContext(), response.body().getMSG());
                 }

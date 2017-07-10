@@ -90,22 +90,13 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
 
         View mineRoot = inflater.inflate(R.layout.fragment_mine, null);
 
-        initData();
-        Log.i("tag", "onCreateView: went");
+
 
         return mineRoot;
 
     }
 
-    private void initData() {
-        mToken = SPUtils.getString(getContext(), "TOKEN", "");
-        mPhoneNum = SPUtils.getString(getContext(), "phoneNum", "");
-        mUsername = SPUtils.getString(getContext(), "username", "");
-        mUserimg = SPUtils.getString(getContext(), "userimg", "");
-        Log.i(TAG, "initData: mUsername " + mUsername);
-        Log.i(TAG, "initData: mUserimg " + mUserimg);
 
-    }
 
     @Override
     public void onAttach(Context context) {
@@ -122,6 +113,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         mTv_fragment_mine_desc = (TextView) getActivity().findViewById(R.id.tv_fragment_mine_desc);//登录后的描述信息
         mMineTitle = (TextView) getActivity().findViewById(R.id.tv_fragment_mine_title);//点击登录
 
@@ -136,7 +128,8 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
 
         mPic = (ImageView) getActivity().findViewById(R.id.iv_fragment_mine);//登录后显示的头像
         mMyLogout = (LinearLayout) getActivity().findViewById(R.id.ll_fragment_mine_logout);
-
+        initData();
+        Log.i("tag", "onCreateView: went");
         showDifferentLoginInfo();
 
         mPic.setOnClickListener(this);
@@ -152,12 +145,20 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
 
         Log.i("tag", "onActivityCreated: went");
     }
+    private void initData() {
+        mToken = SPUtils.getString(getContext(), "TOKEN", "");
+        mPhoneNum = SPUtils.getString(getContext(), "phoneNum", "");
+        mUsername = SPUtils.getString(getContext(), "username", "");
+        mUserimg = SPUtils.getString(getContext(), "userimg", "");
+        Log.i(TAG, "initData: mUsername " + mUsername);
+        Log.i(TAG, "initData: mUserimg " + mUserimg);
 
+    }
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-        mToken = SPUtils.getString(getActivity(), "TOKEN", "");//重新赋值mToken
 //        Log.i(TAG, "minefragment:onResume: token" + mToken);
+        mToken = SPUtils.getString(getActivity(), "TOKEN", "");//重新赋值mToken
         showDifferentLoginInfo();
     }
 
@@ -367,15 +368,15 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == MINELOGIN && resultCode == LOGINOK) {
-//            Bundle bundle = data.getExtras();
-//            mUsername = bundle.getString("username");
-//            mUserimg = bundle.getString("userimg");
+            Bundle bundle = data.getExtras();
+            mUsername = bundle.getString("username");
+            mUserimg = bundle.getString("userimg");
 //
 //            Log.i("444444", "minefragment:onActivityResult: " + mUsername);
 //
 //            Log.i("444444", "minefragment:onActivityResult: " + mUserimg);
-//            mMineTitle.setText(mUsername);
-//            Glide.with(getContext()).load(mUserimg).asBitmap().into(mPic);
+            mMineTitle.setText(mUsername);
+            Glide.with(getContext()).load(mUserimg).asBitmap().into(mPic);
         }
 
     }
