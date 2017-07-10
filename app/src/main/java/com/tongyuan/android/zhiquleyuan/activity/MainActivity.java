@@ -257,9 +257,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     }
 
     public void onClick(View view) {
+        clearFragmentStack();
         switch (view.getId()) {
             case R.id.rb_discovery:
-                clearFragmentStack();
+                //clearFragmentStack();
                 rb_discovery.setSelected(true);
                 rb_recoding.setSelected(false);
                 rb_history.setSelected(false);
@@ -268,7 +269,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
                 break;
             case R.id.rb_recoding:
-                clearFragmentStack();
+                //clearFragmentStack();
                 rb_discovery.setSelected(false);
                 rb_recoding.setSelected(true);
                 rb_history.setSelected(false);
@@ -280,7 +281,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
                 break;
             case R.id.rb_history:
-                clearFragmentStack();
+                //clearFragmentStack();
                 rb_discovery.setSelected(false);
                 rb_recoding.setSelected(false);
                 rb_history.setSelected(true);
@@ -298,7 +299,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
                 break;
             case R.id.rb_mine:
-                clearFragmentStack();
+                //clearFragmentStack();
                 rb_discovery.setSelected(false);
                 rb_recoding.setSelected(false);
                 rb_history.setSelected(false);
