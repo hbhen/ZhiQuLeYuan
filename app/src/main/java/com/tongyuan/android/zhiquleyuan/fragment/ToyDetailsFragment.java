@@ -113,7 +113,6 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.i(TAG, "onCreateView: went");
         mToyDetails = inflater.inflate(R.layout.fragment_toy_details, null);
         mListviewtitle = inflater.inflate(R.layout.discovery_recyclerview_listview_title, null);
 

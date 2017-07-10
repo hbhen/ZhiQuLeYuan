@@ -279,9 +279,6 @@ public class ToySelectorFragment extends BaseFragment {
                 if("0".equals(response.body().CODE)) {
                     mCurrentPosition --;
                     toyList.remove(position);
-//                    mPagerAdapter.destroyItem(mViewPageToy, position, mPagerAdapter.mViews.get(position));
-//                    mPagerAdapter.mViews.remove(position);
-                    //mPagerAdapter.notifyDataSetChanged();
                     refreshPagerAdapter();
                     //Log.i(TAG, "onResponse: respnose12" + response.body().toString());
                     //ToastUtil.showToast(getContext(), "确实已经删除了111");
@@ -335,7 +332,7 @@ public class ToySelectorFragment extends BaseFragment {
     public void onToyMessage(MessageEventToy messageEventToy) {
         toyList.clear();
         toyList.addAll(messageEventToy.mQueryToyListResults);
-        Log.i("gengen", "onToyMessage "+toyList.size());
+        //Log.i("gengen", "onToyMessage "+toyList.size());
         if (mPagerAdapter != null) {
             refreshPagerAdapter();
             //mPagerAdapter.notifyDataSetChanged();
@@ -367,7 +364,7 @@ public class ToySelectorFragment extends BaseFragment {
             bean.setBABYIMG(img);
             toyList.add(bean);
 
-            Log.i("gengen", "onGetToyAddMessage notifyDataSetChangeed...");
+            //Log.i("gengen", "onGetToyAddMessage notifyDataSetChangeed...");
             if (mPagerAdapter != null)
                 refreshPagerAdapter();
                 //mPagerAdapter.notifyDataSetChanged();
@@ -382,7 +379,6 @@ public class ToySelectorFragment extends BaseFragment {
 
     private void refreshPagerAdapter() {
         mPagerAdapter = new ToySelectPagerAdapter(getActivity(), toyList);
-
         mPagerAdapter.setOnItemClick(new ToySelectPagerAdapter.OnItemClick() {
             @Override
             public void itemClick(int position) {

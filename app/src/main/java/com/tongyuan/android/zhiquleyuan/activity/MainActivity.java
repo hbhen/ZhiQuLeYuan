@@ -210,6 +210,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         }
     }
 
+    private void clearFragmentStack() {
+//        if(fragmentManager.getBackStackEntryCount()>0)
+            fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+    }
+
     public void showFragment(Fragment fragment) {
         if (fragment instanceof ToyManagerFragment) {
             showFragment(fragment, ToyManagerFragment.class.getSimpleName());
@@ -254,13 +259,16 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.rb_discovery:
+                clearFragmentStack();
                 rb_discovery.setSelected(true);
                 rb_recoding.setSelected(false);
                 rb_history.setSelected(false);
                 rb_mine.setSelected(false);
                 showFragment(DiscoveryFragment.class.getSimpleName());
+
                 break;
             case R.id.rb_recoding:
+                clearFragmentStack();
                 rb_discovery.setSelected(false);
                 rb_recoding.setSelected(true);
                 rb_history.setSelected(false);
@@ -269,8 +277,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                     recodingFragment = new RecodingFragment();
                 }
                 showFragment(recodingFragment, RecodingFragment.class.getSimpleName());
+
                 break;
             case R.id.rb_history:
+                clearFragmentStack();
                 rb_discovery.setSelected(false);
                 rb_recoding.setSelected(false);
                 rb_history.setSelected(true);
@@ -288,6 +298,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
                 break;
             case R.id.rb_mine:
+                clearFragmentStack();
                 rb_discovery.setSelected(false);
                 rb_recoding.setSelected(false);
                 rb_history.setSelected(false);
@@ -296,6 +307,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                     mineFragment = new MineFragment();
                 }
                 showFragment(mineFragment, null);
+
                 break;
             case R.id.rb_toy:
                  /*
