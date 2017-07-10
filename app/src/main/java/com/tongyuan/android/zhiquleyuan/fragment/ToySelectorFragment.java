@@ -89,8 +89,11 @@ public class ToySelectorFragment extends BaseFragment {
         return toyRoot;
     }
 
+
     @Override
-    public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
         int margin = (int) getResources().getDimension(R.dimen.dp_20);
         mViewPageToy.setPageMargin(margin);
         mViewPageToy.setOffscreenPageLimit(10);
@@ -122,13 +125,6 @@ public class ToySelectorFragment extends BaseFragment {
         });
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-
-    }
-
     /**
      * 显示baby的头像
      * @param position pager的位置
@@ -152,25 +148,26 @@ public class ToySelectorFragment extends BaseFragment {
             return;
         }*/
 //        .placeholder(R.drawable.player_cover_default)
-//        if (s.equals("")){
-//            Glide.with(getContext()).load(R.drawable.player_cover_default).asBitmap().into(new BitmapImageViewTarget(mHeadImageView) {
-//                @Override
-//                protected void setResource(Bitmap resource) {
-//                    RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
-//                    roundedBitmapDrawable.setCircular(true);
-//                    mHeadImageView.setImageDrawable(roundedBitmapDrawable);
-//                }
-//            });
-//        }else{
-            Glide.with(getContext()).load(s).asBitmap().into(new BitmapImageViewTarget(mHeadImageView) {
+        if (s.equals("")){
+            Glide.with(getContext()).load(R.drawable.player_cover_default).asBitmap().into(new BitmapImageViewTarget(mHeadImageView) {
                 @Override
                 protected void setResource(Bitmap resource) {
                     RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
                     roundedBitmapDrawable.setCircular(true);
                     mHeadImageView.setImageDrawable(roundedBitmapDrawable);
+               }
+            });
+        }else{
+
+            Glide.with(mContext).load(s).asBitmap().into(new BitmapImageViewTarget(mHeadImageView) {
+                @Override
+                protected void setResource(Bitmap resource) {
+                    RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(mContext.getResources(), resource);
+                    roundedBitmapDrawable.setCircular(true);
+                    mHeadImageView.setImageDrawable(roundedBitmapDrawable);
                 }
             });
-//        }
+        }
 
     }
 
@@ -297,6 +294,7 @@ public class ToySelectorFragment extends BaseFragment {
 
     //查询单个玩具的信息
     private void QuerySingleToyInfo(String toyid, String toycode, final int position) {
+        mCurrentPosition=position;
         SingleToyInfoREQBean.BODYBean bodyBean = new SingleToyInfoREQBean.BODYBean(toyid, toycode);
         Call<SuperModel<SingleToyInfoRESBean.BODYBean>> singleToyInfoResult = RequestManager.getInstance().getToyDetail(getActivity(), bodyBean);
         singleToyInfoResult.enqueue(new Callback<SuperModel<SingleToyInfoRESBean.BODYBean>>() {
@@ -304,7 +302,7 @@ public class ToySelectorFragment extends BaseFragment {
             public void onResponse(Call<SuperModel<SingleToyInfoRESBean.BODYBean>> call, Response<SuperModel<SingleToyInfoRESBean.BODYBean>> response) {
                 if (response.body().CODE.equals("0")) {
                     MainActivity mainActivity = (MainActivity) getActivity();
-                    mainActivity.getToyDetailsFragment().setData(response.body().BODY, toyList.get(position).getBABYIMG());
+                    mainActivity.getToyDetailsFragment().setData(response.body().BODY, toyList.get(mCurrentPosition).getBABYIMG());
                     showFragment(ToyDetailsFragment.class.getSimpleName());
                 } else {
                     ToastUtil.showToast(getActivity(), response.body().MSG);

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">咿呀</string>
+    <string name="app_name">咿吖</string>
     <string name="explaination">请将摄像头对准玩具说明书首页的二维码,保证二维码放入框内,自动进行扫描.</string>
     <!--这里添加的是我们在布局文件里设置的text的内容,格式是:属性+实际内容-->
     <!--qrcode-->

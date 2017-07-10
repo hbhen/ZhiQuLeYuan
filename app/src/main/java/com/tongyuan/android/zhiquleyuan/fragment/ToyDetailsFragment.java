@@ -340,7 +340,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
             case R.id.tv_fragment_toy_details_unbind:
                 //判断当前的userid是不是ownerid
                 if (!mUserId.equals(mOwnerid)) {
-                    ToastUtil.showToast(getContext(), "您不是该玩具的持有人,不能解绑玩具");
+                    ToastUtil.showToast(mContext, "您不是该玩具的持有人,不能解绑玩具");
                     return;
                 } else {
 
@@ -363,7 +363,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
 
             case R.id.tv_fragment_toy_details_bind:
                 if (!mUserId.equals(mOwnerid)) {
-                    ToastUtil.showToast(getContext(), "您不是该玩具的持有人,不能解绑玩具");
+                    ToastUtil.showToast(mContext, "您不是该玩具的持有人,不能解绑玩具");
                     return;
                 }
                 //TODO showDialog(); 需不需要给用户一个友好的提示,dialog?
@@ -375,12 +375,12 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                 intent.putExtras(bundle);
                 startActivityForResult(intent, BIND_BABYTO_TOY);
 //                startActivity(intent);
-                ToastUtil.showToast(getActivity(), "details  bind");
+                ToastUtil.showToast(mContext, "details  bind");
                 break;
             case R.id.back_btn:
                 MainActivity mainActivity = (MainActivity) getActivity();
                 mainActivity.backToTop();
-                ToastUtil.showToast(getActivity(), "back");
+                ToastUtil.showToast(mContext, "back");
                 break;
         }
 
@@ -526,7 +526,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         super.onHiddenChanged(hidden);
         queryToyHasBindBaby();
 //        checkStateInfo();
-        initView();
+//        initView();
     }
 
     //拉去玩具的状态信息
@@ -642,10 +642,10 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == BIND_BABYTO_TOY && resultCode == 00) {
             queryToyHasBindBaby();
-            initView();
+//            initView();
         } else if (requestCode == UNBIND_BABY && resultCode == 00) {
             queryToyHasBindBaby();
-            initView();
+//            initView();
         }
     }
 }
