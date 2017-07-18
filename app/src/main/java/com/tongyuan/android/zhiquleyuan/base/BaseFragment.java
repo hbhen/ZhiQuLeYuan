@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 
 import com.tongyuan.android.zhiquleyuan.activity.MainActivity;
 
@@ -16,9 +17,23 @@ public class BaseFragment extends Fragment {
     public FragmentActivity mActivity;
     protected Context mContext;
     protected boolean isDestory = false;
+    private static final String STATE_SAVE_IS_HIDDEN = "STATE_SAVE_IS_HIDDEN";
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            boolean isSupportHidden = savedInstanceState.getBoolean(STATE_SAVE_IS_HIDDEN);
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            if (isSupportHidden) {
+                fragmentTransaction.hide(this);
+            } else {
+                fragmentTransaction.show(this);
+
+            }
+            fragmentTransaction.commit();
+
+        }
         //拿到acitivity对象,获得context
         mActivity = getActivity();
         mContext = getActivity().getApplicationContext();
@@ -69,5 +84,11 @@ public class BaseFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         isDestory = true;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(STATE_SAVE_IS_HIDDEN, isHidden());
     }
 }

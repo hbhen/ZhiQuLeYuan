@@ -4,6 +4,7 @@ package com.tongyuan.android.zhiquleyuan.bean;
  * Created by Android on 2017/6/10.
  */
 
+
 public class ControlToyPlayMusicResBean {
     /**
      * code : 0

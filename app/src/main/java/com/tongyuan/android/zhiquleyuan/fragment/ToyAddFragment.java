@@ -1,6 +1,5 @@
 package com.tongyuan.android.zhiquleyuan.fragment;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,10 +7,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
+import com.tongyuan.android.zhiquleyuan.activity.MainActivity;
 import com.tongyuan.android.zhiquleyuan.base.BaseFragment;
 import com.tongyuan.android.zhiquleyuan.bean.AddToyRequestBean;
 import com.tongyuan.android.zhiquleyuan.bean.AddToyResultBean;
@@ -46,10 +48,13 @@ public class ToyAddFragment extends BaseFragment implements View.OnClickListener
     private String mPhoneNum;
     private String mTime;
     private String mToken;
-
+    private final static int REQUEST_CODE = 300;
 
     private static final String TAG = "taf";
     String code;
+    private ImageView mIv_back;
+    private TextView babyName;
+    private ImageView mBabyImg;
 
 
     @Nullable
@@ -64,11 +69,16 @@ public class ToyAddFragment extends BaseFragment implements View.OnClickListener
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         tv_toy_add_blodtext = toyRoot.findViewById(R.id.tv_toy_add_boldtext);
+        mIv_back = (ImageView) toyRoot.findViewById(R.id.iv_fragment_toy_add_back);
+        mBabyImg = (ImageView) toyRoot.findViewById(R.id.iv_fragment_toy_add_babyimg);
+        babyName = (TextView) toyRoot.findViewById(R.id.tv_fragment_toy_add_babyname);
         rl_toy_add_goshopping = (RelativeLayout) toyRoot.findViewById(R.id.rl_toy_add_goshopping);
+
 //        mToySelectorFragment = new ToySelectorFragment();
         initData();
         tv_toy_add_blodtext.setOnClickListener(this);
         rl_toy_add_goshopping.setOnClickListener(this);
+        mIv_back.setOnClickListener(this);
     }
 
 
@@ -89,6 +99,7 @@ public class ToyAddFragment extends BaseFragment implements View.OnClickListener
 
                 //跳转到扫描二维码的界面,进行二维码扫描
                 Intent intent = new Intent();
+                intent.putExtra("flag",1);
                 intent.setClass(getActivity(), CaptureActivity.class);
 //                startActivity(intent);
 
@@ -100,6 +111,12 @@ public class ToyAddFragment extends BaseFragment implements View.OnClickListener
                 ToastUtil.showToast(getActivity(), "商城暂未开通");
 
                 break;
+            case R.id.iv_fragment_toy_add_back:
+                //添加返回栈
+                MainActivity mainActivity = (MainActivity) getActivity();
+                mainActivity.backToTop();
+                ToastUtil.showToast(mContext, "back");
+                break;
             default:
                 break;
         }
@@ -110,8 +127,8 @@ public class ToyAddFragment extends BaseFragment implements View.OnClickListener
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             //返回的二维码解析数据
-            case 300:
-                if (resultCode == Activity.RESULT_OK) {
+            case REQUEST_CODE:
+                if (resultCode == CaptureActivity.RESULT_OK) {
                     code = data.getStringExtra("SCAN_RESULT");
                     //对二维码数据的解析
 //                    SPUtils.putString(getActivity(), "toycode", code);

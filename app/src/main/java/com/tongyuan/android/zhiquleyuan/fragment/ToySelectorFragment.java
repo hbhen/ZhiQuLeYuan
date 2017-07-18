@@ -99,10 +99,10 @@ public class ToySelectorFragment extends BaseFragment {
         mViewPageToy.setOffscreenPageLimit(10);
         Log.i("gengen", "onViewCreated");
 
-        refreshPagerAdapter();
         mViewPageToy.setPageTransformer(true, new ScaleInTransformer());
         mViewPageToy.setCurrentItem(0);
         displayBabyHead(mCurrentPosition);
+        refreshPagerAdapter();
         mViewPageToy.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -130,10 +130,11 @@ public class ToySelectorFragment extends BaseFragment {
      * @param position pager的位置
      */
     private void displayBabyHead(int position) {
-//        if (toyList==null||toyList.size()==0){
-//            return;
-//        }
-        Log.i(TAG, "displayBabyHead: toylist"+toyList.size()+"&&"+toyList.get(position).toString());
+        if (toyList==null||toyList.size()==0){
+            mHeadImageView.setVisibility(View.GONE);
+            return;
+        }
+//        Log.i(TAG, "displayBabyHead: toylist"+toyList.size()+"&&"+toyList.get(position).toString());
         String s = toyList.get(position).getBABYIMG();//获得宝宝的头像
         Log.i(TAG, "displayBabyHead:s"+s);
         /*if (s == null) {
@@ -198,6 +199,7 @@ public class ToySelectorFragment extends BaseFragment {
 
     private void removeToy() {
         if(toyList == null || toyList.size()==0)
+
             return;
         final String deleteId = toyList.get(mCurrentPosition).getID();
         final String deleteCode = toyList.get(mCurrentPosition).getCODE();
@@ -316,6 +318,7 @@ public class ToySelectorFragment extends BaseFragment {
         });
     }
 
+
     /**
      * 思路:在这个页面,要取两个地方的数据,
      * 一/是从mainactivity传过来的mList数据,从list拿到所有的1,玩具的图片2,宝宝的头像3,其他需要的信息.
@@ -324,6 +327,7 @@ public class ToySelectorFragment extends BaseFragment {
      * 本页面,与mainactivity传过来的数据合并,把图片传递到viewpager上,显示出来,点击不同的图片,进入不同的fragment页面(fragment是相同
      * 的,只是传递的数据不同,要在这里做判断.
      */
+
 
     //接收并处理从Mainactivity传过来的数据 (所有的玩具信息
     @Subscribe(threadMode = ThreadMode.POSTING, sticky = true)
@@ -366,6 +370,7 @@ public class ToySelectorFragment extends BaseFragment {
             if (mPagerAdapter != null)
                 refreshPagerAdapter();
                 //mPagerAdapter.notifyDataSetChanged();
+
         }
     }
 
@@ -391,6 +396,7 @@ public class ToySelectorFragment extends BaseFragment {
                 QuerySingleToyInfo(mToyId, toycode, position);
             }
         });
+
         mViewPageToy.setAdapter(mPagerAdapter);
         mViewPageToy.setCurrentItem(mCurrentPosition);
     }

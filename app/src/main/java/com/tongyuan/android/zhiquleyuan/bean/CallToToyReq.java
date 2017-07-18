@@ -65,6 +65,8 @@ public class CallToToyReq {
         private String toyid;
         private String method;
         private String room;
+        private String thirdid;
+
 
         @Override
         public String toString() {
@@ -72,37 +74,15 @@ public class CallToToyReq {
                     "toyid='" + toyid + '\'' +
                     ", method='" + method + '\'' +
                     ", room='" + room + '\'' +
+                    ", thirdid='" + thirdid + '\'' +
                     '}';
         }
 
-        public ParamBean(String toyid, String method, String room) {
+        public ParamBean(String toyid, String method, String room, String thirdid) {
             this.toyid = toyid;
             this.method = method;
             this.room = room;
-        }
-
-        public String getToyid() {
-            return toyid;
-        }
-
-        public void setToyid(String toyid) {
-            this.toyid = toyid;
-        }
-
-        public String getMethod() {
-            return method;
-        }
-
-        public void setMethod(String method) {
-            this.method = method;
-        }
-
-        public String getRoom() {
-            return room;
-        }
-
-        public void setRoom(String room) {
-            this.room = room;
+            this.thirdid = thirdid;
         }
     }
 }

@@ -45,11 +45,10 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-//import com.tongyuan.android.zhiquleyuan.fragment.VideoFragment;
 
 public class MainActivity extends FragmentActivity implements View.OnClickListener {
 
-//    public static int LOGIN_SUCCESS = 00;//默认是没有登录的状态
+    //    public static int LOGIN_SUCCESS = 00;//默认是没有登录的状态
     public static final String TAG = "333333";
     private LinearLayout rb_discovery;
     private LinearLayout rb_recoding;
@@ -70,7 +69,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private String mMainToken;
     private String mMainphoneNum;
     public List<QueryToyResultBean.BODYBean.LSTBean> mList;
-//    public static boolean isLogin = false;
+    //    public static boolean isLogin = false;
 //    private VideoFragment mVideoFragment;
     private CallWaitingConnectFragment mCallWaitingConnectFragment;
     private static final String TAG1 = "88888";
@@ -88,12 +87,15 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         setContentView(R.layout.activity_main);
         StatusBarUtils.setStatusBarLightMode(this, getResources().getColor(R.color.main_top_bg));
 
-        CrashReport.initCrashReport(getApplicationContext(),"4d4412e3f1",true);
+        CrashReport.initCrashReport(getApplicationContext(), "4d4412e3f1", true);
 //        CrashReport.testJavaCrash();
 
         initView();
         initData();
-        initFragment();
+        if (savedInstanceState == null) {
+
+            initFragment();
+        }
         rb_discovery.setSelected(true);
         rb_discovery.setOnClickListener(this);
         rb_recoding.setOnClickListener(this);
@@ -106,11 +108,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     }
 
     private void initData() {
-        Date date = new Date();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-        mCurrentTime = simpleDateFormat.format(date);
+        mCurrentTime = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
         mMainToken = SPUtils.getString(this, "TOKEN", "");
-//        Log.i(TAG, "initData: token" + mMainToken);
         mMainphoneNum = SPUtils.getString(this, "phoneNum", "");
         mList = new ArrayList<QueryToyResultBean.BODYBean.LSTBean>();
 
@@ -131,6 +130,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     }
 
     FragmentManager fragmentManager;
+
     private void showFragment(Fragment f, String name) {
         fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -148,20 +148,20 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         }
 
         }*/
-
         transaction.replace(R.id.fl_fragmentcontainer, f);
-        if(name != null) {
-            if(name.equals(ToyDetailsFragment.class.getSimpleName())) {
+        if (name != null) {
+            if (name.equals(ToyDetailsFragment.class.getSimpleName())) {
                 transaction.addToBackStack(null);
             } else if (name.equals(ToyManagerFragment.class.getSimpleName())) {
                 transaction.addToBackStack(null);
-            } else if(name.equals(ToyAddFragment.class.getSimpleName())) {
+            } else if (name.equals(ToyAddFragment.class.getSimpleName())) {
                 transaction.addToBackStack(null);
             }
         }
-        transaction.commit();
-    }
 
+        transaction.commit();
+
+    }
 
 
     private Fragment currentFragment;
@@ -190,12 +190,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         } else if (name.equals(ToyDetailsFragment.class.getSimpleName())) {
             showFragment(toyDetailsFragment, name);
             currentFragment = toyDetailsFragment;
-        }
-//        else if (name.equals(VideoFragment.class.getSimpleName())) {
-//            showFragment(mVideoFragment, name);
-//            currentFragment = mVideoFragment;
-//        }
-        else if (name.equals(CallWaitingConnectFragment.class.getSimpleName())) {
+        } else if (name.equals(CallWaitingConnectFragment.class.getSimpleName())) {
             showFragment(mCallWaitingConnectFragment, name);
             currentFragment = mCallWaitingConnectFragment;
         }
@@ -203,6 +198,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     }
 
     public void backToTop() {
+
         if (getSupportFragmentManager().popBackStackImmediate()) {
 //            showBackAnimation();
         } else {
@@ -211,8 +207,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     }
 
     private void clearFragmentStack() {
-//        if(fragmentManager.getBackStackEntryCount()>0)
-            fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+// if(fragmentManager.getBackStackEntryCount()>0)
+        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
     public void showFragment(Fragment fragment) {
@@ -221,17 +217,15 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             currentFragment = fragment;
         }
     }
-
-    public void removeFragment(String name) {
-        if (name.equals(ToyDetailsFragment.class.getSimpleName())) {
-            removeFragment(toyDetailsFragment, name);
-        }
-    }
-
-    private void removeFragment(Fragment f, String name) {
-
-    }
-
+//    public void removeFragment(String name) {
+//        if (name.equals(ToyDetailsFragment.class.getSimpleName())) {
+//            removeFragment(toyDetailsFragment, name);
+//        }
+//    }
+//
+//    private void removeFragment(Fragment f, String name) {
+//
+//    }
 
     private void initFragment() {
         //添加五个Fragment对象添加进来
@@ -277,9 +271,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 if (recodingFragment == null) {
                     recodingFragment = new RecodingFragment();
                 }
+
                 showFragment(recodingFragment, RecodingFragment.class.getSimpleName());
 
                 break;
+
             case R.id.rb_history:
                 //clearFragmentStack();
                 rb_discovery.setSelected(false);
@@ -323,13 +319,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 //获取手机的心跳接口,获取最新的token,比较token,如果为空,去登录页,如果不相同 , 也去登录页面.
                 //应该先判断是否登录,再判断是否有玩具
                 mMainToken = SPUtils.getString(this, "TOKEN", "");
-                if (mMainToken==null) {
-                    startActivity(new Intent(getApplicationContext(), ActivityLogin.class));
-                    Log.i(TAG, "onClick: token(mainactivity" + mMainToken);
-                } else {
-                    Log.i(TAG, "onClick: token(mainactivity" + mMainToken);
-                    chargeHasLogin(mMainToken);
-                }
+
+                Log.i(TAG, "onClick: token(mainactivity" + mMainToken);
+                chargeHasLogin(mMainToken);
 
 
                 break;
@@ -353,48 +345,52 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     }
 
     private void chargeHasToy(String token) {
-        if (mList == null || mList.size() == 0) {
-            Retrofit retrofit1 = new Retrofit.Builder()
-                    .baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-            QueryToyInterface queryToyInterface = retrofit1.create(QueryToyInterface.class);
-            QueryToyRequestBean.BODYBean queryToyRequestBody = new QueryToyRequestBean.BODYBean("0", "", "", "-1", "1");
-            QueryToyRequestBean queryToyRequestBean = new QueryToyRequestBean("REQ", "QRYTOYS", mMainphoneNum, mCurrentTime, queryToyRequestBody, "",
-                    token, "1");
-            Gson mainGson = new Gson();
-            String queryToyjson = mainGson.toJson(queryToyRequestBean);
-            Log.i(TAG, "chargeHasToy: " + queryToyjson);
-            Call<QueryToyResultBean> toyResult = queryToyInterface.getToyResult(queryToyjson);
-            toyResult.enqueue(new Callback<QueryToyResultBean>() {
-                @Override
-                public void onResponse(Call<QueryToyResultBean> call, Response<QueryToyResultBean> response) {
-                    //只有list有想要的数据,所以只传list就行
-                    mList = response.body().getBODY().getLST();
-                    //Log.i(TAG, "MainActivity+onResponse:list1" + mList.toString());
-                    //Log.i("gengen", "MainActivity+onResponse:list1" + mList.toString());
+
+//        if (mList == null || mList.size() == 0) {
+        Retrofit retrofit1 = new Retrofit.Builder()
+                .baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        QueryToyInterface queryToyInterface = retrofit1.create(QueryToyInterface.class);
+        QueryToyRequestBean.BODYBean queryToyRequestBody = new QueryToyRequestBean.BODYBean("0", "", "", "-1", "1");
+        QueryToyRequestBean queryToyRequestBean = new QueryToyRequestBean("REQ", "QRYTOYS", mMainphoneNum, mCurrentTime, queryToyRequestBody, "",
+                token, "1");
+        Gson mainGson = new Gson();
+        String queryToyjson = mainGson.toJson(queryToyRequestBean);
+        Log.i(TAG, "chargeHasToy: " + queryToyjson);
+        Call<QueryToyResultBean> toyResult = queryToyInterface.getToyResult(queryToyjson);
+        toyResult.enqueue(new Callback<QueryToyResultBean>() {
+            @Override
+            public void onResponse(Call<QueryToyResultBean> call, Response<QueryToyResultBean> response) {
+                //只有list有想要的数据,所以只传list就行
+                mList = response.body().getBODY().getLST();
+                //Log.i(TAG, "MainActivity+onResponse:list1" + mList.toString());
+                //Log.i("gengen", "MainActivity+onResponse:list1" + mList.toString());
+                if (mList != null) {
                     showDifferentToyFragment(mList);
                 }
+            }
 
-                @Override
-                public void onFailure(Call<QueryToyResultBean> call, Throwable t) {
-                    ToastUtil.showToast(getApplicationContext(), "失败,网络异常");
-                }
-            });
-        } else {
-            showFragment(ToySelectorFragment.class.getSimpleName());
-        }
+            @Override
+            public void onFailure(Call<QueryToyResultBean> call, Throwable t) {
+                ToastUtil.showToast(getApplicationContext(), "失败,网络异常");
+            }
+        });
+//        }
 
     }
 
     private void showDifferentToyFragment(List<QueryToyResultBean.BODYBean.LSTBean> lst) {
-        if (lst !=null) {
+        if (lst.size() != 0) {
             EventBus.getDefault().postSticky(new MessageEventToy(lst));
             //不为空,去玩具选择页面
             showFragment(ToySelectorFragment.class.getSimpleName());
         } else {
+
             //为空,去玩具添加页面
+
             showFragment(ToyAddFragment.class.getSimpleName());
+
         }
     }
 

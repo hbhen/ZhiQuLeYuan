@@ -1,5 +1,6 @@
 package com.tongyuan.android.zhiquleyuan.interf;
 
+import com.tongyuan.android.zhiquleyuan.bean.AddInCollectionResBean;
 import com.tongyuan.android.zhiquleyuan.bean.AddMemberToGroupReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.AddRecordingResBean;
 import com.tongyuan.android.zhiquleyuan.bean.AddToyResultBean;
@@ -34,6 +35,7 @@ import com.tongyuan.android.zhiquleyuan.bean.QueryPlayingMusicResBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryRecordingResBean;
 import com.tongyuan.android.zhiquleyuan.bean.QuerySingleUserInfoReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryToyMemberReSBean;
+import com.tongyuan.android.zhiquleyuan.bean.SearchResBean;
 import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoRESBean;
 import com.tongyuan.android.zhiquleyuan.bean.UnbindBabyToToyResBean;
 import com.tongyuan.android.zhiquleyuan.bean.UserInfoResBean;
@@ -147,7 +149,7 @@ public interface AllInterface {
     @GET("busi")
     Call<SuperModel<LocalPlayApplyResBean>> LOCAL_PLAY_APPLY_RES_BEAN_CALL(@Query("params") String params);
 
-    //通话控制  3.4.5
+    //通话控制  3.4.51
     @GET("jpush")
     Call<CallToToyRes> CALL_TO_TOY_RES_CALL(@Query("params") String params);
 
@@ -227,4 +229,12 @@ public interface AllInterface {
     //3.4.47 玩具重置(恢复未激活状态,解散群等) 管理员删除
     @GET("busi")
     Call<SuperModel<DeleteToyFromPowerUserResBean.BODYBean>> DELETE_TOY_FROM_POWER_USER_RES_BEAN_CALL(@Query("params") String params);
+
+    //3.4.32 加入收藏
+    @GET("busi")
+    Call<AddInCollectionResBean> ADDINCOLLECTION_RES_BEAN_CALL (@Query("params") String params);
+
+    //3.4.31 检索资源
+    @GET("busi")
+    Call<SearchResBean> SEARCH_RES_BEAN_CALL (@Query("params") String params);
 }

@@ -111,7 +111,8 @@ public class MyCollectionActivity extends AppCompatActivity implements View.OnCl
                     mSwipeListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                            //TODO list取不到
+//                            MyPlayActivity.launch(getApplicationContext(),lst,position);
                             ToastUtil.showToast(getApplicationContext(), "点击的是:" + position);
                         }
                     });

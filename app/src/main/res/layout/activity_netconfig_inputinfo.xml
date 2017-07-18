@@ -50,6 +50,7 @@
             android:textSize="@dimen/sp_16"/>
 
         <EditText
+            android:background="@null"
             android:id="@+id/et_setwlanname"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_40"
@@ -82,6 +83,7 @@
             android:textSize="@dimen/sp_16"/>
 
         <EditText
+            android:background="@null"
             android:id="@+id/et_setwlan"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_40"

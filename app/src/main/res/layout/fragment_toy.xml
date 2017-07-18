@@ -70,7 +70,7 @@
             android:background="@drawable/babyimagebackground_3x"
             android:scaleType="centerInside"
             android:src="@drawable/player_cover_default"
-            android:visibility="visible"/>
+            android:visibility="gone"/>
     </FrameLayout>
 
 
