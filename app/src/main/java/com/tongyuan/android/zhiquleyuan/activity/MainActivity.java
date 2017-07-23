@@ -137,10 +137,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
     }
 
-    FragmentManager fragmentManager;
-
     private void showFragment(Fragment f, String name) {
-        fragmentManager = getSupportFragmentManager();
+        FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         /*List<Fragment> fragmentList = fragmentManager.getFragments();
         if (fragmentList != null) {
