@@ -95,18 +95,21 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
     private String mUserFlag;
     private String mBabyimgString;
     private String mBabynameString;
+    private int toyId;
+    private int tvId;
 
-public static void launch(Context context, String babyimgString, String babynameString, String roomid,  String token, String toyId){
-    Intent it = new Intent(context, VideoActivity.class);
-    it.putExtra("babyimgString",babyimgString);
-    it.putExtra("babynameString",babynameString);
-    it.putExtra("roomid",roomid);
-    it.putExtra("token",token);
-    it.putExtra("toyId",toyId);
-    it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-    context.startActivity(it);
+    public static void launch(Context context, String babyimgString, String babynameString, String roomid, String token, String toyId, String tvId) {
+        Intent it = new Intent(context, VideoActivity.class);
+        it.putExtra("babyimgString", babyimgString);
+        it.putExtra("babynameString", babynameString);
+        it.putExtra("roomid", roomid);
+        it.putExtra("token", token);
+        it.putExtra("toyId", toyId);
+        it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(it);
 
-}
+    }
+
     @Override
     protected void onCreate(Bundle arguments) {
         super.onCreate(arguments);
@@ -156,26 +159,28 @@ public static void launch(Context context, String babyimgString, String babyname
         Intent intent = getIntent();
 
         mBabyimgString = intent.getStringExtra("babyimgString");
-        mBabynameString= intent.getStringExtra("babynameString");
+        mBabynameString = intent.getStringExtra("babynameString");
         mRoomid = intent.getStringExtra("roomid");
         mToken = intent.getStringExtra("token");
-        mToyid= intent.getStringExtra("toyId");
-        if (mBabyimgString.equals("")){
+        mToyid = intent.getStringExtra("toyId");
+        if (mBabyimgString.equals("")) {
             Glide.with(this).load(R.mipmap.default_babyimage).asBitmap().centerCrop().into(new BitmapImageViewTarget(mBabyImg) {
                 @Override
                 protected void setResource(Bitmap resource) {
 
-                    RoundedBitmapDrawable mRoundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getApplicationContext().getResources(), resource);
+                    RoundedBitmapDrawable mRoundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getApplicationContext().getResources(),
+                            resource);
                     mRoundedBitmapDrawable.setCircular(true);
                     mBabyImg.setImageDrawable(mRoundedBitmapDrawable);
                 }
             });
-        }else{
+        } else {
             Glide.with(this).load(mBabyimgString).asBitmap().centerCrop().into(new BitmapImageViewTarget(mBabyImg) {
                 @Override
                 protected void setResource(Bitmap resource) {
 
-                    RoundedBitmapDrawable mRoundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getApplicationContext().getResources(), resource);
+                    RoundedBitmapDrawable mRoundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getApplicationContext().getResources(),
+                            resource);
                     mRoundedBitmapDrawable.setCircular(true);
                     mBabyImg.setImageDrawable(mRoundedBitmapDrawable);
                 }
@@ -251,7 +256,9 @@ public static void launch(Context context, String babyimgString, String babyname
         Session.getInstance().setWebHttpServerAddress(ip + ":" + port);
         mUserFlag = "phone";
         Session.getInstance().switchCamera(usefront);
+
 //        Session.getInstance().setCameraQuality(_checkHQ.isChecked());
+
         Session.getInstance().setLoudSpeaker(true);
         Session.getInstance().setCameraQuality(true);
 
@@ -283,6 +290,7 @@ public static void launch(Context context, String babyimgString, String babyname
 
 //                Session.getInstance().LeaveMeeting();
 //                showFragment(ToyDetailsFragment.class.getSimpleName());
+
                 Stop();
                 StopCallServer();
                 finish();
@@ -292,6 +300,7 @@ public static void launch(Context context, String babyimgString, String babyname
                 ToastUtil.showToast(this, "不看视频");
 //                Session.getInstance().unplayVideo(_watchingPeerID, 0);
                 //Session.getInstance().unwatchOtherVideo(_watchingPeerID,0);
+
                 Session.getInstance().PlayVideo(_myPeerID, false, mMy_video, 0, 0, 1, 1, 0, false, 1, 0);
 
 //                if (isShowVideo) {
@@ -344,7 +353,9 @@ public static void launch(Context context, String babyimgString, String babyname
                     mVolumeInt = mVolumeInt - 1;
                     if (mVolumeInt < 0) {
                         mVolumeInt = 0;
+
                     }
+
 //                    mSeekBar.setProgress(mVolumeInt);
 //                    int secondaryProgress = mSeekBar.getSecondaryProgress();
 //                    secondaryProgress = mVolumeInt;
@@ -360,7 +371,9 @@ public static void launch(Context context, String babyimgString, String babyname
             default:
 
                 break;
+
         }
+
     }
 
     private void pushValueToToy(String volume) {
@@ -393,7 +406,6 @@ public static void launch(Context context, String babyimgString, String babyname
             }
         });
 
-
     }
 
     private void seeMe() {
@@ -411,6 +423,7 @@ public static void launch(Context context, String babyimgString, String babyname
             _sendingVideo = false;
 
         }
+
     }
 
     private void seeYou() {
@@ -480,11 +493,13 @@ public static void launch(Context context, String babyimgString, String babyname
         MeetingUser user = Session.getInstance().getM_thisUserMgr().getUser(peerId);
         String name = user.getName();
         if (name.equals("toy")) {
+            toyId = peerId;
             seeYou();
-
         }
         if (name.equals("tv")) {
+            tvId = peerId;
             seeYou();
+//            Session.getInstance().PlayVideo(toyId, true, mMy_video, 0, 0, 1, 1, 0, false, 1, 0);
         }
     }
 
@@ -622,7 +637,7 @@ public static void launch(Context context, String babyimgString, String babyname
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
-        CallToToyReq.ParamBean paramBean = new CallToToyReq.ParamBean(mToyid, "2", mRoomid);
+        CallToToyReq.ParamBean paramBean = new CallToToyReq.ParamBean(mToyid, "2", mRoomid, "");
         CallToToyReq callToToyReq = new CallToToyReq("contact_toy", paramBean, mToken);
         Gson gson = new Gson();
         String s = gson.toJson(callToToyReq);

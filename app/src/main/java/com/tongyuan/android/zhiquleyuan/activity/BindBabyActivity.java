@@ -42,6 +42,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class BindBabyActivity extends AppCompatActivity implements View.OnClickListener {
 
+    public static  final int RESULT_OK=00;
     private String mBabyId;
     private ListView mListview_bindbaby;
     private Button mButton_confirm;

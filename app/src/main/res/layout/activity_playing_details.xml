@@ -8,17 +8,15 @@
     <RelativeLayout
         android:id="@+id/rl_play_details_title"
         android:layout_width="match_parent"
-        android:layout_height="33dp"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal">
+        android:layout_height="@dimen/dp_44">
 
         <ImageView
             android:id="@+id/player_back"
             android:layout_width="10dp"
-            android:layout_height="21dp"
+            android:layout_height="match_parent"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
-            android:background="@drawable/arrow_left"/>
+            android:src="@drawable/arrow_left"/>
 
         <TextView
             android:id="@+id/player_details_name"
@@ -118,7 +116,7 @@
         android:layout_marginTop="30dp"
         android:background="@drawable/player_cover_bg"
         android:scaleType="centerCrop"
-        android:src="@mipmap/ic_launcher"/>
+        android:src="@drawable/player_cover_default"/>
 
     <ImageView
         android:id="@+id/player_lighting"

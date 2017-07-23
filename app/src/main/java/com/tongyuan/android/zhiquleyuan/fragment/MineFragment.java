@@ -91,11 +91,9 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
         View mineRoot = inflater.inflate(R.layout.fragment_mine, null);
 
 
-
         return mineRoot;
 
     }
-
 
 
     @Override
@@ -145,6 +143,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
 
         Log.i("tag", "onActivityCreated: went");
     }
+
     private void initData() {
         mToken = SPUtils.getString(getContext(), "TOKEN", "");
         mPhoneNum = SPUtils.getString(getContext(), "phoneNum", "");
@@ -154,6 +153,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
         Log.i(TAG, "initData: mUserimg " + mUserimg);
 
     }
+
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
@@ -168,35 +168,6 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
         Log.i("tag", "onStart: went");
     }
 
-//    @Override
-//    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-//        super.onViewCreated(view, savedInstanceState);
-//        mTv_fragment_mine_desc = (TextView) getActivity().findViewById(R.id.tv_fragment_mine_desc);//登录后的描述信息
-//        mMineTitle = (TextView) getActivity().findViewById(R.id.tv_fragment_mine_title);//点击登录
-//
-//        myBaby = (LinearLayout) getActivity().findViewById(R.id.ll_fragment_mine_baby);
-//        myCollection = (LinearLayout) getActivity().findViewById(R.id.ll_fragment_mine_collection);
-//        myPlay = (LinearLayout) getActivity().findViewById(R.id.ll_fragment_mine_play);
-//        myPush = (LinearLayout) getActivity().findViewById(R.id.ll_fragment_mine_push);
-//        mySuggestion = (LinearLayout) getActivity().findViewById(R.id.ll_fragment_mine_suggestion);
-//        myUpdate = (LinearLayout) getActivity().findViewById(R.id.ll_fragment_mine_update);
-//        myAbout = (LinearLayout) getActivity().findViewById(R.id.ll_fragment_mine_about);
-//        mLogin = (RelativeLayout) getActivity().findViewById(R.id.rl_fragment_mine_clicklogin);
-//
-//        mPic = (ImageView) getActivity().findViewById(R.id.iv_fragment_mine);//登录后显示的头像
-//        mMyLogout = (LinearLayout) getActivity().findViewById(R.id.ll_fragment_mine_logout);
-//        mPic.setOnClickListener(this);
-//        myBaby.setOnClickListener(this);
-//        myCollection.setOnClickListener(this);
-//        myPlay.setOnClickListener(this);
-//        myPush.setOnClickListener(this);
-//        mySuggestion.setOnClickListener(this);
-//        myUpdate.setOnClickListener(this);
-//        myAbout.setOnClickListener(this);
-//        mLogin.setOnClickListener(this);
-//        mMyLogout.setOnClickListener(this);
-//    }
-
     @Override
     public void onClick(View view) {
         int id = view.getId();
@@ -206,12 +177,9 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                 mToken = SPUtils.getString(getActivity(), "TOKEN", "");
                 Log.i(TAG, "onClick: mToken undelelte2" + mToken);
                 if (mToken.equals("")) {
-
                     mIntent.setClass(getActivity(), ActivityLogin.class);
                     getActivity().startActivityForResult(mIntent, MINELOGIN);
-
                     ToastUtil.showToast(getActivity(), "进入登录信息页面");
-
                 } else {
                     mIntent.setClass(getContext(), SetUserInfoActivity.class);
                     startActivity(mIntent);
@@ -219,11 +187,20 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                 }
                 break;
             case R.id.ll_fragment_mine_baby:
-                getListInfo();
+                if (!mToken.equals("")) {
+                    getListInfo();
+                } else {
+                    ToastUtil.showToast(getActivity(), "您当前没有登录");
+                }
+
                 break;
             case R.id.ll_fragment_mine_collection:
-                mIntent.setClass(getActivity(), MyCollectionActivity.class);
-                startActivity(mIntent);
+                if (!mToken.equals("")) {
+                    mIntent.setClass(getActivity(), MyCollectionActivity.class);
+                    startActivity(mIntent);
+                } else {
+                    ToastUtil.showToast(getActivity(), "您当前没有登录");
+                }
                 break;
             case R.id.ll_fragment_mine_play:
                 if (!mToken.equals("")) {
@@ -278,7 +255,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                         Log.i(TAG, "onClick: mToken delelte" + mToken);
 //                        Log.i(TAG, "onClick: token" + SPUtils.getString(getActivity(), "TOKEN", ""));
                         mMineTitle.setText("点击登录");
-                        Glide.with(getActivity()).load(R.mipmap.ic_launcher).asBitmap().into(mPic);
+                        Glide.with(getActivity()).load(R.drawable.player_cover_default).asBitmap().into(mPic);
                         mMyLogout.setVisibility(View.GONE);
                         ToastUtil.showToast(getContext(), "sure");
                     }
@@ -316,20 +293,16 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void getListInfo() {
-
         Date date = new Date();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         String time = simpleDateFormat.format(date);
-
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
-
         QueryBabyListRequest.BODYBean queryBabyListBody = new QueryBabyListRequest.BODYBean("10", "1");
         QueryBabyListRequest queryBabyListRequest = new QueryBabyListRequest("REQ", "QMYB", mPhoneNum, time, queryBabyListBody, "", mToken, "1");
-
         Gson gson = new Gson();
         String babyListJson = gson.toJson(queryBabyListRequest);
         Call<QueryBabyListResult> babyListResult = allInterface.getBabyListResult(babyListJson);
@@ -340,15 +313,12 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                 mBody = response.body();
                 Log.i("111", "listResponse: " + listResponse);
                 mLst = response.body().getBODY().getLST();
-
                 if (response.body().getCODE().equals("0")) {
                     if (mLst.size() != 0) {
                         ToastUtil.showToast(getActivity(), "进入宝宝信息里列表");
-
                         mIntent.setClass(getActivity(), BabyInfoListActivity.class);
                         startActivity(mIntent);
                     } else {
-
                         mIntent.setClass(getActivity(), MyBabyActivity.class);
                         startActivity(mIntent);
                     }
@@ -400,17 +370,23 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
         Log.i(TAG, "onClick: mToken delelte3" + mToken);
         if (!mToken.equals("")) {
             mUsername = SPUtils.getString(getActivity(), "username", "");//这个拿到的值是用户的id
+            mPhoneNum = SPUtils.getString(getActivity(), "phoneNum", "");
             Log.i(TAG, "showDifferentLoginInfo: " + mUsername);
             mUserimg = SPUtils.getString(getActivity(), "userimg", "");
             mMyLogout.setVisibility(View.VISIBLE);
-            mMineTitle.setText(mUsername);
-            mTv_fragment_mine_desc.setText("设置用户信息");
-            Glide.with(getActivity()).load(mUserimg).asBitmap().into(mPic);
+            if (mUsername.equals("")) {
+                mMineTitle.setText("设置用户名");
+            } else {
+
+                mMineTitle.setText(mUsername);
+            }
+            mTv_fragment_mine_desc.setText(mPhoneNum);
+            Glide.with(getActivity()).load(mUserimg).placeholder(R.drawable.player_cover_default).into(mPic);
         } else {
             mMyLogout.setVisibility(View.GONE);
             mMineTitle.setText("点击登录");
             mTv_fragment_mine_desc.setText("登录后设置机主的基本信息");
-            Glide.with(getActivity()).load(R.mipmap.ic_launcher).asBitmap().into(mPic);
+            Glide.with(getActivity()).load(R.drawable.player_cover_default).asBitmap().into(mPic);
 
         }
     }

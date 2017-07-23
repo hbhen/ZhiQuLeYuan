@@ -89,17 +89,20 @@ public class ToySelectorFragment extends BaseFragment {
         return toyRoot;
     }
 
+
     @Override
-    public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
         int margin = (int) getResources().getDimension(R.dimen.dp_20);
         mViewPageToy.setPageMargin(margin);
         mViewPageToy.setOffscreenPageLimit(10);
         Log.i("gengen", "onViewCreated");
 
-        refreshPagerAdapter();
         mViewPageToy.setPageTransformer(true, new ScaleInTransformer());
         mViewPageToy.setCurrentItem(0);
         displayBabyHead(mCurrentPosition);
+        refreshPagerAdapter();
         mViewPageToy.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -112,7 +115,7 @@ public class ToySelectorFragment extends BaseFragment {
                 Log.i("gengen", "onPageSelected "+position);
                 //获得宝宝的头像 , 滑到当前的position展示当前的玩具的宝宝,如果当前的玩具没有绑定宝宝,那么就让他显示默认的baby头像
                 //宝宝的头像从哪来?怎么确定宝宝的头像和玩具的关系
-                displayBabyHead(position);
+                displayBabyHead(mCurrentPosition);
             }
 
             @Override
@@ -122,22 +125,18 @@ public class ToySelectorFragment extends BaseFragment {
         });
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-
-    }
-
     /**
      * 显示baby的头像
      * @param position pager的位置
      */
     private void displayBabyHead(int position) {
         if (toyList==null||toyList.size()==0){
+            mHeadImageView.setVisibility(View.GONE);
             return;
         }
+//        Log.i(TAG, "displayBabyHead: toylist"+toyList.size()+"&&"+toyList.get(position).toString());
         String s = toyList.get(position).getBABYIMG();//获得宝宝的头像
+        Log.i(TAG, "displayBabyHead:s"+s);
         /*if (s == null) {
             Glide.with(getContext()).load(R.drawable.ic_launcher).asBitmap().into(new BitmapImageViewTarget(mHeadImageView) {
                 @Override
@@ -149,11 +148,22 @@ public class ToySelectorFragment extends BaseFragment {
             });
             return;
         }*/
+//        .placeholder(R.drawable.player_cover_default)
         if (s.equals("")){
-            Glide.with(getContext()).load(s).asBitmap().placeholder(R.drawable.player_cover_default).into(new BitmapImageViewTarget(mHeadImageView) {
+            Glide.with(getContext()).load(R.drawable.player_cover_default).asBitmap().into(new BitmapImageViewTarget(mHeadImageView) {
                 @Override
                 protected void setResource(Bitmap resource) {
                     RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
+                    roundedBitmapDrawable.setCircular(true);
+                    mHeadImageView.setImageDrawable(roundedBitmapDrawable);
+               }
+            });
+        }else{
+
+            Glide.with(mContext).load(s).asBitmap().into(new BitmapImageViewTarget(mHeadImageView) {
+                @Override
+                protected void setResource(Bitmap resource) {
+                    RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(mContext.getResources(), resource);
                     roundedBitmapDrawable.setCircular(true);
                     mHeadImageView.setImageDrawable(roundedBitmapDrawable);
                 }
@@ -189,6 +199,7 @@ public class ToySelectorFragment extends BaseFragment {
 
     private void removeToy() {
         if(toyList == null || toyList.size()==0)
+
             return;
         final String deleteId = toyList.get(mCurrentPosition).getID();
         final String deleteCode = toyList.get(mCurrentPosition).getCODE();
@@ -285,6 +296,7 @@ public class ToySelectorFragment extends BaseFragment {
 
     //查询单个玩具的信息
     private void QuerySingleToyInfo(String toyid, String toycode, final int position) {
+        mCurrentPosition=position;
         SingleToyInfoREQBean.BODYBean bodyBean = new SingleToyInfoREQBean.BODYBean(toyid, toycode);
         Call<SuperModel<SingleToyInfoRESBean.BODYBean>> singleToyInfoResult = RequestManager.getInstance().getToyDetail(getActivity(), bodyBean);
         singleToyInfoResult.enqueue(new Callback<SuperModel<SingleToyInfoRESBean.BODYBean>>() {
@@ -292,7 +304,7 @@ public class ToySelectorFragment extends BaseFragment {
             public void onResponse(Call<SuperModel<SingleToyInfoRESBean.BODYBean>> call, Response<SuperModel<SingleToyInfoRESBean.BODYBean>> response) {
                 if (response.body().CODE.equals("0")) {
                     MainActivity mainActivity = (MainActivity) getActivity();
-                    mainActivity.getToyDetailsFragment().setData(response.body().BODY, toyList.get(position).getBABYIMG());
+                    mainActivity.getToyDetailsFragment().setData(response.body().BODY, toyList.get(mCurrentPosition).getBABYIMG());
                     showFragment(ToyDetailsFragment.class.getSimpleName());
                 } else {
                     ToastUtil.showToast(getActivity(), response.body().MSG);
@@ -306,6 +318,7 @@ public class ToySelectorFragment extends BaseFragment {
         });
     }
 
+
     /**
      * 思路:在这个页面,要取两个地方的数据,
      * 一/是从mainactivity传过来的mList数据,从list拿到所有的1,玩具的图片2,宝宝的头像3,其他需要的信息.
@@ -314,6 +327,7 @@ public class ToySelectorFragment extends BaseFragment {
      * 本页面,与mainactivity传过来的数据合并,把图片传递到viewpager上,显示出来,点击不同的图片,进入不同的fragment页面(fragment是相同
      * 的,只是传递的数据不同,要在这里做判断.
      */
+
 
     //接收并处理从Mainactivity传过来的数据 (所有的玩具信息
     @Subscribe(threadMode = ThreadMode.POSTING, sticky = true)
@@ -356,6 +370,7 @@ public class ToySelectorFragment extends BaseFragment {
             if (mPagerAdapter != null)
                 refreshPagerAdapter();
                 //mPagerAdapter.notifyDataSetChanged();
+
         }
     }
 
@@ -381,6 +396,7 @@ public class ToySelectorFragment extends BaseFragment {
                 QuerySingleToyInfo(mToyId, toycode, position);
             }
         });
+
         mViewPageToy.setAdapter(mPagerAdapter);
         mViewPageToy.setCurrentItem(mCurrentPosition);
     }

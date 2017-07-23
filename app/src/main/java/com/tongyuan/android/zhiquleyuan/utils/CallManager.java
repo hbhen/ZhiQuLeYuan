@@ -28,7 +28,7 @@ public class CallManager {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
-        CallToToyReq.ParamBean param = new CallToToyReq.ParamBean(toyId, "1", "");
+        CallToToyReq.ParamBean param = new CallToToyReq.ParamBean(toyId, "1", "","");
         CallToToyReq callToToyReq = new CallToToyReq("contact_toy", param, token);
         Gson gson = new Gson();
         String s = gson.toJson(callToToyReq);
@@ -59,7 +59,7 @@ public class CallManager {
 //                context.startActivity(new Intent(context, VideoActivity.class).putExtras(bundle));
                 String babyname = SPUtils.getString(context, "babyname", "");
                 String babyimg = SPUtils.getString(context, "babyimg", "");
-                VideoActivity.launch(context,babyimg,babyname,roomId,token,toyId);
+                VideoActivity.launch(context,babyimg,babyname,roomId,token,toyId,null);
             }
 
             @Override

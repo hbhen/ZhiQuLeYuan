@@ -53,6 +53,7 @@ import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeReader;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.tongyuan.android.zhiquleyuan.R;
+import com.tongyuan.android.zhiquleyuan.activity.ThirdVideoActivity;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 import com.tongyuan.android.zhiquleyuan.zxing.camera.CameraManager;
 import com.tongyuan.android.zhiquleyuan.zxing.decode.BeepManager;
@@ -79,7 +80,7 @@ import java.util.Vector;
  * @author dswitkin@google.com (Daniel Switkin)
  * @author Sean Owen
  */
-public final class CaptureActivity extends Activity implements SurfaceHolder.Callback, View.OnClickListener {
+public class CaptureActivity extends Activity implements SurfaceHolder.Callback, View.OnClickListener {
 
     private static final String TAG = CaptureActivity.class.getSimpleName();
 
@@ -106,10 +107,20 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     private TextView btnFlash;
     private TextView btnEncode;
     private boolean isFlash;
+    private int mFlag;
+
+    private Intent mIntent;
+    private String mBabyimgString;
+    private String mBabynameString;
+    private String mRoomid;
+    private String mToken;
+    private String mToyId;
+
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
+
 //            case R.id.qrcode_btn_back:
 //                finish();
 //                break;
@@ -176,7 +187,22 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.capture);
+        mIntent = getIntent();
+        mFlag = mIntent.getIntExtra("flag", 0);
+        if (mFlag==2){
+            Bundle bundle = mIntent.getExtras();
+            mBabyimgString = bundle.getString("babyimgString");
+            mBabynameString = bundle.getString("babynameString");
+            mRoomid = bundle.getString("roomid");
+            mToken = bundle.getString("token");
+            mToyId = bundle.getString("toyId");
+            Log.i("captureactivity", "onClick111: --"+mBabyimgString+"--");
+            Log.i("captureactivity", "onClick111: --"+mBabynameString+"--");
+            Log.i("captureactivity", "onClick111: --"+mRoomid+"--");
+            Log.i("captureactivity", "onClick111: --"+mToken+"--");
+            Log.i("captureactivity", "onClick111: --"+mToyId+"--");
 
+        }
         Util.currentActivity = this;
         CameraManager.init(getApplication());
         viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);
@@ -236,6 +262,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
                 // to the calling activity.
                 source = Source.NATIVE_APP_INTENT;
                 decodeFormats = DecodeFormatManager.parseDecodeFormats(intent);
+
             } else if (dataString != null && dataString.contains(PRODUCT_SEARCH_URL_PREFIX)
                     && dataString.contains(PRODUCT_SEARCH_URL_SUFFIX)) {
                 // Scan only products and send the result to mobile Product
@@ -455,7 +482,10 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
             intent.putExtra(Intents.Scan.RESULT_FORMAT, rawResult.getBarcodeFormat().toString());
             Message message = Message.obtain(handler, R.id.return_scan_result);
             message.obj = intent;
+            Log.i("handler", "handleDecodeExternally: " + message.obj.toString());
+            Log.i("handler", "handleDecodeExternally: " + rawResult.toString());
             handler.sendMessageDelayed(message, INTENT_RESULT_DURATION);
+
         } else if (source == Source.PRODUCT_SEARCH_LINK) {
             // Reformulate the URL which triggered us into a query, so that the
             // request goes to the same
@@ -475,6 +505,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
             // resultHandler.getDisplayContents()
             // .toString());
             handler.sendMessageDelayed(message, INTENT_RESULT_DURATION);
+
         }
     }
 
@@ -496,13 +527,25 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
             return;
         }
         if (handler == null) {
-            handler = new CaptureActivityHandler(this, decodeFormats, characterSet);
+            if (mFlag == 2) {
+
+
+                Log.i("captureactivity", "onClick11: --"+mBabyimgString+"--");
+                Log.i("captureactivity", "onClick11: --"+mBabynameString+"--");
+                Log.i("captureactivity", "onClick11: --"+mRoomid+"--");
+                Log.i("captureactivity", "onClick11: --"+mToken+"--");
+                Log.i("captureactivity", "onClick11: --"+mToyId+"--");
+                handler = new CaptureActivityHandler(this, decodeFormats, characterSet, mFlag,mBabyimgString,mBabynameString,mRoomid,mToken,mToyId);
+            }else{
+                handler = new CaptureActivityHandler(this, decodeFormats, characterSet, mFlag);
+            }
+
         }
     }
 
     private void displayFrameworkBugMessageAndExit() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.app_name));
+        builder.setTitle(getString(R.string.explaination));
         builder.setOnCancelListener(new FinishListener(this));
         builder.show();
     }
@@ -520,7 +563,9 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 
     @Override
     protected void onActivityResult(final int requestCode, int resultCode, final Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+//        super.onActivityResult(requestCode, resultCode, data);
+
+        Log.d("hahahaha", "onActivityResult: __++__++__++__++" + data.toString());
         //返回选择的需要扫描二维码的图片
         if (resultCode == RESULT_OK) {
             //被选择的二维码图片的uri
@@ -534,31 +579,42 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
                         Looper.prepare();
                         Toast.makeText(getApplicationContext(), "图片格式有误", Toast.LENGTH_SHORT).show();
                         Looper.loop();
-                        String recode1 = result.toString();
-                        Toast.makeText(getApplicationContext(), "recode" + recode1, Toast.LENGTH_LONG).show();
-                        Log.i("1111", "recode: " + recode1);
+                        ToastUtil.showToast(getApplicationContext(), "result结果:" + result.toString());
+//                        String recode1 = result.toString();
+//                        Toast.makeText(getApplicationContext(), "recode1" + recode1, Toast.LENGTH_LONG).show();
+//                        Log.i("1111111111", "recode: " + recode1);
                     } else {
                         String recodeFromAdd = result.toString();
-                        Toast.makeText(getApplicationContext(), "recode" + recodeFromAdd, Toast.LENGTH_LONG).show();
-                        Intent data1 = new Intent();
-                        data1.putExtra("SCAN_RESULT", recodeFromAdd);
-                        String text = result.getText();
-                        Log.i("1111", "text: " + text);
-                        ToastUtil.showToast(getApplicationContext(), "recode" + recodeFromAdd);
-                        Log.i("1111", "recode: " + recodeFromAdd);
+                        Toast.makeText(getApplicationContext(), "recode2" + recodeFromAdd, Toast.LENGTH_LONG).show();
+
+//                        String text = result.getText();
+//                        Log.i("1111111111", "text: " + text);
+//                        ToastUtil.showToast(getApplicationContext(), "recode3" + recodeFromAdd);
+//                        Log.i("1111111111", "recode4: " + recodeFromAdd);
+
                         switch (requestCode) {
                             case 300:
                                 // 数据返回，在这里去处理扫码结果
-                                setResult(300, data1);
-//                                Intent intent = new Intent();
-//                                intent.setClass(getApplicationContext(), BindBabyActivity.class);
-//                                startActivity(intent);
+                                Log.i("scan_result______11", "run: " + data.getStringExtra("SCAN_RESULT"));
+                                setResult(RESULT_OK, data);
+                                Intent intent = new Intent();
+                                intent.setClass(getApplicationContext(), ThirdVideoActivity.class);
+                                startActivity(intent);
                                 finish();
                                 break;
                             case 301:
-                                setResult(301, data1);
+                                Log.i("scan_result______22", "run: " + data.getStringExtra("SCAN_RESULT"));
+                                setResult(RESULT_OK, data);
                                 finish();
                                 break;
+                            case 3003:
+                                Log.i("scan_result______33", "run: " + data.getStringExtra("SCAN_RESULT"));
+                                setResult(RESULT_OK, data);
+                                finish();
+                                break;
+                            default:
+                                break;
+
                         }
                     }
                 }
