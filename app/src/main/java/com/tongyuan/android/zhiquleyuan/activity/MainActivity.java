@@ -161,11 +161,14 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         transaction.replace(R.id.fl_fragmentcontainer, f);
         if (name != null) {
             if (name.equals(ToyDetailsFragment.class.getSimpleName())) {
-                transaction.addToBackStack(null);
+                //transaction.addToBackStack(null);
+                fragmentStack.push(f);
             } else if (name.equals(ToyManagerFragment.class.getSimpleName())) {
-                transaction.addToBackStack(null);
+                //transaction.addToBackStack(null);
+                fragmentStack.push(f);
             } else if (name.equals(ToyAddFragment.class.getSimpleName())) {
-                transaction.addToBackStack(null);
+                //transaction.addToBackStack(null);
+                fragmentStack.push(f);
             }
         }
 
