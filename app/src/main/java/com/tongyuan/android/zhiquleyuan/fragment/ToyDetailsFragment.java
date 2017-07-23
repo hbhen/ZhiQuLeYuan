@@ -60,7 +60,6 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static android.app.Activity.RESULT_OK;
 import static com.tongyuan.android.zhiquleyuan.R.id.iv_toy_details_call;
 import static com.tongyuan.android.zhiquleyuan.R.id.tv_fragment_toy_details_babyName;
 
@@ -69,6 +68,7 @@ import static com.tongyuan.android.zhiquleyuan.R.id.tv_fragment_toy_details_baby
  */
 public class ToyDetailsFragment extends BaseFragment implements View.OnClickListener {
 
+    private static final int BIND_BABYTO_TOY = 3001;
     private static final int UNBIND_BABY = 3002;
     public static final int THREE_CALL_PLAY = 3003;
     private View mToyDetails;
@@ -110,7 +110,6 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     private DiscoveryListViewAdapter mLAdapter;
     private View mListviewtitle;
     private String mUserId;
-    private static final int BIND_BABYTO_TOY = 3001;
     private String mBabyid;
     private List<QueryBabyListFromToyIdRes.BODYBean.LSTBean> mLst = new ArrayList<>();
     private String mBabyName;
@@ -264,7 +263,6 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                     mBindToy.setVisibility(View.VISIBLE);
                     mUnbindToy.setVisibility(View.GONE);
                     mTv_fragment_toy_details_babyName.setText(mBabyName);
-                    displayBabyInfo();
                     initView();
                 } else {
                     for (int i = 0; i < mLst.size(); i++) {
@@ -581,14 +579,14 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
 
     }
 
-    /*@Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        queryToyHasBindBaby();
-//        checkStateInfo();
-//        initView();
-
-    }*/
+//    @Override
+//    public void onHiddenChanged(boolean hidden) {
+//        super.onHiddenChanged(hidden);
+//        queryToyHasBindBaby();
+////        checkStateInfo();
+////        initView();
+//
+//    }
 
     //拉去玩具的状态信息
     private void checkStateInfo() {
@@ -701,16 +699,17 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == BIND_BABYTO_TOY && resultCode == RESULT_OK) {
+        if (resultCode==00){
             queryToyHasBindBaby();
-//            initView();
-        } else if (requestCode == UNBIND_BABY && resultCode == RESULT_OK) {
-            queryToyHasBindBaby();
-//            initView();
-        } else if (requestCode == THREE_CALL_PLAY && resultCode == RESULT_OK) {
-            String scan_result = data.getStringExtra("SCAN_RESULT");
-            System.out.println("scan_result------" + scan_result);
-            Log.i("scan_result", "onActivityResult: +scan_result" + scan_result);
         }
+//        if (requestCode == BIND_BABYTO_TOY && resultCode == 00) {
+//            queryToyHasBindBaby();
+//        } else if (requestCode == UNBIND_BABY && resultCode == 00) {
+//            queryToyHasBindBaby();
+//        } else if (requestCode == THREE_CALL_PLAY && resultCode == RESULT_OK) {
+//            String scan_result = data.getStringExtra("SCAN_RESULT");
+//            System.out.println("scan_result------" + scan_result);
+//            Log.i("scan_result", "onActivityResult: +scan_result" + scan_result);
+//        }
     }
 }
