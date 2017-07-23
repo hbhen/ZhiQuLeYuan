@@ -303,6 +303,7 @@ public class ToySelectorFragment extends BaseFragment {
             @Override
             public void onResponse(Call<SuperModel<SingleToyInfoRESBean.BODYBean>> call, Response<SuperModel<SingleToyInfoRESBean.BODYBean>> response) {
                 if (response.body().CODE.equals("0")) {
+                    Log.i(TAG, "onResponse: +toyinfo"+response.body().BODY.toString());
                     MainActivity mainActivity = (MainActivity) getActivity();
                     mainActivity.getToyDetailsFragment().setData(response.body().BODY, toyList.get(mCurrentPosition).getBABYIMG());
                     showFragment(ToyDetailsFragment.class.getSimpleName());

@@ -69,8 +69,7 @@
             android:layout_marginTop="30dp"
             android:background="@drawable/babyimagebackground_3x"
             android:scaleType="centerInside"
-            android:src="@drawable/player_cover_default"
-            android:visibility="gone"/>
+            android:src="@drawable/player_cover_default"/>
     </FrameLayout>
 
 

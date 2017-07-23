@@ -5,18 +5,22 @@
               android:background="#f1f1f1"
               android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
-
+    <RelativeLayout
         android:id="@+id/tb_nodisturb"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="@dimen/dp_44">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:id="@+id/iv_activity_nodisturb_back"
+            android:layout_centerVertical="true"
+            android:layout_width="@dimen/dp_10"
+            android:layout_height="match_parent"
             android:src="@drawable/arrow_left"/>
 
         <TextView
+
+            android:layout_centerInParent="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -25,13 +29,15 @@
             android:textSize="18sp"/>
 
         <TextView
-            android:layout_width="41dp"
-            android:layout_height="20dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_toRightOf="@id/iv_activity_nodisturb_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="完成"
-            android:layout_gravity="right"
-            android:textColor="#ff4511"
-            android:textSize="20sp"/>
-    </android.support.v7.widget.Toolbar>
+            android:textColor="@color/redFont"
+            android:textSize="@dimen/sp_18"/>
+    </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
@@ -112,7 +118,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
         android:layout_marginTop="11dp"
         android:src="@drawable/toy_add_pressed_160"/>
 

@@ -9,6 +9,9 @@ import android.widget.TextView;
 
 import com.suke.widget.SwitchButton;
 import com.tongyuan.android.zhiquleyuan.R;
+import com.tongyuan.android.zhiquleyuan.bean.NodisturbTimeResBean;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,10 +25,15 @@ public class NoDisturbAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private final static int type_troggle = 1;
     private final static int type_date = 2;
     private LayoutInflater mInflater;
+    private List<NodisturbTimeResBean.BODYBean.LSTBean> mLSTBeen;
+    private Context mContext;
 
-    public NoDisturbAdapter(Context context) {
+
+    public NoDisturbAdapter(Context context, List<NodisturbTimeResBean.BODYBean.LSTBean> lst) {
         mInflater = LayoutInflater.from(context);
+        mLSTBeen = lst;
     }
+
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -49,17 +57,17 @@ public class NoDisturbAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public int getItemCount() {
-        return 4;
+        return mLSTBeen.size();
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        if (position % 2 == 0) {
-            return type_troggle;
-        } else {
-            return type_date;
-        }
-    }
+//    @Override
+//    public int getItemViewType(int position) {
+//        if (position % 2 == 0) {
+//            return type_troggle;
+//        } else {
+//            return type_date;
+//        }
+//    }
 
     class DateHolder extends RecyclerView.ViewHolder {
 
@@ -91,4 +99,12 @@ public class NoDisturbAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         }
     }
+
+    public static interface recyclerViewItemClickListener{
+        void onItemClick(View view);
+        void onItemLongClick(View view);
+    }
+
+
+
 }

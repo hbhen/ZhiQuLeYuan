@@ -83,6 +83,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
+        checkToken();
         StatusBarUtils.setStatusBarLightMode(this, getResources().getColor(R.color.main_top_bg));
 
         CrashReport.initCrashReport(getApplicationContext(), "4d4412e3f1", true);
@@ -103,6 +104,17 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         Log.i(TAG1, "mainactivity : onCreate went");
         //请求网络,获得我的录音的文件数据,拿到里面,请求网络数据,需要准备
 
+    }
+
+    private void checkToken() {
+        String token = SPUtils.getString(this, "TOKEN", "");
+        if (token==null){
+            //发送广播,通知,各个控件
+            return;
+        }else{
+            //token不为空,从服务器查询token,两次的token是否一致,一致就显示一种界面,不一致就显示未登录的界面
+
+        }
     }
 
     private void initData() {
