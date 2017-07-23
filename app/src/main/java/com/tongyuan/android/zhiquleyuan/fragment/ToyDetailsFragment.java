@@ -125,7 +125,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         mToyDetails = inflater.inflate(R.layout.fragment_toy_details, null);
         mToyPlayControl = (RelativeLayout) mToyDetails.findViewById(R.id.rl_fragment_toy_playingcontrol);
         mListviewtitle = inflater.inflate(R.layout.discovery_recyclerview_listview_title, null);
-
+        Log.i("timedate", "onCreateView");
 
 //        FrameLayout framelayoutControl =  (FrameLayout) mToyDetails.findViewById(R.id.fl_fragment_toy_details_playcontrol);
         mListviewRecommand = (ListView) mToyDetails.findViewById(R.id.lv_fragment_toy_details_recommand);
@@ -311,33 +311,19 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     }
 
     private void displayBabyInfo() {
-        if (mBabyimg == null || mLst.size() == 0) {
+        Glide.with(mContext).load(mBabyimg).asBitmap().placeholder(R.mipmap.default_babyimage).into(new BitmapImageViewTarget(mIv_fragment_toy_details_babyImg) {
+            @Override
+            protected void setResource(Bitmap resource) {
+                if (isDestroy)
+                    return;
 
-            Glide.with(mContext).load(R.mipmap.default_babyimage).asBitmap().into(new BitmapImageViewTarget(mIv_fragment_toy_details_babyImg) {
-                @Override
-                protected void setResource(Bitmap resource) {
-                    if (isDestory)
-                        return;
-                    RoundedBitmapDrawable mRoundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
-                    mRoundedBitmapDrawable.setCircular(true);
+                RoundedBitmapDrawable mRoundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
+                mRoundedBitmapDrawable.setCircular(true);
+                if(mIv_fragment_toy_details_babyImg != null) {
                     mIv_fragment_toy_details_babyImg.setImageDrawable(mRoundedBitmapDrawable);
                 }
-            });
-
-        } else {
-
-            Glide.with(mContext).load(mBabyimg).asBitmap().into(new BitmapImageViewTarget(mIv_fragment_toy_details_babyImg) {
-                @Override
-                protected void setResource(Bitmap resource) {
-                    if (isDestory)
-                        return;
-                    RoundedBitmapDrawable mRoundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
-                    mRoundedBitmapDrawable.setCircular(true);
-                    mIv_fragment_toy_details_babyImg.setImageDrawable(mRoundedBitmapDrawable);
-                }
-            });
-
-        }
+            }
+        });
     }
 
     @Override
@@ -595,14 +581,14 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
 
     }
 
-    @Override
+    /*@Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         queryToyHasBindBaby();
 //        checkStateInfo();
 //        initView();
 
-    }
+    }*/
 
     //拉去玩具的状态信息
     private void checkStateInfo() {

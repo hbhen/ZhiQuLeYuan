@@ -16,8 +16,14 @@ import com.tongyuan.android.zhiquleyuan.activity.MainActivity;
 public class BaseFragment extends Fragment {
     public FragmentActivity mActivity;
     protected Context mContext;
-    protected boolean isDestory = false;
+    protected boolean isDestroy = false;
     private static final String STATE_SAVE_IS_HIDDEN = "STATE_SAVE_IS_HIDDEN";
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        isDestroy = false;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,7 +89,7 @@ public class BaseFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        isDestory = true;
+        isDestroy = true;
     }
 
     @Override
