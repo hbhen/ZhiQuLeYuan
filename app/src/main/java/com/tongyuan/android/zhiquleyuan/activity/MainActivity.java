@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import com.google.gson.Gson;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.tongyuan.android.zhiquleyuan.R;
+import com.tongyuan.android.zhiquleyuan.base.BaseFragment;
 import com.tongyuan.android.zhiquleyuan.bean.QueryToyRequestBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryToyResultBean;
 import com.tongyuan.android.zhiquleyuan.event.MessageEventToy;
@@ -38,6 +39,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Stack;
+import java.util.Vector;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -48,30 +51,25 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends FragmentActivity implements View.OnClickListener {
 
-    //    public static int LOGIN_SUCCESS = 00;//默认是没有登录的状态
     public static final String TAG = "333333";
     private LinearLayout rb_discovery;
     private LinearLayout rb_recoding;
     private ImageView rb_toy;
     private LinearLayout rb_history;
     private LinearLayout rb_mine;
-    //    private FragmentTransaction beginTransaction;
     private DiscoveryFragment discoveryFragment;
     private RecodingFragment recodingFragment;
     private ToySelectorFragment mToySelectorFragment;
     private HistoryFragment historyFragment;
     private MineFragment mineFragment;
-    //    private FragmentManager fragmentManager;
     private ToyAddFragment toyAddFragment;
     private ToyDetailsFragment toyDetailsFragment;
-    //    private ToyManagerFragment mToyManagerFragment;
     private String mCurrentTime;
     private String mMainToken;
     private String mMainphoneNum;
     public List<QueryToyResultBean.BODYBean.LSTBean> mList;
-    //    public static boolean isLogin = false;
-//    private VideoFragment mVideoFragment;
     private CallWaitingConnectFragment mCallWaitingConnectFragment;
+    private Stack<Fragment> fragmentStack = new Stack<>();
     private static final String TAG1 = "88888";
 
 
@@ -175,12 +173,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
     }
 
-
     private Fragment currentFragment;
-    private FragmentTransaction mFragmentTransaction;
 
     public void showFragment(String name) {
-        mFragmentTransaction = getSupportFragmentManager().beginTransaction();
         if (name.equals(DiscoveryFragment.class.getSimpleName())) {
             showFragment(discoveryFragment, name);
             currentFragment = discoveryFragment;
@@ -191,6 +186,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             showFragment(toyAddFragment, name);
             currentFragment = toyAddFragment;
         } else if (name.equals(ToySelectorFragment.class.getSimpleName())) {
+            fragmentStack.clear();
             showFragment(mToySelectorFragment, name);
             currentFragment = mToySelectorFragment;
         } else if (name.equals(HistoryFragment.class.getSimpleName())) {
@@ -210,17 +206,29 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     }
 
     public void backToTop() {
-
-        if (getSupportFragmentManager().popBackStackImmediate()) {
-//            showBackAnimation();
-        } else {
+        if (fragmentStack.isEmpty()) {
             moveTaskToBack(false);
+        } else {
+            if(currentFragment instanceof ToyAddFragment) {
+                fragmentStack.pop();
+                getSupportFragmentManager().beginTransaction().
+                        replace(R.id.fl_fragmentcontainer, mToySelectorFragment).
+                        commit();
+                currentFragment = mToySelectorFragment;
+            } else if(currentFragment instanceof ToyDetailsFragment) {
+                fragmentStack.pop();
+                getSupportFragmentManager().beginTransaction().
+                        replace(R.id.fl_fragmentcontainer, mToySelectorFragment).
+                        commit();
+                currentFragment = mToySelectorFragment;
+            } else if(currentFragment instanceof ToyManagerFragment) {
+                fragmentStack.pop();
+                getSupportFragmentManager().beginTransaction().
+                        replace(R.id.fl_fragmentcontainer, toyDetailsFragment).
+                        commit();
+                currentFragment = toyDetailsFragment;
+            }
         }
-    }
-
-    private void clearFragmentStack() {
-// if(fragmentManager.getBackStackEntryCount()>0)
-        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
     public void showFragment(Fragment fragment) {
@@ -229,15 +237,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             currentFragment = fragment;
         }
     }
-//    public void removeFragment(String name) {
-//        if (name.equals(ToyDetailsFragment.class.getSimpleName())) {
-//            removeFragment(toyDetailsFragment, name);
-//        }
-//    }
-//
-//    private void removeFragment(Fragment f, String name) {
-//
-//    }
 
     private void initFragment() {
         //添加五个Fragment对象添加进来
@@ -254,19 +253,13 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     }
 
     public ToyDetailsFragment getToyDetailsFragment() {
-//        FragmentManager supportFragmentManager = getSupportFragmentManager();
-//        FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
-//        fragmentTransaction.addToBackStack("toyDetailsFragment");
-//        fragmentTransaction.commit();
         return toyDetailsFragment;
-
     }
 
     public void onClick(View view) {
-        clearFragmentStack();
+        fragmentStack.clear();
         switch (view.getId()) {
             case R.id.rb_discovery:
-                //clearFragmentStack();
                 rb_discovery.setSelected(true);
                 rb_recoding.setSelected(false);
                 rb_history.setSelected(false);
@@ -275,7 +268,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
                 break;
             case R.id.rb_recoding:
-                //clearFragmentStack();
                 rb_discovery.setSelected(false);
                 rb_recoding.setSelected(true);
                 rb_history.setSelected(false);
@@ -289,7 +281,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 break;
 
             case R.id.rb_history:
-                //clearFragmentStack();
                 rb_discovery.setSelected(false);
                 rb_recoding.setSelected(false);
                 rb_history.setSelected(true);
@@ -307,7 +298,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
                 break;
             case R.id.rb_mine:
-                //clearFragmentStack();
                 rb_discovery.setSelected(false);
                 rb_recoding.setSelected(false);
                 rb_history.setSelected(false);
@@ -334,8 +324,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
                 Log.i(TAG, "onClick: token(mainactivity" + mMainToken);
                 chargeHasLogin(mMainToken);
-
-
                 break;
             default:
                 break;
@@ -404,38 +392,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             showFragment(ToyAddFragment.class.getSimpleName());
 
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        initData();
-        Log.i(TAG1, "mainactivity : onResume went");
-
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Log.i(TAG1, "mainactivity : onStop went");
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.i(TAG1, "mainactivity : onStart went");
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.i(TAG1, "mainactivity : onPause went");
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.i(TAG1, "mainactivity : onDestroy went");
     }
 
     @Override
