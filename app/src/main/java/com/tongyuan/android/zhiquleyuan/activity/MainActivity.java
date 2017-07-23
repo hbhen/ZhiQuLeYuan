@@ -15,7 +15,6 @@ import android.widget.LinearLayout;
 import com.google.gson.Gson;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.tongyuan.android.zhiquleyuan.R;
-import com.tongyuan.android.zhiquleyuan.base.BaseFragment;
 import com.tongyuan.android.zhiquleyuan.bean.QueryToyRequestBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryToyResultBean;
 import com.tongyuan.android.zhiquleyuan.event.MessageEventToy;
@@ -40,7 +39,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Stack;
-import java.util.Vector;
 
 import retrofit2.Call;
 import retrofit2.Callback;

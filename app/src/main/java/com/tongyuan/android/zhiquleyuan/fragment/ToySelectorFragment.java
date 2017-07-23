@@ -2,11 +2,8 @@ package com.tongyuan.android.zhiquleyuan.fragment;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.activity.MainActivity;
 import com.tongyuan.android.zhiquleyuan.adapter.ToySelectPagerAdapter;
@@ -150,24 +146,26 @@ public class ToySelectorFragment extends BaseFragment {
         }*/
 //        .placeholder(R.drawable.player_cover_default)
         if (s.equals("")){
-            Glide.with(getContext()).load(R.drawable.player_cover_default).asBitmap().into(new BitmapImageViewTarget(mHeadImageView) {
-                @Override
-                protected void setResource(Bitmap resource) {
-                    RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
-                    roundedBitmapDrawable.setCircular(true);
-                    mHeadImageView.setImageDrawable(roundedBitmapDrawable);
-               }
-            });
+            Glide.with(mContext).load(R.drawable.player_cover_default).asBitmap().into(mHeadImageView);
+//            Glide.with(getContext()).load(R.drawable.player_cover_default).asBitmap().into(new BitmapImageViewTarget(mHeadImageView) {
+//                @Override
+//                protected void setResource(Bitmap resource) {
+//                    RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
+//                    roundedBitmapDrawable.setCircular(true);
+//                    mHeadImageView.setImageDrawable(roundedBitmapDrawable);
+//               }
+//            });
         }else{
-
-            Glide.with(mContext).load(s).asBitmap().into(new BitmapImageViewTarget(mHeadImageView) {
-                @Override
-                protected void setResource(Bitmap resource) {
-                    RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(mContext.getResources(), resource);
-                    roundedBitmapDrawable.setCircular(true);
-                    mHeadImageView.setImageDrawable(roundedBitmapDrawable);
-                }
-            });
+            Glide.with(mContext).load(s).asBitmap().into(mHeadImageView);
+            Log.i(TAG, "displayBabyHead: sss"+s);
+//            Glide.with(mContext).load(s).asBitmap().into(new BitmapImageViewTarget(mHeadImageView) {
+//                @Override
+//                protected void setResource(Bitmap resource) {
+//                    RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(mContext.getResources(), resource);
+//                    roundedBitmapDrawable.setCircular(true);
+//                    mHeadImageView.setImageDrawable(roundedBitmapDrawable);
+//                }
+//            });
         }
 
     }
@@ -175,6 +173,7 @@ public class ToySelectorFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
+        displayBabyHead(mCurrentPosition);
         refreshPagerAdapter();
     }
 
@@ -364,7 +363,7 @@ public class ToySelectorFragment extends BaseFragment {
             bean.setID(id);
             bean.setCODE(code);
             bean.setOWNERID(ownerId);
-            bean.setBABYIMG(img);
+            bean.setBABYIMG("");
             toyList.add(bean);
 
             //Log.i("gengen", "onGetToyAddMessage notifyDataSetChangeed...");

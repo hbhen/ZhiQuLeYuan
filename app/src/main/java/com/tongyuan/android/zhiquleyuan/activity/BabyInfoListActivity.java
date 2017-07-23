@@ -131,7 +131,6 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
 //                    ToastUtil.showToast(getApplicationContext(), "chenggong" + response.body().getBODY().toString());
 
 //                    showBabyList(lst);
-
                     showBabyList(response, time, phone, mToken, lst);//传一个response就行了,之前做的是把response.body.getBody().getLst()也传过去了
                 }
 

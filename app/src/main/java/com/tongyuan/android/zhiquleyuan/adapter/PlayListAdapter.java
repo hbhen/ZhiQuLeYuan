@@ -10,13 +10,14 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.bean.QueryMyPlayResBean;
+import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
 import java.util.List;
 
 /**
  * Created by Android on 2017/6/13.
  */
-public class PlayListAdapter extends BaseAdapter {
+public class PlayListAdapter extends BaseAdapter implements View.OnClickListener {
     private Context mContext;
     private List<QueryMyPlayResBean.BODYBean.LSTBean> mLSTBeen;
 
@@ -53,7 +54,13 @@ public class PlayListAdapter extends BaseAdapter {
 
         Glide.with(mContext).load(mLSTBeen.get(position).getIMG()).asBitmap().into(holder.iv_icon);
         holder.tv_name.setText(mLSTBeen.get(position).getNAME());
+        holder.tv_name.setOnClickListener(this);
         return convertView;
+    }
+
+    @Override
+    public void onClick(View v) {
+        ToastUtil.showToast(mContext,"DDDD");
     }
 
     class ViewHolder {
