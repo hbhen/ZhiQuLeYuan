@@ -9,6 +9,7 @@ import com.tongyuan.android.zhiquleyuan.bean.BindBabyToToyRes;
 import com.tongyuan.android.zhiquleyuan.bean.CallHistoryResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.CallToToyRes;
 import com.tongyuan.android.zhiquleyuan.bean.ChangeRecordingNameResBean;
+import com.tongyuan.android.zhiquleyuan.bean.CommitSuggestionResBean;
 import com.tongyuan.android.zhiquleyuan.bean.ControlToyPlayMusicResBean;
 import com.tongyuan.android.zhiquleyuan.bean.ControlToyPlayRecordingResBean;
 import com.tongyuan.android.zhiquleyuan.bean.ControlToyVolumeRes;
@@ -25,6 +26,7 @@ import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.GetInstantStateInfoRes;
 import com.tongyuan.android.zhiquleyuan.bean.LocalPlayApplyResBean;
 import com.tongyuan.android.zhiquleyuan.bean.ModifyRecordingResBean;
+import com.tongyuan.android.zhiquleyuan.bean.NodisturbTimeResBean;
 import com.tongyuan.android.zhiquleyuan.bean.PhoneHeartResBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListFromToyIdRes;
 import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListResult;
@@ -237,4 +239,12 @@ public interface AllInterface {
     //3.4.31 检索资源
     @GET("busi")
     Call<SearchResBean> SEARCH_RES_BEAN_CALL (@Query("params") String params);
+
+    //3.4.56 意见反馈
+    @GET("busi")
+    Call<CommitSuggestionResBean> COMMIT_SUGGESTION_RES_BEAN_CALL (@Query("params") String params);
+
+    //3.4.17 查询玩具免打扰时间段
+    @GET("busi")
+    Call<NodisturbTimeResBean> NODISTURB_TIME_RES_BEAN_CALL (@Query("params")String params);
 }

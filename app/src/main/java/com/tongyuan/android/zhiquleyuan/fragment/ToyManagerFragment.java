@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
+import com.tongyuan.android.zhiquleyuan.activity.NoDisturbActivity;
 import com.tongyuan.android.zhiquleyuan.activity.SetupWlanActivity;
 import com.tongyuan.android.zhiquleyuan.adapter.ToyMemberAdapter;
 import com.tongyuan.android.zhiquleyuan.base.BaseFragment;
@@ -191,9 +192,9 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.bt_fragment_managetoy_nodisturb:
-//                Intent intent = new Intent(getActivity(), NoDisturbActivity.class);
-//                startActivity(intent);
-                ToastUtil.showToast(getContext(),"还未开通该功能");
+                Intent intent = new Intent(getActivity(), NoDisturbActivity.class);
+                startActivity(intent);
+//                ToastUtil.showToast(getContext(),"还未开通该功能");
                 break;
             case R.id.bt_fragment_managetoy_setupwlan:
                 Intent intent1 = new Intent(getActivity(), SetupWlanActivity.class);

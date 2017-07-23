@@ -1,26 +1,21 @@
 package com.tongyuan.android.zhiquleyuan.bean;
 
-import com.google.gson.annotations.SerializedName;
-
 /**
- * Created by Android on 2017/7/17.
+ * Created by Android on 2017/7/18.
  */
-public class AddInCollectionResBean {
-
-
+public class CommitSuggestionResBean {
     /**
      * TYPE : RES
-     * CMD : FAVRES
+     * CMD : FEEDBACK
      * ACCT : XXXX
-     * TIME : 20170717225941178
+     * TIME : 20170718130806290
      * VERI :
      * SEQ : 1
-     * CODE : 0
-     * MSG :
-     * BODY : {"":""}
-     * TOKEN : c2b1015c-5a78-461c-afe5-cfdb6e716466
+     * CODE : -10006
+     * MSG : 用户未登录
+     * BODY : {"CONTENT":"没意见"}
+     * TOKEN :
      */
-
 
     private String TYPE;
     private String CMD;
@@ -32,6 +27,36 @@ public class AddInCollectionResBean {
     private String MSG;
     private BODYBean BODY;
     private String TOKEN;
+
+    @Override
+    public String toString() {
+        return "CommitSuggestionResBean{" +
+                "TYPE='" + TYPE + '\'' +
+                ", CMD='" + CMD + '\'' +
+                ", ACCT='" + ACCT + '\'' +
+                ", TIME='" + TIME + '\'' +
+                ", VERI='" + VERI + '\'' +
+                ", SEQ='" + SEQ + '\'' +
+                ", CODE='" + CODE + '\'' +
+                ", MSG='" + MSG + '\'' +
+                ", BODY=" + BODY +
+                ", TOKEN='" + TOKEN + '\'' +
+                '}';
+    }
+
+    public CommitSuggestionResBean(String TYPE, String CMD, String ACCT, String TIME, String VERI, String SEQ, String CODE, String MSG, BODYBean
+            BODY, String TOKEN) {
+        this.TYPE = TYPE;
+        this.CMD = CMD;
+        this.ACCT = ACCT;
+        this.TIME = TIME;
+        this.VERI = VERI;
+        this.SEQ = SEQ;
+        this.CODE = CODE;
+        this.MSG = MSG;
+        this.BODY = BODY;
+        this.TOKEN = TOKEN;
+    }
 
     public String getTYPE() {
         return TYPE;
@@ -113,36 +138,23 @@ public class AddInCollectionResBean {
         this.TOKEN = TOKEN;
     }
 
-    @Override
-    public String toString() {
-        return "AddInCollectionResBean{" +
-                "TYPE='" + TYPE + '\'' +
-                ", CMD='" + CMD + '\'' +
-                ", ACCT='" + ACCT + '\'' +
-                ", TIME='" + TIME + '\'' +
-                ", VERI='" + VERI + '\'' +
-                ", SEQ='" + SEQ + '\'' +
-                ", CODE='" + CODE + '\'' +
-                ", MSG='" + MSG + '\'' +
-                ", BODY=" + BODY +
-                ", TOKEN='" + TOKEN + '\'' +
-                '}';
-    }
-
     public static class BODYBean {
         /**
-         *  :
+         * CONTENT : 没意见
          */
 
-        @SerializedName("")
-        private String _$110; // FIXME check this code
+        private String CONTENT;
 
-        public String get_$110() {
-            return _$110;
+        public BODYBean(String CONTENT) {
+            this.CONTENT = CONTENT;
         }
 
-        public void set_$110(String _$110) {
-            this._$110 = _$110;
+        public String getCONTENT() {
+            return CONTENT;
+        }
+
+        public void setCONTENT(String CONTENT) {
+            this.CONTENT = CONTENT;
         }
     }
 }
