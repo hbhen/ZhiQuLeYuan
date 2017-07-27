@@ -135,6 +135,7 @@ public class MyPlayActivity extends BaseActivity {
         mRotateObjectAnimator.setRepeatCount(ValueAnimator.INFINITE);
         phoneView.setSelected(true);
 
+
     }
 
     @Override
