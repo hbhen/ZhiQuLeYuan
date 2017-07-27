@@ -1,6 +1,5 @@
 // IMusicAidl.aidl
 package com.tongyuan.android.zhiquleyuan;
-import com.tongyuan.android.zhiquleyuan.IRemoteServiceCallback;
 
 // Declare any non-default types here with import statements
 
@@ -31,13 +30,6 @@ interface IMusicAidl {
     void setLockScreenAlbumArt(boolean enable);
 
     void setLooping(boolean looping);
-
-    /**
-     * Often you want to allow a service to call back to its clients.
-     * This shows how to do so, by registering a callback interface with
-     * the service.
-     */
-    void registerCallback(IRemoteServiceCallback cb);
 
     void release();
 
