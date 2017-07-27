@@ -107,7 +107,7 @@ public interface AllInterface {
     @GET("busi")
     Call<SuperModel<DiscoveryGridSecondaryResultBean>> getDiscoveryGridSecondaryResult(@Query("params") String params);
 
-    //请求推荐内容网络请求
+    //请求推荐内容网络请求 3.4.30
     @GET("busi")
     Call<SuperModel<DiscoveryListResultBean.BODYBean>> getDiscoveryListResult2(@Query("params") String params);
 
@@ -247,4 +247,6 @@ public interface AllInterface {
     //3.4.17 查询玩具免打扰时间段
     @GET("busi")
     Call<NodisturbTimeResBean> NODISTURB_TIME_RES_BEAN_CALL (@Query("params")String params);
+
+
 }

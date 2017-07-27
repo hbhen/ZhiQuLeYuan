@@ -93,7 +93,7 @@ public class MyCollectionActivity extends AppCompatActivity implements View.OnCl
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
-        QueryMyCollectionReqBean.BODYBean bodyBean = new QueryMyCollectionReqBean.BODYBean("","", "10", "1");
+        QueryMyCollectionReqBean.BODYBean bodyBean = new QueryMyCollectionReqBean.BODYBean("", "", "10", "1");
         QueryMyCollectionReqBean queryMyCollectionReqBean = new QueryMyCollectionReqBean("REQ", "MYFAV", phoneNum, time, bodyBean, "", token, "1");
 
         Gson gson = new Gson();
@@ -101,10 +101,12 @@ public class MyCollectionActivity extends AppCompatActivity implements View.OnCl
         Call<QueryMyCollectionResBean> babyListResult = allInterface.QUERY_MYCOLLECTION_RES_BEAN_CALL(babyListJson);
         babyListResult.enqueue(new Callback<QueryMyCollectionResBean>() {
             @Override
-            public void onResponse(Call<QueryMyCollectionResBean> call, Response<QueryMyCollectionResBean> response) {
+            public void onResponse(Call<QueryMyCollectionResBean> call, final Response<QueryMyCollectionResBean> response) {
                 if (response.body() != null && response.body().getCODE().equals("0")) {
                     Log.i("555555", "queryRecordingList:response" + response.body().getBODY().toString());
-                    final List<QueryMyCollectionResBean.BODYBean.LSTBean> lst = response.body().getBODY().getLST();//TODO 考虑一下,这时候,
+                    final List<QueryMyCollectionResBean.BODYBean.LSTBean> lst = response.body().getBODY().getLST();//TODO 考虑一下,这时候
+
+
                     // 如果list为空怎么办??2017.6.14
                     final MyCollectionAdapter myCollectionAdapter = new MyCollectionAdapter(getApplicationContext(), lst);
                     mSwipeListview.setAdapter(myCollectionAdapter);
@@ -112,11 +114,17 @@ public class MyCollectionActivity extends AppCompatActivity implements View.OnCl
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             //TODO list取不到
-//                            MyPlayActivity.launch(getApplicationContext(),lst,position);
+//                            Intent intent = new Intent();
+//                            intent.setClass(MyCollectionActivity.this,MyPlayActivity.class);
+//                            Bundle bundle = new Bundle();
+//                            bundle.putParcelable("play", response.body().getBODY());
+//                            intent.putExtras(bundle);
+//                            startActivity(intent);
                             ToastUtil.showToast(getApplicationContext(), "点击的是:" + position);
                         }
                     });
                     SwipeMenuCreator mCreator = new SwipeMenuCreator() {
+
                         @Override
                         public void create(SwipeMenu menu) {
                             SwipeMenuItem deleteItem = new SwipeMenuItem(getApplicationContext());
@@ -124,10 +132,8 @@ public class MyCollectionActivity extends AppCompatActivity implements View.OnCl
                             deleteItem.setBackground(R.color.redFont);
                             deleteItem.setWidth(dp2px(70));
                             deleteItem.setTitleSize(16);
-
                             deleteItem.setTitleColor(R.color.white);
                             menu.addMenuItem(deleteItem);
-
                         }
                     };
                     mSwipeListview.setMenuCreator(mCreator);
@@ -141,8 +147,10 @@ public class MyCollectionActivity extends AppCompatActivity implements View.OnCl
                             ToastUtil.showToast(getApplicationContext(), "点击删除");
 
                             return false;
+
                         }
                     });
+
                     mSwipeListview.setSmoothScrollbarEnabled(true);
                     mSwipeListview.setSwipeDirection(SwipeMenuListView.DIRECTION_LEFT);
                     mSwipeListview.setOpenInterpolator(new AccelerateInterpolator());
@@ -153,13 +161,16 @@ public class MyCollectionActivity extends AppCompatActivity implements View.OnCl
 
             @Override
             public void onFailure(Call<QueryMyCollectionResBean> call, Throwable t) {
+
                 Log.i("555555", "querymycollection+List:failure" + t.toString());
+
             }
 
         });
     }
 
     private void deleteRecording(String phoneNum, String time, int position, List<QueryMyCollectionResBean.BODYBean.LSTBean> qlst, String token) {
+
         String resId = qlst.get(position).getID();
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constant.baseurl)

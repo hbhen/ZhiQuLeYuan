@@ -91,8 +91,16 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initData();
-        initListener();
+
+        if (!SPUtils.getString(getActivity(), "TOKEN", "").equals("")) {
+
+            initData();
+            initListener();
+        }
+        else {
+
+        }
+
     }
 
     private void initListener() {
