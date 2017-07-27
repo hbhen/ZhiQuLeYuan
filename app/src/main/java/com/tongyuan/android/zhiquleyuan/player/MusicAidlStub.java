@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.RemoteException;
 
 import com.tongyuan.android.zhiquleyuan.IMusicAidl;
-import com.tongyuan.android.zhiquleyuan.IRemoteServiceCallback;
 import com.tongyuan.android.zhiquleyuan.service.MusicPlayerService;
 
 /**
@@ -83,11 +82,6 @@ public class MusicAidlStub extends IMusicAidl.Stub {
     @Override
     public void setLooping(boolean looping) throws RemoteException {
         multiPlayer.setLooping(looping);
-    }
-
-    @Override
-    public void registerCallback(IRemoteServiceCallback cb) throws RemoteException {
-
     }
 
     @Override
