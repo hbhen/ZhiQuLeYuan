@@ -1,8 +1,11 @@
 package com.tongyuan.android.zhiquleyuan.fragment;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.DataSetObservable;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
@@ -39,6 +42,7 @@ import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
+import com.tongyuan.android.zhiquleyuan.activity.MainActivity;
 import com.tongyuan.android.zhiquleyuan.activity.SetInitVolumeActivity;
 import com.tongyuan.android.zhiquleyuan.adapter.RecordAdapter;
 import com.tongyuan.android.zhiquleyuan.adapter.RecordingListAdapter;
@@ -66,9 +70,14 @@ import com.tongyuan.android.zhiquleyuan.service.MusicPlayerService;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 import com.tongyuan.android.zhiquleyuan.utils.Util;
+import com.umeng.socialize.ShareAction;
+import com.umeng.socialize.UMShareAPI;
+import com.umeng.socialize.UMShareListener;
+import com.umeng.socialize.bean.SHARE_MEDIA;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -167,6 +176,8 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
     private int RRCORDINGCOMPLETE = 3;
     private List<QueryRecordingResBean.BODYBean.LSTBean> mLst;
     private String mDur;
+    private ShareAction mShareAction;
+    private UMShareListener mShareListener;
 
     public RecodingFragment() {
     }
@@ -302,13 +313,14 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        mShareListener = new CustomShareListener(getActivity());
+        mShareAction = new ShareAction(getActivity());
+
         initData();
         initListener();
 
-
         Log.i("circlelife", "recordingfragment:onActivityCreated: went");
         //TODO 展示本地的recording,没有就去网络获取
-
 
     }
 
@@ -352,12 +364,22 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
                 break;
             //分享
             case R.id.iv_fragent_recording_share:
+                if (selectedPosition == -1) {
+                    ToastUtil.showToast(getContext(), "当前没有选中录音,请选择录音之后分享");
+                    return;
+                }
+
+                mShareAction
+                        .setDisplayList(SHARE_MEDIA.WEIXIN, SHARE_MEDIA.SMS)
+                        .setPlatform(SHARE_MEDIA.WEIXIN).setCallback(mShareListener)
+                        .open();
+
                 ToastUtil.showToast(getContext(), "点击了share");
+
                 break;
             //推送到玩具
             case R.id.iv_fragent_recording_toy:
                 //判断当前的布局是不是播放的布局,如果是播放的布局才能推送给玩具
-//                String toyid = ToySelectorFragment.mToyId;
 
 //                Log.i(TAG, "itemClick:recordingfragment mToyId"+toyid);
 
@@ -1218,5 +1240,60 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
         mPlaySeekBar.setProgress(currentPosition);
         mHandler.removeMessages(UPDATE_PLAY_PROGRESS_SHOW);
         mHandler.sendEmptyMessageDelayed(UPDATE_PLAY_PROGRESS_SHOW, 1000);
+    }
+
+    private class CustomShareListener implements UMShareListener {
+        private WeakReference<MainActivity> mWeakReference;
+
+        public CustomShareListener(Activity activity) {
+            mWeakReference = new WeakReference(activity);
+        }
+
+        @Override
+        public void onStart(SHARE_MEDIA share_media) {
+            ToastUtil.showToast(getContext(),"fragment");
+
+        }
+
+        @Override
+        public void onResult(SHARE_MEDIA platform) {
+            if (platform != SHARE_MEDIA.WEIXIN && platform != SHARE_MEDIA.SMS) {
+                ToastUtil.showToast(getActivity(), platform + " 分享成功啦");
+//                    Toast.makeText(mActivity.get(), platform + " 分享成功啦", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        @Override
+        public void onError(SHARE_MEDIA platform, Throwable throwable) {
+            if (platform != SHARE_MEDIA.WEIXIN && platform != SHARE_MEDIA.SMS) {
+                ToastUtil.showToast(mWeakReference.get(), "分享失败");
+            }
+        }
+
+        @Override
+        public void onCancel(SHARE_MEDIA platform) {
+            ToastUtil.showToast(mWeakReference.get(), platform + "分享取消了");
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        UMShareAPI.get(getContext()).onActivityResult(requestCode, resultCode, data);
+
+
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        ShareAction shareAction = new ShareAction(getActivity());
+
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mShareAction.close();
     }
 }

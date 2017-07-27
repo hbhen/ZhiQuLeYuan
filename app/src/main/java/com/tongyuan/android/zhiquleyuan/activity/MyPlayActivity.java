@@ -127,9 +127,7 @@ public class MyPlayActivity extends BaseActivity {
         setContentView(R.layout.activity_playing_details);
         ButterKnife.bind(this);
         StatusBarUtils.setStatusBarLightMode(this, getResources().getColor(R.color.main_top_bg));
-
         list = getIntent().getParcelableArrayListExtra("list");
-
         playPosition = getIntent().getIntExtra("position", 0);
         playMusic(true);
         mRotateObjectAnimator = ObjectAnimator.ofFloat(mImageView, "rotation", 0, 360);
@@ -137,6 +135,7 @@ public class MyPlayActivity extends BaseActivity {
         mRotateObjectAnimator.setInterpolator(new LinearInterpolator());
         mRotateObjectAnimator.setRepeatCount(ValueAnimator.INFINITE);
         phoneView.setSelected(true);
+
     }
 
     @Override
@@ -369,8 +368,6 @@ public class MyPlayActivity extends BaseActivity {
      * 推送到玩具播放
      */
     private void pushMusicToToy() {
-        //String toyId = "201705081005211016644025";
-//        String toyId = SPUtils.getString(getApplicationContext(),"toyID","");
         String resId = list.get(playPosition).getID();  //"201705151824191016803202"
         ControlToyPlayMusicReqBean.ParamBean paramBean = new ControlToyPlayMusicReqBean.ParamBean(ToySelectorFragment.mToyId, "1", resId, "0");
         Call<ControlToyPlayMusicResBean> result = RequestManager.getInstance().ToyPlayCommand(mContext, paramBean);

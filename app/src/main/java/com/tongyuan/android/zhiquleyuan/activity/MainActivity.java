@@ -15,6 +15,8 @@ import android.widget.LinearLayout;
 import com.google.gson.Gson;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.tongyuan.android.zhiquleyuan.R;
+import com.tongyuan.android.zhiquleyuan.bean.PhoneHeartReqBean;
+import com.tongyuan.android.zhiquleyuan.bean.PhoneHeartResBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryToyRequestBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryToyResultBean;
 import com.tongyuan.android.zhiquleyuan.event.MessageEventToy;
@@ -27,10 +29,17 @@ import com.tongyuan.android.zhiquleyuan.fragment.ToyAddFragment;
 import com.tongyuan.android.zhiquleyuan.fragment.ToyDetailsFragment;
 import com.tongyuan.android.zhiquleyuan.fragment.ToyManagerFragment;
 import com.tongyuan.android.zhiquleyuan.fragment.ToySelectorFragment;
+import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
+import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.interf.QueryToyInterface;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.StatusBarUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
+import com.umeng.socialize.Config;
+import com.umeng.socialize.PlatformConfig;
+import com.umeng.socialize.UMShareAPI;
+import com.umeng.socialize.UMShareListener;
+import com.umeng.socialize.common.QueuedWork;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -45,6 +54,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
 
 
 public class MainActivity extends FragmentActivity implements View.OnClickListener {
@@ -69,7 +79,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private CallWaitingConnectFragment mCallWaitingConnectFragment;
     private Stack<Fragment> fragmentStack = new Stack<>();
     private static final String TAG1 = "88888";
-
+    UMShareListener mUMShareListener;
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -85,14 +95,21 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         StatusBarUtils.setStatusBarLightMode(this, getResources().getColor(R.color.main_top_bg));
 
         CrashReport.initCrashReport(getApplicationContext(), "4d4412e3f1", true);
-//        CrashReport.testJavaCrash();
+        Config.DEBUG = true;
+        QueuedWork.isUseThreadPool = false;
+        UMShareAPI.get(this);
+        PlatformConfig.setWeixin("wx0d4463dd363141ea", "7d90d5ff4e4ecdc4f64f73af6b9bcc52");
 
+//        PlatformConfig.setWeixin("wx0d4463dd363141ea", "5b3ab6c855f847dc7a91a172634d694b");
         initView();
         initData();
+
         if (savedInstanceState == null) {
 
             initFragment();
+
         }
+
         rb_discovery.setSelected(true);
         rb_discovery.setOnClickListener(this);
         rb_recoding.setOnClickListener(this);
@@ -100,19 +117,50 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         rb_history.setOnClickListener(this);
         rb_mine.setOnClickListener(this);
         Log.i(TAG1, "mainactivity : onCreate went");
+
         //请求网络,获得我的录音的文件数据,拿到里面,请求网络数据,需要准备
 
     }
 
     private void checkToken() {
         String token = SPUtils.getString(this, "TOKEN", "");
-        if (token==null){
+        getServiceToken(token);
+        if (token == null) {
             //发送广播,通知,各个控件
             return;
-        }else{
+        } else {
             //token不为空,从服务器查询token,两次的token是否一致,一致就显示一种界面,不一致就显示未登录的界面
-
         }
+    }
+
+    private void getServiceToken(String token) {
+        Retrofit retrofit=new Retrofit.Builder()
+                .baseUrl(Constant.baseurl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        AllInterface allInterface = retrofit.create(AllInterface.class);
+        PhoneHeartReqBean.BODYBean bodyBean= new PhoneHeartReqBean.BODYBean("A","APP","1.0","","","","","","");
+        PhoneHeartReqBean phoneHeartReqBean = new PhoneHeartReqBean("REQ","HEART","",new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()),
+                bodyBean,"",token,"1");
+        Gson gson=new Gson();
+        String s = gson.toJson(phoneHeartReqBean);
+        Call<PhoneHeartResBean> phoneHeartResBeanCall = allInterface.PHONEHEART_RES_BEAN_CALL(s);
+        phoneHeartResBeanCall.enqueue(new Callback<PhoneHeartResBean>() {
+
+            @Override
+            public void onResponse(Call<PhoneHeartResBean> call, Response<PhoneHeartResBean> response) {
+                if (response.body().getCODE().equals("-10006")){
+                    ToastUtil.showToast(getApplicationContext(),response.body().getMSG());
+                    SPUtils.putString(getApplicationContext(),"TOKEN","");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PhoneHeartResBean> call, Throwable t) {
+                Log.i(TAG, "onFailure: "+t.toString());
+            }
+        });
+
     }
 
     private void initData() {
@@ -208,19 +256,19 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         if (fragmentStack.isEmpty()) {
             moveTaskToBack(false);
         } else {
-            if(currentFragment instanceof ToyAddFragment) {
+            if (currentFragment instanceof ToyAddFragment) {
                 fragmentStack.pop();
                 getSupportFragmentManager().beginTransaction().
                         replace(R.id.fl_fragmentcontainer, mToySelectorFragment).
                         commit();
                 currentFragment = mToySelectorFragment;
-            } else if(currentFragment instanceof ToyDetailsFragment) {
+            } else if (currentFragment instanceof ToyDetailsFragment) {
                 fragmentStack.pop();
                 getSupportFragmentManager().beginTransaction().
                         replace(R.id.fl_fragmentcontainer, mToySelectorFragment).
                         commit();
                 currentFragment = mToySelectorFragment;
-            } else if(currentFragment instanceof ToyManagerFragment) {
+            } else if (currentFragment instanceof ToyManagerFragment) {
                 fragmentStack.pop();
                 getSupportFragmentManager().beginTransaction().
                         replace(R.id.fl_fragmentcontainer, toyDetailsFragment).
@@ -398,6 +446,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         backToTop();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+        UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
+    }
 }
 
 

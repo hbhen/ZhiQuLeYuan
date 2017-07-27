@@ -1,11 +1,15 @@
 package com.tongyuan.android.zhiquleyuan.bean;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Android on 2017/6/14.
  */
-public class QueryMyCollectionResBean {
+public class QueryMyCollectionResBean implements Parcelable {
 
     /**
      * TYPE : RES
@@ -144,7 +148,7 @@ public class QueryMyCollectionResBean {
         this.TOKEN = TOKEN;
     }
 
-    public static class BODYBean {
+    public static class BODYBean implements Parcelable {
         /**
          * PN : 1
          * PS : 10
@@ -221,7 +225,7 @@ public class QueryMyCollectionResBean {
             this.LST = LST;
         }
 
-        public static class LSTBean {
+        public static class LSTBean implements Parcelable {
             /**
              * SIZE : 2.05MB
              * COLID : 201702091131241016563468
@@ -355,6 +359,129 @@ public class QueryMyCollectionResBean {
             public void setDUR(String DUR) {
                 this.DUR = DUR;
             }
+
+            @Override
+            public int describeContents() {
+                return 0;
+            }
+
+            @Override
+            public void writeToParcel(Parcel dest, int flags) {
+                dest.writeString(this.SIZE);
+                dest.writeString(this.COLID);
+                dest.writeString(this.REMARK);
+                dest.writeString(this.COLNAME);
+                dest.writeString(this.TYPE);
+                dest.writeString(this.NAME);
+                dest.writeString(this.IMG);
+                dest.writeString(this.ID);
+                dest.writeString(this.TIMES);
+                dest.writeString(this.DUR);
+            }
+
+            protected LSTBean(Parcel in) {
+                this.SIZE = in.readString();
+                this.COLID = in.readString();
+                this.REMARK = in.readString();
+                this.COLNAME = in.readString();
+                this.TYPE = in.readString();
+                this.NAME = in.readString();
+                this.IMG = in.readString();
+                this.ID = in.readString();
+                this.TIMES = in.readString();
+                this.DUR = in.readString();
+            }
+
+            public static final Creator<LSTBean> CREATOR = new Creator<LSTBean>() {
+                @Override
+                public LSTBean createFromParcel(Parcel source) {
+                    return new LSTBean(source);
+                }
+
+                @Override
+                public LSTBean[] newArray(int size) {
+                    return new LSTBean[size];
+                }
+            };
         }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(this.PN);
+            dest.writeString(this.PS);
+            dest.writeString(this.CNT);
+            dest.writeString(this.NC);
+            dest.writeList(this.LST);
+        }
+
+        protected BODYBean(Parcel in) {
+            this.PN = in.readString();
+            this.PS = in.readString();
+            this.CNT = in.readString();
+            this.NC = in.readString();
+            this.LST = new ArrayList<LSTBean>();
+            in.readList(this.LST, LSTBean.class.getClassLoader());
+        }
+
+        public static final Creator<BODYBean> CREATOR = new Creator<BODYBean>() {
+            @Override
+            public BODYBean createFromParcel(Parcel source) {
+                return new BODYBean(source);
+            }
+
+            @Override
+            public BODYBean[] newArray(int size) {
+                return new BODYBean[size];
+            }
+        };
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.TYPE);
+        dest.writeString(this.CMD);
+        dest.writeString(this.ACCT);
+        dest.writeString(this.TIME);
+        dest.writeString(this.VERI);
+        dest.writeString(this.SEQ);
+        dest.writeString(this.CODE);
+        dest.writeString(this.MSG);
+        dest.writeParcelable(this.BODY, flags);
+        dest.writeString(this.TOKEN);
+    }
+
+    protected QueryMyCollectionResBean(Parcel in) {
+        this.TYPE = in.readString();
+        this.CMD = in.readString();
+        this.ACCT = in.readString();
+        this.TIME = in.readString();
+        this.VERI = in.readString();
+        this.SEQ = in.readString();
+        this.CODE = in.readString();
+        this.MSG = in.readString();
+        this.BODY = in.readParcelable(BODYBean.class.getClassLoader());
+        this.TOKEN = in.readString();
+    }
+
+    public static final Parcelable.Creator<QueryMyCollectionResBean> CREATOR = new Parcelable.Creator<QueryMyCollectionResBean>() {
+        @Override
+        public QueryMyCollectionResBean createFromParcel(Parcel source) {
+            return new QueryMyCollectionResBean(source);
+        }
+
+        @Override
+        public QueryMyCollectionResBean[] newArray(int size) {
+            return new QueryMyCollectionResBean[size];
+        }
+    };
 }
