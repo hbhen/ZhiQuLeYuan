@@ -28,6 +28,7 @@ import com.tongyuan.android.zhiquleyuan.bean.AddInCollectionResBean;
 import com.tongyuan.android.zhiquleyuan.bean.ControlToyPlayMusicReqBean;
 import com.tongyuan.android.zhiquleyuan.bean.ControlToyPlayMusicResBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListResultBean;
+import com.tongyuan.android.zhiquleyuan.bean.MusicPlayerBean;
 import com.tongyuan.android.zhiquleyuan.fragment.ToySelectorFragment;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.interf.Constant;
@@ -101,7 +102,7 @@ public class MyPlayActivity extends BaseActivity {
         }
     };
 
-    private ArrayList<DiscoveryListResultBean.BODYBean.LSTBean> list;
+    private ArrayList<MusicPlayerBean> list;
     private int playPosition;
 
     /**
@@ -111,7 +112,7 @@ public class MyPlayActivity extends BaseActivity {
      * @param list         播放列表
      * @param playPosition 播放列表中哪一项
      */
-    public static void launch(Context context, ArrayList<DiscoveryListResultBean.BODYBean.LSTBean> list, int playPosition) {
+    public static void launch(Context context, ArrayList<? extends MusicPlayerBean> list, int playPosition) {
         Intent it = new Intent(context, MyPlayActivity.class);
         it.putParcelableArrayListExtra("list", list);
         it.putExtra("position", playPosition);
@@ -245,7 +246,7 @@ public class MyPlayActivity extends BaseActivity {
     }
 
     private void playMusic(boolean isFromCreate) {
-        DiscoveryListResultBean.BODYBean.LSTBean bean = list.get(playPosition);
+        MusicPlayerBean bean = list.get(playPosition);
         Glide.with(this).load(bean.getIMG()).asBitmap().placeholder(R.drawable.player_cover_default).centerCrop().into(new BitmapImageViewTarget
                 (mImageView) {
 

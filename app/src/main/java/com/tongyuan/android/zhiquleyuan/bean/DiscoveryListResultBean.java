@@ -252,9 +252,10 @@ public class DiscoveryListResultBean implements Parcelable {
             this.LST = LST;
         }
 
-        public static class LSTBean implements Parcelable {
+        public static class LSTBean extends MusicPlayerBean implements Parcelable {
 
-            public LSTBean() {}
+            public LSTBean() {
+            }
             /**
              * ID : 201705151824191016803202
              * REMARK :
@@ -268,17 +269,17 @@ public class DiscoveryListResultBean implements Parcelable {
              * DUR : 0:10:33
              */
 
-            private String ID;
+//            private String ID;
             private String REMARK;
             private String SIZE;
-            private String IMG;
+//            private String IMG;
             private String COLID;
             private String TIMES;
-            private String NAME;
+//            private String NAME;
             private String TYPE;
             private String COLNAME;
             private String DUR;
-            public boolean isPlaying = false;
+
 
             @Override
             public String toString() {
@@ -398,13 +399,14 @@ public class DiscoveryListResultBean implements Parcelable {
             }
 
             protected LSTBean(Parcel in) {
-                this.ID = in.readString();
+                super(in);
+//                this.ID = in.readString();
                 this.REMARK = in.readString();
                 this.SIZE = in.readString();
-                this.IMG = in.readString();
+//                this.IMG = in.readString();
                 this.COLID = in.readString();
                 this.TIMES = in.readString();
-                this.NAME = in.readString();
+//                this.NAME = in.readString();
                 this.TYPE = in.readString();
                 this.COLNAME = in.readString();
                 this.DUR = in.readString();
