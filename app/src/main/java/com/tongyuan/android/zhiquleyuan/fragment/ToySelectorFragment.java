@@ -77,7 +77,6 @@ public class ToySelectorFragment extends BaseFragment {
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
-        Log.i("gengen", "onCreateView");
 
         View toyRoot = inflater.inflate(R.layout.fragment_toy, container, false);
         ButterKnife.bind(this, toyRoot);
@@ -93,7 +92,6 @@ public class ToySelectorFragment extends BaseFragment {
         int margin = (int) getResources().getDimension(R.dimen.dp_20);
         mViewPageToy.setPageMargin(margin);
         mViewPageToy.setOffscreenPageLimit(10);
-        Log.i("gengen", "onViewCreated");
 
         mViewPageToy.setPageTransformer(true, new ScaleInTransformer());
         mViewPageToy.setCurrentItem(0);
@@ -108,7 +106,6 @@ public class ToySelectorFragment extends BaseFragment {
             @Override
             public void onPageSelected(int position) {
                 mCurrentPosition = position;
-                Log.i("gengen", "onPageSelected "+position);
                 //获得宝宝的头像 , 滑到当前的position展示当前的玩具的宝宝,如果当前的玩具没有绑定宝宝,那么就让他显示默认的baby头像
                 //宝宝的头像从哪来?怎么确定宝宝的头像和玩具的关系
                 displayBabyHead(mCurrentPosition);

@@ -60,6 +60,12 @@
         android:layout_height="match_parent"
         android:layout_above="@id/ll_bottom"/>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_above="@id/ll_bottom"
+        android:layout_height="5dp"
+        android:background="@drawable/shape_bottom"/>
+
     <ImageView
         android:id="@+id/rb_toy"
         android:layout_width="65dp"

@@ -171,15 +171,17 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
     private String mUrl;
     private String mRecordingId;
     private String mTime;
-    private int RECORDING = 1;
-    private int PLAYRECORDING = 2;
-    private int RRCORDINGCOMPLETE = 3;
+    private static final int RECORDING = 1;
+    private static final int PLAYRECORDING = 2;
+    private static final int RRCORDINGCOMPLETE = 3;
     private List<QueryRecordingResBean.BODYBean.LSTBean> mLst;
     private String mDur;
     private ShareAction mShareAction;
     private UMShareListener mShareListener;
     private boolean isShowPlayingControl = false;
 
+
+    private int currentState = RECORDING;
 
     public RecodingFragment() {
 
@@ -303,14 +305,36 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
             }
 
         });
+<<<<<<< HEAD
 
         if (isShowPlayingControl) {
             showRecordingPlayView(true);
 
         }
         showRecordingPlayView(false);
+=======
+        showBottomPanel();
+>>>>>>> a98abb1031a7f0c6691a82cda1b45dfc94286b82
         return recordingRoot;
+    }
 
+    private void showBottomPanel() {
+        if(currentState == PLAYRECORDING) {
+            mRecordingFrag.setVisibility(View.GONE);
+            mCompleteFrag.setVisibility(View.GONE);
+            mPlayRecordingFrag.setVisibility(View.VISIBLE);
+        } else if(currentState == RECORDING) {
+            mRecordingFrag.setVisibility(View.VISIBLE);
+            mCompleteFrag.setVisibility(View.GONE);
+            mPlayRecordingFrag.setVisibility(View.GONE);
+        } else if(currentState == RRCORDINGCOMPLETE) {
+            //录音布局
+            mRecordingFrag.setVisibility(View.GONE);
+            //录音完成布局
+            mCompleteFrag.setVisibility(View.VISIBLE);
+            //录音播放布局
+            mPlayRecordingFrag.setVisibility(View.GONE);
+        }
     }
 
     private int dp2px(int dp) {
@@ -811,6 +835,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
 
     private void showRecordingPlayView(boolean b) {
         if (b) {
+            currentState = PLAYRECORDING;
             mPlayRecordingFrag.setVisibility(View.VISIBLE);
             mCompleteFrag.setVisibility(View.GONE);
             mRecordingFrag.setVisibility(View.GONE);
@@ -820,6 +845,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
             mPlayRecordingFrag.setVisibility(View.GONE);
             mCompleteFrag.setVisibility(View.GONE);
             mRecordingFrag.setVisibility(View.VISIBLE);
+            currentState = RECORDING;
         }
     }
 

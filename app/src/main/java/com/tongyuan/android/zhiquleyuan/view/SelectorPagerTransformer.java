@@ -42,8 +42,6 @@ public class SelectorPagerTransformer extends BasePageTransformer {
         int pageWidth = view.getWidth();
         int pageHeight = view.getHeight();
 
-        Log.i("gengen", "pageTransform position="+position);
-
         view.setPivotY(pageHeight / 2);
         view.setPivotX(pageWidth / 2);
         if (position < -1) { // [-Infinity,-1)
