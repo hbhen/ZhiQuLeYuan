@@ -1,14 +1,14 @@
 apply plugin: 'com.android.library'
 
 android {
-    signingConfigs {
+    /*signingConfigs {
         zqly {
             keyAlias 'zqly'
             keyPassword 'zqly1210'
-            storeFile file('C:/Users/Android/Desktop/finalkey.jks')
+            storeFile file('/Users/zgg/Downloads/finalkey.jks')
             storePassword 'zqly1210'
         }
-    }
+    }*/
     compileSdkVersion 25
     buildToolsVersion '25.0.2'
     defaultConfig {
@@ -19,11 +19,11 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt')
-            signingConfig signingConfigs.zqly
+//            signingConfig signingConfigs.zqly
             debuggable true
         }
         debug {
-            signingConfig signingConfigs.zqly
+//            signingConfig signingConfigs.zqly
         }
     }
 }

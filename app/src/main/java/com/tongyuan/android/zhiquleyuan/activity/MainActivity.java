@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import com.google.gson.Gson;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.tongyuan.android.zhiquleyuan.R;
+import com.tongyuan.android.zhiquleyuan.base.BaseActivity;
 import com.tongyuan.android.zhiquleyuan.bean.PhoneHeartReqBean;
 import com.tongyuan.android.zhiquleyuan.bean.PhoneHeartResBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryToyRequestBean;
@@ -57,7 +58,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 
 
-public class MainActivity extends FragmentActivity implements View.OnClickListener {
+public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     public static final String TAG = "333333";
     private LinearLayout rb_discovery;
@@ -120,6 +121,36 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
         //请求网络,获得我的录音的文件数据,拿到里面,请求网络数据,需要准备
 
+    }
+
+    @Override
+    protected void onPrepared() {
+        if(recodingFragment != null)
+            recodingFragment.onPrepared();
+    }
+
+    @Override
+    protected void onError() {
+        if(recodingFragment != null)
+            recodingFragment.onError();
+    }
+
+    @Override
+    protected void onCompleted() {
+        if(recodingFragment != null)
+            recodingFragment.onCompleted();
+    }
+
+    @Override
+    protected void bindSuccess() {
+        if(recodingFragment != null)
+            recodingFragment.bindSuccess();
+    }
+
+    @Override
+    protected void isSimplePlayUrl() {
+        if(recodingFragment != null)
+            recodingFragment.isSimplePlayUrl();
     }
 
     private void checkToken() {

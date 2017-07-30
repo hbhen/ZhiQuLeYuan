@@ -84,6 +84,10 @@ public abstract class BaseActivity extends AppCompatActivity implements ServiceC
 
     protected abstract void isSimplePlayUrl();
 
+    public boolean isBound() {
+        return isBound;
+    }
+
     private final static class PlaybackStatus extends BroadcastReceiver {
 
         private final WeakReference<BaseActivity> mReference;

@@ -21,19 +21,19 @@ import java.lang.ref.WeakReference;
  * Created by android on 2016/12/5.
  */
 
-public abstract class BaseRecordingFragment extends Fragment implements ServiceConnection {
+public abstract class BaseRecordingFragment extends Fragment /*implements ServiceConnection*/ {
 
-    public static final String PLAYER_PREPARED = "toy.player.prepared";
-    public static final String PLAYER_ERROR    = "toy.player.error";
-    public static final String PLAYER_COMPLETE = "toy.player.complete";
-    public static final String PLAYER_PLAYING  = "toy.player.playing";
+//    public static final String PLAYER_PREPARED = "toy.player.prepared";
+//    public static final String PLAYER_ERROR    = "toy.player.error";
+//    public static final String PLAYER_COMPLETE = "toy.player.complete";
+//    public static final String PLAYER_PLAYING  = "toy.player.playing";
 
-    public FragmentActivity mActivity;
-    private MusicPlayer.ServiceToken mServiceToken;
-    private PlaybackStatus mPlaybackStatus;
-    protected boolean isBound = false;
+//    public FragmentActivity mActivity;
+//    private MusicPlayer.ServiceToken mServiceToken;
+//    private PlaybackStatus mPlaybackStatus;
+//    protected boolean isBound = false;
 
-    @Override
+    /*@Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //拿到acitivity对象,获得context
@@ -47,7 +47,7 @@ public abstract class BaseRecordingFragment extends Fragment implements ServiceC
         f.addAction(PLAYER_PLAYING);
         mActivity.registerReceiver(mPlaybackStatus, f);
 
-    }
+    }*/
 
 //    @Nullable
 //    @Override
@@ -87,7 +87,7 @@ public abstract class BaseRecordingFragment extends Fragment implements ServiceC
         }
     }
 
-    @Override
+    /*@Override
     public void onServiceConnected(ComponentName name, IBinder service) {
         isBound = true;
         bindSuccess();
@@ -98,15 +98,6 @@ public abstract class BaseRecordingFragment extends Fragment implements ServiceC
         isBound = false;
     }
 
-    //    public void removeFragment(String name) {
-//        if (getActivity() instanceof MainActivity) {
-//            ((MainActivity) getActivity()).removeFragment(name);
-//        }
-//    }
-//
-//    public void hide() {
-//
-//    }
     private final static class PlaybackStatus extends BroadcastReceiver {
 
         private final WeakReference<BaseRecordingFragment> mReference;
@@ -131,7 +122,7 @@ public abstract class BaseRecordingFragment extends Fragment implements ServiceC
                 baseActivity.isSimplePlayUrl();
             }
         }
-    }
+    }*/
 
     protected abstract void isSimplePlayUrl();
 
@@ -143,10 +134,10 @@ public abstract class BaseRecordingFragment extends Fragment implements ServiceC
 
     protected abstract void bindSuccess();
 
-    @Override
+    /*@Override
     public void onDestroy() {
         super.onDestroy();
         MusicPlayer.unBindFromService(mServiceToken);
         mActivity.unregisterReceiver(mPlaybackStatus);
-    }
+    }*/
 }

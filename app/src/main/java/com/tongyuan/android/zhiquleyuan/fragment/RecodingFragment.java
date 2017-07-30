@@ -528,7 +528,8 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
     }
 
     private void playOrPause(boolean isPlay) {
-        if (!isBound)
+        MainActivity activity = (MainActivity) getActivity();
+        if (!activity.isBound())
             return;
         if (!MusicPlayer.isPrepared() && isPlay) {
             MusicPlayer.openAndStart(mLst.get(selectedPosition).getID());
