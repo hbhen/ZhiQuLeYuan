@@ -370,6 +370,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
                 }
 
                 mShareAction
+                        .withText(SPUtils.getString(getContext(), "address", ""))
                         .setDisplayList(SHARE_MEDIA.WEIXIN, SHARE_MEDIA.SMS)
                         .setPlatform(SHARE_MEDIA.WEIXIN).setCallback(mShareListener)
                         .open();
@@ -477,8 +478,8 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
                 break;
             case R.id.iv_recoding_stop:
                 playOrPause(false);
-
                 break;
+
             case R.id.iv_recoding_prev:
                 if (selectedPosition == -1) {
                     return;
@@ -674,7 +675,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
             private RecordingListAdapter mRecordingListAdapter;
 
             @Override
-            public void onResponse(Call<QueryRecordingResBean> call, Response<QueryRecordingResBean> response) {
+            public void onResponse(Call<QueryRecordingResBean> call, final Response<QueryRecordingResBean> response) {
                 if (response.body() != null && response.body().getCODE().equals("0")) {
                     Log.i("1111111", "queryRecordingList:response" + response.body().getBODY().toString());
                     mLst = response.body().getBODY().getLST();//这里拿的是所有的录音的列表
@@ -703,6 +704,8 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
                             //定义一个选中状态
                             mSwipelistview.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
                             mSwipelistview.setItemChecked(position, true);
+                            //展示的时候同时保存当前的选中的录音文件的播放地址.
+                            SPUtils.putString(getContext(), "address", response.body().getBODY().getLST().get(position).getID());
                             //1,点击item,显示录音播放界面
 
                             //保存position
@@ -1136,6 +1139,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
     @Override
     public void onResume() {
         super.onResume();
+
         String dir = Environment.getExternalStorageDirectory().getPath() + "/AAmart";
         final File file = new File(dir);
         if (!file.exists()) {
@@ -1251,20 +1255,23 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
 
         @Override
         public void onStart(SHARE_MEDIA share_media) {
-            ToastUtil.showToast(getContext(),"fragment");
+            ToastUtil.showToast(getContext(), "fragment");
 
         }
 
         @Override
         public void onResult(SHARE_MEDIA platform) {
+            Log.e(TAG, "onresult:+recoding+1 ");
+            ToastUtil.showToast(getActivity(), platform + " 分享成功啦1");
             if (platform != SHARE_MEDIA.WEIXIN && platform != SHARE_MEDIA.SMS) {
-                ToastUtil.showToast(getActivity(), platform + " 分享成功啦");
+                ToastUtil.showToast(getActivity(), platform + " 分享成功啦2");
 //                    Toast.makeText(mActivity.get(), platform + " 分享成功啦", Toast.LENGTH_SHORT).show();
             }
         }
 
         @Override
         public void onError(SHARE_MEDIA platform, Throwable throwable) {
+            Log.e(TAG, "onError:+recoding ", throwable);
             if (platform != SHARE_MEDIA.WEIXIN && platform != SHARE_MEDIA.SMS) {
                 ToastUtil.showToast(mWeakReference.get(), "分享失败");
             }
@@ -1272,6 +1279,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
 
         @Override
         public void onCancel(SHARE_MEDIA platform) {
+            Log.e(TAG, "oncancel:+recoding +1");
             ToastUtil.showToast(mWeakReference.get(), platform + "分享取消了");
         }
     }

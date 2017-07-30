@@ -49,7 +49,6 @@ public class MyCollectionActivity extends AppCompatActivity implements View.OnCl
     private SwipeRefreshLayout mSpRefresh;
     private SwipeMenuListView mSwipeListview;
     private ImageView mCollection_back;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,7 +105,6 @@ public class MyCollectionActivity extends AppCompatActivity implements View.OnCl
                     Log.i("555555", "queryRecordingList:response" + response.body().getBODY().toString());
                     final List<QueryMyCollectionResBean.BODYBean.LSTBean> lst = response.body().getBODY().getLST();//TODO 考虑一下,这时候
 
-
                     // 如果list为空怎么办??2017.6.14
                     final MyCollectionAdapter myCollectionAdapter = new MyCollectionAdapter(getApplicationContext(), lst);
                     mSwipeListview.setAdapter(myCollectionAdapter);
@@ -120,9 +118,16 @@ public class MyCollectionActivity extends AppCompatActivity implements View.OnCl
 //                            bundle.putParcelable("play", response.body().getBODY());
 //                            intent.putExtras(bundle);
 //                            startActivity(intent);
+                            ArrayList<QueryMyCollectionResBean.BODYBean.LSTBean> arrayList=new ArrayList
+                                    <QueryMyCollectionResBean.BODYBean.LSTBean>();
+                            for (int i = 0; i < lst.size(); i++) {
+                                arrayList.add(i,response.body().getBODY().getLST().get(i));
+                            }
+                            MyPlayActivity.launch(getApplicationContext(),arrayList,position);
                             ToastUtil.showToast(getApplicationContext(), "点击的是:" + position);
                         }
                     });
+
                     SwipeMenuCreator mCreator = new SwipeMenuCreator() {
 
                         @Override

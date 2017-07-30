@@ -98,7 +98,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         Config.DEBUG = true;
         QueuedWork.isUseThreadPool = false;
         UMShareAPI.get(this);
-        PlatformConfig.setWeixin("wx0d4463dd363141ea", "7d90d5ff4e4ecdc4f64f73af6b9bcc52");
+//        PlatformConfig.setWeixin("wx0d4463dd363141ea", "7d90d5ff4e4ecdc4f64f73af6b9bcc52");
+        PlatformConfig.setWeixin("wx0d4463dd363141ea", "c6d8ce330df02acdbdce34226ecff193");
 
 //        PlatformConfig.setWeixin("wx0d4463dd363141ea", "5b3ab6c855f847dc7a91a172634d694b");
         initView();

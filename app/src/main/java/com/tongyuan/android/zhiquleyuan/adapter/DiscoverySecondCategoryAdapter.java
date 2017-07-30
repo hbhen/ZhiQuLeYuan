@@ -14,7 +14,6 @@ import com.bumptech.glide.Glide;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListResultBean;
 import com.tongyuan.android.zhiquleyuan.holder.SecondaryCategoryHolder;
-import com.tongyuan.android.zhiquleyuan.player.MusicPlayer;
 import com.tongyuan.android.zhiquleyuan.service.MusicPlayerService;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
@@ -28,7 +27,7 @@ import java.util.List;
 public class DiscoverySecondCategoryAdapter extends BaseAdapter {
     private Context mContext;
     private final LayoutInflater mInflater;
-    private List<DiscoveryListResultBean.BODYBean.LSTBean> list ;
+    private List<DiscoveryListResultBean.BODYBean.LSTBean> list;
     private Drawable playingDrawable;
     private Drawable grayPlayDrawable;
 
@@ -84,8 +83,8 @@ public class DiscoverySecondCategoryAdapter extends BaseAdapter {
             holder.playView.setOnClickListener(clickView);
             holder.favoriteView.setOnClickListener(clickView);
             convertView.setTag(holder);
-        }else{
-            holder= (SecondaryCategoryHolder) convertView.getTag();
+        } else {
+            holder = (SecondaryCategoryHolder) convertView.getTag();
         }
         /**
          * {
@@ -123,7 +122,7 @@ public class DiscoverySecondCategoryAdapter extends BaseAdapter {
         holder.textviewTitle.setText(list.get(position).getNAME());
         holder.playView.setTag(position);
         holder.favoriteView.setTag(position);
-        if(list.get(position).isPlaying /*&& MusicPlayerService.isPlayUrl(list.get(position).getID())*/) {
+        if (list.get(position).isPlaying /*&& MusicPlayerService.isPlayUrl(list.get(position).getID())*/) {
             holder.playView.setCompoundDrawables(playingDrawable, null, null, null);
             holder.playView.setTextColor(mContext.getResources().getColor(R.color.redFont));
         } else {
@@ -139,12 +138,12 @@ public class DiscoverySecondCategoryAdapter extends BaseAdapter {
             int position = (int) v.getTag();
             if (v.getId() == R.id.dis_sub_item_play) {
                 String mToken = SPUtils.getString(mContext, "TOKEN", "");
-                if("".equals(mToken)) {
+                if ("".equals(mToken)) {
                     ToastUtil.showToast(mContext, R.string.user_no_login);
                     return;
                 }
                 String musicId = list.get(position).getID();
-                if(list.get(position).isPlaying && MusicPlayerService.isPlayUrl(list.get(position).getID())) {
+                if (list.get(position).isPlaying && MusicPlayerService.isPlayUrl(list.get(position).getID())) {
                     MusicPlayerService.stopService(mContext, true);
                     for (DiscoveryListResultBean.BODYBean.LSTBean bean : list) {
                         bean.isPlaying = false;
@@ -158,7 +157,7 @@ public class DiscoverySecondCategoryAdapter extends BaseAdapter {
                 }
                 notifyDataSetChanged();
 
-            } else if(v.getId() == R.id.dis_sub_item_favorite) {
+            } else if (v.getId() == R.id.dis_sub_item_favorite) {
                 ToastUtil.showToast(mContext, "favorite");
             }
         }

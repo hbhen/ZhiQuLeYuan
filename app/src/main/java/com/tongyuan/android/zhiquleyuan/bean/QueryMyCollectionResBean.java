@@ -225,7 +225,7 @@ public class QueryMyCollectionResBean implements Parcelable {
             this.LST = LST;
         }
 
-        public static class LSTBean implements Parcelable {
+        public static class LSTBean extends MusicPlayerBean implements Parcelable {
             /**
              * SIZE : 2.05MB
              * COLID : 201702091131241016563468
@@ -238,15 +238,15 @@ public class QueryMyCollectionResBean implements Parcelable {
              * TIMES : 78
              * DUR : 0:04:28
              */
-
+            public LSTBean(){}
             private String SIZE;
             private String COLID;
             private String REMARK;
             private String COLNAME;
             private String TYPE;
-            private String NAME;
-            private String IMG;
-            private String ID;
+//            private String NAME;
+//            private String IMG;
+//            private String ID;
             private String TIMES;
             private String DUR;
 

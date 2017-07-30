@@ -3,25 +3,27 @@ package com.tongyuan.android.zhiquleyuan.activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
+import com.tongyuan.android.zhiquleyuan.adapter.SearchAdapter;
 import com.tongyuan.android.zhiquleyuan.bean.SearchReqBean;
 import com.tongyuan.android.zhiquleyuan.bean.SearchResBean;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.StatusBarUtils;
-import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import butterknife.BindView;
@@ -41,8 +43,11 @@ public class SearchActivity extends AppCompatActivity {
     EditText mEtActivitySearch;
     @BindView(R.id.tv_activity_search)
     TextView mTvActivitySearch;
-    @BindView(R.id.rl_activity_search)
-    RecyclerView mRlActivitySearch;
+//    @BindView(R.id.rl_activity_search)
+//    RecyclerView mRlActivitySearch;
+
+    @BindView(R.id.ll_activity_search)
+    ListView mListView;
     private static final String TAG = "searchactivity";
 
     @Override
@@ -80,8 +85,20 @@ public class SearchActivity extends AppCompatActivity {
         searchResBeanCall.enqueue(new Callback<SearchResBean>() {
             @Override
             public void onResponse(Call<SearchResBean> call, Response<SearchResBean> response) {
+                final ArrayList<SearchResBean.BODYBean.LSTBean> arrayList =new ArrayList<SearchResBean.BODYBean.LSTBean>();
                 if (response != null && response.body().getCODE().equals("0")) {
-                    ToastUtil.showToast(getApplicationContext(), "chenggong sou suo" + response.body().getBODY().toString());
+                    for (int i = 0; i < response.body().getBODY().getLST().size(); i++) {
+                        arrayList.add(i,response.body().getBODY().getLST().get(i));
+                    }
+                    SearchAdapter searchAdapter = new SearchAdapter(getApplicationContext(),arrayList);
+                    mListView.setAdapter(searchAdapter);
+                    mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            MyPlayActivity.launch(getApplicationContext(),arrayList,position);
+                        }
+                    });
+//                    ToastUtil.showToast(getApplicationContext(), "chenggong sou suo" + response.body().getBODY().toString());
                 }
             }
 

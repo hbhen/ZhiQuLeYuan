@@ -27,7 +27,6 @@ import com.tongyuan.android.zhiquleyuan.bean.AddInCollectionReqBean;
 import com.tongyuan.android.zhiquleyuan.bean.AddInCollectionResBean;
 import com.tongyuan.android.zhiquleyuan.bean.ControlToyPlayMusicReqBean;
 import com.tongyuan.android.zhiquleyuan.bean.ControlToyPlayMusicResBean;
-import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.MusicPlayerBean;
 import com.tongyuan.android.zhiquleyuan.fragment.ToySelectorFragment;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;

@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
@@ -17,9 +16,9 @@ import android.widget.ListView;
 import com.bumptech.glide.Glide;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.adapter.DiscoverySecondCategoryAdapter;
-import com.tongyuan.android.zhiquleyuan.bean.DiscoverySubReqBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridSecondaryResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListResultBean;
+import com.tongyuan.android.zhiquleyuan.bean.DiscoverySubReqBean;
 import com.tongyuan.android.zhiquleyuan.request.RequestManager;
 import com.tongyuan.android.zhiquleyuan.request.base.SuperModel;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
@@ -104,7 +103,6 @@ public class DiscoverySecondCategoryActivity extends AppCompatActivity implement
         token = SPUtils.getString(this, "TOKEN", "");
         getIdColSecondaryInfo(colid, false);
     }
-
 
     private void getIdColSecondaryInfo(String colid, final boolean isLoadMore) {
         int page = currPage;

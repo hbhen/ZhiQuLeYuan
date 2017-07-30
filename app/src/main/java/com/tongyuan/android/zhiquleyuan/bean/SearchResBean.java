@@ -1,11 +1,14 @@
 package com.tongyuan.android.zhiquleyuan.bean;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 
 /**
  * Created by Android on 2017/7/18.
  */
-public class SearchResBean {
+public class SearchResBean implements Parcelable {
     /**
      * TYPE : RES
      * CMD : SEARES
@@ -152,7 +155,7 @@ public class SearchResBean {
         this.TOKEN = TOKEN;
     }
 
-    public static class BODYBean {
+    public static class BODYBean implements Parcelable {
         /**
          * PS : 10
          * NC : 2
@@ -239,7 +242,7 @@ public class SearchResBean {
             this.LST = LST;
         }
 
-        public static class LSTBean {
+        public static class LSTBean extends MusicPlayerBean  {
             /**
              * DUR : 0:05:48
              * TYPE : 音频文件
@@ -259,9 +262,9 @@ public class SearchResBean {
             private String REMARK;
             private String SIZE;
             private String COLNAME;
-            private String IMG;
-            private String ID;
-            private String NAME;
+//            private String IMG;
+//            private String ID;
+//            private String NAME;
             private String COLID;
 
             @Override
@@ -373,6 +376,124 @@ public class SearchResBean {
             public void setCOLID(String COLID) {
                 this.COLID = COLID;
             }
+
+            @Override
+            public int describeContents() {
+                return 0;
+            }
+
+            @Override
+            public void writeToParcel(Parcel dest, int flags) {
+                super.writeToParcel(dest, flags);
+                dest.writeString(this.DUR);
+                dest.writeString(this.TYPE);
+                dest.writeString(this.TIMES);
+                dest.writeString(this.REMARK);
+                dest.writeString(this.SIZE);
+                dest.writeString(this.COLNAME);
+                dest.writeString(this.COLID);
+            }
+
+            protected LSTBean(Parcel in) {
+                super(in);
+                this.DUR = in.readString();
+                this.TYPE = in.readString();
+                this.TIMES = in.readString();
+                this.REMARK = in.readString();
+                this.SIZE = in.readString();
+                this.COLNAME = in.readString();
+                this.COLID = in.readString();
+            }
+
+            public static final Creator<LSTBean> CREATOR = new Creator<LSTBean>() {
+                @Override
+                public LSTBean createFromParcel(Parcel source) {
+                    return new LSTBean(source);
+                }
+
+                @Override
+                public LSTBean[] newArray(int size) {
+                    return new LSTBean[size];
+                }
+            };
         }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(this.PS);
+            dest.writeString(this.NC);
+            dest.writeString(this.PN);
+            dest.writeString(this.CNT);
+            dest.writeTypedList(this.LST);
+        }
+
+        protected BODYBean(Parcel in) {
+            this.PS = in.readString();
+            this.NC = in.readString();
+            this.PN = in.readString();
+            this.CNT = in.readString();
+            this.LST = in.createTypedArrayList(LSTBean.CREATOR);
+        }
+
+        public static final Creator<BODYBean> CREATOR = new Creator<BODYBean>() {
+            @Override
+            public BODYBean createFromParcel(Parcel source) {
+                return new BODYBean(source);
+            }
+
+            @Override
+            public BODYBean[] newArray(int size) {
+                return new BODYBean[size];
+            }
+        };
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.TYPE);
+        dest.writeString(this.CMD);
+        dest.writeString(this.ACCT);
+        dest.writeString(this.TIME);
+        dest.writeString(this.VERI);
+        dest.writeString(this.SEQ);
+        dest.writeString(this.CODE);
+        dest.writeString(this.MSG);
+        dest.writeParcelable(this.BODY, flags);
+        dest.writeString(this.TOKEN);
+    }
+
+    protected SearchResBean(Parcel in) {
+        this.TYPE = in.readString();
+        this.CMD = in.readString();
+        this.ACCT = in.readString();
+        this.TIME = in.readString();
+        this.VERI = in.readString();
+        this.SEQ = in.readString();
+        this.CODE = in.readString();
+        this.MSG = in.readString();
+        this.BODY = in.readParcelable(BODYBean.class.getClassLoader());
+        this.TOKEN = in.readString();
+    }
+
+    public static final Parcelable.Creator<SearchResBean> CREATOR = new Parcelable.Creator<SearchResBean>() {
+        @Override
+        public SearchResBean createFromParcel(Parcel source) {
+            return new SearchResBean(source);
+        }
+
+        @Override
+        public SearchResBean[] newArray(int size) {
+            return new SearchResBean[size];
+        }
+    };
 }

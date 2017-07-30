@@ -496,7 +496,9 @@ public class DiscoveryListResultBean implements Parcelable {
     public static final Parcelable.Creator<DiscoveryListResultBean> CREATOR = new Parcelable.Creator<DiscoveryListResultBean>() {
         @Override
         public DiscoveryListResultBean createFromParcel(Parcel source) {
+
             return new DiscoveryListResultBean(source);
+
         }
 
         @Override
