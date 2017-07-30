@@ -6,11 +6,11 @@ android {
         zqly {
             keyAlias 'zqly'
             keyPassword 'zqly1210'
-            storeFile file('C:/Users/Android/Desktop/finalkey.jks')
+            storeFile file('finalkey.jks')
             storePassword 'zqly1210'
         }
         release{
-            storeFile file('C:/Users/Android/Desktop/finalkey.jks')
+            storeFile file('finalkey.jks')
             storePassword 'zqly1210'
             keyAlias 'zqly'
             keyPassword 'zqly1210'
