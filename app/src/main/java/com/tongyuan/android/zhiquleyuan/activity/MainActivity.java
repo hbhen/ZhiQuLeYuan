@@ -233,6 +233,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
 
         }*/
+        Log.i("gengen", "showFragment f = " + f);
         transaction.replace(R.id.fl_fragmentcontainer, f);
         if (name != null) {
             if (name.equals(ToyDetailsFragment.class.getSimpleName())) {
@@ -247,8 +248,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             }
         }
 
-        transaction.commit();
-
+        //transaction.commit();
+        transaction.commitAllowingStateLoss();
     }
 
     private Fragment currentFragment;
@@ -359,21 +360,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 break;
 
             case R.id.rb_history:
-                rb_discovery.setSelected(false);
-                rb_recoding.setSelected(false);
-                rb_history.setSelected(true);
-                rb_mine.setSelected(false);
-                if (historyFragment == null) {
-                    historyFragment = new HistoryFragment();
-                }
                 mMainToken = SPUtils.getString(this, "TOKEN", "");
-                if (!mMainToken.equals("")) {
-                    showFragment(historyFragment, null);
-                } else {
-                    startActivity(new Intent(getApplicationContext(), ActivityLogin.class));
-
+                if ("".equals(mMainToken)) {
+                    startActivityForResult(new Intent(this, ActivityLogin.class), 78);
+                    return;
                 }
-
+                showHistoryFragment();
                 break;
             case R.id.rb_mine:
                 rb_discovery.setSelected(false);
@@ -387,21 +379,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
                 break;
             case R.id.rb_toy:
-                 /*
-                * 点击button,查询当前的用户是否有玩具,有玩具就展示出来,展示到selectToy页面
-                否则进入无玩具页面,要求添加页面  待添加完玩具以后,再把玩具的图片和id,绑定的宝宝信息,传到selectToy页面,并展示
-                * */
-                rb_discovery.setSelected(false);
-                rb_recoding.setSelected(false);
-                rb_history.setSelected(false);
-                rb_mine.setSelected(false);
-                rb_toy.setSelected(true);
-                //获取手机的心跳接口,获取最新的token,比较token,如果为空,去登录页,如果不相同 , 也去登录页面.
-                //应该先判断是否登录,再判断是否有玩具
                 mMainToken = SPUtils.getString(this, "TOKEN", "");
-
-                Log.i(TAG, "onClick: token(mainactivity" + mMainToken);
-                chargeHasLogin(mMainToken);
+                if("".equals(mMainToken)) {
+                    chargeHasLogin();
+                    return;
+                }
+                showToyFragment();
                 break;
             default:
                 break;
@@ -409,16 +392,44 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
+    private void showHistoryFragment() {
+        rb_discovery.setSelected(false);
+        rb_recoding.setSelected(false);
+        rb_history.setSelected(true);
+        rb_mine.setSelected(false);
+        if (historyFragment == null) {
+            historyFragment = new HistoryFragment();
+        }
 
-    private void chargeHasLogin(String token) {
+        showFragment(historyFragment, null);
+    }
 
-        if (token.equals("")) {
+    private void showToyFragment() {
+         /*
+        * 点击button,查询当前的用户是否有玩具,有玩具就展示出来,展示到selectToy页面
+        否则进入无玩具页面,要求添加页面  待添加完玩具以后,再把玩具的图片和id,绑定的宝宝信息,传到selectToy页面,并展示
+        * */
+        rb_discovery.setSelected(false);
+        rb_recoding.setSelected(false);
+        rb_history.setSelected(false);
+        rb_mine.setSelected(false);
+        rb_toy.setSelected(true);
+        //获取手机的心跳接口,获取最新的token,比较token,如果为空,去登录页,如果不相同 , 也去登录页面.
+        //应该先判断是否登录,再判断是否有玩具
+
+        mMainToken = SPUtils.getString(this, "TOKEN", "");
+        //看是否有玩具,有玩具就去selector页面,无玩具,就去玩具添加页面
+        chargeHasToy(mMainToken);
+    }
+
+
+    private void chargeHasLogin() {
+        if (mMainToken.equals("")) {
             //未登录,去登录页面
-            startActivity(new Intent(this, ActivityLogin.class));
+            startActivityForResult(new Intent(this, ActivityLogin.class), 77);
         } else {
             //看是否有玩具,有玩具就去selector页面,无玩具,就去玩具添加页面
-            chargeHasToy(token);
-
+            chargeHasToy(mMainToken);
         }
     }
 
@@ -441,11 +452,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             @Override
             public void onResponse(Call<QueryToyResultBean> call, Response<QueryToyResultBean> response) {
                 //只有list有想要的数据,所以只传list就行
-                mList = response.body().getBODY().getLST();
-                //Log.i(TAG, "MainActivity+onResponse:list1" + mList.toString());
-                //Log.i("gengen", "MainActivity+onResponse:list1" + mList.toString());
-                if (mList != null) {
-                    showDifferentToyFragment(mList);
+                if("0".equals(response.body().getCODE())) {
+                    mList = response.body().getBODY().getLST();
+                    //Log.i(TAG, "MainActivity+onResponse:list1" + mList.toString());
+                    if (mList != null) {
+                        showDifferentToyFragment(mList);
+                    }
+                } else {
+                    ToastUtil.showToast(mContext, response.body().getMSG());
                 }
             }
 
@@ -480,6 +494,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 //        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 77 && data != null) {// toyFragment
+            showToyFragment();
+            return;
+        } else if(requestCode == 78 && data != null) {
+            showHistoryFragment();
+            return;
+        }
         UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
     }
 }

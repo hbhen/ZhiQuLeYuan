@@ -435,6 +435,7 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
                     bundle.putString("username", name);
                     bundle.putString("userimg", img);
                     data.putExtras(bundle);
+                    setResult(RESULT_OK, data);
                     finish();
                 } else {
                     ToastUtil.showToast(getApplicationContext(), response.body().getMSG());

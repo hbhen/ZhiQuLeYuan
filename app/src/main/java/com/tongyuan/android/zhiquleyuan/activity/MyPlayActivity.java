@@ -88,7 +88,6 @@ public class MyPlayActivity extends BaseActivity {
     //更新播放进度的显示
     private static final int UPDATE_PLAY_PROGRESS_SHOW = 1;
     private ObjectAnimator mRotateObjectAnimator;
-    private final static String TAG = "gengen";
 
     private Handler mHandler = new Handler() {
         @Override
@@ -239,7 +238,6 @@ public class MyPlayActivity extends BaseActivity {
 
             @Override
             public void onFailure(Call<AddInCollectionResBean> call, Throwable t) {
-                Log.i(TAG, "onFailure: (MyPlayerActivity,addincollection)" + t.toString());
             }
         });
     }
