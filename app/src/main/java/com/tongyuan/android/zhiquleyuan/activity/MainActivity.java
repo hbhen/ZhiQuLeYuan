@@ -232,12 +232,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
 
         }*/
-<<<<<<< HEAD
-        Log.d("false", "transaction!" + transaction + "fragment" + f);
 
-=======
-        Log.i("gengen", "showFragment f = " + f);
->>>>>>> a98abb1031a7f0c6691a82cda1b45dfc94286b82
+        Log.d("false", "transaction!" + transaction + "----fragment" + f);
+
         transaction.replace(R.id.fl_fragmentcontainer, f);
 
         if (name != null) {
@@ -261,28 +258,52 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     public void showFragment(String name) {
         if (name.equals(DiscoveryFragment.class.getSimpleName())) {
+            if (discoveryFragment == null) {
+                discoveryFragment = new DiscoveryFragment();
+            }
             showFragment(discoveryFragment, name);
             currentFragment = discoveryFragment;
         } else if (name.equals(RecodingFragment.class.getSimpleName())) {
+            if (recodingFragment == null) {
+                recodingFragment = new RecodingFragment();
+            }
             showFragment(recodingFragment, name);
             currentFragment = recodingFragment;
         } else if (name.equals(ToyAddFragment.class.getSimpleName())) {
+            if (toyAddFragment == null) {
+                toyAddFragment = new ToyAddFragment();
+            }
             showFragment(toyAddFragment, name);
             currentFragment = toyAddFragment;
         } else if (name.equals(ToySelectorFragment.class.getSimpleName())) {
             fragmentStack.clear();
+            if (mToySelectorFragment == null) {
+                mToySelectorFragment = new ToySelectorFragment();
+            }
             showFragment(mToySelectorFragment, name);
             currentFragment = mToySelectorFragment;
         } else if (name.equals(HistoryFragment.class.getSimpleName())) {
+            if (historyFragment == null) {
+                historyFragment = new HistoryFragment();
+            }
             showFragment(historyFragment, name);
             currentFragment = historyFragment;
         } else if (name.equals(MineFragment.class.getSimpleName())) {
+            if (mineFragment == null) {
+                mineFragment = new MineFragment();
+            }
             showFragment(mineFragment, name);
             currentFragment = mineFragment;
         } else if (name.equals(ToyDetailsFragment.class.getSimpleName())) {
+            if (toyDetailsFragment == null) {
+                toyDetailsFragment = new ToyDetailsFragment();
+            }
             showFragment(toyDetailsFragment, name);
             currentFragment = toyDetailsFragment;
         } else if (name.equals(CallWaitingConnectFragment.class.getSimpleName())) {
+            if (mCallWaitingConnectFragment == null) {
+                mCallWaitingConnectFragment = new CallWaitingConnectFragment();
+            }
             showFragment(mCallWaitingConnectFragment, name);
             currentFragment = mCallWaitingConnectFragment;
         }
@@ -317,6 +338,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     public void showFragment(Fragment fragment) {
         if (fragment instanceof ToyManagerFragment) {
+            if (fragment == null) {
+                return;
+            }
             showFragment(fragment, ToyManagerFragment.class.getSimpleName());
             currentFragment = fragment;
         }
@@ -324,19 +348,21 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private void initFragment() {
         //添加五个Fragment对象添加进来
-        discoveryFragment = new DiscoveryFragment();
-        recodingFragment = new RecodingFragment();
-        mToySelectorFragment = new ToySelectorFragment();
-        toyAddFragment = new ToyAddFragment();
-        historyFragment = new HistoryFragment();
-        mineFragment = new MineFragment();
-        toyDetailsFragment = new ToyDetailsFragment();
-//        mVideoFragment = new VideoFragment();
-        mCallWaitingConnectFragment = new CallWaitingConnectFragment();
+//        discoveryFragment = new DiscoveryFragment();
+//        recodingFragment = new RecodingFragment();
+//        mToySelectorFragment = new ToySelectorFragment();
+//        toyAddFragment = new ToyAddFragment();
+//        historyFragment = new HistoryFragment();
+//        mineFragment = new MineFragment();
+//        toyDetailsFragment = new ToyDetailsFragment();
+//        mCallWaitingConnectFragment = new CallWaitingConnectFragment();
         showFragment(DiscoveryFragment.class.getSimpleName());
     }
 
     public ToyDetailsFragment getToyDetailsFragment() {
+        if (toyDetailsFragment == null) {
+            toyDetailsFragment = new ToyDetailsFragment();
+        }
         return toyDetailsFragment;
     }
 
@@ -348,6 +374,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 rb_recoding.setSelected(false);
                 rb_history.setSelected(false);
                 rb_mine.setSelected(false);
+                rb_toy.setSelected(false);
                 showFragment(DiscoveryFragment.class.getSimpleName());
 
                 break;
@@ -356,6 +383,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 rb_recoding.setSelected(true);
                 rb_history.setSelected(false);
                 rb_mine.setSelected(false);
+                rb_toy.setSelected(false);
                 if (recodingFragment == null) {
                     recodingFragment = new RecodingFragment();
                 }
@@ -373,10 +401,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 showHistoryFragment();
                 break;
             case R.id.rb_mine:
+                rb_toy.setSelected(false);
                 rb_discovery.setSelected(false);
                 rb_recoding.setSelected(false);
                 rb_history.setSelected(false);
-                rb_mine.setSelected(true);
+                rb_toy.setSelected(false);
                 if (mineFragment == null) {
                     mineFragment = new MineFragment();
                 }
@@ -384,8 +413,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
                 break;
             case R.id.rb_toy:
+                rb_toy.setSelected(true);
+                rb_discovery.setSelected(false);
+                rb_recoding.setSelected(false);
+                rb_history.setSelected(false);
+                rb_mine.setSelected(false);
                 mMainToken = SPUtils.getString(this, "TOKEN", "");
-                if("".equals(mMainToken)) {
+                if ("".equals(mMainToken)) {
                     chargeHasLogin();
                     return;
                 }
@@ -402,6 +436,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         rb_recoding.setSelected(false);
         rb_history.setSelected(true);
         rb_mine.setSelected(false);
+        rb_toy.setSelected(false);
         if (historyFragment == null) {
             historyFragment = new HistoryFragment();
         }
@@ -457,7 +492,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             @Override
             public void onResponse(Call<QueryToyResultBean> call, Response<QueryToyResultBean> response) {
                 //只有list有想要的数据,所以只传list就行
-                if("0".equals(response.body().getCODE())) {
+                if ("0".equals(response.body().getCODE())) {
                     mList = response.body().getBODY().getLST();
                     //Log.i(TAG, "MainActivity+onResponse:list1" + mList.toString());
                     if (mList != null) {
@@ -499,10 +534,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 //        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 77 && data != null) {// toyFragment
+        if (requestCode == 77 && data != null) {// toyFragment
             showToyFragment();
             return;
-        } else if(requestCode == 78 && data != null) {
+        } else if (requestCode == 78 && data != null) {
             showHistoryFragment();
             return;
         }

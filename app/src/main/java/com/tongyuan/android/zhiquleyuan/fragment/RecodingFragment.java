@@ -305,16 +305,9 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
             }
 
         });
-<<<<<<< HEAD
 
-        if (isShowPlayingControl) {
-            showRecordingPlayView(true);
-
-        }
-        showRecordingPlayView(false);
-=======
         showBottomPanel();
->>>>>>> a98abb1031a7f0c6691a82cda1b45dfc94286b82
+
         return recordingRoot;
     }
 

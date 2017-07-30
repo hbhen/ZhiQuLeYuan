@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
+import com.tongyuan.android.zhiquleyuan.activity.MainActivity;
 import com.tongyuan.android.zhiquleyuan.activity.NoDisturbActivity;
 import com.tongyuan.android.zhiquleyuan.activity.SetupWlanActivity;
 import com.tongyuan.android.zhiquleyuan.adapter.ToyMemberAdapter;
@@ -84,6 +85,7 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
     private List<QueryBabyListFromToyIdRes.BODYBean.LSTBean> mLst;
     private String mCurrentUserId;
     private String mOwnerId;
+    private ImageView mIv_back;
 
     @Nullable
     @Override
@@ -106,7 +108,7 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
         mCallButtery = (ImageView) fragment_manageToy.findViewById(R.id.iv_fragment_managetoy_call_buttery);
         mCallMIc = (ImageView) fragment_manageToy.findViewById(R.id.iv_fragment_managetoy_call_mic);
         mCallCamera = (ImageView) fragment_manageToy.findViewById(R.id.iv_fragment_managetoy_call_camera);
-
+        mIv_back = (ImageView) fragment_manageToy.findViewById(R.id.iv_back);
 
         mMygrid = (MyGridView) fragment_manageToy.findViewById(R.id.mygrid);
         toyMemberAdapter = new ToyMemberAdapter(getActivity(), lst, mResponse);
@@ -182,6 +184,7 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
         mBt_fragment_managetoy_nodisturb.setOnClickListener(this);
         mBt_fragment_managetoy_setupwlan.setOnClickListener(this);
         mTv_frament_managetoy_manager.setOnClickListener(this);
+        mIv_back.setOnClickListener(this);
 //        mTv_fragment_toy_details_unbind.setOnClickListener(this);
 //        mTv_fragment_toy_details_bind.setOnClickListener(this);
 
@@ -207,6 +210,11 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
                 } else {
                     ToastUtil.showToast(getActivity(), "您不是该玩具的持有者,不能设置管理员");
                 }
+                break;
+            case R.id.iv_back:
+                MainActivity mainActivity = (MainActivity) getActivity();
+                mainActivity.backToTop();
+                ToastUtil.showToast(mContext, "back");
                 break;
 //            case R.id.tv_fragment_managetoy_unbindtoy:
 //                ToastUtil.showToast(getActivity(), "Unbind");
