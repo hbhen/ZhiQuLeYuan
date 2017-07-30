@@ -25,6 +25,7 @@ public class BaseFragment extends Fragment {
         isDestroy = false;
     }
 
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,12 +39,11 @@ public class BaseFragment extends Fragment {
 
             }
             fragmentTransaction.commit();
-
         }
+
         //拿到acitivity对象,获得context
         mActivity = getActivity();
         mContext = getActivity().getApplicationContext();
-
 
     }
 
