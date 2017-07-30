@@ -50,6 +50,9 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <activity android:name=".activity.SearchActivity"
+            android:launchMode="singleTop"/>
         <activity
             android:name=".activity.SplashActivity"
             android:screenOrientation="portrait">
@@ -151,6 +154,8 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true"
             android:screenOrientation="portrait" />
+
+
 
     </application>
 
