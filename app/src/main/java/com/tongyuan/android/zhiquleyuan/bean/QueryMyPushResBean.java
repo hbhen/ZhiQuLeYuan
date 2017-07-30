@@ -1,12 +1,15 @@
 package com.tongyuan.android.zhiquleyuan.bean;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 
 /**
  * Created by DTC on 2017/4/12.
  */
 
-public class QueryMyPushResBean {
+public class QueryMyPushResBean implements Parcelable {
 
 
     /**
@@ -164,7 +167,7 @@ public class QueryMyPushResBean {
         this.TOKEN = TOKEN;
     }
 
-    public static class BODYBean {
+    public static class BODYBean implements Parcelable {
         /**
          * LST : [{"IMG":"","ID":"201707091103161016840374","RCDID":"201707092004111016840471","DUR":"0:00:08","TIMES":"13","COLNAME":"","TYPE":"",
          * "COLID":"","NAME":"2017年07月09日 11时02分52秒.mp3","SIZE":"13.52KB","ENDTIME":"","REMARK":"","BEGINTIME":"20170709200411"},{"IMG":"",
@@ -260,7 +263,7 @@ public class QueryMyPushResBean {
             this.LST = LST;
         }
 
-        public static class LSTBean {
+        public static class LSTBean extends MusicPlayerBean {
             /**
              * IMG :
              * ID : 201707091103161016840374
@@ -277,15 +280,15 @@ public class QueryMyPushResBean {
              * BEGINTIME : 20170709200411
              */
 
-            private String IMG;
-            private String ID;
+//            private String IMG;
+//            private String ID;
             private String RCDID;
             private String DUR;
             private String TIMES;
             private String COLNAME;
             private String TYPE;
             private String COLID;
-            private String NAME;
+            //            private String NAME;
             private String SIZE;
             private String ENDTIME;
             private String REMARK;
@@ -430,6 +433,130 @@ public class QueryMyPushResBean {
             public void setBEGINTIME(String BEGINTIME) {
                 this.BEGINTIME = BEGINTIME;
             }
+
+            @Override
+            public int describeContents() {
+                return 0;
+            }
+
+            @Override
+            public void writeToParcel(Parcel dest, int flags) {
+                super.writeToParcel(dest, flags);
+                dest.writeString(this.RCDID);
+                dest.writeString(this.DUR);
+                dest.writeString(this.TIMES);
+                dest.writeString(this.COLNAME);
+                dest.writeString(this.TYPE);
+                dest.writeString(this.COLID);
+                dest.writeString(this.SIZE);
+                dest.writeString(this.ENDTIME);
+                dest.writeString(this.REMARK);
+                dest.writeString(this.BEGINTIME);
+            }
+
+            protected LSTBean(Parcel in) {
+                super(in);
+                this.RCDID = in.readString();
+                this.DUR = in.readString();
+                this.TIMES = in.readString();
+                this.COLNAME = in.readString();
+                this.TYPE = in.readString();
+                this.COLID = in.readString();
+                this.SIZE = in.readString();
+                this.ENDTIME = in.readString();
+                this.REMARK = in.readString();
+                this.BEGINTIME = in.readString();
+            }
+
+            public static final Creator<LSTBean> CREATOR = new Creator<LSTBean>() {
+                @Override
+                public LSTBean createFromParcel(Parcel source) {
+                    return new LSTBean(source);
+                }
+
+                @Override
+                public LSTBean[] newArray(int size) {
+                    return new LSTBean[size];
+                }
+            };
         }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(this.PN);
+            dest.writeString(this.CNT);
+            dest.writeString(this.NC);
+            dest.writeString(this.PS);
+            dest.writeTypedList(this.LST);
+        }
+
+        protected BODYBean(Parcel in) {
+            this.PN = in.readString();
+            this.CNT = in.readString();
+            this.NC = in.readString();
+            this.PS = in.readString();
+            this.LST = in.createTypedArrayList(LSTBean.CREATOR);
+        }
+
+        public static final Creator<BODYBean> CREATOR = new Creator<BODYBean>() {
+            @Override
+            public BODYBean createFromParcel(Parcel source) {
+                return new BODYBean(source);
+            }
+
+            @Override
+            public BODYBean[] newArray(int size) {
+                return new BODYBean[size];
+            }
+        };
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.TYPE);
+        dest.writeString(this.CMD);
+        dest.writeString(this.ACCT);
+        dest.writeString(this.TIME);
+        dest.writeString(this.VERI);
+        dest.writeString(this.SEQ);
+        dest.writeString(this.CODE);
+        dest.writeString(this.MSG);
+        dest.writeParcelable(this.BODY, flags);
+        dest.writeString(this.TOKEN);
+    }
+
+    protected QueryMyPushResBean(Parcel in) {
+        this.TYPE = in.readString();
+        this.CMD = in.readString();
+        this.ACCT = in.readString();
+        this.TIME = in.readString();
+        this.VERI = in.readString();
+        this.SEQ = in.readString();
+        this.CODE = in.readString();
+        this.MSG = in.readString();
+        this.BODY = in.readParcelable(BODYBean.class.getClassLoader());
+        this.TOKEN = in.readString();
+    }
+
+    public static final Parcelable.Creator<QueryMyPushResBean> CREATOR = new Parcelable.Creator<QueryMyPushResBean>() {
+        @Override
+        public QueryMyPushResBean createFromParcel(Parcel source) {
+            return new QueryMyPushResBean(source);
+        }
+
+        @Override
+        public QueryMyPushResBean[] newArray(int size) {
+            return new QueryMyPushResBean[size];
+        }
+    };
 }

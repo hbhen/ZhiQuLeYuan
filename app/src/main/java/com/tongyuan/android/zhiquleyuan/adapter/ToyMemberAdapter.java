@@ -120,12 +120,18 @@ public class ToyMemberAdapter extends BaseAdapter {
 
         if(position <mLSTBeanlist.size()) {
             if (mLSTBeanlist.get(position).getID().equals(ownerUserId)) {
+
                 memberHolder.king.setVisibility(View.VISIBLE);
+
             } else {
+
                 memberHolder.king.setVisibility(View.INVISIBLE);
+
             }
         } else {
+
             memberHolder.king.setVisibility(View.INVISIBLE);
+
         }
 
         //加号部分 包括点击事件

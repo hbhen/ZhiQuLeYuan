@@ -178,8 +178,11 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
     private String mDur;
     private ShareAction mShareAction;
     private UMShareListener mShareListener;
+    private boolean isShowPlayingControl = false;
+
 
     public RecodingFragment() {
+
     }
 
     private static final int UPDATE_PLAY_PROGRESS_SHOW = 1;
@@ -201,7 +204,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View recordingRoot = initView(inflater);
         mDbHelper = new DBHelper(getActivity());
-
+        Log.i(TAG, "onCreateView: went");
         Log.i("circlelife", "recordingfragment:onCreateView: went");
         return recordingRoot;
 
@@ -301,6 +304,11 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
 
         });
 
+        if (isShowPlayingControl) {
+            showRecordingPlayView(true);
+
+        }
+        showRecordingPlayView(false);
         return recordingRoot;
 
     }
@@ -313,6 +321,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        Log.i(TAG, "onActivityCreated: went");
         mShareListener = new CustomShareListener(getActivity());
         mShareAction = new ShareAction(getActivity());
 
@@ -708,7 +717,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
                             //展示的时候同时保存当前的选中的录音文件的播放地址.
                             SPUtils.putString(getContext(), "address", response.body().getBODY().getLST().get(position).getID());
                             //1,点击item,显示录音播放界面
-
+//                            isShowRecordingControl = false;
                             //保存position
                             selectedPosition = position;
                             showRecordingPlayView(true);
@@ -1140,7 +1149,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
     @Override
     public void onResume() {
         super.onResume();
-
+        Log.i(TAG, "onResume: went");
         String dir = Environment.getExternalStorageDirectory().getPath() + "/AAmart";
         final File file = new File(dir);
         if (!file.exists()) {
@@ -1160,12 +1169,15 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
         if (MusicPlayer.isPlaying() && MusicPlayerService.isPlayUrl(mRecordingId)) {
             showStartView();
         }
+
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        Log.i(TAG, "onPause: went");
         showPauseView();
+
     }
 
     @Override
@@ -1214,7 +1226,6 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
         mPlay.setVisibility(View.GONE);
         mStop.setVisibility(View.VISIBLE);
         mStopCircle.setVisibility(View.VISIBLE);
-
     }
 
     private void showPauseView() {
@@ -1234,6 +1245,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
     @Override
     public void onStop() {
         super.onStop();
+        Log.i(TAG, "onStop: went");
         Log.i("circlelife", "recordingfragment:onStop: went");
     }
 
@@ -1296,6 +1308,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        Log.i(TAG, "onAttach: went");
         ShareAction shareAction = new ShareAction(getActivity());
 
     }
@@ -1304,5 +1317,19 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         mShareAction.close();
+    }
+
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.i(TAG, "onDestroy: went");
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.i(TAG, "onDetach: went");
     }
 }

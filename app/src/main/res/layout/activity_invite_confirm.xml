@@ -27,7 +27,6 @@
                 android:text="邀请"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_18"/>
-
         </RelativeLayout>
 
     <ListView

@@ -3,7 +3,6 @@ package com.tongyuan.android.zhiquleyuan.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -55,7 +54,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
 
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
@@ -126,31 +124,31 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     protected void onPrepared() {
-        if(recodingFragment != null)
+        if (recodingFragment != null)
             recodingFragment.onPrepared();
     }
 
     @Override
     protected void onError() {
-        if(recodingFragment != null)
+        if (recodingFragment != null)
             recodingFragment.onError();
     }
 
     @Override
     protected void onCompleted() {
-        if(recodingFragment != null)
+        if (recodingFragment != null)
             recodingFragment.onCompleted();
     }
 
     @Override
     protected void bindSuccess() {
-        if(recodingFragment != null)
+        if (recodingFragment != null)
             recodingFragment.bindSuccess();
     }
 
     @Override
     protected void isSimplePlayUrl() {
-        if(recodingFragment != null)
+        if (recodingFragment != null)
             recodingFragment.isSimplePlayUrl();
     }
 
@@ -166,30 +164,30 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void getServiceToken(String token) {
-        Retrofit retrofit=new Retrofit.Builder()
+        Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constant.baseurl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
-        PhoneHeartReqBean.BODYBean bodyBean= new PhoneHeartReqBean.BODYBean("A","APP","1.0","","","","","","");
-        PhoneHeartReqBean phoneHeartReqBean = new PhoneHeartReqBean("REQ","HEART","",new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()),
-                bodyBean,"",token,"1");
-        Gson gson=new Gson();
+        PhoneHeartReqBean.BODYBean bodyBean = new PhoneHeartReqBean.BODYBean("A", "APP", "1.0", "", "", "", "", "", "");
+        PhoneHeartReqBean phoneHeartReqBean = new PhoneHeartReqBean("REQ", "HEART", "", new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()),
+                bodyBean, "", token, "1");
+        Gson gson = new Gson();
         String s = gson.toJson(phoneHeartReqBean);
         Call<PhoneHeartResBean> phoneHeartResBeanCall = allInterface.PHONEHEART_RES_BEAN_CALL(s);
         phoneHeartResBeanCall.enqueue(new Callback<PhoneHeartResBean>() {
 
             @Override
             public void onResponse(Call<PhoneHeartResBean> call, Response<PhoneHeartResBean> response) {
-                if (response.body().getCODE().equals("-10006")){
-                    ToastUtil.showToast(getApplicationContext(),response.body().getMSG());
-                    SPUtils.putString(getApplicationContext(),"TOKEN","");
+                if (response.body().getCODE().equals("-10006")) {
+                    ToastUtil.showToast(getApplicationContext(), response.body().getMSG());
+                    SPUtils.putString(getApplicationContext(), "TOKEN", "");
                 }
             }
 
             @Override
             public void onFailure(Call<PhoneHeartResBean> call, Throwable t) {
-                Log.i(TAG, "onFailure: "+t.toString());
+                Log.i(TAG, "onFailure: " + t.toString());
             }
         });
 
@@ -234,7 +232,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
 
         }*/
+        Log.d("false", "transaction!" + transaction + "fragment" + f);
+
         transaction.replace(R.id.fl_fragmentcontainer, f);
+
         if (name != null) {
             if (name.equals(ToyDetailsFragment.class.getSimpleName())) {
                 //transaction.addToBackStack(null);

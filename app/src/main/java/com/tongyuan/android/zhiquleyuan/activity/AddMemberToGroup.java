@@ -59,7 +59,6 @@ public class AddMemberToGroup extends AppCompatActivity implements View.OnClickL
         mEt_addmembertogroup = (EditText) findViewById(R.id.et_addmembertogroup);
         mBt_addmembertogroup = (Button) findViewById(R.id.bt_addmembertogroup);
 
-
     }
 
     private void initListener() {
@@ -89,14 +88,11 @@ public class AddMemberToGroup extends AppCompatActivity implements View.OnClickL
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.et_addmembertogroup:
-
                 //TODO 判断是不是手机号的逻辑
-
-
                 break;
             case R.id.bt_addmembertogroup:
                 mPhone = mEt_addmembertogroup.getText().toString().trim();
-                ToastUtil.showToast(this,"phone"+mPhone);
+                ToastUtil.showToast(this, "phone" + mPhone);
                 QuerySingleUserInfo(mPhone);
                 break;
             default:
@@ -104,7 +100,7 @@ public class AddMemberToGroup extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    private void QuerySingleUserInfo(String phone) {
+    private void QuerySingleUserInfo(final String phone) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -124,6 +120,7 @@ public class AddMemberToGroup extends AppCompatActivity implements View.OnClickL
                 if (!response.body().toString().isEmpty() && response.body().getCODE().equals("-201")) {
                     ToastUtil.showToast(getApplicationContext(), "当前用户不存在,发送注册链接给用户");
                     mIntent.setClass(getApplicationContext(), UnRegisterUserInvite.class);
+                    mIntent.putExtra("phone", phone);
                     startActivity(mIntent);
                 } else if (!response.body().toString().isEmpty() && response.body().getCODE().equals("0")) {
                     //返回的是正确的值,用户存在,把用户的id获取并返回
@@ -135,7 +132,9 @@ public class AddMemberToGroup extends AppCompatActivity implements View.OnClickL
 //                    mToyManagerFragment.setArguments(bundle);
 //                    transaction.replace(R.id.fl_fragmentcontainer, mToyManagerFragment);
 //                    transaction.commit();
+
                     String userId = response.body().getBODY().getID();
+
                     //查询成员,添加完以后,跳转到toymanagerfragment
 
                     addMemberToGroup(userId);

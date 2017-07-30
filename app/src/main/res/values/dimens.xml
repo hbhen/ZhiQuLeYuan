@@ -38,4 +38,5 @@
     <dimen name="dp_220">220dp</dimen>
     <dimen name="dp_22">22dp</dimen>
     <dimen name="dp_300">300dp</dimen>
+    <dimen name="dp_05" type="dimen" format="float">0.5dp</dimen>
 </resources>

@@ -9,6 +9,7 @@
         android:layout_weight="2"
         android:id="@+id/et_addmembertogroup"
         android:layout_width="0dp"
+        android:background="@null"
         android:layout_height="wrap_content"
         android:hint="@string/inputphonenum"/>
 
