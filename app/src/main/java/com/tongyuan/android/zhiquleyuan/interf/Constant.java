@@ -10,4 +10,7 @@ public interface Constant {
     String toyPause="2";
     String toyStop="3";
     String toyNext="4";
+    static enum Mode{
+        DEL, NORMAL, KING
+    }
 }

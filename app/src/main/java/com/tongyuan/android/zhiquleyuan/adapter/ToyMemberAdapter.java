@@ -2,8 +2,11 @@ package com.tongyuan.android.zhiquleyuan.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +15,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.activity.AddMemberToGroup;
@@ -19,7 +23,9 @@ import com.tongyuan.android.zhiquleyuan.bean.DelMembFromGroupReQBean;
 import com.tongyuan.android.zhiquleyuan.bean.DelMembFromGroupReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryToyMemberReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoRESBean;
+import com.tongyuan.android.zhiquleyuan.holder.MemberHolder;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
+import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
@@ -49,16 +55,14 @@ public class ToyMemberAdapter extends BaseAdapter {
     private String token;
     private String phoneNum;
     private String time;
+    private MemberHolder memberHolder;
+    private int mKingPosition;
 
 
-    private enum Mode {
-
-        DEL, NORMAL, KING
-
-    }
 
 
-    private Mode mMode = Mode.NORMAL;//默认给的初始状态是 normal;
+    private Constant.Mode mMode = Constant.Mode.NORMAL;//默认给的初始状态是 normal;
+
     public ToyMemberAdapter(FragmentActivity activity, List<QueryToyMemberReSBean.BODYBean.LSTBean> lst, SingleToyInfoRESBean.BODYBean response) {
         this.mContext = activity;
         this.mResponse = response;
@@ -72,11 +76,10 @@ public class ToyMemberAdapter extends BaseAdapter {
         time = simpleDateFormat.format(new Date());
     }
 
-
     @Override
     public int getCount() {
-        Log.i("adapter", "getCount="+(mLSTBeanlist.size() + 2));
-        if(mLSTBeanlist.size() == 0)
+        Log.i("adapter", "getCount=" + (mLSTBeanlist.size() + 2));
+        if (mLSTBeanlist.size() == 0)
             return 0;
         return mLSTBeanlist.size() + 2;
     }
@@ -84,7 +87,7 @@ public class ToyMemberAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        Log.i("adapter", "getItem "+position);
+        Log.i("adapter", "getItem " + position);
         if (position >= mLSTBeanlist.size()) {
             return null;
         }
@@ -94,22 +97,20 @@ public class ToyMemberAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        Log.i("adapter", "getItemId="+position);
+        Log.i("adapter", "getItemId=" + position);
         return position;
     }
 
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Log.i("adapter", "getView "+position);
-        final MemberHolder memberHolder;
-
         if (convertView == null) {
             memberHolder = new MemberHolder();
             convertView = LayoutInflater.from(mContext).inflate(R.layout.manager_gridview_item, null);
             memberHolder.itemView = convertView.findViewById(R.id.item_frame);
             memberHolder.icon = (ImageView) convertView.findViewById(R.id.iv_manager_gridview_item);
             memberHolder.itemView.setOnClickListener(clickIcon);
+            memberHolder.itemView.setOnLongClickListener(mOnLongClickListener);
             memberHolder.del = (ImageView) convertView.findViewById(R.id.iv_manager_gridview_item_remove);
             memberHolder.king = (ImageView) convertView.findViewById(R.id.iv_manager_gridview_item_managerking);
             convertView.setTag(memberHolder);
@@ -118,38 +119,35 @@ public class ToyMemberAdapter extends BaseAdapter {
         }
         memberHolder.itemView.setTag(position);
 
-        if(position <mLSTBeanlist.size()) {
+        if (position < mLSTBeanlist.size()) {
             if (mLSTBeanlist.get(position).getID().equals(ownerUserId)) {
-
-                memberHolder.king.setVisibility(View.VISIBLE);
-
+                mKingPosition = position;
+                memberHolder.king.setImageResource(R.drawable.managerking_3x);
             } else {
-
                 memberHolder.king.setVisibility(View.INVISIBLE);
-
             }
         } else {
-
             memberHolder.king.setVisibility(View.INVISIBLE);
-
         }
 
         //加号部分 包括点击事件
-        if (position == getCount()-2) {
+        if (position == getCount() - 2) {
             memberHolder.icon.setImageResource(R.drawable.toymanage_addmember_3x);
             memberHolder.del.setVisibility(View.GONE);
-            Log.i("adapter", position + "=+="+ (getCount()-2));
-        } else if (position == getCount()-1) {
+            Log.i("adapter", position + "=+=" + (getCount() - 2));
+        } else if (position == getCount() - 1) {
             //减号部分 包括点击事件
             memberHolder.icon.setImageResource(R.drawable.toymanage_removemember_3x);
             memberHolder.del.setVisibility(View.GONE);
-            Log.i("adapter", position + "=-="+ (getCount()-1));
+            Log.i("adapter", position + "=-=" + (getCount() - 1));
         } else {
+
             //正常的头像展示部分
             //管理员头像的显示
-            Log.i("adapter", position +"==else ");
+
+            Log.i("adapter", position + "==else ");
             loadImage(memberHolder.icon, position);
-            if (mMode == Mode.NORMAL) {
+            if (mMode == Constant.Mode.NORMAL) {
                 memberHolder.del.setVisibility(View.GONE);
             } else {
                 memberHolder.del.setVisibility(View.VISIBLE);
@@ -161,21 +159,43 @@ public class ToyMemberAdapter extends BaseAdapter {
     }
 
     private void loadImage(final ImageView imgView, final int position) {
-        Log.i("adapter", "loadImage "+position);
+
+        Log.i("adapter", "loadImage " + position);
         String userImg = mLSTBeanlist.get(position).getIMG();
-        Glide.with(mContext).load(userImg).asBitmap().placeholder(R.drawable.default_cover).into(imgView);
+//        Glide.with(mContext).load(userImg).asBitmap().placeholder(R.drawable.default_cover).into(imgView);
 
-        /*Glide.with(mContext).load(userImg).asBitmap().placeholder(R.drawable.default_cover).into(new BitmapImageViewTarget(imgView) {
+        Glide.with(mContext).load(userImg).asBitmap().placeholder(R.drawable.default_cover).into(new BitmapImageViewTarget(imgView) {
 
-                @Override
-                protected void setResource(Bitmap resource) {
-                    RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(mContext.getResources(), resource);
-                    roundedBitmapDrawable.setCircular(true);
-                    imgView.setImageDrawable(roundedBitmapDrawable);
-                    Log.i("adapter", "setResource "+position);
-                }
-            });*/
+            @Override
+            protected void setResource(Bitmap resource) {
+                RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(mContext.getResources(), resource);
+                roundedBitmapDrawable.setCircular(true);
+                imgView.setImageDrawable(roundedBitmapDrawable);
+                Log.i("adapter", "setResource " + position);
+            }
+        });
     }
+
+    private View.OnLongClickListener mOnLongClickListener = new View.OnLongClickListener() {
+
+        @Override
+        public boolean onLongClick(View v) {
+            int longPosition = (int) v.getTag();
+            ToastUtil.showToast(mContext, "长按了..." + longPosition);
+            if (longPosition == getCount() - 2 || longPosition == getCount() - 1) {
+                ToastUtil.showToast(mContext, "再见");
+                return true;
+
+            } else {
+
+                mKingPosition=longPosition;
+
+                memberHolder.king.setVisibility(View.VISIBLE);
+                notifyDataSetChanged();
+                return true;
+            }
+        }
+    };
 
     private View.OnClickListener clickIcon = new View.OnClickListener() {
         @Override
@@ -183,7 +203,7 @@ public class ToyMemberAdapter extends BaseAdapter {
             int position = (int) v.getTag();
             ToastUtil.showToast(mContext, "点击的是:" + position);
 
-            if (position == getCount()-2) {
+            if (position == getCount() - 2) {
                 LogUtil.d("will jump to add member");
                 ToastUtil.showToast(mContext, "点击了加号,开始执行加号的逻辑");
                 Intent intent = new Intent();
@@ -192,16 +212,17 @@ public class ToyMemberAdapter extends BaseAdapter {
                 intent.putExtras(bundle);
                 intent.setClass(mContext, AddMemberToGroup.class);
                 mContext.startActivity(intent);
-            } else if (position == getCount()-1) {
-                if (mMode == Mode.NORMAL) {
-                    mMode = Mode.DEL;
+            } else if (position == getCount() - 1) {
+                if (mMode == Constant.Mode.NORMAL) {
+                    mMode = Constant.Mode.DEL;
                 } else {
-                    mMode = Mode.NORMAL;
+                    mMode = Constant.Mode.NORMAL;
                 }
                 LogUtil.d("switch mode , mMode=>" + mMode);
                 refreshUI();
             } else {
-                if (mMode != Mode.NORMAL) {
+
+                if (mMode != Constant.Mode.NORMAL) {
                     if (!mLSTBeanlist.get(position).getID().equals(ownerUserId)) {
                         String id = mLSTBeanlist.get(position).getID();
                         //提交网络 管理员踢人出玩具群
@@ -246,18 +267,13 @@ public class ToyMemberAdapter extends BaseAdapter {
 
     }
 
+    public int getIconPosition() {
+        return mKingPosition;
+    }
+
     private void refreshUI() {
         notifyDataSetChanged();
     }
 
-//    public int getSize() {
-//        return mLSTBeanlist.size() - 1;
-//    }
 
-    private class MemberHolder {
-        View itemView;
-        ImageView icon;
-        ImageView del;
-        ImageView king;
-    }
 }

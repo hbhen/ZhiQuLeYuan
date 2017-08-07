@@ -53,7 +53,6 @@ import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeReader;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.tongyuan.android.zhiquleyuan.R;
-import com.tongyuan.android.zhiquleyuan.activity.ThirdVideoActivity;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 import com.tongyuan.android.zhiquleyuan.zxing.camera.CameraManager;
 import com.tongyuan.android.zhiquleyuan.zxing.decode.BeepManager;
@@ -479,6 +478,7 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
             Intent intent = new Intent(getIntent().getAction());
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
             intent.putExtra(Intents.Scan.RESULT, rawResult.toString());
+            intent.putExtra(Intents.Scan.RESULT, rawResult.toString());
             intent.putExtra(Intents.Scan.RESULT_FORMAT, rawResult.getBarcodeFormat().toString());
             Message message = Message.obtain(handler, R.id.return_scan_result);
             message.obj = intent;
@@ -528,8 +528,6 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
         }
         if (handler == null) {
             if (mFlag == 2) {
-
-
                 Log.i("captureactivity", "onClick11: --"+mBabyimgString+"--");
                 Log.i("captureactivity", "onClick11: --"+mBabynameString+"--");
                 Log.i("captureactivity", "onClick11: --"+mRoomid+"--");
@@ -563,11 +561,11 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
 
     @Override
     protected void onActivityResult(final int requestCode, int resultCode, final Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
 
         Log.d("hahahaha", "onActivityResult: __++__++__++__++" + data.toString());
         //返回选择的需要扫描二维码的图片
-        if (resultCode == RESULT_OK) {
+        if (resultCode == Activity.RESULT_OK) {
             //被选择的二维码图片的uri
             uri = data.getData();
             new Thread(new Runnable() {
@@ -580,42 +578,47 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
                         Toast.makeText(getApplicationContext(), "图片格式有误", Toast.LENGTH_SHORT).show();
                         Looper.loop();
                         ToastUtil.showToast(getApplicationContext(), "result结果:" + result.toString());
-//                        String recode1 = result.toString();
-//                        Toast.makeText(getApplicationContext(), "recode1" + recode1, Toast.LENGTH_LONG).show();
-//                        Log.i("1111111111", "recode: " + recode1);
+                        String recode1 = result.toString();
+                        Toast.makeText(getApplicationContext(), "recode1" + recode1, Toast.LENGTH_LONG).show();
+                        Log.i("1111111111", "recode: " + recode1);
                     } else {
                         String recodeFromAdd = result.toString();
                         Toast.makeText(getApplicationContext(), "recode2" + recodeFromAdd, Toast.LENGTH_LONG).show();
+                        Intent data1 = new Intent();
+                        data1.putExtra("SCAN_RESULT", recodeFromAdd);
+                        String text = result.getText();
+                        setResult(90,data1);
+                        Log.i("1111111111", "text: " + text);
+                        ToastUtil.showToast(getApplicationContext(), "recode3" + recodeFromAdd);
+                        Log.i("1111111111", "recode4: " + recodeFromAdd);
 
-//                        String text = result.getText();
-//                        Log.i("1111111111", "text: " + text);
-//                        ToastUtil.showToast(getApplicationContext(), "recode3" + recodeFromAdd);
-//                        Log.i("1111111111", "recode4: " + recodeFromAdd);
-
-                        switch (requestCode) {
-                            case 300:
-                                // 数据返回，在这里去处理扫码结果
-                                Log.i("scan_result______11", "run: " + data.getStringExtra("SCAN_RESULT"));
-                                setResult(RESULT_OK, data);
-                                Intent intent = new Intent();
-                                intent.setClass(getApplicationContext(), ThirdVideoActivity.class);
-                                startActivity(intent);
-                                finish();
-                                break;
-                            case 301:
-                                Log.i("scan_result______22", "run: " + data.getStringExtra("SCAN_RESULT"));
-                                setResult(RESULT_OK, data);
-                                finish();
-                                break;
-                            case 3003:
-                                Log.i("scan_result______33", "run: " + data.getStringExtra("SCAN_RESULT"));
-                                setResult(RESULT_OK, data);
-                                finish();
-                                break;
-                            default:
-                                break;
-
-                        }
+//                        switch (requestCode) {
+//                            case 300: //toyadd过来的requestcode
+//                                // 数据返回，在这里去处理扫码结果
+//                                Log.i("scan_result______11", "run: " + data.getStringExtra("SCAN_RESULT"));
+//                                String scan_result = data1.getStringExtra("SCAN_RESULT");
+//                                ToastUtil.showToast(getApplicationContext(),"scan"+scan_result);
+//                                setResult(Activity.RESULT_OK, data);
+//
+////                                Intent intent = new Intent();
+////                                intent.setClass(getApplicationContext(), ThirdVideoActivity.class);
+////                                startActivity(intent);
+//                                finish();
+//                                break;
+//                            case 301:
+//                                Log.i("scan_result______22", "run: " + data.getStringExtra("SCAN_RESULT"));
+//                                setResult(RESULT_OK, data);
+//                                finish();
+//                                break;
+//                            case 3003:
+//                                Log.i("scan_result______33", "run: " + data.getStringExtra("SCAN_RESULT"));
+//                                setResult(RESULT_OK, data);
+//                                finish();
+//                                break;
+//                            default:
+//                                break;
+//
+//                        }
                     }
                 }
             }).start();

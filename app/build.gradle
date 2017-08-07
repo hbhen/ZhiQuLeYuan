@@ -2,21 +2,14 @@ apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
 
 android {
-    signingConfigs{
-        zqly {
-            keyAlias 'zqly'
-            keyPassword 'zqly1210'
-            storeFile file('finalkey.jks')
-            storePassword 'zqly1210'
-        }
-        release{
-            storeFile file('finalkey.jks')
-            storePassword 'zqly1210'
-            keyAlias 'zqly'
-            keyPassword 'zqly1210'
-            v2SigningEnabled false
-        }
-    }
+//    signingConfigs {
+//        release {
+//            keyAlias 'zqly'
+//            keyPassword 'zqly1210'
+//            storeFile file('C:/Users/Android/Desktop/finalkey.jks')
+//            storePassword 'zqly1210'
+//        }
+//    }
 
     compileSdkVersion 25
     buildToolsVersion '25.0.2'
@@ -36,12 +29,12 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), ('proguard-rules.pro')
-            signingConfig signingConfigs.release
+//            signingConfig signingConfigs.release
         }
         debug {
             minifyEnabled true
             proguardFiles 'proguard-rules.pro'
-            signingConfig signingConfigs.release
+//            signingConfig signingConfigs.release
         }
     }
 

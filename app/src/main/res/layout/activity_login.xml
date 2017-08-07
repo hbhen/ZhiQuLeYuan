@@ -11,6 +11,7 @@
         android:layout_height="@dimen/dp_44">
 
         <ImageView
+           android:id="@+id/iv_back_login"
             android:layout_width="@dimen/dp_10"
             android:layout_height="match_parent"
             android:layout_centerVertical="true"

@@ -4,11 +4,14 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 
@@ -49,13 +52,16 @@ public class MyCollectionActivity extends AppCompatActivity implements View.OnCl
     private SwipeRefreshLayout mSpRefresh;
     private SwipeMenuListView mSwipeListview;
     private ImageView mCollection_back;
+    private EditText mEditText;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mycollection);
+
         initView();
         initData();
         initListener();
+
     }
 
     private void initView() {
@@ -63,10 +69,11 @@ public class MyCollectionActivity extends AppCompatActivity implements View.OnCl
         mSwipeListview = (SwipeMenuListView) findViewById(R.id.lv_mycollection);
         lv_mycollection = (ListView) findViewById(R.id.lv_mycollection);
         mCollection_back = (ImageView) findViewById(R.id.iv_collection_back);
+        mEditText = (EditText) findViewById(R.id.et_activity_mycollection);
     }
 
     private void initData() {
-        getMyCollection();
+        getMyCollection("");
     }
 
     private void initListener() {
@@ -74,14 +81,30 @@ public class MyCollectionActivity extends AppCompatActivity implements View.OnCl
         mSpRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getMyCollection();
+                getMyCollection("");
                 mSpRefresh.setRefreshing(false);
+            }
+        });
+        mEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                getMyCollection(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
 
     }
 
-    private void getMyCollection() {
+    private void getMyCollection(String text) {
         final String token = SPUtils.getString(this, "TOKEN", "");
         final String phoneNum = SPUtils.getString(this, "phoneNum", "");
         Date date = new Date();
@@ -145,7 +168,7 @@ public class MyCollectionActivity extends AppCompatActivity implements View.OnCl
                     mSwipeListview.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
-                            deleteRecording(phoneNum, time, position, lst, token);
+                            deleteCollection(phoneNum, time, position, lst, token);
                             lst.remove(position);
                             myCollectionAdapter.notifyDataSetChanged();
 
@@ -174,7 +197,7 @@ public class MyCollectionActivity extends AppCompatActivity implements View.OnCl
         });
     }
 
-    private void deleteRecording(String phoneNum, String time, int position, List<QueryMyCollectionResBean.BODYBean.LSTBean> qlst, String token) {
+    private void deleteCollection(String phoneNum, String time, int position, List<QueryMyCollectionResBean.BODYBean.LSTBean> qlst, String token) {
 
         String resId = qlst.get(position).getID();
         Retrofit retrofit = new Retrofit.Builder()
@@ -188,7 +211,6 @@ public class MyCollectionActivity extends AppCompatActivity implements View.OnCl
         DeleteMyCollectionReqBean.BODYBean bodyBean = new DeleteMyCollectionReqBean.BODYBean(lst);
         DeleteMyCollectionReqBean deleteMyCollectionReqBean = new DeleteMyCollectionReqBean("REQ", "DFAVRES", phoneNum, time, bodyBean, "", token,
                 "1");
-
         Gson gson = new Gson();
         String babyListJson = gson.toJson(deleteMyCollectionReqBean);
         Call<DeleteMyCollectionResBean> babyListResult = allInterface.DELETE_MYCOLLECTION_RES_BEAN_CALL(babyListJson);

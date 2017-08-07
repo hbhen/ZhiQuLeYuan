@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -31,6 +33,21 @@ public abstract class BaseActivity extends AppCompatActivity implements ServiceC
     private PlaybackStatus mPlaybackStatus;
     protected Context mContext;
     protected boolean isBound = false;
+
+    @Override
+    public Resources getResources() {
+        Resources resource=super.getResources();
+        Configuration configuration=new Configuration();
+        configuration.fontScale=1.0f;
+        resource.updateConfiguration(configuration,resource.getDisplayMetrics());
+        return resource;
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+//        super.onConfigurationChanged(newConfig);
+
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

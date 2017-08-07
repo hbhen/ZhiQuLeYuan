@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -115,6 +116,7 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(arguments);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_videocall);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         MeetingUserMgr meetingUserMgr = new MeetingUserMgr();
 
         //TODO  进来的时候还要获取一个玩具的初始音量 现在不加了
@@ -163,6 +165,10 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
         mRoomid = intent.getStringExtra("roomid");
         mToken = intent.getStringExtra("token");
         mToyid = intent.getStringExtra("toyId");
+        if (mBabyimgString==null){
+            ToastUtil.showToast(this,"二维码错误");
+            return;
+        }
         if (mBabyimgString.equals("")) {
             Glide.with(this).load(R.mipmap.default_babyimage).asBitmap().centerCrop().into(new BitmapImageViewTarget(mBabyImg) {
                 @Override

@@ -256,6 +256,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
 //                        Log.i(TAG, "onClick: token" + SPUtils.getString(getActivity(), "TOKEN", ""));
                         mMineTitle.setText("点击登录");
                         Glide.with(getActivity()).load(R.drawable.player_cover_default).asBitmap().into(mPic);
+                        mTv_fragment_mine_desc.setText("登录后设置用户的信息");
                         mMyLogout.setVisibility(View.GONE);
                         ToastUtil.showToast(getContext(), "sure");
                     }
@@ -387,7 +388,6 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
             mMineTitle.setText("点击登录");
             mTv_fragment_mine_desc.setText("登录后设置机主的基本信息");
             Glide.with(getActivity()).load(R.drawable.player_cover_default).asBitmap().into(mPic);
-
         }
     }
 

@@ -18,6 +18,8 @@ package com.tongyuan.android.zhiquleyuan.zxing.decode;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -34,6 +36,7 @@ import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.activity.VideoActivity;
 import com.tongyuan.android.zhiquleyuan.bean.CallToToyReq;
 import com.tongyuan.android.zhiquleyuan.bean.CallToToyRes;
+import com.tongyuan.android.zhiquleyuan.fragment.ToySelectorFragment;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
@@ -134,8 +137,13 @@ public final class CaptureActivityHandler extends Handler {
             final Intent intent = new Intent();
 
             intent.putExtra("SCAN_RESULT", result.getText());
+
             if (flag == 1) {
-                activity.setResult(Activity.RESULT_OK, intent);
+                FragmentManager fragmentManager = activity.getFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentManager.findFragmentByTag(ToySelectorFragment.class.getSimpleName());
+                fragmentTransaction.commit();
+                activity.setResult(90, intent);
                 activity.finish();
             } else if (flag == 2) {
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(activity);
@@ -147,6 +155,7 @@ public final class CaptureActivityHandler extends Handler {
                         activity.finish();
                     }
                 });
+
                 alertDialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

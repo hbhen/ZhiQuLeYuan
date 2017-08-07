@@ -3,20 +3,21 @@ package com.tongyuan.android.zhiquleyuan.bean;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by Android on 2017/6/14.
+ * Created by Android on 2017/8/4.
  */
-public class DeleteMyPlayResBean {
+
+public class DeleteMyPushResBean {
     /**
      * TYPE : RES
-     * CMD : DMYPLAY
-     * ACCT : 13623827181
-     * TIME : 20170614150410846
+     * CMD : DMYPUSH
+     * ACCT : XXXX
+     * TIME : 20170804102602237
      * VERI :
      * SEQ : 1
      * CODE : 0
      * MSG :
-     * BODY : {"":""}
-     * TOKEN : c19d5a15-592a-4b78-863e-846e789163be
+     * BODY : {"1":"1"}
+     * TOKEN : ff35777e-1f5f-4f7c-be03-359e4e752918
      */
 
     private String TYPE;
@@ -30,23 +31,7 @@ public class DeleteMyPlayResBean {
     private BODYBean BODY;
     private String TOKEN;
 
-    @Override
-    public String toString() {
-        return "DeleteMyPlayResBean{" +
-                "TYPE='" + TYPE + '\'' +
-                ", CMD='" + CMD + '\'' +
-                ", ACCT='" + ACCT + '\'' +
-                ", TIME='" + TIME + '\'' +
-                ", VERI='" + VERI + '\'' +
-                ", SEQ='" + SEQ + '\'' +
-                ", CODE='" + CODE + '\'' +
-                ", MSG='" + MSG + '\'' +
-                ", BODY=" + BODY +
-                ", TOKEN='" + TOKEN + '\'' +
-                '}';
-    }
-
-    public DeleteMyPlayResBean(String TYPE, String CMD, String ACCT, String TIME, String VERI, String SEQ, String CODE, String MSG, BODYBean BODY,
+    public DeleteMyPushResBean(String TYPE, String CMD, String ACCT, String TIME, String VERI, String SEQ, String CODE, String MSG, BODYBean BODY,
                                String TOKEN) {
         this.TYPE = TYPE;
         this.CMD = CMD;
@@ -140,32 +125,47 @@ public class DeleteMyPlayResBean {
         this.TOKEN = TOKEN;
     }
 
+    @Override
+    public String toString() {
+        return "DeleteMyPushResBean{" +
+                "TYPE='" + TYPE + '\'' +
+                ", CMD='" + CMD + '\'' +
+                ", ACCT='" + ACCT + '\'' +
+                ", TIME='" + TIME + '\'' +
+                ", VERI='" + VERI + '\'' +
+                ", SEQ='" + SEQ + '\'' +
+                ", CODE='" + CODE + '\'' +
+                ", MSG='" + MSG + '\'' +
+                ", BODY=" + BODY +
+                ", TOKEN='" + TOKEN + '\'' +
+                '}';
+    }
+
     public static class BODYBean {
         /**
-         *  :
+         * 1 : 1
          */
 
-        @SerializedName("")
-        private String _$240; // FIXME check this code
+        @SerializedName("1")
+        private String _$1;
 
         @Override
         public String toString() {
             return "BODYBean{" +
-                    "_$240='" + _$240 + '\'' +
+                    "_$1='" + _$1 + '\'' +
                     '}';
         }
 
-        public BODYBean(String _$240) {
-            this._$240 = _$240;
+        public BODYBean(String _$1) {
+            this._$1 = _$1;
         }
 
-        public String get_$240() {
-            return _$240;
+        public String get_$1() {
+            return _$1;
         }
 
-        public void set_$240(String _$240) {
-            this._$240 = _$240;
+        public void set_$1(String _$1) {
+            this._$1 = _$1;
         }
-
     }
 }

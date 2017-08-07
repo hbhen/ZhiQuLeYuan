@@ -6,8 +6,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
-<TextView
-    android:layout_width="match_parent"
-    android:text="三方通话视频"
-    android:layout_height="match_parent"/>
+
+    <TextView
+        android:id="@+id/ttt"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="三方通话视频"
+        android:textSize="50dp"/>
 </RelativeLayout>

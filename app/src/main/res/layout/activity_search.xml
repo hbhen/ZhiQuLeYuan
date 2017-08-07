@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="44dp"
-              android:background="@color/titlebackground"
-              android:orientation="vertical">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/titlebackground"
+                android:orientation="vertical">
 
     <LinearLayout
+        android:gravity="center"
+        android:id="@+id/ll_activity_search"
         android:layout_width="match_parent"
         android:layout_height="44dp"
         android:orientation="horizontal">
 
         <EditText
-            android:singleLine="true"
-            android:imeOptions="actionSearch"
+            android:paddingLeft="@dimen/dp_10"
             android:id="@+id/et_activity_search"
             android:layout_width="@dimen/dp_300"
             android:layout_height="wrap_content"
@@ -20,8 +21,11 @@
             android:background="@drawable/shape_main_top_edit"
             android:drawableRight="@drawable/search_38ico"
             android:hint="请输入要搜索的内容"
-            android:padding="@dimen/dp_10"
-            android:textSize="@dimen/sp_16"/>
+            android:imeOptions="actionSearch"
+            android:singleLine="true"
+            android:textColor="@color/grayFont"
+            android:textColorHint="@color/grayFont"
+            android:textSize="@dimen/sp_14"/>
 
         <TextView
             android:id="@+id/tv_activity_search"
@@ -34,12 +38,13 @@
     </LinearLayout>
 
     <!--<android.support.v7.widget.RecyclerView-->
-        <!--android:id="@+id/rl_activity_search"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"/>-->
+    <!--android:id="@+id/rl_activity_search"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"/>-->
     <ListView
-        android:id="@+id/ll_activity_search"
+        android:id="@+id/lv_activity_search"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></ListView>
+        android:layout_height="match_parent"
+        android:layout_below="@id/ll_activity_search"/>
 
-</LinearLayout>
+</RelativeLayout>

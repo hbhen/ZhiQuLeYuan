@@ -61,20 +61,6 @@ public class SearchResBean implements Parcelable {
                 '}';
     }
 
-    public SearchResBean(String TYPE, String CMD, String ACCT, String TIME, String VERI, String SEQ, String CODE, String MSG, BODYBean BODY, String
-            TOKEN) {
-        this.TYPE = TYPE;
-        this.CMD = CMD;
-        this.ACCT = ACCT;
-        this.TIME = TIME;
-        this.VERI = VERI;
-        this.SEQ = SEQ;
-        this.CODE = CODE;
-        this.MSG = MSG;
-        this.BODY = BODY;
-        this.TOKEN = TOKEN;
-    }
-
     public String getTYPE() {
         return TYPE;
     }
@@ -242,7 +228,7 @@ public class SearchResBean implements Parcelable {
             this.LST = LST;
         }
 
-        public static class LSTBean extends MusicPlayerBean  {
+        public static class LSTBean extends MusicPlayerBean implements Parcelable {
             /**
              * DUR : 0:05:48
              * TYPE : 音频文件
@@ -262,7 +248,7 @@ public class SearchResBean implements Parcelable {
             private String REMARK;
             private String SIZE;
             private String COLNAME;
-//            private String IMG;
+            //            private String IMG;
 //            private String ID;
 //            private String NAME;
             private String COLID;

@@ -75,7 +75,7 @@ public class PlayListActivity extends AppCompatActivity implements View.OnClickL
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
-        QueryMyCollectionReqBean.BODYBean bodyBean = new QueryMyCollectionReqBean.BODYBean("","", "10", "1");
+        QueryMyCollectionReqBean.BODYBean bodyBean = new QueryMyCollectionReqBean.BODYBean("", "", "10", "1");
         QueryMyCollectionReqBean queryMyCollectionReqBean = new QueryMyCollectionReqBean("REQ", "MYPLAY", phoneNum, time, bodyBean, "", token, "1");
 
         Gson gson = new Gson();
@@ -107,7 +107,7 @@ public class PlayListActivity extends AppCompatActivity implements View.OnClickL
                     mSwipelistview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            MyPlayActivity.launch(getApplicationContext(), mList,position);
+                            MyPlayActivity.launch(getApplicationContext(), mList, position);
                             ToastUtil.showToast(getApplicationContext(), "点击的是:" + position);
 
                         }
@@ -130,8 +130,8 @@ public class PlayListActivity extends AppCompatActivity implements View.OnClickL
                     mSwipelistview.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
-                            deleteMyPlay(phoneNum, time, position, mLst, token);
                             mLst.remove(position);
+                            deleteMyPlay(phoneNum, time, position, mLst, token);
                             mPlayListAdapter.notifyDataSetChanged();
                             ToastUtil.showToast(getApplicationContext(), "点击删除");
                             return false;
@@ -141,7 +141,6 @@ public class PlayListActivity extends AppCompatActivity implements View.OnClickL
                     mSwipelistview.setSwipeDirection(SwipeMenuListView.DIRECTION_LEFT);
                     mSwipelistview.setOpenInterpolator(new AccelerateInterpolator());
                     mSwipelistview.setCloseInterpolator(new AccelerateInterpolator());
-
                 }
             }
 
@@ -155,7 +154,9 @@ public class PlayListActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void deleteMyPlay(String phoneNum, String time, int position, List<QueryMyPlayResBean.BODYBean.LSTBean> qlst, String token) {
-        String resId = qlst.get(position).getID();
+//        String resId = qlst.get(position).getID();
+        String resId = qlst.get(position).getRCDID();
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constant.baseurl)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -168,17 +169,20 @@ public class PlayListActivity extends AppCompatActivity implements View.OnClickL
         DeleteMyPlayReqBean deleteMyPlayReqBean = new DeleteMyPlayReqBean("REQ", "DMYPLAY", phoneNum, time, bodyBean, "", token,
                 "1");
         Gson gson = new Gson();
-        String babyListJson = gson.toJson(deleteMyPlayReqBean);
-        Call<DeleteMyPlayResBean> babyListResult = allInterface.DELETE_MYPLAY_RES_BEAN_CALL(babyListJson);
+        String deletePlay = gson.toJson(deleteMyPlayReqBean);
+        Call<DeleteMyPlayResBean> babyListResult = allInterface.DELETE_MYPLAY_RES_BEAN_CALL(deletePlay);
         babyListResult.enqueue(new Callback<DeleteMyPlayResBean>() {
             @Override
             public void onResponse(Call<DeleteMyPlayResBean> call, Response<DeleteMyPlayResBean> response) {
+                ToastUtil.showToast(getApplicationContext(), response.body().getMSG());
                 Log.i("555555", "recordingfragment+(deleteRecording)onResponse: " + response.body().getBODY().toString());
 
             }
 
             @Override
             public void onFailure(Call<DeleteMyPlayResBean> call, Throwable t) {
+                ToastUtil.showToast(getApplicationContext(), t.toString());
+
                 Log.i("555555", "recordingfragment+(deleteRecording)onFailure: " + t.toString());
 
             }

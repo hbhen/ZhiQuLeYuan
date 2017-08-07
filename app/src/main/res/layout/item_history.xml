@@ -12,6 +12,7 @@
         android:orientation="horizontal">
 
         <TextView
+            android:textColor="@color/black"
             android:id="@+id/tv_item_history_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -31,10 +32,10 @@
     </LinearLayout>
 
     <RelativeLayout
-android:layout_marginLeft="@dimen/dp_10"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_80"
         android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/dp_10"
         android:paddingTop="@dimen/dp_10">
 
         <TextView
@@ -42,8 +43,8 @@ android:layout_marginLeft="@dimen/dp_10"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="X-III2型"
-            android:textSize="16sp"
-            android:textStyle="bold"/>
+            android:textColor="@color/black"
+            android:textSize="16sp"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -53,6 +54,8 @@ android:layout_marginLeft="@dimen/dp_10"
             android:orientation="horizontal">
 
             <TextView
+                android:textColor="@color/black"
+                android:id="@+id/tv_itemt_history_duration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="通话时长"

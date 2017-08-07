@@ -1,38 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="81dp"
-    android:orientation="horizontal"
-    android:padding="10dp">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="81dp">
 
     <ImageView
-        android:scaleType="centerCrop"
         android:id="@+id/iv_item_mycollection"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:src="@drawable/player_cover_default" />
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_10"
+        android:scaleType="centerCrop"
+        android:src="@drawable/player_cover_default"/>
 
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toRightOf="@id/iv_item_mycollection"
+        android:paddingTop="@dimen/dp_10">
 
         <TextView
             android:id="@+id/tv_item_mycollection"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@id/iv_item_mycollection"
             android:text="春天在哪里"
-            android:textColor="#000000"
+            android:textColor="@color/black"
             android:textSize="@dimen/sp_16"/>
-
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/tv_item_mycollection"
+            android:layout_height="match_parent"
             android:layout_below="@id/tv_item_mycollection"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="14dp">
@@ -43,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:text="播放次数"
                 android:textColor="@color/grayFont"
-                android:textSize="12dp" />
+                android:textSize="12sp"/>
 
             <TextView
                 android:id="@+id/tv_item_mycollection_detailstimes"
@@ -53,7 +50,7 @@
                 android:layout_toRightOf="@id/tv_item_mycollection_times"
                 android:text="2"
                 android:textColor="#ff4511"
-                android:textSize="12dp" />
+                android:textSize="12sp"/>
 
             <TextView
                 android:id="@+id/tv_item_mycollection_category"
@@ -63,7 +60,7 @@
                 android:layout_toRightOf="@id/tv_item_mycollection_detailstimes"
                 android:text="所属品类"
                 android:textColor="@color/grayFont"
-                android:textSize="12dp" />
+                android:textSize="12sp"/>
 
             <TextView
                 android:id="@+id/tv_item_mycollection_detailscategory"
@@ -73,18 +70,25 @@
                 android:layout_toRightOf="@id/tv_item_mycollection_category"
                 android:text="童谣"
                 android:textColor="#ff4511"
-                android:textSize="12sp" />
+                android:textSize="12sp"/>
         </RelativeLayout>
 
-    </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_0.5"
+            android:layout_alignLeft="@id/tv_item_mycollection"
+            android:layout_alignParentBottom="true"
+            android:background="@color/color_8f8f8f"/>
 
-    <ImageView
-        android:layout_width="26dp"
-        android:layout_height="26dp"
-        android:layout_alignParentRight="true"
-        android:layout_centerInParent="true"
-        android:layout_gravity="center_vertical"
-        android:src="@drawable/play_pressed_240" />
+        <ImageView
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="@dimen/dp_10"
+            android:src="@drawable/play_pressed_240"/>
+    </RelativeLayout>
 
 
-</LinearLayout>
+</RelativeLayout>

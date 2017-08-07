@@ -13,7 +13,7 @@
 
         <ImageView
             android:id="@+id/iv_push_back"
-            android:layout_width="10dp"
+            android:layout_width="@dimen/dp_10"
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/dp_10"
@@ -34,22 +34,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/tb_mypush"
-        android:background="@color/titlebackground">
+        android:background="@color/titlebackground"
+        android:paddingBottom="10dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
 
         <EditText
             android:id="@+id/et_mycollection_mypush"
             android:layout_width="match_parent"
             android:layout_height="35dp"
-            android:layout_marginBottom="@dimen/dp_10"
-
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
             android:background="@drawable/shape_main_top_edit"
             android:drawableRight="@drawable/search_38ico"
             android:hint="请输入要查找的内容"
-            android:paddingLeft="5dp"
-            android:textSize="12sp"
-
+            android:imeOptions="actionSearch"
+            android:paddingLeft="@dimen/dp_10"
+            android:singleLine="true"
+            android:textColorHint="@color/grayFont"
+            android:textSize="@dimen/sp_12"
             />
     </LinearLayout>
 
@@ -94,7 +95,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_05"
+                android:layout_height="@dimen/dp_0.5"
                 android:layout_alignParentBottom="true"
                 android:background="#8f8f8f"/>
         </RelativeLayout>
@@ -124,6 +125,7 @@
             android:layout_height="match_parent"
             android:layout_marginTop="10dp"
             android:background="#ffffff"
+            android:divider="@null"
             android:listSelector="@color/transparent"/>
 
 

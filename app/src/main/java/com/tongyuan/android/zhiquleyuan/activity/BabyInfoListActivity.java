@@ -48,7 +48,7 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
     private ImageView mIv_babyinfolist_backa;
     private SwipeRefreshLayout sp;
     private static final String TAG = "88888";
-    ImageView mBack;
+    private ImageView iv_back;
 
 
     @Override
@@ -65,15 +65,14 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
 
     private void initView() {
         mListview = (ListView) findViewById(R.id.lv_babyinfolist);
+        iv_back = (ImageView) findViewById(R.id.iv_babyinfolist_backa);
         sp = (SwipeRefreshLayout) findViewById(R.id.sp);
         mIv_babayinfolist_addbabyinfo = (ImageView) findViewById(R.id.iv_babayinfolist_addbabyinfo);
         mIv_babyinfolist_backa = (ImageView) findViewById(R.id.iv_babyinfolist_backa);
-        mBack = (ImageView) findViewById(R.id.iv_babyinfolist_backa);
-        mBack.setOnClickListener(new View.OnClickListener() {
+        iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
-                ToastUtil.showToast(getApplicationContext(), "en en ");
             }
         });
 

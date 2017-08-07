@@ -401,7 +401,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 showHistoryFragment();
                 break;
             case R.id.rb_mine:
-                rb_toy.setSelected(false);
+                rb_mine.setSelected(true);
                 rb_discovery.setSelected(false);
                 rb_recoding.setSelected(false);
                 rb_history.setSelected(false);
@@ -445,21 +445,27 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void showToyFragment() {
+
          /*
         * 点击button,查询当前的用户是否有玩具,有玩具就展示出来,展示到selectToy页面
         否则进入无玩具页面,要求添加页面  待添加完玩具以后,再把玩具的图片和id,绑定的宝宝信息,传到selectToy页面,并展示
         * */
+
         rb_discovery.setSelected(false);
         rb_recoding.setSelected(false);
         rb_history.setSelected(false);
         rb_mine.setSelected(false);
         rb_toy.setSelected(true);
+
         //获取手机的心跳接口,获取最新的token,比较token,如果为空,去登录页,如果不相同 , 也去登录页面.
         //应该先判断是否登录,再判断是否有玩具
 
         mMainToken = SPUtils.getString(this, "TOKEN", "");
+
         //看是否有玩具,有玩具就去selector页面,无玩具,就去玩具添加页面
+
         chargeHasToy(mMainToken);
+
     }
 
 

@@ -47,7 +47,7 @@
         android:layout_height="60dp"/>
     <TextView
         android:id="@+id/tv_fragment_toy_add_babyname"
-        android:text="正正"
+        android:text="宝宝"
         android:singleLine="true"
         android:textSize="16sp"
         android:gravity="center"

@@ -102,14 +102,11 @@ public class ToyAddFragment extends BaseFragment implements View.OnClickListener
                 intent.putExtra("flag",1);
                 intent.setClass(getActivity(), CaptureActivity.class);
 //                startActivity(intent);
-
                 startActivityForResult(intent, 300);//拿到玩具的唯一id code
 //                ToastUtil.showToast(getActivity(), "跳转到zxing界面,进行二维码扫描");
-
                 break;
             case R.id.rl_toy_add_goshopping:
                 ToastUtil.showToast(getActivity(), "商城暂未开通");
-
                 break;
             case R.id.iv_fragment_toy_add_back:
                 //添加返回栈
@@ -125,20 +122,22 @@ public class ToyAddFragment extends BaseFragment implements View.OnClickListener
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            //返回的二维码解析数据
-            case REQUEST_CODE:
-                if (resultCode == CaptureActivity.RESULT_OK) {
+//        switch (requestCode) {
+//            //返回的二维码解析数据
+//            case 300:
+                if (resultCode == 90) {
                     code = data.getStringExtra("SCAN_RESULT");
                     //对二维码数据的解析
 //                    SPUtils.putString(getActivity(), "toycode", code);
                     Log.i(TAG, "code: " + code);
                     ToastUtil.showToast(getActivity(), "code---" + code);
                     //3.4.11 添加修改玩具属性
+                    ToastUtil.showToast(getContext(),"code++++");
+                    showFragment(ToySelectorFragment.class.getSimpleName());
                     addToy(code);
                 }
-                break;
-        }
+//                break;
+//        }
     }
 
 

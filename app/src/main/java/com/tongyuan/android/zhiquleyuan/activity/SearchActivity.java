@@ -21,12 +21,13 @@ import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.StatusBarUtils;
+import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import retrofit2.Call;
@@ -35,27 +36,38 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+
 /**
  * Created by Android on 2017/7/9.
  */
 public class SearchActivity extends AppCompatActivity {
-    @BindView(R.id.et_activity_search)
-    EditText mEtActivitySearch;
-    @BindView(R.id.tv_activity_search)
-    TextView mTvActivitySearch;
-//    @BindView(R.id.rl_activity_search)
-//    RecyclerView mRlActivitySearch;
-
-    @BindView(R.id.ll_activity_search)
-    ListView mListView;
+//    @BindView(R.id.et_activity_search)
+    private EditText mEtActivitySearch;
+//    @BindView(R.id.tv_activity_search)
+    private TextView mTvActivitySearch;
+//    @BindView(R.id.lv_activity_search)
+    private ListView mListView;
     private static final String TAG = "searchactivity";
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
+        mEtActivitySearch = (EditText) findViewById(R.id.et_activity_search);
+        mTvActivitySearch = (TextView) findViewById(R.id.tv_activity_search);
+        mListView = (ListView) findViewById(R.id.lv_activity_search);
+
         StatusBarUtils.setStatusBarLightMode(this, getResources().getColor(R.color.main_top_bg));
+//        mViewById = (ListView) findViewById(R.id.lv_activity_search);
+//        Log.i(TAG, "onCreate: "+mListView);
+//        ArrayList list=new ArrayList();
+//        for (int i = 0; i < 10; i++) {
+//            list.add("数据"+i);
+//        }
+//        SearchAdapter searchAdapter=new SearchAdapter(this,list);
+//        mListView.setAdapter(searchAdapter);
         mEtActivitySearch.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -71,6 +83,7 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void getSearchContent(String text) {
+        Log.i(TAG, "getSearchContent: " + text);
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constant.baseurl)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -79,26 +92,40 @@ public class SearchActivity extends AppCompatActivity {
         SearchReqBean.BODYBean bodyBean = new SearchReqBean.BODYBean(text, "10", "1");
         SearchReqBean searchReqBean = new SearchReqBean("REQ", "SEARES", SPUtils.getString(this, "phoneNum", ""), new SimpleDateFormat
                 ("yyyyMMddHHmmssSSS").format(new Date()), bodyBean, "", SPUtils.getString(this, "TOKEN", ""), "1");
+
         Gson gson = new Gson();
         String s = gson.toJson(searchReqBean);
         Call<SearchResBean> searchResBeanCall = allInterface.SEARCH_RES_BEAN_CALL(s);
+
         searchResBeanCall.enqueue(new Callback<SearchResBean>() {
             @Override
-            public void onResponse(Call<SearchResBean> call, Response<SearchResBean> response) {
-                final ArrayList<SearchResBean.BODYBean.LSTBean> arrayList =new ArrayList<SearchResBean.BODYBean.LSTBean>();
+            public void onResponse(Call<SearchResBean> call, final Response<SearchResBean> response) {
                 if (response != null && response.body().getCODE().equals("0")) {
-                    for (int i = 0; i < response.body().getBODY().getLST().size(); i++) {
-                        arrayList.add(i,response.body().getBODY().getLST().get(i));
-                    }
-                    SearchAdapter searchAdapter = new SearchAdapter(getApplicationContext(),arrayList);
+                    List<SearchResBean.BODYBean.LSTBean> lst = response.body().getBODY().getLST();
+                    ToastUtil.showToast(getApplicationContext(), "chenggong sou suo" + response.body().getBODY().toString());
+                    Log.i(TAG, "onResponse: " + lst.size());
+                    SearchAdapter searchAdapter = new SearchAdapter(getApplicationContext(), lst);
+                    Log.i(TAG, "onResponse: " + "走没有1");
                     mListView.setAdapter(searchAdapter);
+                    Log.i(TAG, "onResponse: " + "mListView的地址" + mListView);
+                    Log.i(TAG, "onResponse: " + "走没有2");
+
                     mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            MyPlayActivity.launch(getApplicationContext(),arrayList,position);
+                            Log.i(TAG, "onResponse: " + "走没有3");
+                            final ArrayList<SearchResBean.BODYBean.LSTBean> arrayList = new ArrayList<>();
+                            Log.i(TAG, "onItemClick:11 " + arrayList.size());
+                            for (int i = 0; i < response.body().getBODY().getLST().size(); i++) {
+                                arrayList.add(i, response.body().getBODY().getLST().get(i));
+                            }
+                            Log.i(TAG, "onItemClick:22 " + arrayList.size());
+
+                            MyPlayActivity.launch(getApplicationContext(), arrayList, position);
                         }
                     });
-//                    ToastUtil.showToast(getApplicationContext(), "chenggong sou suo" + response.body().getBODY().toString());
+
                 }
             }
 
@@ -107,7 +134,6 @@ public class SearchActivity extends AppCompatActivity {
                 Log.e(TAG, "onFailure: searchactivity" + t.toString());
             }
         });
-
 
     }
 

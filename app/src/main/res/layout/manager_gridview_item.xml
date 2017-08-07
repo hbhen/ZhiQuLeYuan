@@ -21,28 +21,26 @@
                 android:src="@mipmap/ic_launcher"/>
 
             <ImageView
-                android:visibility="invisible"
                 android:id="@+id/iv_manager_gridview_item_remove"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:focusable="false"
                 android:layout_alignParentRight="true"
-                android:src="@drawable/remove"/>
+                android:focusable="false"
+                android:src="@drawable/photo_delete_ico_3x"
+                android:visibility="invisible"/>
         </RelativeLayout>
 
 
     </FrameLayout>
 
 
+    <ImageView
+        android:id="@+id/iv_manager_gridview_item_managerking"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
 
-        <ImageView
-            android:visibility="invisible"
-            android:layout_centerHorizontal="true"
-            android:id="@+id/iv_manager_gridview_item_managerking"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/managerking_3x"/>
-
-
+        />
+    <!--android:src="@drawable/managerking_3x"-->
 
 </RelativeLayout>

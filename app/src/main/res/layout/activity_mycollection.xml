@@ -6,43 +6,49 @@
     <RelativeLayout
         android:id="@+id/tb_mycollection"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_44">
+        android:layout_height="@dimen/dp_44"
+        android:background="@color/titlebackground">
 
         <ImageView
             android:id="@+id/iv_collection_back"
-            android:layout_marginLeft="@dimen/dp_7"
-            android:layout_centerVertical="true"
             android:layout_width="10dp"
             android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_10"
             android:src="@drawable/arrow_left"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
             android:text="我的收藏"
             android:textColor="#000000"
             android:textSize="18sp"/>
     </RelativeLayout>
 
     <LinearLayout
-        android:paddingRight="10dp"
-        android:paddingLeft="10dp"
-        android:paddingBottom="10dp"
         android:id="@+id/et_mycollection_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tb_mycollection">
+        android:layout_below="@id/tb_mycollection"
+        android:background="@color/titlebackground"
+        android:paddingBottom="10dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
 
         <EditText
-
+            android:id="@+id/et_activity_mycollection"
             android:layout_width="match_parent"
             android:layout_height="35dp"
             android:background="@drawable/shape_main_top_edit"
             android:drawableRight="@drawable/search_38ico"
             android:hint="世上只有爸爸好"
-            android:textSize="12dp"
+            android:imeOptions="actionSearch"
+            android:paddingLeft="@dimen/dp_10"
+            android:singleLine="true"
+            android:textColorHint="@color/grayFont"
+            android:textSize="@dimen/sp_12"
             />
     </LinearLayout>
 
@@ -55,6 +61,7 @@
 
         <com.baoyz.swipemenulistview.SwipeMenuListView
             android:id="@+id/lv_mycollection"
+            android:divider="@null"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="10dp"

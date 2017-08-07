@@ -11,7 +11,6 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
@@ -181,13 +180,13 @@ public class MyPlayActivity extends BaseActivity {
             case R.id.player_loop:
                 if (playState == single) {
                     playState = circle;
-                    loopView.setImageResource(R.drawable.play_cycle);
+                    loopView.setImageResource(R.drawable.play_loop_playlist_ico_20_3x);
                 } else if (playState == circle) {
                     playState = random;
-                    loopView.setImageResource(R.drawable.play_random);
+                    loopView.setImageResource(R.drawable.play_randomize_ico_20_3x);
                 } else if (playState == random) {
                     playState = single;
-                    loopView.setImageResource(R.drawable.play_single);
+                    loopView.setImageResource(R.drawable.play_loop_track_ico_20_3x);
                 }
 
                 if (playState == circle) {

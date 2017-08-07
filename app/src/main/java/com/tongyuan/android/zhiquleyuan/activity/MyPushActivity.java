@@ -20,8 +20,8 @@ import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.adapter.MyPushAdapter;
-import com.tongyuan.android.zhiquleyuan.bean.DeleteMyCollectionReqBean;
-import com.tongyuan.android.zhiquleyuan.bean.DeleteMyCollectionResBean;
+import com.tongyuan.android.zhiquleyuan.bean.DeleteMyPushReqBean;
+import com.tongyuan.android.zhiquleyuan.bean.DeleteMyPushResBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListResult;
 import com.tongyuan.android.zhiquleyuan.bean.QueryMyPushReqBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryMyPushResBean;
@@ -127,7 +127,9 @@ public class MyPushActivity extends AppCompatActivity implements View.OnClickLis
                 if (response.body().getCODE().equals("0")) {
                     final MyPushAdapter myPushAdapter = new MyPushAdapter(getApplicationContext(), response);
                     mLst = response.body().getBODY().getLST();
+
                     mLv_myPush.setAdapter(myPushAdapter);
+
                     mLv_myPush.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -159,7 +161,7 @@ public class MyPushActivity extends AppCompatActivity implements View.OnClickLis
                     mLv_myPush.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
-                            deleteRecording(phoneNum, new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()), position, mLst, token);
+                            deletePush(phoneNum, new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()), position, mLst, token);
                             mLst.remove(position);
                             myPushAdapter.notifyDataSetChanged();
 
@@ -186,32 +188,33 @@ public class MyPushActivity extends AppCompatActivity implements View.OnClickLis
         });
     }
 
-    private void deleteRecording(String phoneNum, String time, int position, List<QueryMyPushResBean.BODYBean.LSTBean> list, String
+    private void deletePush(String phoneNum, String time, int position, List<QueryMyPushResBean.BODYBean.LSTBean> list, String
             token) {
-        String resId = list.get(position).getID();
+//        String resId = list.get(position).getID();
+        String resId = list.get(position).getRCDID();
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constant.baseurl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
-        DeleteMyCollectionReqBean.BODYBean.LSTBean lstBean = new DeleteMyCollectionReqBean.BODYBean.LSTBean(resId);
-        List<DeleteMyCollectionReqBean.BODYBean.LSTBean> lst = new ArrayList<>();
+        DeleteMyPushReqBean.BODYBean.LSTBean lstBean = new DeleteMyPushReqBean.BODYBean.LSTBean(resId);
+        List<DeleteMyPushReqBean.BODYBean.LSTBean> lst = new ArrayList<>();
         lst.add(lstBean);
-        DeleteMyCollectionReqBean.BODYBean bodyBean = new DeleteMyCollectionReqBean.BODYBean(lst);
-        DeleteMyCollectionReqBean deleteMyCollectionReqBean = new DeleteMyCollectionReqBean("REQ", "DFAVRES", phoneNum, time, bodyBean, "", token,
+        DeleteMyPushReqBean.BODYBean bodyBean = new DeleteMyPushReqBean.BODYBean(lst);
+        DeleteMyPushReqBean deleteMyMypushReqBean = new DeleteMyPushReqBean("REQ", "DMYPUSH", phoneNum, time, bodyBean, "", token,
                 "1");
-
         Gson gson = new Gson();
-        String babyListJson = gson.toJson(deleteMyCollectionReqBean);
-        Call<DeleteMyCollectionResBean> babyListResult = allInterface.DELETE_MYCOLLECTION_RES_BEAN_CALL(babyListJson);
-        babyListResult.enqueue(new Callback<DeleteMyCollectionResBean>() {
+        String babyListJson = gson.toJson(deleteMyMypushReqBean);
+        Call<DeleteMyPushResBean> babyListResult = allInterface.DELETE_MY_PUSH_RES_BEAN_CALL(babyListJson);
+        babyListResult.enqueue(new Callback<DeleteMyPushResBean>() {
             @Override
-            public void onResponse(Call<DeleteMyCollectionResBean> call, Response<DeleteMyCollectionResBean> response) {
+            public void onResponse(Call<DeleteMyPushResBean> call, Response<DeleteMyPushResBean> response) {
+                ToastUtil.showToast(getApplicationContext(),"走没走");
                 Log.i("555555", "recordingfragment+(deleteRecording)onResponse: " + response.body().getBODY().toString());
             }
 
             @Override
-            public void onFailure(Call<DeleteMyCollectionResBean> call, Throwable t) {
+            public void onFailure(Call<DeleteMyPushResBean> call, Throwable t) {
                 Log.i("555555", "recordingfragment+(deleteRecording)onFailure: " + t.toString());
             }
         });

@@ -58,6 +58,7 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
     private String mPhoneNumSave;
     public static String mTokenSave;
     private static final String TAG = "444444";
+    private ImageView mIv_back;
 
 
     @Override
@@ -71,6 +72,7 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
 
 
     private void initView() {
+        mIv_back = (ImageView) findViewById(R.id.iv_back_login);
         iv_login = (ImageView) findViewById(R.id.iv_login);
 
         et_login_phone = (EditText) findViewById(R.id.et_login_phone);
@@ -86,11 +88,16 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
         bt_login.setOnClickListener(this);
         tv_text_login.setOnClickListener(this);
         et_login_phone.setOnClickListener(this);
+        mIv_back.setOnClickListener(this);
+
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.iv_back_login:
+                finish();
+                break;
             case R.id.iv_login:
                 break;
             case R.id.et_login_phone:

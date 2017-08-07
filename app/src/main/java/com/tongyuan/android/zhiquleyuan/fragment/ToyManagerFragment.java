@@ -10,6 +10,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,7 +22,6 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.activity.MainActivity;
-import com.tongyuan.android.zhiquleyuan.activity.NoDisturbActivity;
 import com.tongyuan.android.zhiquleyuan.activity.SetupWlanActivity;
 import com.tongyuan.android.zhiquleyuan.adapter.ToyMemberAdapter;
 import com.tongyuan.android.zhiquleyuan.base.BaseFragment;
@@ -29,7 +31,9 @@ import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListFromToyIdRes;
 import com.tongyuan.android.zhiquleyuan.bean.QueryToyMemberReQBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryToyMemberReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoRESBean;
+import com.tongyuan.android.zhiquleyuan.holder.MemberHolder;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
+import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 import com.tongyuan.android.zhiquleyuan.view.MyGridView;
@@ -44,6 +48,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
 
 /**
  * Created by android on 2017/3/12.
@@ -86,11 +91,20 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
     private String mCurrentUserId;
     private String mOwnerId;
     private ImageView mIv_back;
+    private int count;
+
+    private enum SetManagerMode {
+        SET, UNSET
+    }
+
+    private SetManagerMode mSetManagerMode = SetManagerMode.UNSET;
+    private Constant.Mode mMode = Constant.Mode.NORMAL;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable
             Bundle savedInstanceState) {
+
         View fragment_manageToy = inflater.inflate(R.layout.fragment_managetoy, null);
         mBt_fragment_managetoy_setupwlan = (Button) fragment_manageToy.findViewById(R.id.bt_fragment_managetoy_setupwlan);
         mBt_fragment_managetoy_nodisturb = (Button) fragment_manageToy.findViewById(R.id.bt_fragment_managetoy_nodisturb);
@@ -120,7 +134,9 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
         initListener();
         Log.i("manager", "onCreateView");
         refreshView();
+
         return fragment_manageToy;
+
     }
 
     private void initData() {
@@ -154,8 +170,6 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
 //                    ToastUtil.showToast(getActivity(), "response" + response);
                     //玩具群成员
                     Log.i(TAG, "onResponse:toymem ++" + response.body().toString());
-
-
                     lst.clear();
                     lst.addAll(response.body().getBODY().getLST());
                     Log.i("111111", "onResponse: " + lst.size());
@@ -181,13 +195,11 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
     }
 
     private void initListener() {
+
         mBt_fragment_managetoy_nodisturb.setOnClickListener(this);
         mBt_fragment_managetoy_setupwlan.setOnClickListener(this);
         mTv_frament_managetoy_manager.setOnClickListener(this);
         mIv_back.setOnClickListener(this);
-//        mTv_fragment_toy_details_unbind.setOnClickListener(this);
-//        mTv_fragment_toy_details_bind.setOnClickListener(this);
-
     }
 
 
@@ -195,18 +207,33 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.bt_fragment_managetoy_nodisturb:
-                Intent intent = new Intent(getActivity(), NoDisturbActivity.class);
-                startActivity(intent);
-//                ToastUtil.showToast(getContext(),"还未开通该功能");
+//                Intent intent = new Intent(getActivity(), NoDisturbActivity.class);
+//                startActivity(intent);
+                ToastUtil.showToast(getContext(), "还未开通该功能");
                 break;
             case R.id.bt_fragment_managetoy_setupwlan:
                 Intent intent1 = new Intent(getActivity(), SetupWlanActivity.class);
                 startActivity(intent1);
                 break;
             case R.id.tv_frament_managetoy_manager:
-                if (mOwnerId.equals(mCurrentUserId)) {
 
+                if (mOwnerId.equals(mCurrentUserId)) {
+                    int iconPosition = toyMemberAdapter.getIconPosition();
+                    View childAt = mMygrid.getChildAt(iconPosition);
+                    MemberHolder tag = (MemberHolder) childAt.getTag();
+                    ImageView king = tag.king;
+                    if (mSetManagerMode == SetManagerMode.UNSET) {
+                        mSetManagerMode = SetManagerMode.SET;
+                        StartFlick(king);
+
+                    } else {
+                        mSetManagerMode = SetManagerMode.UNSET;
+                        StopFlick(king);
+                    }
+
+                    Log.i("1122222222", "onClick: " + iconPosition);
                     ToastUtil.showToast(getActivity(), "设置管理员");
+                    ToastUtil.showToast(getActivity(), "iconPosition" + iconPosition);
                 } else {
                     ToastUtil.showToast(getActivity(), "您不是该玩具的持有者,不能设置管理员");
                 }
@@ -214,21 +241,30 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
             case R.id.iv_back:
                 MainActivity mainActivity = (MainActivity) getActivity();
                 mainActivity.backToTop();
-                ToastUtil.showToast(mContext, "back");
                 break;
-//            case R.id.tv_fragment_managetoy_unbindtoy:
-//                ToastUtil.showToast(getActivity(), "Unbind");
-//                break;
-//            case R.id.tv_fragment_managetoy_bindtoy:
-//                //这里添加玩具成功,需要去绑定宝宝的信息,所以跳转到宝宝绑定的页面
-//                    Intent intent2 = new Intent();
-//                    intent2.setClass(getContext(), BindBabyActivity.class);
-//                    startActivity(intent2);
-//                ToastUtil.showToast(getActivity(), "bind");
-//                break;
             default:
                 break;
         }
+    }
+
+    private void StopFlick(ImageView toyMemberAdapterIcon) {
+        if (toyMemberAdapterIcon == null) {
+            return;
+        }
+        toyMemberAdapterIcon.clearAnimation();
+    }
+
+    private void StartFlick(ImageView toyMemberAdapterIcon) {
+        if (toyMemberAdapterIcon == null) {
+            return;
+        }
+        AlphaAnimation alphaAnimation = new AlphaAnimation(1, 0.4f);
+        alphaAnimation.setDuration(300);
+        alphaAnimation.setInterpolator(new LinearInterpolator());
+        alphaAnimation.setRepeatCount(Animation.INFINITE);
+        alphaAnimation.setRepeatMode(Animation.REVERSE);
+        toyMemberAdapterIcon.startAnimation(alphaAnimation);
+
     }
 
     @Override
@@ -259,16 +295,22 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
         mToyCode = mResponse.getCODE();
         mBabyName = babyName;
         mOwnerName = ownerName;
+
 //        String acttime = arguments.getString("acttime");
 
         //获取成员信息,需要传什么参数,去访问哪个接口  3.4.48接口
+
         getToyMember(mTime, mToken, mPhoneNum, mToyId, mToyCode);
 
         if (mTv_fragment_managetoy_toytype == null)
             return;
+
 //        String babyimg = arguments.getString("babyimg");
+
         refreshView();
+
     }
+
 
     private void refreshView() {
         if (mResponse == null)
@@ -318,95 +360,18 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
         AllInterface allInterface = retrofit.create(AllInterface.class);
         GetInstantStateInfoReq.BODYBean bodyBean = new GetInstantStateInfoReq.BODYBean(mToyId);
         GetInstantStateInfoReq getInstantStateInfoReq = new GetInstantStateInfoReq("REQ", "TOYSTATE", mPhoneNum, mTime, bodyBean, "", mToken, "1");
-
         Gson gson = new Gson();
         String s = gson.toJson(getInstantStateInfoReq);
         Call<GetInstantStateInfoRes> getInstantStateInfoResCall = allInterface.GET_INSTANT_STATE_INFO_RES_CALL(s);
         getInstantStateInfoResCall.enqueue(new Callback<GetInstantStateInfoRes>() {
+
             @Override
             public void onResponse(Call<GetInstantStateInfoRes> call, Response<GetInstantStateInfoRes> response) {
+
                 if (!response.body().getCODE().equals("0")) {
                     ToastUtil.showToast(getActivity(), "拉取玩具即时状态返回的response为空");
                 } else {
-                    GetInstantStateInfoRes body = response.body();
-                    String camera = response.body().getBODY().getCAMERA();
-                    String elec = response.body().getBODY().getELEC();
-                    String mic = response.body().getBODY().getMIC();
-                    String online = response.body().getBODY().getONLINE();
-                    String vol = response.body().getBODY().getVOL();
-                    String wifi = response.body().getBODY().getWIFI();
-
-                    //String值转化int
-                    int wifiValue = -100;
-                    int volValue = 0;
-                    int elecValue = 0;
-                    if (!wifi.equals("")) {
-                        wifiValue = Integer.parseInt(wifi);
-
-                    }
-//                    if (!vol.equals("")) {
-//                        volValue = Integer.parseInt(vol);
-//
-//                    }
-                    if (!elec.equals("")) {
-                        elecValue = Integer.parseInt(elec);
-
-                    }
-//
-//                    Log.i(TAG, "onResponse:camera" + camera);
-//                    Log.i(TAG, "onResponse:elec" + elec);
-//                    Log.i(TAG, "onResponse:mic" + mic);
-//                    Log.i(TAG, "onResponse:online" + online);
-//                    Log.i(TAG, "onResponse:vol" + vol);
-//                    Log.i(TAG, "onResponse:wifi" + wifi);
-//
-//                    Log.i(TAG, "onResponse: wifiValue" + wifiValue);
-//                    Log.i(TAG, "onResponse: elecValue" + elecValue);
-//                    Log.i(TAG, "onResponse: volValue" + volValue);
-                    //设置状态的图片
-
-                    if (online.equals("0")) {
-                        mCallMIc.setImageResource(R.drawable.toy_recording_prohibit);
-                        mCallCamera.setImageResource(R.drawable.toy_webcam_prohibit);
-                    } else if (online.equals("1")) {
-                        mCallMIc.setImageResource(R.drawable.toy_recording);
-                        mCallCamera.setImageResource(R.drawable.toy_webcam);
-                    }
-
-                    if (wifiValue == -200) {
-                        ToastUtil.showToast(getActivity(), "当前玩具wifi异常");
-                    }
-                    if (wifiValue >= -100 && wifiValue <= -80) {//最弱信号
-                        mCallSignal.setImageResource(R.drawable.toy_signal_1);
-                    } else if (wifiValue > -80 && wifiValue <= -60) {
-                        mCallSignal.setImageResource(R.drawable.toy_signal_2);
-                    } else if (wifiValue > -60 && wifiValue <= -40) {
-                        mCallSignal.setImageResource(R.drawable.toy_signal_3);
-                    } else if (wifiValue > -40 && wifiValue <= -20) {
-                        mCallSignal.setImageResource(R.drawable.toy_signal_4);
-                    } else if (wifiValue > -20 && wifiValue <= 0) {
-                        mCallSignal.setImageResource(R.drawable.toy_signal_5);
-                    }
-
-                    if (elecValue >= 0 && elecValue <= 10) {
-                        mCallButtery.setImageResource(R.drawable.toy_battery_1);
-                    } else if (elecValue > 10 && elecValue <= 20) {
-                        mCallButtery.setImageResource(R.drawable.toy_battery_2);
-                    } else if (elecValue > 20 && elecValue <= 30) {
-                        mCallButtery.setImageResource(R.drawable.toy_battery_3);
-                    } else if (elecValue > 30 && elecValue <= 40) {
-                        mCallButtery.setImageResource(R.drawable.toy_battery_4);
-                    } else if (elecValue > 40 && elecValue <= 50) {
-                        mCallButtery.setImageResource(R.drawable.toy_battery_5);
-                    } else if (elecValue > 50 && elecValue <= 70) {
-                        mCallButtery.setImageResource(R.drawable.toy_battery_6);
-                    } else if (elecValue > 70 && elecValue <= 80) {
-                        mCallButtery.setImageResource(R.drawable.toy_battery_7);
-                    } else if (elecValue > 80 && elecValue <= 90) {
-                        mCallButtery.setImageResource(R.drawable.toy_battery_8);
-                    } else if (elecValue > 90 && elecValue <= 100) {
-                        mCallButtery.setImageResource(R.drawable.toy_battery_9);
-                    }
+                    showToyStateInfo(response);
                 }
             }
 
@@ -418,9 +383,78 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
         });
     }
 
+    private void showToyStateInfo(Response<GetInstantStateInfoRes> response) {
+        GetInstantStateInfoRes body = response.body();
+        String camera = response.body().getBODY().getCAMERA();
+        String elec = response.body().getBODY().getELEC();
+        String mic = response.body().getBODY().getMIC();
+        String online = response.body().getBODY().getONLINE();
+        String vol = response.body().getBODY().getVOL();
+        String wifi = response.body().getBODY().getWIFI();
+
+        //String值转化int
+        int wifiValue = -100;
+        int volValue = 0;
+        int elecValue = 0;
+        if (!wifi.equals("")) {
+            wifiValue = Integer.parseInt(wifi);
+
+        }
+        if (!elec.equals("")) {
+            elecValue = Integer.parseInt(elec);
+
+        }
+        //设置状态的图片
+
+        if (online.equals("0")) {
+            mCallMIc.setImageResource(R.drawable.toy_recording_prohibit);
+            mCallCamera.setImageResource(R.drawable.toy_webcam_prohibit);
+        } else if (online.equals("1")) {
+            mCallMIc.setImageResource(R.drawable.toy_recording);
+            mCallCamera.setImageResource(R.drawable.toy_webcam);
+        }
+
+        if (wifiValue == -200) {
+            ToastUtil.showToast(getActivity(), "当前玩具wifi异常");
+        }
+        if (wifiValue >= -100 && wifiValue <= -80) {//最弱信号
+            mCallSignal.setImageResource(R.drawable.toy_signal_1);
+        } else if (wifiValue > -80 && wifiValue <= -60) {
+            mCallSignal.setImageResource(R.drawable.toy_signal_2);
+        } else if (wifiValue > -60 && wifiValue <= -40) {
+            mCallSignal.setImageResource(R.drawable.toy_signal_3);
+        } else if (wifiValue > -40 && wifiValue <= -20) {
+            mCallSignal.setImageResource(R.drawable.toy_signal_4);
+        } else if (wifiValue > -20 && wifiValue <= 0) {
+            mCallSignal.setImageResource(R.drawable.toy_signal_5);
+        }
+
+        if (elecValue >= 0 && elecValue <= 10) {
+            mCallButtery.setImageResource(R.drawable.toy_battery_1);
+        } else if (elecValue > 10 && elecValue <= 20) {
+            mCallButtery.setImageResource(R.drawable.toy_battery_2);
+        } else if (elecValue > 20 && elecValue <= 30) {
+            mCallButtery.setImageResource(R.drawable.toy_battery_3);
+        } else if (elecValue > 30 && elecValue <= 40) {
+            mCallButtery.setImageResource(R.drawable.toy_battery_4);
+        } else if (elecValue > 40 && elecValue <= 50) {
+            mCallButtery.setImageResource(R.drawable.toy_battery_5);
+        } else if (elecValue > 50 && elecValue <= 70) {
+            mCallButtery.setImageResource(R.drawable.toy_battery_6);
+        } else if (elecValue > 70 && elecValue <= 80) {
+            mCallButtery.setImageResource(R.drawable.toy_battery_7);
+        } else if (elecValue > 80 && elecValue <= 90) {
+            mCallButtery.setImageResource(R.drawable.toy_battery_8);
+        } else if (elecValue > 90 && elecValue <= 100) {
+            mCallButtery.setImageResource(R.drawable.toy_battery_9);
+        }
+    }
+
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         checkStateInfo();
     }
+
+
 }

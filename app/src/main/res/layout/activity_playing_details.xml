@@ -176,7 +176,7 @@
             android:layout_width="20dp"
             android:layout_height="14dp"
             android:layout_weight="1"
-            android:src="@drawable/play_single"/>
+            android:src="@drawable/play_loop_track_ico_20_3x"/>
 
 
         <ImageView
@@ -206,7 +206,7 @@
             android:layout_width="17dp"
             android:layout_height="17dp"
             android:layout_weight="1"
-            android:src="@drawable/play_catalog"/>
+            android:src="@drawable/play_playlist_ico_17_3x"/>
 
     </LinearLayout>
 </RelativeLayout>

@@ -17,6 +17,7 @@ import com.tongyuan.android.zhiquleyuan.bean.DelMembFromGroupReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteBabyInfoReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteMyCollectionResBean;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteMyPlayResBean;
+import com.tongyuan.android.zhiquleyuan.bean.DeleteMyPushResBean;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteRecordingResBean;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteToyFromNormalUserResBean;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteToyFromPowerUserResBean;
@@ -234,19 +235,23 @@ public interface AllInterface {
 
     //3.4.32 加入收藏
     @GET("busi")
-    Call<AddInCollectionResBean> ADDINCOLLECTION_RES_BEAN_CALL (@Query("params") String params);
+    Call<AddInCollectionResBean> ADDINCOLLECTION_RES_BEAN_CALL(@Query("params") String params);
 
     //3.4.31 检索资源
     @GET("busi")
-    Call<SearchResBean> SEARCH_RES_BEAN_CALL (@Query("params") String params);
+    Call<SearchResBean> SEARCH_RES_BEAN_CALL(@Query("params") String params);
 
     //3.4.56 意见反馈
     @GET("busi")
-    Call<CommitSuggestionResBean> COMMIT_SUGGESTION_RES_BEAN_CALL (@Query("params") String params);
+    Call<CommitSuggestionResBean> COMMIT_SUGGESTION_RES_BEAN_CALL(@Query("params") String params);
 
     //3.4.17 查询玩具免打扰时间段
     @GET("busi")
-    Call<NodisturbTimeResBean> NODISTURB_TIME_RES_BEAN_CALL (@Query("params")String params);
+    Call<NodisturbTimeResBean> NODISTURB_TIME_RES_BEAN_CALL(@Query("params") String params);
+
+    //3.4.57 删除我的推送
+    @GET("busi")
+    Call<DeleteMyPushResBean> DELETE_MY_PUSH_RES_BEAN_CALL(@Query("params") String params);
 
 
 }
