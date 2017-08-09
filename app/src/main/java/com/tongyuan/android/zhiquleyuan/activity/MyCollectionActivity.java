@@ -77,6 +77,7 @@ public class MyCollectionActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void initListener() {
+
         mCollection_back.setOnClickListener(this);
         mSpRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -85,6 +86,7 @@ public class MyCollectionActivity extends AppCompatActivity implements View.OnCl
                 mSpRefresh.setRefreshing(false);
             }
         });
+
         mEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -134,6 +136,7 @@ public class MyCollectionActivity extends AppCompatActivity implements View.OnCl
                     mSwipeListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
                             //TODO list取不到
 //                            Intent intent = new Intent();
 //                            intent.setClass(MyCollectionActivity.this,MyPlayActivity.class);
@@ -141,6 +144,7 @@ public class MyCollectionActivity extends AppCompatActivity implements View.OnCl
 //                            bundle.putParcelable("play", response.body().getBODY());
 //                            intent.putExtras(bundle);
 //                            startActivity(intent);
+
                             ArrayList<QueryMyCollectionResBean.BODYBean.LSTBean> arrayList=new ArrayList
                                     <QueryMyCollectionResBean.BODYBean.LSTBean>();
                             for (int i = 0; i < lst.size(); i++) {
@@ -168,12 +172,11 @@ public class MyCollectionActivity extends AppCompatActivity implements View.OnCl
                     mSwipeListview.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
+
                             deleteCollection(phoneNum, time, position, lst, token);
                             lst.remove(position);
                             myCollectionAdapter.notifyDataSetChanged();
-
                             ToastUtil.showToast(getApplicationContext(), "点击删除");
-
                             return false;
 
                         }

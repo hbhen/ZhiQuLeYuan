@@ -143,6 +143,7 @@ public class NodisturbTimeResBean {
     }
 
     public static class BODYBean {
+
         /**
          * LST : [{"PSTATE":"0","ID":"201707191628281016841261","TOYID":"201706251204441016838782","ETIME":"144000","BTIME":"142900"},
          * {"TOYID":"201706251204441016838782","ID":"201707191727101016841289","BTIME":"012700","PSTATE":"0","ETIME":"173000"},{"ETIME":"090000",
@@ -227,11 +228,11 @@ public class NodisturbTimeResBean {
              * BTIME : 142900
              */
 
-            private String PSTATE;
-            private String ID;
-            private String TOYID;
-            private String ETIME;
-            private String BTIME;
+            private String PSTATE;//开关的状态
+            private String ID;//免打扰时间段id
+            private String TOYID;//玩具id
+            private String ETIME;//结束
+            private String BTIME;//开始
 
             @Override
             public String toString() {

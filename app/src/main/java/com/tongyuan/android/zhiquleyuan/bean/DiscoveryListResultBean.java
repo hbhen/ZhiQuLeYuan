@@ -14,31 +14,32 @@ public class DiscoveryListResultBean implements Parcelable {
 
     /**
      * TYPE : RES
-     * CMD : QRYREC
-     * ACCT : 13628327181
-     * TIME : 20170606171814674
+     * CMD : QRYRES
+     * ACCT : XXXX
+     * TIME : 20170808094632067
      * VERI :
      * SEQ : 1
      * CODE : 0
      * MSG :
-     * BODY : {"NC":"22","CNT":"32","LST":[{"ID":"201705151824191016803202","REMARK":"","SIZE":"9.68MB","IMG":"http://120.27.41
-     * .179:8081/zqpland/resource/thumbnail/5/jpg/20170515/201705151824401016803206.jpg","COLID":"201702091131341016563469 ","TIMES":"40",
-     * "NAME":"猪八戒吃西瓜","TYPE":"音频文件","COLNAME":"绘本故事 ","DUR":"0:10:33"},{"TIMES":"14","COLNAME":"睡前故事 ","TYPE":"音频文件","SIZE":"2.05MB",
-     * "DUR":"0:04:28","COLID":"201702091131241016563468 ","NAME":"小斑马过河","IMG":"http://120.27.41
-     * .179:8081/zqpland/resource/thumbnail/5/jpg/20170515/201705151810031016803168.jpg","ID":"201705151810031016803167","REMARK":""},
-     * {"DUR":"0:02:02","TYPE":"音频文件","COLNAME":"睡前故事 ","COLID":"201702091131241016563468 ","SIZE":"954.95KB","REMARK":"","NAME":"愚公移山","IMG":"",
-     * "TIMES":"1","ID":"201706041509200000012266"},{"DUR":"0:02:15","COLID":"201702091131241016563468 ","TIMES":"0","SIZE":"1.04MB",
-     * "NAME":"小花猫的胡子","COLNAME":"睡前故事 ","ID":"201706041509200000012265","IMG":"","REMARK":"","TYPE":"音频文件"},{"COLNAME":"睡前故事 ",
-     * "COLID":"201702091131241016563468 ","IMG":"","TIMES":"0","ID":"201706041509200000012264","SIZE":"1.51MB","TYPE":"音频文件","REMARK":"",
-     * "NAME":"脏嘴巴的小白兔","DUR":"0:03:17"},{"SIZE":"2.24MB","COLID":"201702091131241016563468 ","TIMES":"0","REMARK":"","TYPE":"音频文件",
-     * "DUR":"0:04:53","COLNAME":"睡前故事 ","ID":"201706041509200000012263","NAME":"十二生肖的故事","IMG":""},{"ID":"201706041509200000012262",
-     * "DUR":"0:06:00","COLID":"201702091131241016563468 ","TYPE":"音频文件","REMARK":"","IMG":"","TIMES":"0","SIZE":"2.76MB","COLNAME":"睡前故事 ",
-     * "NAME":"花木兰替父从军"},{"ID":"201706041509200000012261","COLNAME":"睡前故事 ","TYPE":"音频文件","NAME":"小花猫种鱼","COLID":"201702091131241016563468 ",
-     * "TIMES":"0","SIZE":"1.16MB","IMG":"","REMARK":"","DUR":"0:02:31"},{"COLID":"201702091131241016563468 ","TYPE":"音频文件","TIMES":"0","IMG":"",
-     * "DUR":"0:04:38","ID":"201706041509200000012260","REMARK":"","COLNAME":"睡前故事 ","SIZE":"4.25MB","NAME":"渔童"},{"REMARK":"","COLNAME":"睡前故事 ",
-     * "COLID":"201702091131241016563468 ","NAME":"河马先生的魔术","DUR":"0:01:38","IMG":"","TYPE":"音频文件","TIMES":"0","SIZE":"770.65KB",
-     * "ID":"201706041509200000012259"}],"PS":"10","PN":"1"}
-     * TOKEN : 329fbc135-787f-44dc-bfe7-70272a8bac27
+     * BODY : {"PS":"10","LST":[{"SIZE":"109.17KB","TIMES":"83","TYPE":"音频文件","REMARK":"","COLNAME":"儿童歌谣 ","DUR":"","NAME":"拍手歌","IMG":"http://120
+     * .27.41.179:8081/zqpland/resource/thumbnail/5/png/20170702/201707021623491016839668.png","RESOLUTION":"280x280",
+     * "COLID":"201610301737481016432787 ","ISFAV":"0","ID":"201706041509200000003905"},{"COLNAME":"儿童歌谣 ","NAME":"捉泥鳅","REMARK":"","SIZE":"7
+     * .71MB","TYPE":"音频文件","COLID":"201610301737481016432787 ","ID":"201706041509200000003906","IMG":"http://120.27.41
+     * .179:8081/zqpland/resource/thumbnail/5/jpg/20170702/201707021625101016839670.jpg","DUR":"0:03:21","TIMES":"57","ISFAV":"0"},{"ISFAV":"0",
+     * "DUR":"0:02:01","IMG":"","COLNAME":"儿童歌谣 ","REMARK":"","TIMES":"39","ID":"201706041509200000003907","NAME":"小螺号mp3","TYPE":"音频文件",
+     * "COLID":"201610301737481016432787 ","SIZE":"2.53MB"},{"COLID":"201610301737481016432787 ","NAME":"感动未来mp3","ISFAV":"0",
+     * "ID":"201706041509200000003908","TYPE":"音频文件","SIZE":"3.04MB","REMARK":"","COLNAME":"儿童歌谣 ","TIMES":"17","DUR":"0:03:18","IMG":""},
+     * {"REMARK":"","ISFAV":"0","ID":"201706041509200000003909","COLID":"201610301737481016432787 ","TYPE":"音频文件","IMG":"","COLNAME":"儿童歌谣 ",
+     * "NAME":"小龙人mp3","TIMES":"7","DUR":"0:01:54","SIZE":"1.76MB"},{"ID":"201706041509200000003910","TYPE":"音频文件","NAME":"小放牛mp3","DUR":"0:02:38",
+     * "ISFAV":"0","REMARK":"","SIZE":"2.43MB","COLNAME":"儿童歌谣 ","COLID":"201610301737481016432787 ","TIMES":"3","IMG":""},{"DUR":"0:02:48",
+     * "COLNAME":"儿童歌谣 ","REMARK":"","SIZE":"6.43MB","IMG":"","ISFAV":"0","ID":"201706041509200000003911","COLID":"201610301737481016432787 ",
+     * "TYPE":"音频文件","NAME":"欢乐颂mp3","TIMES":"2"},{"SIZE":"1.82MB","TIMES":"4","ID":"201706041509200000003912","TYPE":"音频文件",
+     * "COLID":"201610301737481016432787 ","IMG":"","NAME":"小宝宝睡着了mp3","DUR":"0:01:58","COLNAME":"儿童歌谣 ","REMARK":"","ISFAV":"0"},
+     * {"ID":"201706041509200000003913","COLID":"201610301737481016432787 ","NAME":"友谊之光mp3","TIMES":"7","SIZE":"1.88MB","IMG":"","TYPE":"音频文件",
+     * "ISFAV":"0","DUR":"0:02:02","REMARK":"","COLNAME":"儿童歌谣 "},{"IMG":"","REMARK":"","NAME":"当我们同在一起mp3","ISFAV":"0","DUR":"0:02:00",
+     * "TYPE":"音频文件","COLNAME":"儿童歌谣 ","TIMES":"17","COLID":"201610301737481016432787 ","SIZE":"1.84MB","ID":"201706041509200000003914"}],
+     * "CNT":"465","NC":"455","PN":"1"}
+     * TOKEN : 9d79ef8f-d2cc-4bdb-9239-7ffe4b53c103
      */
 
     private String TYPE;
@@ -164,60 +165,61 @@ public class DiscoveryListResultBean implements Parcelable {
 
     public static class BODYBean implements Parcelable {
         /**
-         * NC : 22
-         * CNT : 32
-         * LST : [{"ID":"201705151824191016803202","REMARK":"","SIZE":"9.68MB","IMG":"http://120.27.41
-         * .179:8081/zqpland/resource/thumbnail/5/jpg/20170515/201705151824401016803206.jpg","COLID":"201702091131341016563469 ","TIMES":"40",
-         * "NAME":"猪八戒吃西瓜","TYPE":"音频文件","COLNAME":"绘本故事 ","DUR":"0:10:33"},{"TIMES":"14","COLNAME":"睡前故事 ","TYPE":"音频文件","SIZE":"2.05MB",
-         * "DUR":"0:04:28","COLID":"201702091131241016563468 ","NAME":"小斑马过河","IMG":"http://120.27.41
-         * .179:8081/zqpland/resource/thumbnail/5/jpg/20170515/201705151810031016803168.jpg","ID":"201705151810031016803167","REMARK":""},
-         * {"DUR":"0:02:02","TYPE":"音频文件","COLNAME":"睡前故事 ","COLID":"201702091131241016563468 ","SIZE":"954.95KB","REMARK":"","NAME":"愚公移山",
-         * "IMG":"","TIMES":"1","ID":"201706041509200000012266"},{"DUR":"0:02:15","COLID":"201702091131241016563468 ","TIMES":"0","SIZE":"1.04MB",
-         * "NAME":"小花猫的胡子","COLNAME":"睡前故事 ","ID":"201706041509200000012265","IMG":"","REMARK":"","TYPE":"音频文件"},{"COLNAME":"睡前故事 ",
-         * "COLID":"201702091131241016563468 ","IMG":"","TIMES":"0","ID":"201706041509200000012264","SIZE":"1.51MB","TYPE":"音频文件","REMARK":"",
-         * "NAME":"脏嘴巴的小白兔","DUR":"0:03:17"},{"SIZE":"2.24MB","COLID":"201702091131241016563468 ","TIMES":"0","REMARK":"","TYPE":"音频文件",
-         * "DUR":"0:04:53","COLNAME":"睡前故事 ","ID":"201706041509200000012263","NAME":"十二生肖的故事","IMG":""},{"ID":"201706041509200000012262",
-         * "DUR":"0:06:00","COLID":"201702091131241016563468 ","TYPE":"音频文件","REMARK":"","IMG":"","TIMES":"0","SIZE":"2.76MB","COLNAME":"睡前故事 ",
-         * "NAME":"花木兰替父从军"},{"ID":"201706041509200000012261","COLNAME":"睡前故事 ","TYPE":"音频文件","NAME":"小花猫种鱼","COLID":"201702091131241016563468 ",
-         * "TIMES":"0","SIZE":"1.16MB","IMG":"","REMARK":"","DUR":"0:02:31"},{"COLID":"201702091131241016563468 ","TYPE":"音频文件","TIMES":"0",
-         * "IMG":"","DUR":"0:04:38","ID":"201706041509200000012260","REMARK":"","COLNAME":"睡前故事 ","SIZE":"4.25MB","NAME":"渔童"},{"REMARK":"",
-         * "COLNAME":"睡前故事 ","COLID":"201702091131241016563468 ","NAME":"河马先生的魔术","DUR":"0:01:38","IMG":"","TYPE":"音频文件","TIMES":"0","SIZE":"770
-         * .65KB","ID":"201706041509200000012259"}]
          * PS : 10
+         * LST : [{"SIZE":"109.17KB","TIMES":"83","TYPE":"音频文件","REMARK":"","COLNAME":"儿童歌谣 ","DUR":"","NAME":"拍手歌","IMG":"http://120.27.41
+         * .179:8081/zqpland/resource/thumbnail/5/png/20170702/201707021623491016839668.png","RESOLUTION":"280x280",
+         * "COLID":"201610301737481016432787 ","ISFAV":"0","ID":"201706041509200000003905"},{"COLNAME":"儿童歌谣 ","NAME":"捉泥鳅","REMARK":"","SIZE":"7
+         * .71MB","TYPE":"音频文件","COLID":"201610301737481016432787 ","ID":"201706041509200000003906","IMG":"http://120.27.41
+         * .179:8081/zqpland/resource/thumbnail/5/jpg/20170702/201707021625101016839670.jpg","DUR":"0:03:21","TIMES":"57","ISFAV":"0"},
+         * {"ISFAV":"0","DUR":"0:02:01","IMG":"","COLNAME":"儿童歌谣 ","REMARK":"","TIMES":"39","ID":"201706041509200000003907","NAME":"小螺号mp3",
+         * "TYPE":"音频文件","COLID":"201610301737481016432787 ","SIZE":"2.53MB"},{"COLID":"201610301737481016432787 ","NAME":"感动未来mp3","ISFAV":"0",
+         * "ID":"201706041509200000003908","TYPE":"音频文件","SIZE":"3.04MB","REMARK":"","COLNAME":"儿童歌谣 ","TIMES":"17","DUR":"0:03:18","IMG":""},
+         * {"REMARK":"","ISFAV":"0","ID":"201706041509200000003909","COLID":"201610301737481016432787 ","TYPE":"音频文件","IMG":"","COLNAME":"儿童歌谣 ",
+         * "NAME":"小龙人mp3","TIMES":"7","DUR":"0:01:54","SIZE":"1.76MB"},{"ID":"201706041509200000003910","TYPE":"音频文件","NAME":"小放牛mp3",
+         * "DUR":"0:02:38","ISFAV":"0","REMARK":"","SIZE":"2.43MB","COLNAME":"儿童歌谣 ","COLID":"201610301737481016432787 ","TIMES":"3","IMG":""},
+         * {"DUR":"0:02:48","COLNAME":"儿童歌谣 ","REMARK":"","SIZE":"6.43MB","IMG":"","ISFAV":"0","ID":"201706041509200000003911",
+         * "COLID":"201610301737481016432787 ","TYPE":"音频文件","NAME":"欢乐颂mp3","TIMES":"2"},{"SIZE":"1.82MB","TIMES":"4",
+         * "ID":"201706041509200000003912","TYPE":"音频文件","COLID":"201610301737481016432787 ","IMG":"","NAME":"小宝宝睡着了mp3","DUR":"0:01:58",
+         * "COLNAME":"儿童歌谣 ","REMARK":"","ISFAV":"0"},{"ID":"201706041509200000003913","COLID":"201610301737481016432787 ","NAME":"友谊之光mp3",
+         * "TIMES":"7","SIZE":"1.88MB","IMG":"","TYPE":"音频文件","ISFAV":"0","DUR":"0:02:02","REMARK":"","COLNAME":"儿童歌谣 "},{"IMG":"","REMARK":"",
+         * "NAME":"当我们同在一起mp3","ISFAV":"0","DUR":"0:02:00","TYPE":"音频文件","COLNAME":"儿童歌谣 ","TIMES":"17","COLID":"201610301737481016432787 ",
+         * "SIZE":"1.84MB","ID":"201706041509200000003914"}]
+         * CNT : 465
+         * NC : 455
          * PN : 1
          */
 
-        private String NC;
-        private String CNT;
         private String PS;
+        private String CNT;
+        private String NC;
         private String PN;
         private List<LSTBean> LST;
 
         @Override
         public String toString() {
             return "BODYBean{" +
-                    "NC='" + NC + '\'' +
+                    "PS='" + PS + '\'' +
                     ", CNT='" + CNT + '\'' +
-                    ", PS='" + PS + '\'' +
+                    ", NC='" + NC + '\'' +
                     ", PN='" + PN + '\'' +
                     ", LST=" + LST +
                     '}';
         }
 
-        public BODYBean(String NC, String CNT, String PS, String PN, List<LSTBean> LST) {
-            this.NC = NC;
-            this.CNT = CNT;
+        public BODYBean(String PS, String CNT, String NC, String PN, List<LSTBean> LST) {
             this.PS = PS;
+            this.CNT = CNT;
+            this.NC = NC;
             this.PN = PN;
             this.LST = LST;
         }
 
-        public String getNC() {
-            return NC;
+        public String getPS() {
+            return PS;
         }
 
-        public void setNC(String NC) {
-            this.NC = NC;
+        public void setPS(String PS) {
+            this.PS = PS;
         }
 
         public String getCNT() {
@@ -228,12 +230,12 @@ public class DiscoveryListResultBean implements Parcelable {
             this.CNT = CNT;
         }
 
-        public String getPS() {
-            return PS;
+        public String getNC() {
+            return NC;
         }
 
-        public void setPS(String PS) {
-            this.PS = PS;
+        public void setNC(String NC) {
+            this.NC = NC;
         }
 
         public String getPN() {
@@ -252,67 +254,69 @@ public class DiscoveryListResultBean implements Parcelable {
             this.LST = LST;
         }
 
-        public static class LSTBean extends MusicPlayerBean implements Parcelable {
-
+        public static class LSTBean extends MusicPlayerBean {
             public LSTBean() {
             }
             /**
-             * ID : 201705151824191016803202
-             * REMARK :
-             * SIZE : 9.68MB
-             * IMG : http://120.27.41.179:8081/zqpland/resource/thumbnail/5/jpg/20170515/201705151824401016803206.jpg
-             * COLID : 201702091131341016563469
-             * TIMES : 40
-             * NAME : 猪八戒吃西瓜
+             * SIZE : 109.17KB
+             * TIMES : 83
              * TYPE : 音频文件
-             * COLNAME : 绘本故事
-             * DUR : 0:10:33
+             * REMARK :
+             * COLNAME : 儿童歌谣
+             * DUR :
+             * NAME : 拍手歌
+             * IMG : http://120.27.41.179:8081/zqpland/resource/thumbnail/5/png/20170702/201707021623491016839668.png
+             * RESOLUTION : 280x280
+             * COLID : 201610301737481016432787
+             * ISFAV : 0
+             * ID : 201706041509200000003905
              */
 
-//            private String ID;
-            private String REMARK;
             private String SIZE;
-//            private String IMG;
-            private String COLID;
             private String TIMES;
-//            private String NAME;
             private String TYPE;
+            private String REMARK;
             private String COLNAME;
             private String DUR;
-
+//            private String NAME;
+//            private String IMG;
+            private String RESOLUTION;
+            private String COLID;
+            private String ISFAV;
+//            private String ID;
 
             @Override
             public String toString() {
                 return "LSTBean{" +
-                        "ID='" + ID + '\'' +
-                        ", REMARK='" + REMARK + '\'' +
-                        ", SIZE='" + SIZE + '\'' +
-                        ", IMG='" + IMG + '\'' +
-                        ", COLID='" + COLID + '\'' +
+                        "SIZE='" + SIZE + '\'' +
                         ", TIMES='" + TIMES + '\'' +
-                        ", NAME='" + NAME + '\'' +
                         ", TYPE='" + TYPE + '\'' +
+                        ", REMARK='" + REMARK + '\'' +
                         ", COLNAME='" + COLNAME + '\'' +
                         ", DUR='" + DUR + '\'' +
+                        ", NAME='" + NAME + '\'' +
+                        ", IMG='" + IMG + '\'' +
+                        ", RESOLUTION='" + RESOLUTION + '\'' +
+                        ", COLID='" + COLID + '\'' +
+                        ", ISFAV='" + ISFAV + '\'' +
+                        ", ID='" + ID + '\'' +
                         '}';
             }
 
-
-
-            public String getID() {
-                return ID;
-            }
-
-            public void setID(String ID) {
-                this.ID = ID;
-            }
-
-            public String getREMARK() {
-                return REMARK;
-            }
-
-            public void setREMARK(String REMARK) {
+            public LSTBean(String SIZE, String TIMES, String TYPE, String REMARK, String COLNAME, String DUR, String NAME, String IMG, String
+                    RESOLUTION, String COLID, String ISFAV, String ID) {
+                this.SIZE = SIZE;
+                this.TIMES = TIMES;
+                this.TYPE = TYPE;
                 this.REMARK = REMARK;
+                this.COLNAME = COLNAME;
+                this.DUR = DUR;
+                this.NAME = NAME;
+                this.IMG = IMG;
+                this.RESOLUTION = RESOLUTION;
+                this.COLID = COLID;
+                this.ISFAV = ISFAV;
+                this.ID = ID;
             }
 
             public String getSIZE() {
@@ -323,22 +327,6 @@ public class DiscoveryListResultBean implements Parcelable {
                 this.SIZE = SIZE;
             }
 
-            public String getIMG() {
-                return IMG;
-            }
-
-            public void setIMG(String IMG) {
-                this.IMG = IMG;
-            }
-
-            public String getCOLID() {
-                return COLID;
-            }
-
-            public void setCOLID(String COLID) {
-                this.COLID = COLID;
-            }
-
             public String getTIMES() {
                 return TIMES;
             }
@@ -347,20 +335,20 @@ public class DiscoveryListResultBean implements Parcelable {
                 this.TIMES = TIMES;
             }
 
-            public String getNAME() {
-                return NAME;
-            }
-
-            public void setNAME(String NAME) {
-                this.NAME = NAME;
-            }
-
             public String getTYPE() {
                 return TYPE;
             }
 
             public void setTYPE(String TYPE) {
                 this.TYPE = TYPE;
+            }
+
+            public String getREMARK() {
+                return REMARK;
+            }
+
+            public void setREMARK(String REMARK) {
+                this.REMARK = REMARK;
             }
 
             public String getCOLNAME() {
@@ -379,6 +367,54 @@ public class DiscoveryListResultBean implements Parcelable {
                 this.DUR = DUR;
             }
 
+            public String getNAME() {
+                return NAME;
+            }
+
+            public void setNAME(String NAME) {
+                this.NAME = NAME;
+            }
+
+            public String getIMG() {
+                return IMG;
+            }
+
+            public void setIMG(String IMG) {
+                this.IMG = IMG;
+            }
+
+            public String getRESOLUTION() {
+                return RESOLUTION;
+            }
+
+            public void setRESOLUTION(String RESOLUTION) {
+                this.RESOLUTION = RESOLUTION;
+            }
+
+            public String getCOLID() {
+                return COLID;
+            }
+
+            public void setCOLID(String COLID) {
+                this.COLID = COLID;
+            }
+
+            public String getISFAV() {
+                return ISFAV;
+            }
+
+            public void setISFAV(String ISFAV) {
+                this.ISFAV = ISFAV;
+            }
+
+            public String getID() {
+                return ID;
+            }
+
+            public void setID(String ID) {
+                this.ID = ID;
+            }
+
             @Override
             public int describeContents() {
                 return 0;
@@ -386,30 +422,35 @@ public class DiscoveryListResultBean implements Parcelable {
 
             @Override
             public void writeToParcel(Parcel dest, int flags) {
-                dest.writeString(this.ID);
-                dest.writeString(this.REMARK);
+                super.writeToParcel(dest, flags);
                 dest.writeString(this.SIZE);
-                dest.writeString(this.IMG);
-                dest.writeString(this.COLID);
                 dest.writeString(this.TIMES);
-                dest.writeString(this.NAME);
                 dest.writeString(this.TYPE);
+                dest.writeString(this.REMARK);
                 dest.writeString(this.COLNAME);
                 dest.writeString(this.DUR);
+                dest.writeString(this.NAME);
+                dest.writeString(this.IMG);
+                dest.writeString(this.RESOLUTION);
+                dest.writeString(this.COLID);
+                dest.writeString(this.ISFAV);
+                dest.writeString(this.ID);
             }
 
             protected LSTBean(Parcel in) {
                 super(in);
-//                this.ID = in.readString();
-                this.REMARK = in.readString();
                 this.SIZE = in.readString();
-//                this.IMG = in.readString();
-                this.COLID = in.readString();
                 this.TIMES = in.readString();
-//                this.NAME = in.readString();
                 this.TYPE = in.readString();
+                this.REMARK = in.readString();
                 this.COLNAME = in.readString();
                 this.DUR = in.readString();
+                this.NAME = in.readString();
+                this.IMG = in.readString();
+                this.RESOLUTION = in.readString();
+                this.COLID = in.readString();
+                this.ISFAV = in.readString();
+                this.ID = in.readString();
             }
 
             public static final Creator<LSTBean> CREATOR = new Creator<LSTBean>() {
@@ -432,17 +473,17 @@ public class DiscoveryListResultBean implements Parcelable {
 
         @Override
         public void writeToParcel(Parcel dest, int flags) {
-            dest.writeString(this.NC);
-            dest.writeString(this.CNT);
             dest.writeString(this.PS);
+            dest.writeString(this.CNT);
+            dest.writeString(this.NC);
             dest.writeString(this.PN);
             dest.writeList(this.LST);
         }
 
         protected BODYBean(Parcel in) {
-            this.NC = in.readString();
-            this.CNT = in.readString();
             this.PS = in.readString();
+            this.CNT = in.readString();
+            this.NC = in.readString();
             this.PN = in.readString();
             this.LST = new ArrayList<LSTBean>();
             in.readList(this.LST, LSTBean.class.getClassLoader());
@@ -496,9 +537,7 @@ public class DiscoveryListResultBean implements Parcelable {
     public static final Parcelable.Creator<DiscoveryListResultBean> CREATOR = new Parcelable.Creator<DiscoveryListResultBean>() {
         @Override
         public DiscoveryListResultBean createFromParcel(Parcel source) {
-
             return new DiscoveryListResultBean(source);
-
         }
 
         @Override

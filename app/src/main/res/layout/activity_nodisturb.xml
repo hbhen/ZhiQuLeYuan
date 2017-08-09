@@ -11,29 +11,28 @@
         android:layout_height="@dimen/dp_44">
 
         <ImageView
-            android:layout_marginLeft="@dimen/dp_10"
             android:id="@+id/iv_activity_nodisturb_back"
-            android:layout_centerVertical="true"
             android:layout_width="@dimen/dp_10"
             android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_10"
             android:src="@drawable/arrow_left"/>
 
         <TextView
-
-            android:layout_centerInParent="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_centerInParent="true"
             android:text="免打扰设置"
-            android:textColor="#000000"
-            android:textSize="18sp"/>
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_18"/>
 
         <TextView
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/dp_10"
-            android:layout_toRightOf="@id/iv_activity_nodisturb_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
             android:text="完成"
             android:textColor="@color/redFont"
             android:textSize="@dimen/sp_18"/>
@@ -44,82 +43,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <!--<RelativeLayout
-        android:id="@+id/rl_nodisturb_first"
-        android:layout_width="match_parent"
-        android:layout_height="160px"
-        android:layout_below="@id/tb_nodisturb"
-        android:background="#ffffff"
-        android:descendantFocusability="afterDescendants"
-        android:gravity="center"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp">
-
-        <TextView
-            android:id="@+id/tv_nodisturb_first"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="时间的设置,三级联动"
-            android:textColor="#000000"
-            android:textSize="16sp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_nodisturb_first"
-            android:layout_marginTop="5dp"
-            android:text="每天"
-            android:textColor="#8f8f8f"
-            android:textSize="16sp"/>
-
-        <com.suke.widget.SwitchButton
-            android:id="@+id/switch_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:clickable="true"/>
-
-    </RelativeLayout>
-
-    <LinearLayout
-        android:id="@+id/ll_activity_nodisturb_date"
-        android:layout_width="match_parent"
-        android:visibility="gone"
-        android:layout_height="160dip"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <com.tongyuan.android.zhiquleyuan.view.wheelview.WheelView
-            android:id="@+id/wv_birth_year"
-            android:layout_width="0dip"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            />
-
-        <com.tongyuan.android.zhiquleyuan.view.wheelview.WheelView
-            android:id="@+id/wv_birth_month"
-            android:layout_width="0dip"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            />
-
-        <com.tongyuan.android.zhiquleyuan.view.wheelview.WheelView
-            android:id="@+id/wv_birth_day"
-            android:layout_width="0dip"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            />
-    </LinearLayout>-->
-
-
     <ImageView
+        android:id="@+id/iv_add_nodisturbtime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="11dp"
+        android:clickable="true"
         android:src="@drawable/toy_add_pressed_160"/>
 
 </LinearLayout>

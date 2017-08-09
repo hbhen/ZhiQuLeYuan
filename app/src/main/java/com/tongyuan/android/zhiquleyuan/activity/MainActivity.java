@@ -524,9 +524,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             //不为空,去玩具选择页面
             showFragment(ToySelectorFragment.class.getSimpleName());
         } else {
-
             //为空,去玩具添加页面
-
             showFragment(ToyAddFragment.class.getSimpleName());
 
         }
@@ -540,12 +538,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 //        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 77 && data != null) {// toyFragment
+        if (requestCode == 77 && data != null && resultCode == 5011) {// toyFragment
             showToyFragment();
             return;
         } else if (requestCode == 78 && data != null) {
             showHistoryFragment();
             return;
+        } else if (resultCode == 90) {
+            toyAddFragment.onActivityResult(requestCode, resultCode, data);
         }
         UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
     }

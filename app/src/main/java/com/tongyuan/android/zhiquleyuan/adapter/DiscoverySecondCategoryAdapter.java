@@ -11,15 +11,31 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
+import com.tongyuan.android.zhiquleyuan.bean.AddInCollectionReqBean;
+import com.tongyuan.android.zhiquleyuan.bean.AddInCollectionResBean;
+import com.tongyuan.android.zhiquleyuan.bean.DeleteMyCollectionReqBean;
+import com.tongyuan.android.zhiquleyuan.bean.DeleteMyCollectionResBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListResultBean;
 import com.tongyuan.android.zhiquleyuan.holder.SecondaryCategoryHolder;
+import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
+import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.service.MusicPlayerService;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by android on 2016/12/21.
@@ -30,16 +46,29 @@ public class DiscoverySecondCategoryAdapter extends BaseAdapter {
     private List<DiscoveryListResultBean.BODYBean.LSTBean> list;
     private Drawable playingDrawable;
     private Drawable grayPlayDrawable;
+    private Drawable isFavoriteDrawable;
+    private Drawable grayFavoriteDrawable;
+
+    private boolean isFav = false;
+    private HashMap<Integer, String> hm = new HashMap();
 
 
     public DiscoverySecondCategoryAdapter(Context context, List<DiscoveryListResultBean.BODYBean.LSTBean> list) {
+
         this.mContext = context;
         this.mInflater = LayoutInflater.from(context);
         this.list = list;
+
         playingDrawable = context.getResources().getDrawable(R.drawable.dis_sub_item_played);
         playingDrawable.setBounds(0, 0, playingDrawable.getMinimumWidth(), playingDrawable.getMinimumHeight());//必须设置图片大小，否则不显示
         grayPlayDrawable = context.getResources().getDrawable(R.drawable.audition_list_gray_ico);
         grayPlayDrawable.setBounds(0, 0, grayPlayDrawable.getMinimumWidth(), grayPlayDrawable.getMinimumHeight());//必须设置图片大小，否则不显示
+
+        isFavoriteDrawable = context.getResources().getDrawable(R.drawable.secondary_favorite_3x);
+        isFavoriteDrawable.setBounds(0, 0, isFavoriteDrawable.getMinimumWidth(), isFavoriteDrawable.getMinimumHeight());//必须设置图片大小，否则不显示
+        grayFavoriteDrawable = context.getResources().getDrawable(R.drawable.secondary_favorite_gray_3x);
+        grayFavoriteDrawable.setBounds(0, 0, grayFavoriteDrawable.getMinimumWidth(), grayFavoriteDrawable.getMinimumHeight());//必须设置图片大小，否则不显示
+
     }
 
     public void onPause() {
@@ -70,6 +99,7 @@ public class DiscoverySecondCategoryAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+
         SecondaryCategoryHolder holder;
         if (convertView == null) {
             holder = new SecondaryCategoryHolder();
@@ -85,43 +115,26 @@ public class DiscoverySecondCategoryAdapter extends BaseAdapter {
             convertView.setTag(holder);
         } else {
             holder = (SecondaryCategoryHolder) convertView.getTag();
+
         }
-        /**
-         * {
-         * "TYPE": "RES",
-         * "CMD": "QRYRES",
-         * "ACCT": "XXXX",
-         * "TIME": "20170324113712831",
-         * "BODY": {
-         * "PN": "1",
-         * "CNT": "1",
-         * "PS": "10",
-         * "NC": "0",
-         * "LST": [{
-         * "TYPE": "音频文件",
-         * "NAME": "蚂蚁",
-         * "IMG": "http://120.27.41.179:8081/zqpland/resource/thumbnail/5/png/20170210/201702101530091016563538.png",
-         * "ID": "201701121950061016547106",
-         * "COLNAME": "国学经典 ",
-         * "SIZE": "11.03MB",
-         * "DUR": "",
-         * "COLID": "201611050827051016432864 ",
-         * "REMARK": "",
-         * "TIMES": "5"
-         * }]
-         * },
-         * "VERI": "",
-         * "TOKEN": "51ff422f-fdec-4c1e-a277-90419c20b827",
-         * "SEQ": "1",
-         * "CODE": "0",
-         * "MSG": ""
-         * }
-         */
+
         Uri parse = Uri.parse(list.get(position).getIMG());
         Glide.with(mContext).load(parse).placeholder(R.drawable.player_cover_default).into(holder.itemalumbimg);
         holder.textviewTitle.setText(list.get(position).getNAME());
         holder.playView.setTag(position);
         holder.favoriteView.setTag(position);
+        holder.textviewLike.setText(list.get(position).getTIMES());
+        hm.put(position, list.get(position).getISFAV());
+
+
+        if (list.get(position).getISFAV().equals("1")) {
+            holder.favoriteView.setCompoundDrawables(isFavoriteDrawable, null, null, null);
+            holder.favoriteView.setTextColor(mContext.getResources().getColor(R.color.redFont));
+        } else {
+            holder.favoriteView.setCompoundDrawables(grayFavoriteDrawable, null, null, null);
+            holder.favoriteView.setTextColor(mContext.getResources().getColor(R.color.grayFont));
+        }
+
         if (list.get(position).isPlaying /*&& MusicPlayerService.isPlayUrl(list.get(position).getID())*/) {
             holder.playView.setCompoundDrawables(playingDrawable, null, null, null);
             holder.playView.setTextColor(mContext.getResources().getColor(R.color.redFont));
@@ -132,7 +145,8 @@ public class DiscoverySecondCategoryAdapter extends BaseAdapter {
         return convertView;
     }
 
-    private View.OnClickListener clickView = new View.OnClickListener() {
+    View.OnClickListener clickView = new View.OnClickListener() {
+
         @Override
         public void onClick(View v) {
             int position = (int) v.getTag();
@@ -158,8 +172,81 @@ public class DiscoverySecondCategoryAdapter extends BaseAdapter {
                 notifyDataSetChanged();
 
             } else if (v.getId() == R.id.dis_sub_item_favorite) {
-                ToastUtil.showToast(mContext, "favorite");
+                TextView textview = (TextView) v;
+                if (hm.get(position).equals("1")) {
+                    list.get(position).setISFAV("0");
+                    textview.setTextColor(mContext.getResources().getColor(R.color.redFont));
+                    deleteCollectionRes(position);
+                } else {
+                    list.get(position).setISFAV("1");
+                    hm.put(position, "1");
+                    textview.setTextColor(mContext.getResources().getColor(R.color.grayFont));
+                    collectionRes(position);
+                }
+
             }
         }
     };
+
+    private void deleteCollectionRes(final int position) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constant.baseurl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        AllInterface allInterface = retrofit.create(AllInterface.class);
+        DeleteMyCollectionReqBean.BODYBean.LSTBean lstBean = new DeleteMyCollectionReqBean.BODYBean.LSTBean(list.get(position).getID());
+        ArrayList arraylist = new ArrayList();
+        arraylist.add(lstBean);
+        final DeleteMyCollectionReqBean.BODYBean bodyBean = new DeleteMyCollectionReqBean.BODYBean(arraylist);
+        DeleteMyCollectionReqBean deleteMyCollectionReqBean = new DeleteMyCollectionReqBean("REQ", "DFAVRES", SPUtils.getString(mContext,
+                "phoneNum", ""), new
+                SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()), bodyBean, "", SPUtils.getString(mContext, "TOKEN", ""), "1");
+        Gson gson = new Gson();
+        String s = gson.toJson(deleteMyCollectionReqBean);
+        Call<DeleteMyCollectionResBean> deleteMyCollectionResBeanCall = allInterface.DELETE_MYCOLLECTION_RES_BEAN_CALL(s);
+        deleteMyCollectionResBeanCall.enqueue(new Callback<DeleteMyCollectionResBean>() {
+            @Override
+            public void onResponse(Call<DeleteMyCollectionResBean> call, Response<DeleteMyCollectionResBean> response) {
+                if (response != null && response.body().getCODE().equals("0")) {
+                    notifyDataSetChanged();
+                    ToastUtil.showToast(mContext, "删除收藏成功");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DeleteMyCollectionResBean> call, Throwable t) {
+            }
+        });
+    }
+
+
+    private void collectionRes(final int position) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constant.baseurl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        AllInterface allInterface = retrofit.create(AllInterface.class);
+        AddInCollectionReqBean.BODYBean.LSTBean lstBean = new AddInCollectionReqBean.BODYBean.LSTBean(list.get(position).getID());
+        ArrayList arraylist = new ArrayList();
+        arraylist.add(lstBean);
+        AddInCollectionReqBean.BODYBean bodyBean = new AddInCollectionReqBean.BODYBean(arraylist);
+        AddInCollectionReqBean addInCollectionReqBean = new AddInCollectionReqBean("REQ", "FAVRES", SPUtils.getString(mContext, "phoneNum", ""), new
+                SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()), bodyBean, "", SPUtils.getString(mContext, "TOKEN", ""), "1");
+        Gson gson = new Gson();
+        String s = gson.toJson(addInCollectionReqBean);
+        Call<AddInCollectionResBean> addInCollectionResBeanCall = allInterface.ADDINCOLLECTION_RES_BEAN_CALL(s);
+        addInCollectionResBeanCall.enqueue(new Callback<AddInCollectionResBean>() {
+            @Override
+            public void onResponse(Call<AddInCollectionResBean> call, Response<AddInCollectionResBean> response) {
+                if (response != null && response.body().getCODE().equals("0")) {
+                    notifyDataSetChanged();
+                    ToastUtil.showToast(mContext, "收藏成功");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AddInCollectionResBean> call, Throwable t) {
+            }
+        });
+    }
 }

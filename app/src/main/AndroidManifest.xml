@@ -155,8 +155,6 @@
             android:exported="true"
             android:screenOrientation="portrait" />
 
-
-
     </application>
 
 </manifest>

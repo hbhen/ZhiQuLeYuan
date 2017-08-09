@@ -27,7 +27,6 @@ import java.util.List;
 import static com.tongyuan.android.zhiquleyuan.R.id.tv_desc_detailstimes;
 
 /**
- *
  * Created by android on 2016/12/27.
  */
 public class DiscoveryRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -121,7 +120,7 @@ public class DiscoveryRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
 
     private void bindGridHold(HolderNineGrid holder, int position) {
         int realPosition;
-        if("".equals(mToken)) {
+        if ("".equals(mToken)) {
             realPosition = position - 1;
         } else {
             realPosition = position;
@@ -132,12 +131,12 @@ public class DiscoveryRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
 
     private void bindListHold(HolderListView holder, int position) {
         int realPosition = position - mDiscoveryGridViewList.size();
-        if("".equals(mToken)) {
+        if ("".equals(mToken)) {
             realPosition -= 2;
         } else {
             realPosition -= 1;
         }
-        if(realPosition == mDiscoveryListViewList.size()) {
+        if (realPosition == mDiscoveryListViewList.size()) {
             return;
         }
         Glide.with(mContext).load(mDiscoveryListViewList.get(realPosition).
@@ -145,29 +144,28 @@ public class DiscoveryRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         holder.tv_desc_title.setText(mDiscoveryListViewList.get(realPosition).getNAME());
         holder.tv_desc_times.setText(mDiscoveryListViewList.get(realPosition).getTIMES());
         holder.tv_desc_category.setText(mDiscoveryListViewList.get(realPosition).getCOLNAME());
-
     }
 
     @Override
     public int getItemViewType(int position) {
-        if("".equals(mToken)) {
+        if ("".equals(mToken)) {
             if (position == 0) {
                 return TYPE_TYPE1_HEAD;
             } else if (0 < position && position <= mDiscoveryGridViewList.size()) {
                 return TYPE_TYPE1;
             } else if (position == (1 + mDiscoveryGridViewList.size())) {
                 return TYPE_TYPE2_HEAD;
-            } else if ((position == getItemCount()-1) && hasFootView) {
+            } else if ((position == getItemCount() - 1) && hasFootView) {
                 return TYPE_FOOTER;
             } else {
                 return TYPE_TYPE2;
             }
         } else {
-            if(position < mDiscoveryGridViewList.size()) {
+            if (position < mDiscoveryGridViewList.size()) {
                 return TYPE_TYPE1;
-            } else if(position == mDiscoveryGridViewList.size()) {
+            } else if (position == mDiscoveryGridViewList.size()) {
                 return TYPE_TYPE2_HEAD;
-            } else if((position == getItemCount()-1) && hasFootView) {
+            } else if ((position == getItemCount() - 1) && hasFootView) {
                 return TYPE_FOOTER;
             } else {
                 return TYPE_TYPE2;
@@ -177,17 +175,17 @@ public class DiscoveryRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
 
     @Override
     public int getItemCount() {
-        if(mDiscoveryGridViewList.size() == 0 && mDiscoveryListViewList.size()==0) {
+        if (mDiscoveryGridViewList.size() == 0 && mDiscoveryListViewList.size() == 0) {
             return 0;
         }
         int count;
-        if("".equals(mToken)) {
+        if ("".equals(mToken)) {
             count = mDiscoveryGridViewList.size() + mDiscoveryListViewList.size() + 2;
         } else {
-            count = mDiscoveryGridViewList.size() + mDiscoveryListViewList.size()+1;
+            count = mDiscoveryGridViewList.size() + mDiscoveryListViewList.size() + 1;
         }
 
-        if(hasFootView) {
+        if (hasFootView) {
             count += 1;
         }
         return count;
@@ -216,7 +214,7 @@ public class DiscoveryRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
 
     private class HolderNineGrid extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView gridImg;
-        TextView  gridText;
+        TextView gridText;
 
         HolderNineGrid(View itemView) {
             super(itemView);
@@ -229,7 +227,7 @@ public class DiscoveryRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         @Override
         public void onClick(View v) {
             int position = getLayoutPosition();
-            if("".equals(mToken)) {
+            if ("".equals(mToken)) {
                 position -= 1;
             }
             DiscoveryGridItemBean.LSTBean bean = mDiscoveryGridViewList.get(position);
@@ -259,12 +257,12 @@ public class DiscoveryRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
 
         @Override
         public void onClick(View v) {
-            if("".equals(mToken)) {
+            if ("".equals(mToken)) {
                 ToastUtil.showToast(mContext, R.string.user_no_login);
                 return;
             }
             int position;
-            if("".equals(mToken)) {
+            if ("".equals(mToken)) {
                 position = getLayoutPosition() - 2 - mDiscoveryGridViewList.size();
             } else {
                 position = getLayoutPosition() - mDiscoveryGridViewList.size() - 1;
@@ -287,6 +285,7 @@ public class DiscoveryRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
 
     /**
      * 是否加载更多
+     *
      * @param isLoad true就显示FootView
      */
     public void isLoadMore(boolean isLoad) {

@@ -75,7 +75,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:drawableLeft="@drawable/collect_list_gray_ico"
+            android:drawableLeft="@drawable/secondary_favorite_gray_3x"
             android:drawablePadding="5dp"
             android:text="收藏"
             android:textColor="@color/grayFont"
