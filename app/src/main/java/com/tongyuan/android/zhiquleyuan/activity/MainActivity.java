@@ -545,7 +545,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             showHistoryFragment();
             return;
         } else if (resultCode == 90) {
-            toyAddFragment.onActivityResult(requestCode, resultCode, data);
+
+            if(toyAddFragment != null)
+                toyAddFragment.onActivityResult(requestCode, resultCode, data);
+
         }
         UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
     }
