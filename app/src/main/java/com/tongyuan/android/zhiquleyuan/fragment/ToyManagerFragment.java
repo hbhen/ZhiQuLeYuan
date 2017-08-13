@@ -141,16 +141,17 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
     }
 
     private void initData() {
-
-
         mToken = SPUtils.getString(getActivity(), "TOKEN", "");
         mPhoneNum = SPUtils.getString(getActivity(), "phoneNum", "");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         mTime = simpleDateFormat.format(new Date());
         mCurrentUserId = SPUtils.getString(getContext(), "ID", "");
+
         //获取成员信息,需要传什么参数,去访问哪个接口  3.4.48接口
         //getToyMember(mTime, mToken, mPhoneNum, mToyId, mToyCode);
+
         Log.i(TAG, "initData:toyimg ");
+
     }
 
     private void getToyMember(String time, String token, String phoneNum, String toyId, final String toyCode) {

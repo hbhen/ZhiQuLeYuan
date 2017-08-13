@@ -101,21 +101,22 @@ public class MyBabyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_addbabyinfo);
         ButterKnife.bind(this);
-//        mRgAddbabyinfo.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(RadioGroup group, int checkedId) {
-//                switch (checkedId) {
-//                    case R.id.radioButtonBoy:
-//                        sex = "M";
-//                        break;
-//                    case R.id.radiobuttonGirls:
-//                        sex = "W";
-//                }
-//            }
-//        });
+        mRgAddbabyinfo.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId) {
+                    case R.id.radioButtonBoy:
+                        sex = "M";
+                        break;
+                    case R.id.radiobuttonGirls:
+                        sex = "W";
+                }
+            }
+        });
 
         uploadFilePath = getExternalFilesDir(DIRECTORY_PICTURES).getAbsolutePath();
         uploadFileName="icon.png";
+
     }
 
 
@@ -155,10 +156,8 @@ public class MyBabyActivity extends AppCompatActivity {
         }
     }
 
-
     //上传宝宝的信息
     private void confirmInfo(String phoneNum, String time, final String token, String babyID, String sex) {
-
 //        Date date1=new Date(mDatetime);
 //        SimpleDateFormat si=new SimpleDateFormat("yyyyMMddHHmmssSSS");
 //        String formatdate = si.format(date1);
@@ -191,6 +190,7 @@ public class MyBabyActivity extends AppCompatActivity {
 
             }
         });
+
 //        babyInfoResult.enqueue(new Callback<BabyInfoResultBean>() {
 //            @Override
 //            public void onResponse(Call<BabyInfoResultBean> call, Response<BabyInfoResultBean> response) {
@@ -205,6 +205,7 @@ public class MyBabyActivity extends AppCompatActivity {
 //                ToastUtil.showToast(getApplicationContext(),"失败了");
 //            }
 //        });
+
     }
 
     private String[] selectDate() {
@@ -213,6 +214,7 @@ public class MyBabyActivity extends AppCompatActivity {
         mChangeDatePopwindow.setDate("2017", "01", "01");
         mChangeDatePopwindow.showAtLocation(mTvActivityAddbabyinfoDate, Gravity.BOTTOM, 0, 0);
         mChangeDatePopwindow.setBirthdayListener(new ChangeDatePopwindow.OnBirthListener() {
+
             @Override
             public void onClick(String year, String month, String day) {
                 Toast.makeText(MyBabyActivity.this, year + " " + month + " " + day, Toast.LENGTH_LONG).show();
@@ -229,7 +231,6 @@ public class MyBabyActivity extends AppCompatActivity {
                 str[1] = sb.toString();
                 Log.i("111", "str[1]=========: " + str[1]);
                 //对mDatetime去进行筛选,剔除里面的年月日,拼接成日期,然后在integer.parse
-
 
                 mTvActivityAddbabyinfoDate.setText(year + " " + month + " " + day);
                 mTimedate = sb + "0000000";
@@ -285,7 +286,6 @@ public class MyBabyActivity extends AppCompatActivity {
             }
         }
     }
-
 
     //裁剪图片方法实现,这里用的是系统自带的裁剪,可以用circleimageview来裁剪.
     private void startPhotoZoom(Uri tempUri) {

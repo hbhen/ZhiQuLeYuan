@@ -8,9 +8,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
-import com.tongyuan.android.zhiquleyuan.adapter.NoDisturbAdapter;
+import com.tongyuan.android.zhiquleyuan.adapter.NewAdapter;
 import com.tongyuan.android.zhiquleyuan.bean.NodisturbTimeReqBean;
 import com.tongyuan.android.zhiquleyuan.bean.NodisturbTimeResBean;
 import com.tongyuan.android.zhiquleyuan.fragment.ToySelectorFragment;
@@ -47,32 +48,6 @@ public class NoDisturbActivity extends AppCompatActivity implements View.OnClick
         setContentView(R.layout.activity_nodisturb);
         ButterKnife.bind(this);
         getNoDisturbTime();
-
-//        SwitchButton switchButton = (SwitchButton) findViewById(R.id.switch_button);
-//        RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.rl_nodisturb_first);
-////        switchButton.setChecked(true);
-////        switchButton.toggle();
-//        switchButton.setOnClickListener(this);
-//        relativeLayout.setOnClickListener(this);
-////        switchButton.setTag("12");
-////        switchButton.toggle(true);
-//        switchButton.setShadowEffect(true);//disable shadow effect
-//        switchButton.setEnabled(true);//disable button
-//        switchButton.setEnableEffect(false);//disable the switch animation
-//        switchButton.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(SwitchButton view, boolean isChecked) {
-//                ToastUtil.showToast(getApplicationContext(), "ischecked" + isChecked);
-//                //TODO do your job
-//                if (isChecked == true) {
-//                    //打开开关的逻辑:开启设置免打扰,
-//                    ToastUtil.showToast(getApplicationContext(), "开");
-//                }else{
-//                    //关闭开关的逻辑
-//                    ToastUtil.showToast(getApplicationContext(), "关");
-//                }
-//            }
-//        });
     }
 
     private void getNoDisturbTime() {
@@ -92,8 +67,24 @@ public class NoDisturbActivity extends AppCompatActivity implements View.OnClick
             public void onResponse(Call<NodisturbTimeResBean> call, Response<NodisturbTimeResBean> response) {
                 List<NodisturbTimeResBean.BODYBean.LSTBean> lst = response.body().getBODY().getLST();
                 mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-                NoDisturbAdapter adapter = new NoDisturbAdapter(getApplicationContext(), lst);
+//                NoDisturbAdapter adapter = new NoDisturbAdapter(getApplicationContext(), lst);
+                NewAdapter adapter = new NewAdapter(getApplicationContext(), R.layout.disturb_recycler_troggle, lst);
                 mRecyclerView.setAdapter(adapter);
+                adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                        showPopUpWindow();
+                        ToastUtil.showToast(getApplication(), "点击了" + position);
+
+                    }
+                });
+                adapter.setOnItemLongClickListener(new BaseQuickAdapter.OnItemLongClickListener() {
+                    @Override
+                    public boolean onItemLongClick(BaseQuickAdapter adapter, View view, int position) {
+                        ToastUtil.showToast(getApplicationContext(), "长按了" + position);
+                        return true;
+                    }
+                });
 
 
             }
@@ -103,6 +94,12 @@ public class NoDisturbActivity extends AppCompatActivity implements View.OnClick
                 ToastUtil.showToast(getApplicationContext(), t.toString());
             }
         });
+    }
+
+    private void showPopUpWindow() {
+        //展示wheelview 弹出wheelview
+        //
+
     }
 
     @Override

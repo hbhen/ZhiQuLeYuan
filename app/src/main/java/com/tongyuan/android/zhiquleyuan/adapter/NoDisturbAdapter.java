@@ -31,6 +31,11 @@ public class NoDisturbAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private LayoutInflater mInflater;
     private List<NodisturbTimeResBean.BODYBean.LSTBean> mLSTBeen;
     private Context mContext;
+    private OnItemClickListener mOnItemClickListener;
+
+    private void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.mOnItemClickListener = onItemClickListener;
+    }
 
     public NoDisturbAdapter(Context context, List<NodisturbTimeResBean.BODYBean.LSTBean> lst) {
         mInflater = LayoutInflater.from(context);
@@ -39,19 +44,12 @@ public class NoDisturbAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-//        if (type_troggle == viewType) {
         View view = mInflater.inflate(R.layout.disturb_recycler_troggle, null);
-//        } else {
-//            View view = mInflater.inflate(R.layout.disturb_recycler_date, null);
-//            return new DateHolder(view);
         return new ToggleHolder(view);
-//        }
-//        }
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-//        if (holder instanceof ToggleHolder) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         String pstate = mLSTBeen.get(position).getPSTATE();
         if (pstate.equals("0")) {
             ((ToggleHolder) holder).btn.setChecked(false);
@@ -59,8 +57,25 @@ public class NoDisturbAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
             ((ToggleHolder) holder).btn.setChecked(true);
         }
-//            boolean checked = ((ToggleHolder) holder).btn.isChecked();
 
+        if (mOnItemClickListener != null) {
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mOnItemClickListener.onItemClick(holder.itemView, position);
+                    ToastUtil.showToast(mContext, "短按");
+                }
+            });
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+
+                    mOnItemClickListener.onItemLongClick(holder.itemView, position);
+                    ToastUtil.showToast(mContext, "长按");
+                    return false;
+                }
+            });
+        }
         ((ToggleHolder) holder).btn.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(SwitchButton view, boolean isChecked) {
@@ -93,27 +108,30 @@ public class NoDisturbAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        ((ToggleHolder) holder).btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ToastUtil.showToast(mContext, "点击的是btn");
-            }
-        });
-        ((ToggleHolder) holder).tv_nodisturb_first.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ToastUtil.showToast(mContext, "点击的是时间");
-            }
-        });
+//        ((ToggleHolder) holder).btn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                ToastUtil.showToast(mContext, "点击的是btn");
+//            }
+//        });
+//        ((ToggleHolder) holder).tv_nodisturb_first.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                ToastUtil.showToast(mContext, "点击的是时间");
+//            }
+//        });
+
     }
-    public void deleteItem(int position){
-        if (mLSTBeen==null||mLSTBeen.isEmpty()){
+
+    public void deleteItem(int position) {
+        if (mLSTBeen == null || mLSTBeen.isEmpty()) {
             return;
         }
         mLSTBeen.remove(position);
         notifyItemRemoved(position);
 
     }
+
     private void setNoDisturbTimeOn() {
         //讲设置好的数据发送到服务器 pstate ="1";
 
@@ -122,26 +140,15 @@ public class NoDisturbAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public int getItemCount() {
-
         return mLSTBeen.size();
 
     }
 
-//    class DateHolder extends RecyclerView.ViewHolder {
-//        public DateHolder(View view) {
-//            super(view);
-//            ButterKnife.bind(this, view);
-//        }
-//    }
-
     public class ToggleHolder extends RecyclerView.ViewHolder {
-
         @BindView(R.id.tv_nodisturb_first)
         TextView tv_nodisturb_first;
         @BindView(R.id.switch_button)
         SwitchButton btn;
-
-        private RecyclerViewItemClickListener mRecyclerViewItemClickListener;
 
         public ToggleHolder(View itemView) {
             super(itemView);
@@ -151,7 +158,7 @@ public class NoDisturbAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
     }
 
-    public interface RecyclerViewItemClickListener {
+    public interface OnItemClickListener {
         void onItemClick(View view, int position);
 
         void onItemLongClick(View view, int position);

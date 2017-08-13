@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -20,7 +18,6 @@ import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.adapter.BabyInfoListAdapter;
 import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListRequest;
 import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListResult;
-import com.tongyuan.android.zhiquleyuan.fragment.MineFragment;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
@@ -161,11 +158,6 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
         });
     }
 
-//    private void showBabyList(List<QueryBabyListResult.BODYBean.LSTBean> lst) {
-//        mListview.setAdapter(new BabyInfoListAdapter(this, lst));
-//    }
-
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -177,11 +169,13 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
                 break;
 
             case R.id.iv_babyinfolist_backa:
-                FragmentManager supportFragmentManager = getSupportFragmentManager();
-                FragmentTransaction transaction = supportFragmentManager.beginTransaction();
-                transaction.replace(R.id.fl_fragmentcontainer, new MineFragment());
-                transaction.commit();
+                finish();
+//                FragmentManager supportFragmentManager = getSupportFragmentManager();
+//                FragmentTransaction transaction = supportFragmentManager.beginTransaction();
+//                transaction.replace(R.id.fl_fragmentcontainer, new MineFragment());
+//                transaction.commit();
                 break;
+
         }
     }
 
