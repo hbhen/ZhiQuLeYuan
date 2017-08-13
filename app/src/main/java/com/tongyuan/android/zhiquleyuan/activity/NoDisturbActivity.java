@@ -66,7 +66,7 @@ public class NoDisturbActivity extends AppCompatActivity implements View.OnClick
     private PopupWindow popupWindow;
 
     private WheelView wl_ymd;
-    private WheelView wl_week;
+    private WheelView wl_startMin;
     private WheelView wl_hour;
     private WheelView wl_min;
 
@@ -193,24 +193,25 @@ public class NoDisturbActivity extends AppCompatActivity implements View.OnClick
         int curMonth = c.get(Calendar.MONTH) + 1;//通过Calendar算出的月数要+1
         int curDate = c.get(Calendar.DATE);
         wl_ymd = (WheelView) popupWindowView.findViewById(R.id.wl_ymd);
-        wl_week = (WheelView) popupWindowView.findViewById(R.id.wl_week);
+        wl_startMin = (WheelView) popupWindowView.findViewById(R.id.wl_week);
         wl_hour = (WheelView) popupWindowView.findViewById(R.id.wl_hour);
         wl_min = (WheelView) popupWindowView.findViewById(R.id.wl_min);
 
-        ArrayWheelAdapter<String> weekAdapter = new ArrayWheelAdapter<>(this, ymdData);
-        List<String> ymdList = Arrays.asList(ymdData);
-        wl_ymd.setViewAdapter(weekAdapter);
-        weekAdapter.setTextSize(18);
+        NumericWheelAdapter startHourAdapter = new NumericWheelAdapter(this, 0, 23);
+//        List<String> ymdList = Arrays.asList(ymdData);
+        wl_ymd.setViewAdapter(startHourAdapter);
+        startHourAdapter.setTextSize(18);
+        startHourAdapter.setLabel("");
         wl_ymd.setCyclic(true);
-        wl_ymd.setCurrentItem(ymdList.indexOf(GetTimeUtil.getYMDTime(System.currentTimeMillis())));
+//        wl_ymd.setCurrentItem(ymdList.indexOf(GetTimeUtil.getYMDTime(System.currentTimeMillis())));
         wl_ymd.addChangingListener(new OnWheelChangedListener() {
             @Override
             public void onChanged(WheelView wheel, int oldValue, int newValue) {
-                String value = ymdData[newValue];
+                /*String value = ymdData[newValue];
                 int year = Integer.parseInt(value.substring(0, value.indexOf("-")));
                 int month = Integer.parseInt(value.substring(value.indexOf("-") + 1, value.lastIndexOf("-")));
                 int day = Integer.parseInt(value.substring(value.lastIndexOf("-") + 1, value.length()));
-                changeWheelWeek(year, month, day);
+                changeWheelWeek(year, month, day);*/
                 //给需要的地方设置时间
 //                tv_end_time.setText(value);
 
@@ -220,16 +221,17 @@ public class NoDisturbActivity extends AppCompatActivity implements View.OnClick
 
         BaseViewHolder baseViewHolder = mAdapter.returnView();
 
-        ArrayWheelAdapter<String> weekAdapter2 = new ArrayWheelAdapter<String>(this, week_str);
-        wl_week.setViewAdapter(weekAdapter2);
-        weekAdapter2.setTextSize(18);
-        wl_week.setEnabled(false);
-        wl_week.setCyclic(true);
+        NumericWheelAdapter startMinuteAdapter = new NumericWheelAdapter(this, 0, 59);
+        wl_startMin.setViewAdapter(startMinuteAdapter);
+        startMinuteAdapter.setTextSize(18);
+        startMinuteAdapter.setLabel("");
+        wl_startMin.setEnabled(false);
+        wl_startMin.setCyclic(true);
         changeWheelWeek(curYear, curMonth, curDate);
 
 
         NumericWheelAdapter numericAdapter1 = new NumericWheelAdapter(this, 0, 23);
-        numericAdapter1.setLabel("：");
+        numericAdapter1.setLabel("");
         numericAdapter1.setTextSize(18);
         wl_hour.setViewAdapter(numericAdapter1);
         wl_hour.setCyclic(true);// 可循环滚动
@@ -261,7 +263,7 @@ public class NoDisturbActivity extends AppCompatActivity implements View.OnClick
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, month - 1, day);
         int i = calendar.get(Calendar.DAY_OF_WEEK);
-        wl_week.setCurrentItem(i - 1);
+        wl_startMin.setCurrentItem(i - 1);
         lastweek = week_str[i - 1];
     }
 
