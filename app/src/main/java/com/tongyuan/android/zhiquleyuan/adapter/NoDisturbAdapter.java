@@ -98,29 +98,18 @@ public class NoDisturbAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         String endSubString = etime.substring(0, 4);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HHmm");
         SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("HH:mm");
+
         try {
             Date beginParse = simpleDateFormat.parse(beginSubString);
             String beginFormat = simpleDateFormat1.format(beginParse);
-
             Date endParse = simpleDateFormat.parse(endSubString);
             String endFormat = simpleDateFormat1.format(endParse);
-            ((ToggleHolder) holder).tv_nodisturb_first.setText(beginFormat + "-" + endFormat);
+            ((ToggleHolder) holder).tv_nodisturb_start.setText(beginFormat );
+            ((ToggleHolder) holder).tv_nodisturb_end.setText("-" + endFormat);
+
         } catch (ParseException e) {
             e.printStackTrace();
         }
-//        ((ToggleHolder) holder).btn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                ToastUtil.showToast(mContext, "点击的是btn");
-//            }
-//        });
-//        ((ToggleHolder) holder).tv_nodisturb_first.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                ToastUtil.showToast(mContext, "点击的是时间");
-//            }
-//        });
-
     }
 
     public void deleteItem(int position) {
@@ -145,8 +134,10 @@ public class NoDisturbAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     public class ToggleHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.tv_nodisturb_first)
-        TextView tv_nodisturb_first;
+        @BindView(R.id.tv_nodisturb_start)
+        TextView tv_nodisturb_start;
+        @BindView(R.id.tv_nodisturb_end)
+        TextView tv_nodisturb_end;
         @BindView(R.id.switch_button)
         SwitchButton btn;
 

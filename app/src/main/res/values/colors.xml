@@ -40,4 +40,5 @@
     <color name="main_top_edit_stroke">#d1d1d1</color>
     <!--recording fragment -->
     <color name="record_arrow_bg">#ffdbdb</color>
+    <color name="lable_blue">#3DB0FD</color>
 </resources>

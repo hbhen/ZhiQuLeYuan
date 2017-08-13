@@ -25,24 +25,30 @@ import android.widget.TextView;
  * Numeric Wheel adapter.
  */
 public class NumericWheelAdapter extends AbstractWheelTextAdapter {
-    
-    /** The default min value */
+
+    /**
+     * The default min value
+     */
     public static final int DEFAULT_MAX_VALUE = 9;
 
-    /** The default max value */
+    /**
+     * The default max value
+     */
     private static final int DEFAULT_MIN_VALUE = 0;
-    
+
     // Values
     private int minValue;
     private int maxValue;
-    
+
     // format
     private String format;
-    
+
     private String label;
-    
+    private CharSequence mText;
+
     /**
      * Constructor
+     *
      * @param context the current context
      */
     public NumericWheelAdapter(Context context) {
@@ -51,7 +57,8 @@ public class NumericWheelAdapter extends AbstractWheelTextAdapter {
 
     /**
      * Constructor
-     * @param context the current context
+     *
+     * @param context  the current context
      * @param minValue the wheel min value
      * @param maxValue the wheel max value
      */
@@ -61,14 +68,15 @@ public class NumericWheelAdapter extends AbstractWheelTextAdapter {
 
     /**
      * Constructor
-     * @param context the current context
+     *
+     * @param context  the current context
      * @param minValue the wheel min value
      * @param maxValue the wheel max value
-     * @param format the format string
+     * @param format   the format string
      */
     public NumericWheelAdapter(Context context, int minValue, int maxValue, String format) {
         super(context);
-        
+
         this.minValue = minValue;
         this.maxValue = maxValue;
         this.format = format;
@@ -87,7 +95,7 @@ public class NumericWheelAdapter extends AbstractWheelTextAdapter {
     public int getItemsCount() {
         return maxValue - minValue + 1;
     }
-    
+
     @Override
     public View getItem(int index, View convertView, ViewGroup parent) {
         if (index >= 0 && index < getItemsCount()) {
@@ -96,12 +104,12 @@ public class NumericWheelAdapter extends AbstractWheelTextAdapter {
             }
             TextView textView = getTextView(convertView, itemTextResourceId);
             if (textView != null) {
-                CharSequence text = getItemText(index);
-                if (text == null) {
-                    text = "";
+                mText = getItemText(index);
+                if (mText == null) {
+                    mText = "";
                 }
 
-                textView.setText(text+label);
+                textView.setText(mText + label);
 //                if ("1".equals(UIUtils.getString(R.string.common_lang))){
 //                    textView.setText(text+label);
 //                }else{
@@ -114,11 +122,14 @@ public class NumericWheelAdapter extends AbstractWheelTextAdapter {
             }
             return convertView;
         }
-    	return null;
+        return null;
     }
 
-	public void setLabel(String label) {
-		this.label=label;
-	}    
-	
+    public void setLabel(String label) {
+        this.label = label;
+    }
+    public CharSequence getText(){
+        return mText;
+    }
+
 }

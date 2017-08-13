@@ -1,12 +1,14 @@
 package com.tongyuan.android.zhiquleyuan.adapter;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +22,6 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.gson.Gson;
-import com.nostra13.universalimageloader.utils.L;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.activity.AddMemberToGroup;
 import com.tongyuan.android.zhiquleyuan.bean.DelMembFromGroupReQBean;
@@ -62,7 +63,11 @@ public class ToyMemberAdapter extends BaseAdapter {
     private MemberHolder memberHolder;
     private int mKingPosition = -1;
 
+    public enum SetManagerMode {
+        SET, UNSET
+    }
 
+    public SetManagerMode mSetManagerMode = SetManagerMode.UNSET;
 
 
     private Constant.Mode mMode = Constant.Mode.NORMAL;//默认给的初始状态是 normal;
@@ -82,7 +87,7 @@ public class ToyMemberAdapter extends BaseAdapter {
 
     public void refreshData() {
         if (mLSTBeanlist != null) {
-            for (int i=0; i<mLSTBeanlist.size(); i++) {
+            for (int i = 0; i < mLSTBeanlist.size(); i++) {
                 if (mLSTBeanlist.get(i).getID().equals(ownerUserId)) {
                     mKingPosition = i;
                     break;
@@ -200,25 +205,68 @@ public class ToyMemberAdapter extends BaseAdapter {
     private View.OnLongClickListener mOnLongClickListener = new View.OnLongClickListener() {
 
         @Override
-        public boolean onLongClick(View v) {
-            int longPosition = (int) v.getTag();
+        public boolean onLongClick(final View v) {
+            final int longPosition = (int) v.getTag();
             ToastUtil.showToast(mContext, "长按了..." + longPosition);
             if (longPosition == getCount() - 2 || longPosition == getCount() - 1) {
                 ToastUtil.showToast(mContext, "再见");
                 return true;
 
-            } else {
-                StopFlick(animateView);
-                mKingPosition=longPosition;
-                //memberHolder.king.setVisibility(View.VISIBLE);
-                notifyDataSetChanged();
-                View root = (View) v.getParent().getParent();
-                ImageView imageView = (ImageView) root.findViewById(R.id.iv_manager_gridview_item_managerking);
-                StartFlick(imageView);
+            }
+            if (mSetManagerMode == SetManagerMode.UNSET) {
                 return true;
             }
+            if (mKingPosition == longPosition) {
+                return true;
+            }
+
+//            StartFlick(imageView);
+//            memberHolder.king.setVisibility(View.VISIBLE);
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+            builder.setTitle("确认退出");
+            builder.setMessage("是否确认退出");
+            builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    changeManager(longPosition, v);
+                    ToastUtil.showToast(mContext, "sure");
+                }
+            });
+            builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    ToastUtil.showToast(mContext, "false");
+
+                }
+            });
+            builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialog) {
+                    ToastUtil.showToast(mContext, "取消");
+
+                }
+            });
+            builder.show();
+            return true;
+
         }
     };
+
+    private void changeManager(int longPosition, View v) {
+        //请求成功,设置成功,刷新列表
+        //TODO retrofit网络请求!
+        //动画停止,setmode变成unset
+        StopFlick(animateView);
+        mSetManagerMode = SetManagerMode.UNSET;
+        mKingPosition = longPosition;
+        notifyDataSetChanged();
+        View root = (View) v.getParent().getParent();
+        ImageView imageView = (ImageView) root.findViewById(R.id.iv_manager_gridview_item_managerking);
+        animateView = imageView;
+        animateView.setVisibility(View.VISIBLE);
+
+    }
 
     private View.OnClickListener clickIcon = new View.OnClickListener() {
         @Override
@@ -299,6 +347,7 @@ public class ToyMemberAdapter extends BaseAdapter {
     }
 
     private ImageView animateView;
+
     public void StopFlick(ImageView toyMemberAdapterIcon) {
         if (toyMemberAdapterIcon == null) {
             return;

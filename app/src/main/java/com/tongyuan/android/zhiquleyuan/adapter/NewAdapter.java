@@ -23,6 +23,7 @@ public class NewAdapter extends BaseQuickAdapter<NodisturbTimeResBean.BODYBean.L
     private List<NodisturbTimeResBean.BODYBean.LSTBean> mList;
     private String mBeginFormat;
     private String mEndFormat;
+    private BaseViewHolder mHelper;
 
     public NewAdapter(Context context, @LayoutRes int layoutResId, @Nullable List<NodisturbTimeResBean.BODYBean.LSTBean> data) {
         super(layoutResId, data);
@@ -33,6 +34,7 @@ public class NewAdapter extends BaseQuickAdapter<NodisturbTimeResBean.BODYBean.L
 
     @Override
     protected void convert(BaseViewHolder helper, NodisturbTimeResBean.BODYBean.LSTBean item) {
+        this.mHelper = helper;
         com.suke.widget.SwitchButton switchButton = (SwitchButton) helper.itemView.findViewById(R.id.switch_button);
         setTime(helper.getLayoutPosition());
         String pstate = item.getPSTATE();
@@ -42,13 +44,14 @@ public class NewAdapter extends BaseQuickAdapter<NodisturbTimeResBean.BODYBean.L
         } else {
             switchButton.setChecked(true);
         }
-        helper.setText(R.id.tv_nodisturb_first,mBeginFormat+"-"+mEndFormat);
-        helper.setText(R.id.tv_activity_mode,"I hope everyday");
+        helper.setText(R.id.tv_nodisturb_start, mBeginFormat);
+        helper.setText(R.id.tv_nodisturb_end, "-" + mEndFormat);
+//        helper.setText(R.id.tv_activity_mode, "I hope everyday");
 
     }
 
     private void setTime(int position) {
-        String btime =mList.get(position).getBTIME();
+        String btime = mList.get(position).getBTIME();
         String beginSubString = btime.substring(0, 4);
         String etime = mList.get(position).getETIME();
         String endSubString = etime.substring(0, 4);
@@ -66,4 +69,9 @@ public class NewAdapter extends BaseQuickAdapter<NodisturbTimeResBean.BODYBean.L
             e.printStackTrace();
         }
     }
+
+    public BaseViewHolder returnView() {
+        return mHelper;
+    }
+
 }

@@ -10,10 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.LinearInterpolator;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -95,11 +91,9 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
     private ImageView mIv_back;
     private int count;
 
-    private enum SetManagerMode {
-        SET, UNSET
-    }
 
-    private SetManagerMode mSetManagerMode = SetManagerMode.UNSET;
+
+
     private Constant.Mode mMode = Constant.Mode.NORMAL;
 
     @Nullable
@@ -233,12 +227,12 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
                     View childAt = mMygrid.getChildAt(iconPosition);
                     MemberHolder tag = (MemberHolder) childAt.getTag();
                     ImageView king = tag.king;
-                    if (mSetManagerMode == SetManagerMode.UNSET) {
-                        mSetManagerMode = SetManagerMode.SET;
+                    if (toyMemberAdapter.mSetManagerMode == ToyMemberAdapter.SetManagerMode.UNSET) {
+                        toyMemberAdapter.mSetManagerMode = ToyMemberAdapter.SetManagerMode.SET;
                         toyMemberAdapter.StartFlick(king);
 
                     } else {
-                        mSetManagerMode = SetManagerMode.UNSET;
+                        toyMemberAdapter.mSetManagerMode = ToyMemberAdapter.SetManagerMode.UNSET;
                         toyMemberAdapter.StopFlick(king);
                     }
 
