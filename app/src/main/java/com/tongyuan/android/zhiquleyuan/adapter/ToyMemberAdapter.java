@@ -11,12 +11,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.gson.Gson;
+import com.nostra13.universalimageloader.utils.L;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.activity.AddMemberToGroup;
 import com.tongyuan.android.zhiquleyuan.bean.DelMembFromGroupReQBean;
@@ -56,7 +60,7 @@ public class ToyMemberAdapter extends BaseAdapter {
     private String phoneNum;
     private String time;
     private MemberHolder memberHolder;
-    private int mKingPosition;
+    private int mKingPosition = -1;
 
 
 
@@ -74,6 +78,18 @@ public class ToyMemberAdapter extends BaseAdapter {
         phoneNum = SPUtils.getString(mContext, "phoneNum", "");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         time = simpleDateFormat.format(new Date());
+    }
+
+    public void refreshData() {
+        if (mLSTBeanlist != null) {
+            for (int i=0; i<mLSTBeanlist.size(); i++) {
+                if (mLSTBeanlist.get(i).getID().equals(ownerUserId)) {
+                    mKingPosition = i;
+                    break;
+                }
+            }
+        }
+        notifyDataSetChanged();
     }
 
     @Override
@@ -120,8 +136,13 @@ public class ToyMemberAdapter extends BaseAdapter {
         memberHolder.itemView.setTag(position);
 
         if (position < mLSTBeanlist.size()) {
-            if (mLSTBeanlist.get(position).getID().equals(ownerUserId)) {
+            /*if (mLSTBeanlist.get(position).getID().equals(ownerUserId)) {
                 mKingPosition = position;
+                memberHolder.king.setImageResource(R.drawable.managerking_3x);
+            } else {
+                memberHolder.king.setVisibility(View.INVISIBLE);
+            }*/
+            if (mKingPosition == position) {
                 memberHolder.king.setImageResource(R.drawable.managerking_3x);
             } else {
                 memberHolder.king.setVisibility(View.INVISIBLE);
@@ -187,11 +208,13 @@ public class ToyMemberAdapter extends BaseAdapter {
                 return true;
 
             } else {
-
+                StopFlick(animateView);
                 mKingPosition=longPosition;
-
-                memberHolder.king.setVisibility(View.VISIBLE);
+                //memberHolder.king.setVisibility(View.VISIBLE);
                 notifyDataSetChanged();
+                View root = (View) v.getParent().getParent();
+                ImageView imageView = (ImageView) root.findViewById(R.id.iv_manager_gridview_item_managerking);
+                StartFlick(imageView);
                 return true;
             }
         }
@@ -273,6 +296,28 @@ public class ToyMemberAdapter extends BaseAdapter {
 
     private void refreshUI() {
         notifyDataSetChanged();
+    }
+
+    private ImageView animateView;
+    public void StopFlick(ImageView toyMemberAdapterIcon) {
+        if (toyMemberAdapterIcon == null) {
+            return;
+        }
+        toyMemberAdapterIcon.clearAnimation();
+        animateView = toyMemberAdapterIcon;
+    }
+
+    public void StartFlick(ImageView toyMemberAdapterIcon) {
+        if (toyMemberAdapterIcon == null) {
+            return;
+        }
+        AlphaAnimation alphaAnimation = new AlphaAnimation(1, 0.4f);
+        alphaAnimation.setDuration(300);
+        alphaAnimation.setInterpolator(new LinearInterpolator());
+        alphaAnimation.setRepeatCount(Animation.INFINITE);
+        alphaAnimation.setRepeatMode(Animation.REVERSE);
+        toyMemberAdapterIcon.startAnimation(alphaAnimation);
+        animateView = toyMemberAdapterIcon;
     }
 
 

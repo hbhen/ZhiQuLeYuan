@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -131,6 +132,7 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
         mMygrid.setAdapter(toyMemberAdapter);
         mBabyImg = (ImageView) fragment_manageToy.findViewById(R.id.iv_fragment_managetoy_babyhead);
         mBabyNameView = (TextView) fragment_manageToy.findViewById(R.id.tv_fragment_managetoy_babyname);
+
         initData();
         initListener();
         Log.i("manager", "onCreateView");
@@ -176,7 +178,7 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
                     lst.addAll(response.body().getBODY().getLST());
                     Log.i("111111", "onResponse: " + lst.size());
                     if (toyMemberAdapter != null) {
-                        toyMemberAdapter.notifyDataSetChanged();
+                        toyMemberAdapter.refreshData();
                     }
 //                    mMygrid.setNumColumns(5);
 //                    toyMemberAdapter = new ToyMemberAdapter(getActivity(), lst, mResponse);
@@ -202,6 +204,13 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
         mBt_fragment_managetoy_setupwlan.setOnClickListener(this);
         mTv_frament_managetoy_manager.setOnClickListener(this);
         mIv_back.setOnClickListener(this);
+        /*mMygrid.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                ToastUtil.showToast(mContext, "长按了..." + position);
+                return false;
+            }
+        });*/
     }
 
 
@@ -226,11 +235,11 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
                     ImageView king = tag.king;
                     if (mSetManagerMode == SetManagerMode.UNSET) {
                         mSetManagerMode = SetManagerMode.SET;
-                        StartFlick(king);
+                        toyMemberAdapter.StartFlick(king);
 
                     } else {
                         mSetManagerMode = SetManagerMode.UNSET;
-                        StopFlick(king);
+                        toyMemberAdapter.StopFlick(king);
                     }
 
                     Log.i("1122222222", "onClick: " + iconPosition);
@@ -247,26 +256,6 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
             default:
                 break;
         }
-    }
-
-    private void StopFlick(ImageView toyMemberAdapterIcon) {
-        if (toyMemberAdapterIcon == null) {
-            return;
-        }
-        toyMemberAdapterIcon.clearAnimation();
-    }
-
-    private void StartFlick(ImageView toyMemberAdapterIcon) {
-        if (toyMemberAdapterIcon == null) {
-            return;
-        }
-        AlphaAnimation alphaAnimation = new AlphaAnimation(1, 0.4f);
-        alphaAnimation.setDuration(300);
-        alphaAnimation.setInterpolator(new LinearInterpolator());
-        alphaAnimation.setRepeatCount(Animation.INFINITE);
-        alphaAnimation.setRepeatMode(Animation.REVERSE);
-        toyMemberAdapterIcon.startAnimation(alphaAnimation);
-
     }
 
     @Override
