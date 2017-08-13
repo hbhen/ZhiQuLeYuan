@@ -23,7 +23,7 @@
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
 
     <application
-        android:name="android.support.multidex.MultiDexApplication"
+        android:name="com.tongyuan.android.zhiquleyuan.utils.ZhiQuLeYuanApplication"
         android:allowBackup="true"
         android:icon="@drawable/login_logo_512"
         android:label="@string/app_name"

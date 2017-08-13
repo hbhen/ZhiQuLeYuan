@@ -2,6 +2,7 @@ package com.tongyuan.android.zhiquleyuan.utils;
 
 import android.app.Application;
 import android.content.Context;
+import android.support.multidex.MultiDexApplication;
 
 import com.umeng.socialize.Config;
 import com.umeng.socialize.PlatformConfig;
@@ -12,7 +13,7 @@ import com.umeng.socialize.common.QueuedWork;
  * Created by android on 2016/12/20.
  */
 
-public class ZhiQuLeYuanApplication extends Application {
+public class ZhiQuLeYuanApplication extends MultiDexApplication {
     public static Context context;
 
     @Override
