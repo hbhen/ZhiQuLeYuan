@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +31,7 @@ import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.utils.GetTimeUtil;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
+import com.tongyuan.android.zhiquleyuan.utils.TimeUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 import com.tongyuan.android.zhiquleyuan.view.wheelview.OnWheelChangedListener;
 import com.tongyuan.android.zhiquleyuan.view.wheelview.WheelView;
@@ -44,6 +46,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -156,12 +159,12 @@ public class NoDisturbActivity extends AppCompatActivity implements View.OnClick
         });
     }
 
-    @Override
+    @OnClick({R.id.iv_add_nodisturbtime})
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.switch_button:
-                ToastUtil.showToast(this, "34");
-                break;
+//            case R.id.switch_button:
+//                ToastUtil.showToast(this, "34");
+//                break;
             case R.id.iv_add_nodisturbtime:
                 showPop();
                 ToastUtil.showToast(this, "56");
@@ -187,59 +190,96 @@ public class NoDisturbActivity extends AppCompatActivity implements View.OnClick
         popupWindow.showAtLocation(mLayout_parent, Gravity.CENTER | Gravity.BOTTOM, 0, 0);
     }
 
+    private NumericWheelAdapter startHourAdapter;
+    private NumericWheelAdapter startMinuteAdapter;
+    private NumericWheelAdapter endHourAdapter;
+    private NumericWheelAdapter endMinuteAdapter;
+
     private void initWheelView(View popupWindowView) {
         Calendar c = Calendar.getInstance();
-        int curYear = c.get(Calendar.YEAR);
-        int curMonth = c.get(Calendar.MONTH) + 1;//通过Calendar算出的月数要+1
-        int curDate = c.get(Calendar.DATE);
         wl_ymd = (WheelView) popupWindowView.findViewById(R.id.wl_ymd);
         wl_startMin = (WheelView) popupWindowView.findViewById(R.id.wl_week);
         wl_hour = (WheelView) popupWindowView.findViewById(R.id.wl_hour);
         wl_min = (WheelView) popupWindowView.findViewById(R.id.wl_min);
 
-        NumericWheelAdapter startHourAdapter = new NumericWheelAdapter(this, 0, 23);
-//        List<String> ymdList = Arrays.asList(ymdData);
+        startHourAdapter = new NumericWheelAdapter(this, 0, 23);
         wl_ymd.setViewAdapter(startHourAdapter);
         startHourAdapter.setTextSize(18);
         startHourAdapter.setLabel("");
         wl_ymd.setCyclic(true);
-//        wl_ymd.setCurrentItem(ymdList.indexOf(GetTimeUtil.getYMDTime(System.currentTimeMillis())));
+        Calendar calendar = Calendar.getInstance();
+        int currHour = calendar.get(Calendar.HOUR_OF_DAY);
+        wl_ymd.setCurrentItem(currHour);
         wl_ymd.addChangingListener(new OnWheelChangedListener() {
             @Override
             public void onChanged(WheelView wheel, int oldValue, int newValue) {
-                /*String value = ymdData[newValue];
-                int year = Integer.parseInt(value.substring(0, value.indexOf("-")));
-                int month = Integer.parseInt(value.substring(value.indexOf("-") + 1, value.lastIndexOf("-")));
-                int day = Integer.parseInt(value.substring(value.lastIndexOf("-") + 1, value.length()));
-                changeWheelWeek(year, month, day);*/
-                //给需要的地方设置时间
-//                tv_end_time.setText(value);
+                int selectStartMinute = wl_startMin.getCurrentItem();
+                if(selectStartMinute == 59) {
+                    if(newValue == 23) {
+                        newValue = 0;
+                    } else {
+                        newValue++;
+                    }
+                }
+                endHourAdapter = new NumericWheelAdapter(NoDisturbActivity.this, newValue, 23);
+                endHourAdapter.setLabel("");
+                wl_hour.setViewAdapter(endHourAdapter);
 
-
+                wl_hour.setCurrentItem(0);
             }
         });
 
         BaseViewHolder baseViewHolder = mAdapter.returnView();
 
-        NumericWheelAdapter startMinuteAdapter = new NumericWheelAdapter(this, 0, 59);
+        startMinuteAdapter = new NumericWheelAdapter(this, 0, 59);
         wl_startMin.setViewAdapter(startMinuteAdapter);
         startMinuteAdapter.setTextSize(18);
         startMinuteAdapter.setLabel("");
-        wl_startMin.setEnabled(false);
+        int currMinute = calendar.get(Calendar.MINUTE);
+        wl_startMin.setCurrentItem(currMinute);
         wl_startMin.setCyclic(true);
-        changeWheelWeek(curYear, curMonth, curDate);
+        wl_startMin.addChangingListener(new OnWheelChangedListener() {
+            @Override
+            public void onChanged(WheelView wheel, int oldValue, int newValue) {
+                int selectStartHour = wl_ymd.getCurrentItem();
+                int endHour = selectStartHour;
+                if (newValue == 59) {
+                    if (endHour == 23) {
+                        endHour = 0;
+                    } else {
+                        endHour++;
+                    }
+                }
 
+                endHourAdapter = new NumericWheelAdapter(NoDisturbActivity.this, endHour, 23);
+                wl_hour.setViewAdapter(endHourAdapter);
+                endHourAdapter.setLabel("");
+            }
+        });
 
-        NumericWheelAdapter numericAdapter1 = new NumericWheelAdapter(this, 0, 23);
-        numericAdapter1.setLabel("");
-        numericAdapter1.setTextSize(18);
-        wl_hour.setViewAdapter(numericAdapter1);
+        int selectStartHour = wl_ymd.getCurrentItem();
+        int selectStartMinute = wl_startMin.getCurrentItem();
+        int minEndHour = selectStartHour;
+        if(selectStartMinute == 59) {
+            if(selectStartHour == 23) {
+                minEndHour = 0;
+            } else {
+                minEndHour++;
+            }
+        }
+
+        endHourAdapter = new NumericWheelAdapter(this, minEndHour, 23);
+        endHourAdapter.setLabel("");
+        endHourAdapter.setTextSize(18);
+        wl_hour.setViewAdapter(endHourAdapter);
+        wl_hour.setCurrentItem(0);
         wl_hour.setCyclic(true);// 可循环滚动
 
-        NumericWheelAdapter numericAdapter2 = new NumericWheelAdapter(this, 0, 59);
-        numericAdapter2.setLabel("");
-        numericAdapter2.setTextSize(18);
-        wl_min.setViewAdapter(numericAdapter2);
+        endMinuteAdapter = new NumericWheelAdapter(this, 0, 59);
+        endMinuteAdapter.setLabel("");
+        endMinuteAdapter.setTextSize(18);
+        wl_min.setViewAdapter(endMinuteAdapter);
+        wl_min.setCurrentItem(currMinute);
         wl_min.setCyclic(true);// 可循环滚动
 
 
@@ -258,14 +298,14 @@ public class NoDisturbActivity extends AppCompatActivity implements View.OnClick
 
     }
 
-    private void changeWheelWeek(int year, int month, int day) {
+    /*private void changeWheelWeek(int year, int month, int day) {
 
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, month - 1, day);
         int i = calendar.get(Calendar.DAY_OF_WEEK);
         wl_startMin.setCurrentItem(i - 1);
         lastweek = week_str[i - 1];
-    }
+    }*/
 
     private void makeWindowLight() {
         Window window = getWindow();
