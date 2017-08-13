@@ -11,24 +11,24 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/tv_cancle"
+            android:id="@+id/tv_start"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="10dp"
             android:layout_weight="1"
             android:background="@color/white"
             android:gravity="center"
-            android:text="确定"/>
+            android:text="开始时间"/>
 
         <TextView
-            android:id="@+id/tv_ok"
+            android:id="@+id/tv_end"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="10dp"
             android:layout_weight="1"
             android:background="@color/white"
             android:gravity="center"
-            android:text="取消"/>
+            android:text="结束时间"/>
     </LinearLayout>
 
     <View style="@style/stroke"/>
@@ -71,5 +71,30 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="horizontal">
 
+        <TextView
+            android:id="@+id/tv_cancle"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:background="@color/white"
+            android:gravity="center"
+            android:text="确定"/>
+
+        <TextView
+            android:id="@+id/tv_ok"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:background="@color/white"
+            android:gravity="center"
+            android:text="取消"/>
+    </LinearLayout>
 </LinearLayout>
