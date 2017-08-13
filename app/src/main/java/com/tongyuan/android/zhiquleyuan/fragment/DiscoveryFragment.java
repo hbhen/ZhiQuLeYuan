@@ -7,6 +7,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.OnScrollListener;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridItemBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridRequestBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListRequsetBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListResultBean;
+import com.tongyuan.android.zhiquleyuan.request.CallbackFilter;
 import com.tongyuan.android.zhiquleyuan.request.RequestManager;
 import com.tongyuan.android.zhiquleyuan.request.base.BaseRequest;
 import com.tongyuan.android.zhiquleyuan.request.base.SuperModel;
@@ -159,7 +161,7 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
         DiscoveryListRequsetBean.BODYBean request = new DiscoveryListRequsetBean.BODYBean("10", String.valueOf(page));
         Call<SuperModel<DiscoveryListResultBean.BODYBean>> discoveryListResult = RequestManager.getInstance().getDiscoveryListResult(getContext(),
                 request);
-        discoveryListResult.enqueue(new Callback<SuperModel<DiscoveryListResultBean.BODYBean>>() {
+        /*discoveryListResult.enqueue(new Callback<SuperModel<DiscoveryListResultBean.BODYBean>>() {
             @Override
             public void onResponse(Call<SuperModel<DiscoveryListResultBean.BODYBean>> call, Response<SuperModel<DiscoveryListResultBean.BODYBean>>
                     response) {
@@ -188,6 +190,37 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
                 mSwiperefresh.setRefreshing(false);
                 isLoading = false;
             }
+        });*/
+
+        discoveryListResult.enqueue(new CallbackFilter<SuperModel<DiscoveryListResultBean.BODYBean>>() {
+            @Override
+            public void onFailure(Call<SuperModel<DiscoveryListResultBean.BODYBean>> call, Throwable t) {
+                ToastUtil.showToast(getActivity(), "网络请求失败");
+                mSwiperefresh.setRefreshing(false);
+                isLoading = false;
+            }
+
+            @Override
+            public void onResponseFilter(Call<SuperModel<DiscoveryListResultBean.BODYBean>> call, Response<SuperModel<DiscoveryListResultBean.BODYBean>> response) {
+                NC = response.body().BODY.getNC();
+                if ("0".equals(response.body().CODE)) {
+                    if (isLoadMore) {
+                        ++currPage;
+                    } else {
+                        discoveryListViewList.clear();
+                        currPage = 1;
+                    }
+                    //Log.i(TAG, "onResponse: "+response.body().toString());
+                    discoveryListViewList.addAll(response.body().BODY.getLST());
+                    mAdapter.notifyDataSetChanged();
+                } else {
+                    ToastUtil.showToast(getActivity(), response.body().MSG);
+                }
+                mSwiperefresh.setRefreshing(false);
+                isLoading = false;
+                mAdapter.isLoadMore(false);
+            }
+
         });
     }
 
