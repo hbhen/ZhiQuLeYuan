@@ -140,6 +140,10 @@ public class BindBabyActivity extends AppCompatActivity implements View.OnClickL
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         mListview_bindbaby.setItemChecked(position, true);
+//                        if (mListview_bindbaby.isItemChecked(position)){
+//                            mCheck.isSelected(true);
+//                        }
+//                        mCheck.setSelected(false);
                         checkPosition = position;
                         mBabyId = response.body().getBODY().getLST().get(checkPosition).getID().toString();
                         Log.i("555555", "onItemClick: +mBabyId"+mBabyId);
@@ -209,7 +213,7 @@ public class BindBabyActivity extends AppCompatActivity implements View.OnClickL
 
                 break;
             case R.id.iv_item_bindbaby_checked:
-                ToastUtil.showToast(this, "碰到了");
+//                ToastUtil.showToast(this, "碰到了");
             default:
                 break;
         }

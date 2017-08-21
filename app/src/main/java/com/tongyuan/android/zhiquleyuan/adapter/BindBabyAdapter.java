@@ -16,7 +16,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListResult;
-import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
 import java.util.HashMap;
 
@@ -97,13 +96,13 @@ public class BindBabyAdapter extends BaseAdapter {
         }
         mBindBabyHolder.mImageViewSex.setImageResource(R.drawable.signs_woman);
 
-        mBindBabyHolder.mCheckImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mBindBabyHolder.mCheckImageButton.setSelected(true);
-                ToastUtil.showToast(mContext, "碰到了111");
-            }
-        });
+//        mBindBabyHolder.mCheckImageButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                mBindBabyHolder.mCheckImageButton.setSelected(true);
+//                ToastUtil.showToast(mContext, "碰到了111");
+//            }
+//        });
         return convertView;
     }
 

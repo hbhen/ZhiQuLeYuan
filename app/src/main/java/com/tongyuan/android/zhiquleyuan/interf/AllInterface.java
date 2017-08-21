@@ -18,6 +18,7 @@ import com.tongyuan.android.zhiquleyuan.bean.DeleteBabyInfoReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteMyCollectionResBean;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteMyPlayResBean;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteMyPushResBean;
+import com.tongyuan.android.zhiquleyuan.bean.DeleteNodisturbTimeResBean;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteRecordingResBean;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteToyFromNormalUserResBean;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteToyFromPowerUserResBean;
@@ -39,7 +40,9 @@ import com.tongyuan.android.zhiquleyuan.bean.QueryRecordingResBean;
 import com.tongyuan.android.zhiquleyuan.bean.QuerySingleUserInfoReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryToyMemberReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.SearchResBean;
+import com.tongyuan.android.zhiquleyuan.bean.SetNodisturbTimeResBean;
 import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoRESBean;
+import com.tongyuan.android.zhiquleyuan.bean.TransferPermissionsResBean;
 import com.tongyuan.android.zhiquleyuan.bean.UnbindBabyToToyResBean;
 import com.tongyuan.android.zhiquleyuan.bean.UserInfoResBean;
 import com.tongyuan.android.zhiquleyuan.request.base.SuperModel;
@@ -253,5 +256,15 @@ public interface AllInterface {
     @GET("busi")
     Call<DeleteMyPushResBean> DELETE_MY_PUSH_RES_BEAN_CALL(@Query("params") String params);
 
+    //3.4.13添加/修改玩具属性(玩具持有人:1玩具初始音量3)
+    @GET("busi")
+    Call<TransferPermissionsResBean> TRANSFER_PERMISSIONS_RES_BEAN_CALL(@Query("params") String params);
 
+    //3.4.15 设定免打扰时间
+    @GET("busi")
+    Call<SetNodisturbTimeResBean> SET_NODISTURB_TIME_RES_BEAN_CALL(@Query("params") String params);
+
+    //3.4.16 删除免打扰时间
+    @GET("busi")
+    Call<DeleteNodisturbTimeResBean> DELETE_NODISTURB_TIME_RES_BEAN_CALL(@Query("params") String params);
 }

@@ -28,6 +28,7 @@ import com.tongyuan.android.zhiquleyuan.bean.BabyInfoRequestBean;
 import com.tongyuan.android.zhiquleyuan.bean.BabyInfoResultBean;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
+import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 import com.tongyuan.android.zhiquleyuan.utils.Utils;
 import com.tongyuan.android.zhiquleyuan.view.ChangeDatePopwindow;
 
@@ -115,10 +116,9 @@ public class MyBabyActivity extends AppCompatActivity {
         });
 
         uploadFilePath = getExternalFilesDir(DIRECTORY_PICTURES).getAbsolutePath();
-        uploadFileName="icon.png";
+        uploadFileName = "icon.png";
 
     }
-
 
     @OnClick({R.id.iv_addbabyinfo, R.id.et_addbabyinfo, R.id.rg_addbabyinfo,
             R.id.tv_activity_addbabyinfo_date, R.id.bt_activity_addbabyinfo_confirm, R.id.baby_back})
@@ -146,7 +146,24 @@ public class MyBabyActivity extends AppCompatActivity {
             case R.id.bt_activity_addbabyinfo_confirm:
                 //确认键,将头像,宝宝的姓名(babyID),性别,出生年月日上传到服务器
                 //把头像,上传到服务器
-                uploadPic(new File(uploadFilePath + File.separator + uploadFileName));
+                if (mBirthday == null) {
+                    ToastUtil.showToast(this, "请选择宝宝的生日");
+                    return;
+                }
+                if (sex == null) {
+                    ToastUtil.showToast(this, "请选择宝宝的性别");
+                    return;
+                }
+                if (mBabyID == null) {
+                    ToastUtil.showToast(this, "请给宝宝添加一个昵称");
+                    return;
+                }
+                if (mTempUri == null) {
+                    ToastUtil.showToast(this, "请添加宝宝的头像");
+                    return;
+                } else {
+                    uploadPic(new File(uploadFilePath + File.separator + uploadFileName));
+                }
                 break;
             case R.id.baby_back:
                 finish();
@@ -231,7 +248,6 @@ public class MyBabyActivity extends AppCompatActivity {
                 str[1] = sb.toString();
                 Log.i("111", "str[1]=========: " + str[1]);
                 //对mDatetime去进行筛选,剔除里面的年月日,拼接成日期,然后在integer.parse
-
                 mTvActivityAddbabyinfoDate.setText(year + " " + month + " " + day);
                 mTimedate = sb + "0000000";
                 Log.i("111", "timedate: " + mTimedate);
@@ -352,7 +368,7 @@ public class MyBabyActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<BabyInfoResultBean> call, Response<BabyInfoResultBean> response) {
                 String code = response.body().getCODE();
-                if(code.equals("0")) {
+                if (code.equals("0")) {
                     finish();
                     setResult(BabyInfoListActivity.SuccessCode);
                 }

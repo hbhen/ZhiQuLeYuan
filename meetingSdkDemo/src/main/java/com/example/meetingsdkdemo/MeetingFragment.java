@@ -118,6 +118,7 @@ public class MeetingFragment extends Fragment {
 					public void onClick(View v) {
 
 						Session.getInstance().setLoudSpeaker(_checkSpeaker.isChecked());
+
 					}
 				});
 			}

@@ -32,6 +32,19 @@ public class NewAdapter extends BaseQuickAdapter<NodisturbTimeResBean.BODYBean.L
 
     }
 
+//    @Override
+//
+//    public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+//        switch (viewType) {
+//            case 0:
+//                return onCreateDefViewHolder(parent, viewType);
+//            case 1:
+//                return onCreateDefViewHolder(parent, viewType);
+//            default:
+//                return onCreateDefViewHolder(parent, viewType);
+//        }
+//    }
+
     @Override
     protected void convert(BaseViewHolder helper, NodisturbTimeResBean.BODYBean.LSTBean item) {
         this.mHelper = helper;

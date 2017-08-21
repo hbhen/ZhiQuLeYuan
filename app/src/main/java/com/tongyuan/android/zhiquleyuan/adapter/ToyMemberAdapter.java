@@ -28,6 +28,9 @@ import com.tongyuan.android.zhiquleyuan.bean.DelMembFromGroupReQBean;
 import com.tongyuan.android.zhiquleyuan.bean.DelMembFromGroupReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryToyMemberReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoRESBean;
+import com.tongyuan.android.zhiquleyuan.bean.TransferPermissionsReqBean;
+import com.tongyuan.android.zhiquleyuan.bean.TransferPermissionsResBean;
+import com.tongyuan.android.zhiquleyuan.fragment.ToySelectorFragment;
 import com.tongyuan.android.zhiquleyuan.holder.MemberHolder;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.interf.Constant;
@@ -190,7 +193,8 @@ public class ToyMemberAdapter extends BaseAdapter {
         String userImg = mLSTBeanlist.get(position).getIMG();
 //        Glide.with(mContext).load(userImg).asBitmap().placeholder(R.drawable.default_cover).into(imgView);
 
-        Glide.with(mContext).load(userImg).asBitmap().placeholder(R.drawable.default_cover).into(new BitmapImageViewTarget(imgView) {
+        Glide.with(mContext).load(userImg).asBitmap().centerCrop().placeholder(R.drawable.player_cover_default).into(new BitmapImageViewTarget
+                (imgView) {
 
             @Override
             protected void setResource(Bitmap resource) {
@@ -207,9 +211,9 @@ public class ToyMemberAdapter extends BaseAdapter {
         @Override
         public boolean onLongClick(final View v) {
             final int longPosition = (int) v.getTag();
-            ToastUtil.showToast(mContext, "长按了..." + longPosition);
+//            ToastUtil.showToast(mContext, "长按了..." + longPosition);
             if (longPosition == getCount() - 2 || longPosition == getCount() - 1) {
-                ToastUtil.showToast(mContext, "再见");
+//                ToastUtil.showToast(mContext, "再见");
                 return true;
 
             }
@@ -224,26 +228,28 @@ public class ToyMemberAdapter extends BaseAdapter {
 //            memberHolder.king.setVisibility(View.VISIBLE);
 
             AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-            builder.setTitle("确认退出");
-            builder.setMessage("是否确认退出");
+            builder.setTitle("转移管理员权限");
+            builder.setMessage("是否确认转移管理员权限");
             builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    changeManager(longPosition, v);
+                    String userId = mLSTBeanlist.get(longPosition).getID();
+                    changeManager(longPosition, v, userId);
                     ToastUtil.showToast(mContext, "sure");
                 }
             });
             builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    ToastUtil.showToast(mContext, "false");
+//                    ToastUtil.showToast(mContext, "false");
 
                 }
             });
+
             builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
                 @Override
                 public void onCancel(DialogInterface dialog) {
-                    ToastUtil.showToast(mContext, "取消");
+//                    ToastUtil.showToast(mContext, "取消");
 
                 }
             });
@@ -253,18 +259,45 @@ public class ToyMemberAdapter extends BaseAdapter {
         }
     };
 
-    private void changeManager(int longPosition, View v) {
+    private void changeManager(final int longPosition, final View v, String userId) {
         //请求成功,设置成功,刷新列表
         //TODO retrofit网络请求!
-        //动画停止,setmode变成unset
-        StopFlick(animateView);
-        mSetManagerMode = SetManagerMode.UNSET;
-        mKingPosition = longPosition;
-        notifyDataSetChanged();
-        View root = (View) v.getParent().getParent();
-        ImageView imageView = (ImageView) root.findViewById(R.id.iv_manager_gridview_item_managerking);
-        animateView = imageView;
-        animateView.setVisibility(View.VISIBLE);
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(Constant.baseurl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        AllInterface allInterface = retrofit.create(AllInterface.class);
+        TransferPermissionsReqBean.BODYBean bodyBean = new TransferPermissionsReqBean.BODYBean(ToySelectorFragment.mToyId, ToySelectorFragment
+                .mToyId, "1", userId);
+        TransferPermissionsReqBean transferPermissionsReqBean = new TransferPermissionsReqBean("REQ", "TOYA", "", new SimpleDateFormat
+                ("yyyyMMddHHmmssSSS").format(new Date()), bodyBean, "", token, "1");
+        Gson gson = new Gson();
+        String s = gson.toJson(transferPermissionsReqBean);
+
+        Call<TransferPermissionsResBean> transferPermissionsResBeanCall = allInterface.TRANSFER_PERMISSIONS_RES_BEAN_CALL(s);
+        transferPermissionsResBeanCall.enqueue(new Callback<TransferPermissionsResBean>() {
+            @Override
+            public void onResponse(Call<TransferPermissionsResBean> call, Response<TransferPermissionsResBean> response) {
+                if (response.body().getCODE().equals("0")) {
+                    //动画停止,setmode变成unset
+                    StopFlick(animateView);
+                    mSetManagerMode = SetManagerMode.UNSET;
+                    mKingPosition = longPosition;
+                    notifyDataSetChanged();
+                    View root = (View) v.getParent().getParent();
+                    ImageView imageView = (ImageView) root.findViewById(R.id.iv_manager_gridview_item_managerking);
+                    animateView = imageView;
+                    animateView.setVisibility(View.VISIBLE);
+                } else {
+                    Log.i("toymember", "onResponse: " + response.body().getMSG());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<TransferPermissionsResBean> call, Throwable t) {
+                Log.i("toymember", "onFailure: " + t);
+            }
+        });
+
 
     }
 
