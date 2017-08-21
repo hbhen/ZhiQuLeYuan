@@ -28,9 +28,9 @@
             android:textSize="@dimen/sp_18" />
     </RelativeLayout>
 
-    <include
-        android:id="@+id/ll_item_discovery_secondcategory"
-        layout="@layout/item_album_details_one" />
+    <!--<include-->
+        <!--android:id="@+id/ll_item_discovery_secondcategory"-->
+        <!--layout="@layout/item_album_details_one" />-->
 
     <View
         android:layout_width="match_parent"

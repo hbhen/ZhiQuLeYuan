@@ -82,7 +82,7 @@ public class NoDisturbActivity extends AppCompatActivity implements View.OnClick
     private String mEnd_hour;
     private String mStart_min;
     private String mStart_hour;
-    private String pstate = "0";
+    public static String pstate = "0";
 
     String[] week_str =
             {"周日", "周一", "周二", "周三", "周四", "周五", "周六"};
@@ -228,7 +228,7 @@ public class NoDisturbActivity extends AppCompatActivity implements View.OnClick
         switch (v.getId()) {
             case R.id.iv_add_nodisturbtime:
                 showPop();
-                ToastUtil.showToast(this, "56");
+//                ToastUtil.showToast(this, "56");
                 break;
             case R.id.iv_activity_nodisturb_back:
                 finish();
@@ -293,11 +293,12 @@ public class NoDisturbActivity extends AppCompatActivity implements View.OnClick
                         newValue++;
                     }
                 }
+
                 endHourAdapter = new NumericWheelAdapter(NoDisturbActivity.this, newValue, 23);
                 endHourAdapter.setLabel("");
                 wl_hour.setViewAdapter(endHourAdapter);
                 wl_hour.setCurrentItem(0);
-                if(endHourAdapter.getItemsCount() == 1) {
+                if (endHourAdapter.getItemsCount() == 1) {
                     wl_hour.setCyclic(false);// 可循环滚动
                 } else {
                     wl_hour.setCyclic(true);// 可循环滚动
@@ -325,16 +326,17 @@ public class NoDisturbActivity extends AppCompatActivity implements View.OnClick
                         endHour++;
                     }
                 }
+
                 endHourAdapter = new NumericWheelAdapter(NoDisturbActivity.this, endHour, 23);
                 wl_hour.setViewAdapter(endHourAdapter);
                 endHourAdapter.setLabel("");
-
 
                 int selectStarMin = wl_startMin.getCurrentItem();
                 int endMin = wl_min.getCurrentItem();
                 if (selectStarMin > endMin) {
                     endMin = selectStarMin;
                     wl_min.setCurrentItem(endMin);
+
                 }
 
             }
@@ -352,13 +354,11 @@ public class NoDisturbActivity extends AppCompatActivity implements View.OnClick
 
                 }
 
-
-                if(endHourAdapter.getItemsCount() == 1) {
+                if (endHourAdapter.getItemsCount() == 1) {
                     wl_hour.setCyclic(false);// 可循环滚动
                 } else {
                     wl_hour.setCyclic(true);// 可循环滚动
                 }
-
             }
         });
 
@@ -378,12 +378,12 @@ public class NoDisturbActivity extends AppCompatActivity implements View.OnClick
         endHourAdapter.setTextSize(18);
         wl_hour.setViewAdapter(endHourAdapter);
         wl_hour.setCurrentItem(0);
-        if(endHourAdapter.getItemsCount() == 1) {
+
+        if (endHourAdapter.getItemsCount() == 1) {
             wl_hour.setCyclic(false);// 可循环滚动
         } else {
             wl_hour.setCyclic(true);// 可循环滚动
         }
-
 
         endMinuteAdapter = new NumericWheelAdapter(this, 0, 59);
         endMinuteAdapter.setLabel("");
@@ -394,10 +394,8 @@ public class NoDisturbActivity extends AppCompatActivity implements View.OnClick
 
         mOk.setOnClickListener(new View.OnClickListener() {
 
-
             @Override
             public void onClick(View v) {
-
                 int startHour = wl_ymd.getCurrentItem();
                 int startMin = wl_startMin.getCurrentItem();
                 int endHour = wl_hour.getCurrentItem();
@@ -420,13 +418,14 @@ public class NoDisturbActivity extends AppCompatActivity implements View.OnClick
                 if (Integer.parseInt(mEnd_min) < 10) {
                     mEnd_min = "0" + mEnd_min;
                 }
+
                 String beginTime = mStart_hour + mStart_min;
                 String endTime = mEnd_hour + mEnd_min;
-
                 sendTimeToServer(beginTime, endTime);
 
             }
         });
+
         mCancle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -458,7 +457,7 @@ public class NoDisturbActivity extends AppCompatActivity implements View.OnClick
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
         final SetNodisturbTimeReqBean.BODYBean.LSTBean lstBean = new SetNodisturbTimeReqBean.BODYBean.LSTBean("", ToySelectorFragment.mToyId,
-                ToySelectorFragment.mToyId, beginTime + "00", endTime + "00", pstate);
+                ToySelectorFragment.mToyId, beginTime + "00", endTime + "00", "1");
         final List list = new ArrayList();
         list.add(lstBean);
         SetNodisturbTimeReqBean.BODYBean bodyBean = new SetNodisturbTimeReqBean.BODYBean(list);
@@ -472,13 +471,25 @@ public class NoDisturbActivity extends AppCompatActivity implements View.OnClick
             public void onResponse(Call<SetNodisturbTimeResBean> call, Response<SetNodisturbTimeResBean> response) {
                 if (response.body().getCODE().equals("0")) {
                     BaseViewHolder baseViewHolder = mAdapter.returnView();
-                    Log.i("1212321", "onResponse: " + mStart_hour + "_" + mStart_min + "_" + mEnd_hour + "_" + mEnd_min + ":");
-                    baseViewHolder.setText(R.id.tv_nodisturb_start, mStart_hour + ":" + mStart_min + "-");
-                    baseViewHolder.setText(R.id.tv_nodisturb_end, mEnd_hour + ":" + mEnd_min);
-                    ToastUtil.showToast(getApplicationContext(), "ok");
-                    getNoDisturbTime();
-                    mAdapter.notifyDataSetChanged();
-                    popupWindow.dismiss();
+                    if (baseViewHolder == null) {
+                        View inflate = LayoutInflater.from(NoDisturbActivity.this).inflate(R.layout.disturb_recycler_troggle, null);
+                        TextView start = (TextView) inflate.findViewById(R.id.tv_nodisturb_start);
+                        TextView end = (TextView) inflate.findViewById(R.id.tv_nodisturb_end);
+                        start.setText(mStart_hour + ":" + mStart_min + "-");
+                        end.setText(mEnd_hour + ":" + mEnd_min);
+                        getNoDisturbTime();
+                        mAdapter.notifyDataSetChanged();
+                        popupWindow.dismiss();
+                    } else {
+                        Log.i("1212321", "onResponse: " + mStart_hour + "_" + mStart_min + "_" + mEnd_hour + "_" + mEnd_min + ":");
+                        baseViewHolder.setText(R.id.tv_nodisturb_start, mStart_hour + ":" + mStart_min + "-");
+                        baseViewHolder.setText(R.id.tv_nodisturb_end, mEnd_hour + ":" + mEnd_min);
+//                        ToastUtil.showToast(getApplicationContext(), "ok");
+                        getNoDisturbTime();
+                        mAdapter.notifyDataSetChanged();
+                        popupWindow.dismiss();
+                    }
+
                 }
             }
 

@@ -10,10 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.ListView;
 
-import com.bumptech.glide.Glide;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.adapter.DiscoverySecondCategoryAdapter;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridSecondaryResultBean;
@@ -45,8 +43,8 @@ public class DiscoverySecondCategoryActivity extends AppCompatActivity implement
 
     @BindView(R.id.lv_activity_discovery_secondcategory)
     ListView listView;
-    @BindView(R.id.iv_album_details_one)
-    ImageView coverImageView;
+    //    @BindView(R.id.iv_album_details_one)
+//    ImageView coverImageView;
     private View footerView;
 
     private DiscoverySecondCategoryAdapter adapter;
@@ -74,7 +72,7 @@ public class DiscoverySecondCategoryActivity extends AppCompatActivity implement
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                if("".equals(token)) {
+                if ("".equals(token)) {
                     ToastUtil.showToast(getApplicationContext(), R.string.user_no_login);
                     return;
                 }
@@ -99,31 +97,32 @@ public class DiscoverySecondCategoryActivity extends AppCompatActivity implement
         String img = intent.getStringExtra("img");
         colid = intent.getStringExtra("colid");
         Uri parse = Uri.parse(img);
-        Glide.with(this).load(parse).asBitmap().into(coverImageView);
+//        Glide.with(this).load(parse).asBitmap().into(coverImageView);
         token = SPUtils.getString(this, "TOKEN", "");
         getIdColSecondaryInfo(colid, false);
     }
 
     private void getIdColSecondaryInfo(String colid, final boolean isLoadMore) {
         int page = currPage;
-        if(isLoadMore) {
-            page ++;
+        if (isLoadMore) {
+            page++;
         }
         DiscoverySubReqBean bodyBean = new DiscoverySubReqBean(colid, "10", String.valueOf(page));
         Call<SuperModel<DiscoveryGridSecondaryResultBean>> result = RequestManager.getInstance().
                 getDiscoverySubList(this, bodyBean);
         result.enqueue(new Callback<SuperModel<DiscoveryGridSecondaryResultBean>>() {
             @Override
-            public void onResponse(Call<SuperModel<DiscoveryGridSecondaryResultBean>> call, Response<SuperModel<DiscoveryGridSecondaryResultBean>> response) {
-                if("0".equals(response.body().CODE)) {
-                    if(isLoadMore) {
-                        currPage ++;
+            public void onResponse(Call<SuperModel<DiscoveryGridSecondaryResultBean>> call, Response<SuperModel<DiscoveryGridSecondaryResultBean>>
+                    response) {
+                if ("0".equals(response.body().CODE)) {
+                    if (isLoadMore) {
+                        currPage++;
                     } else {
                         list.clear();
                         currPage = 1;
                     }
                     list.addAll(response.body().BODY.LST);
-                    if("0".equals(response.body().BODY.NC)) {
+                    if ("0".equals(response.body().BODY.NC)) {
                         footerView.setVisibility(View.GONE);
                     } else {
                         footerView.setVisibility(View.VISIBLE);
@@ -145,12 +144,13 @@ public class DiscoverySecondCategoryActivity extends AppCompatActivity implement
 
     }
 
-    @OnClick({R.id.sub_discovery_back, R.id.bt_item_album_details_one_subscribe})
+    @OnClick({R.id.sub_discovery_back})
+//    R.id.bt_item_album_details_one_subscribe
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.bt_item_album_details_one_subscribe:
-                ToastUtil.showToast(this, "点击的是专辑订阅");
-                break;
+//            case R.id.bt_item_album_details_one_subscribe:
+//                ToastUtil.showToast(this, "点击的是专辑订阅");
+//                break;
             case R.id.sub_discovery_back:
                 finish();
                 break;

@@ -385,7 +385,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
         switch (v.getId()) {
             //录音
             case R.id.iv_recoding_tool_startrecoding:
-                ToastUtil.showToast(getContext(), "点击了recoding");
+//                ToastUtil.showToast(getContext(), "点击了recoding");
                 startRecoding();
                 break;
             //分享
@@ -401,7 +401,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
                         .setPlatform(SHARE_MEDIA.WEIXIN).setCallback(mShareListener)
                         .open();
 
-                ToastUtil.showToast(getContext(), "点击了share");
+//                ToastUtil.showToast(getContext(), "点击了share");
 
                 break;
             //推送到玩具
@@ -418,7 +418,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
                     return;
                 }
                 sendRecordingToToy(ToySelectorFragment.mToyId);
-                ToastUtil.showToast(getContext(), "点击了send2toy");
+//                ToastUtil.showToast(getContext(), "点击了send2toy");
 
                 break;
 
@@ -436,12 +436,12 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
                 showEditDialog();
 
                 editRecordingFile();
-                ToastUtil.showToast(getContext(), "点击了editor");
+//                ToastUtil.showToast(getContext(), "点击了editor");
                 break;
             //向下移动
             case R.id.iv_fragent_recording_down:
                 moveToBottom();
-                ToastUtil.showToast(getContext(), "点击了downaction");
+//                ToastUtil.showToast(getContext(), "点击了downaction");
                 break;
 
 
@@ -479,12 +479,12 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
             case R.id.iv_recoding_tool_reRecording:
                 //不保存当前的音频文件,删除缓存,返回到录音的界面.
                 reRecording();
-                ToastUtil.showToast(getContext(), "点击了reRecording");
+//                ToastUtil.showToast(getContext(), "点击了reRecording");
                 break;
             //保存
             case R.id.iv_recoding_tool_saverecording:
                 SaveRecording();
-                ToastUtil.showToast(getContext(), "点击了saverecording");
+//                ToastUtil.showToast(getContext(), "点击了saverecording");
                 break;
             //返回
             case R.id.iv_fragment_recording_back:
@@ -751,7 +751,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
 //                            //带着id 去服务器申请本地播放
 //                            getLocalPlayApply(mToken, mPhoneNum, mRecordingId, mTime);
 
-                            ToastUtil.showToast(getContext(), "点击的是:" + selectedPosition);
+//                            ToastUtil.showToast(getContext(), "点击的是:" + selectedPosition);
 
                         }
                     });
@@ -777,7 +777,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
                             deleteRecording(mTime, position, mLst);
                             mLst.remove(position);
                             mRecordingListAdapter.notifyDataSetChanged();
-                            ToastUtil.showToast(getContext(), "点击删除");
+//                            ToastUtil.showToast(getContext(), "点击删除");
                             return false;
                         }
                     });
@@ -1096,7 +1096,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
             //将文件展示到listview上面, 文件以list的形式保存起来
 
             isNotRecording = !isNotRecording;
-            ToastUtil.showToast(getActivity(), "结束录音");
+//            ToastUtil.showToast(getActivity(), "结束录音");
 
         }
     }
@@ -1142,7 +1142,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
         mLv_recoding.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                ToastUtil.showToast(getContext(), "长按了:" + position);
+//                ToastUtil.showToast(getContext(), "长按了:" + position);
                 return false;
             }
         });
@@ -1153,7 +1153,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
                 mLv_recoding.getChildAt(position).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        ToastUtil.showToast(getContext(), "点击" + pos);
+//                        ToastUtil.showToast(getContext(), "点击" + pos);
                     }
                 });
             }
@@ -1287,16 +1287,16 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
 
         @Override
         public void onStart(SHARE_MEDIA share_media) {
-            ToastUtil.showToast(getContext(), "fragment");
+//            ToastUtil.showToast(getContext(), "fragment");
 
         }
 
         @Override
         public void onResult(SHARE_MEDIA platform) {
             Log.e(TAG, "onresult:+recoding+1 ");
-            ToastUtil.showToast(getActivity(), platform + " 分享成功啦1");
+//            ToastUtil.showToast(getActivity(), platform + " 分享成功");
             if (platform != SHARE_MEDIA.WEIXIN && platform != SHARE_MEDIA.SMS) {
-                ToastUtil.showToast(getActivity(), platform + " 分享成功啦2");
+//                ToastUtil.showToast(getActivity(), platform + " 分享成功啦");
 //                    Toast.makeText(mActivity.get(), platform + " 分享成功啦", Toast.LENGTH_SHORT).show();
             }
         }

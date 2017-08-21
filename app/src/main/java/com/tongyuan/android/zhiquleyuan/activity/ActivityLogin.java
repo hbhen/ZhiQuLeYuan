@@ -182,7 +182,7 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
                     .execute(new StringCallback() {
                         @Override
                         public void onError(Call call, Exception e, int id) {
-                            ToastUtil.showToast(getApplicationContext(), "大天才输了");
+//                            ToastUtil.showToast(getApplicationContext(), "大天才输了");
 
                         }
 
@@ -201,7 +201,7 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
                             }
                             //Log.i(TAG, "s1------" + s1);
                             Log.i(TAG, "response-------" + response);
-                            ToastUtil.showToast(getApplicationContext(), "大天才赢了!" + response);
+//                            ToastUtil.showToast(getApplicationContext(), "大天才赢了!" + response);
                         }
                     });
         } catch (JSONException e) {
@@ -242,7 +242,7 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
                     .execute(new StringCallback() {
                         @Override
                         public void onError(Call call, Exception e, int id) {
-                            ToastUtil.showToast(getApplicationContext(), "我又失败了 ,请不要怪我");
+//                            ToastUtil.showToast(getApplicationContext(), "我又失败了 ,请不要怪我");
                             Log.i("444444", "onError: " + e.toString());
                         }
 
@@ -273,7 +273,7 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
                         }
                     });
 
-            ToastUtil.showToast(this, "GameOver!!!!!");
+//            ToastUtil.showToast(this, "GameOver!!!!!");
 //            Log.i(TAG, "onResponse: _________mS3" + mS3 + "---返回给上面的ms3");
 
         } catch (JSONException e) {
@@ -323,7 +323,7 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
                 @Override
                 public void onResponse(String response, int id) {
                     Log.i(TAG, "onResponse: ------" + response);
-                    ToastUtil.showToast(getApplicationContext(), "response" + response);
+//                    ToastUtil.showToast(getApplicationContext(), "response" + response);
                     Log.i("11223344", "response" + response);
                     //response里面有token,取出这个token以后保存,以后每次进入app都先判断一下,判断是不是又token,然后判断token对不对
                     //不需要每次都让用户输入手机号,登录,获取验证码,体验不好

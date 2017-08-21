@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,8 @@ import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListResult;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -32,6 +35,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+import static com.chad.library.adapter.base.listener.SimpleClickListener.TAG;
 
 /**
  * Created by android on 2017/3/5.
@@ -106,6 +111,19 @@ public class BabyInfoListAdapter extends BaseSwipeAdapter {
                 swipeLayout.close();// 删除成功后需要关闭侧滑
             }
         });
+        String birthday = response.body().getBODY().getLST().get(pos).getBIRTHDAY();
+//        String substring = birthday.substring(0, 8);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddmmssSSS");
+        SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("yyyy/MM/dd");
+        try {
+            Date parse = simpleDateFormat.parse(birthday);
+            String formatTime = simpleDateFormat1.format(parse);
+            mTv_item_babyinfolist_birthday.setText(formatTime);
+            Log.i(TAG, "babyinfolistadapter:" + formatTime);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         Glide.with(mContext).load(mLSTBeen.get(pos).getIMG()).asBitmap().centerCrop().into(new BitmapImageViewTarget(mIv_item_babyinfolist) {
             @Override
             protected void setResource(Bitmap resource) {
@@ -116,7 +134,6 @@ public class BabyInfoListAdapter extends BaseSwipeAdapter {
         });
         mTv_title_item_babyinfolist.setText(mLSTBeen.get(pos).getNAME());
         mTv_item_babyinfolist_sexy.setText(mLSTBeen.get(pos).getSEX());
-        mTv_item_babyinfolist_birthday.setText(mLSTBeen.get(pos).getBIRTHDAY());
         mTv_item_babyinfolist_invite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

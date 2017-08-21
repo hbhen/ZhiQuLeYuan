@@ -21,7 +21,6 @@ import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.StatusBarUtils;
-import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -102,25 +101,25 @@ public class SearchActivity extends AppCompatActivity {
             public void onResponse(Call<SearchResBean> call, final Response<SearchResBean> response) {
                 if (response != null && response.body().getCODE().equals("0")) {
                     List<SearchResBean.BODYBean.LSTBean> lst = response.body().getBODY().getLST();
-                    ToastUtil.showToast(getApplicationContext(), "chenggong sou suo" + response.body().getBODY().toString());
-                    Log.i(TAG, "onResponse: " + lst.size());
+//                    ToastUtil.showToast(getApplicationContext(), "chenggong sou suo" + response.body().getBODY().toString());
+//                    Log.i(TAG, "onResponse: " + lst.size());
                     SearchAdapter searchAdapter = new SearchAdapter(getApplicationContext(), lst);
-                    Log.i(TAG, "onResponse: " + "走没有1");
+//                    Log.i(TAG, "onResponse: " + "走没有1");
                     mListView.setAdapter(searchAdapter);
-                    Log.i(TAG, "onResponse: " + "mListView的地址" + mListView);
-                    Log.i(TAG, "onResponse: " + "走没有2");
+//                    Log.i(TAG, "onResponse: " + "mListView的地址" + mListView);
+//                    Log.i(TAG, "onResponse: " + "走没有2");
 
                     mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            Log.i(TAG, "onResponse: " + "走没有3");
+//                            Log.i(TAG, "onResponse: " + "走没有3");
                             final ArrayList<SearchResBean.BODYBean.LSTBean> arrayList = new ArrayList<>();
-                            Log.i(TAG, "onItemClick:11 " + arrayList.size());
+//                            Log.i(TAG, "onItemClick:11 " + arrayList.size());
                             for (int i = 0; i < response.body().getBODY().getLST().size(); i++) {
                                 arrayList.add(i, response.body().getBODY().getLST().get(i));
                             }
-                            Log.i(TAG, "onItemClick:22 " + arrayList.size());
+//                            Log.i(TAG, "onItemClick:22 " + arrayList.size());
 
                             MyPlayActivity.launch(getApplicationContext(), arrayList, position);
                         }
