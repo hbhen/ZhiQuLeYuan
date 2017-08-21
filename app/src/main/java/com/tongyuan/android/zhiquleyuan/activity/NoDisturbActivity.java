@@ -297,6 +297,11 @@ public class NoDisturbActivity extends AppCompatActivity implements View.OnClick
                 endHourAdapter.setLabel("");
                 wl_hour.setViewAdapter(endHourAdapter);
                 wl_hour.setCurrentItem(0);
+                if(endHourAdapter.getItemsCount() == 1) {
+                    wl_hour.setCyclic(false);// 可循环滚动
+                } else {
+                    wl_hour.setCyclic(true);// 可循环滚动
+                }
             }
         });
 
@@ -324,6 +329,7 @@ public class NoDisturbActivity extends AppCompatActivity implements View.OnClick
                 wl_hour.setViewAdapter(endHourAdapter);
                 endHourAdapter.setLabel("");
 
+
                 int selectStarMin = wl_startMin.getCurrentItem();
                 int endMin = wl_min.getCurrentItem();
                 if (selectStarMin > endMin) {
@@ -346,6 +352,13 @@ public class NoDisturbActivity extends AppCompatActivity implements View.OnClick
 
                 }
 
+
+                if(endHourAdapter.getItemsCount() == 1) {
+                    wl_hour.setCyclic(false);// 可循环滚动
+                } else {
+                    wl_hour.setCyclic(true);// 可循环滚动
+                }
+
             }
         });
 
@@ -365,7 +378,11 @@ public class NoDisturbActivity extends AppCompatActivity implements View.OnClick
         endHourAdapter.setTextSize(18);
         wl_hour.setViewAdapter(endHourAdapter);
         wl_hour.setCurrentItem(0);
-        wl_hour.setCyclic(true);// 可循环滚动
+        if(endHourAdapter.getItemsCount() == 1) {
+            wl_hour.setCyclic(false);// 可循环滚动
+        } else {
+            wl_hour.setCyclic(true);// 可循环滚动
+        }
 
 
         endMinuteAdapter = new NumericWheelAdapter(this, 0, 59);
