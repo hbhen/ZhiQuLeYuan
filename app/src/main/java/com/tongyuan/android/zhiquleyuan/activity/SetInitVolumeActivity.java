@@ -72,7 +72,7 @@ public class SetInitVolumeActivity extends AppCompatActivity implements View.OnC
         mVolumeLock = (Button) findViewById(R.id.bt_activity_setinitvolume_lock);
         mVolumeConfirm = (Button) findViewById(R.id.bt_activity_setinitvolume_confirm);
 
-        mToken = SPUtils.getString(this, "TOKEN", "");
+        mToken = SPUtils.getString(this, "token", "");
         if (isLock == true) {
             //显示一种lock图标
         }

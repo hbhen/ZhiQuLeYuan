@@ -19,6 +19,7 @@ import com.tongyuan.android.zhiquleyuan.bean.AddToyRequestBean;
 import com.tongyuan.android.zhiquleyuan.bean.AddToyResultBean;
 import com.tongyuan.android.zhiquleyuan.event.AddToyMessageEvent;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
+import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 import com.tongyuan.android.zhiquleyuan.zxing.app.CaptureActivity;
@@ -86,7 +87,7 @@ public class ToyAddFragment extends BaseFragment implements View.OnClickListener
         mToycode = SPUtils.getString(getActivity(), "toycode", "");
         mPhoneNum = SPUtils.getString(getActivity(), "phoneNum", "");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-        mToken = SPUtils.getString(getActivity(), "TOKEN", "");
+        mToken = SPUtils.getString(getActivity(), "token", "");
         Log.i(TAG, "mToken: " + mToken);
         mTime = simpleDateFormat.format(new Date());
     }
@@ -143,7 +144,7 @@ public class ToyAddFragment extends BaseFragment implements View.OnClickListener
 
     private void addToy(String code) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
+                .baseUrl(Constant.baseurl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);

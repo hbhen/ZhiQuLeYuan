@@ -87,7 +87,7 @@ public class MySuggestionActivity extends AppCompatActivity {
                 .build();
         CommitSuggestionReqBean.BODYBean bodyBean = new CommitSuggestionReqBean.BODYBean(mSuggestion);
         CommitSuggestionReqBean commitSuggestionReqBean = new CommitSuggestionReqBean("REQ", "FEEDBACK", SPUtils.getString(this, "phoneNum", ""), new
-                SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()), bodyBean, "", SPUtils.getString(this, "TOKEN", ""), "1");
+                SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()), bodyBean, "", SPUtils.getString(this, "token", ""), "1");
         AllInterface allInterface = retrofit.create(AllInterface.class);
         Gson gson = new Gson();
         String s = gson.toJson(commitSuggestionReqBean);

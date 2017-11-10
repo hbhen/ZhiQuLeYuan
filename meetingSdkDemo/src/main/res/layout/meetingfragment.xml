@@ -1,13 +1,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical" >
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:orientation="vertical"
+    >
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="200dp"
         android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp" >
+        android:layout_marginTop="10dp"
+        >
 
         <info.emm.sdk.VideoView
             android:id="@+id/surfaceView1"
@@ -15,30 +17,33 @@
             android:layout_height="fill_parent"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            />
 
         <!--<info.emm.sdk.VideoView-->
-            <!--android:id="@+id/surfaceView2"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="fill_parent"-->
-            <!--android:layout_marginLeft="5dp"-->
-            <!--android:layout_marginRight="5dp"-->
-            <!--android:layout_weight="1" />-->
+        <!--android:id="@+id/surfaceView2"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="fill_parent"-->
+        <!--android:layout_marginLeft="5dp"-->
+        <!--android:layout_marginRight="5dp"-->
+        <!--android:layout_weight="1" />-->
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        >
 
         <EditText
             android:id="@+id/editTextIP"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="9"
-            android:text="test.weiyicloud.com" >
+            android:text="test.weiyicloud.com"
+            >
 
-            <requestFocus />
+            <requestFocus/>
         </EditText>
 
         <EditText
@@ -47,61 +52,70 @@
             android:layout_height="wrap_content"
             android:ems="9"
             android:inputType="number"
-            android:text="81" />
+            android:text="81"
+            />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        >
 
         <EditText
             android:id="@+id/editTextMeetingId"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number"
-            android:text="666666" >
+            android:text="666666"
+            >
         </EditText>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        >
 
         <CheckBox
             android:id="@+id/checkBox1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true"
-            android:text="@string/main_front" />
+            android:text="@string/main_front"
+            />
 
         <CheckBox
             android:id="@+id/checkBox2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="false"
-            android:text="@string/main_hq" />
+            android:text="@string/main_hq"
+            />
 
         <CheckBox
             android:id="@+id/checkBox3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="false"
-            android:text="@string/main_pause" />
+            android:text="@string/main_pause"
+            />
 
         <CheckBox
             android:id="@+id/checkBox4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:text="@string/main_speaker" />
+            android:text="@string/main_speaker"
+            />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        >
 
         <Button
             android:id="@+id/button1"
@@ -110,7 +124,8 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_weight="1"
-            android:text="@string/main_enter_meeting" />
+            android:text="@string/main_enter_meeting"
+            />
 
         <Button
             android:id="@+id/button2"
@@ -119,13 +134,15 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_weight="1"
-            android:text="@string/main_leave_meeting" />
+            android:text="@string/main_leave_meeting"
+            />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        >
 
         <Button
             android:id="@+id/buttonSend"
@@ -134,7 +151,8 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_weight="1"
-            android:text="@string/main_send_video" />
+            android:text="@string/main_send_video"
+            />
 
         <Button
             android:id="@+id/buttonWatch"
@@ -143,7 +161,8 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_weight="1"
-            android:text="@string/main_watch_video" />
+            android:text="@string/main_watch_video"
+            />
     </LinearLayout>
 
     <TextView
@@ -152,13 +171,15 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text=""
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        >
 
         <Button
             android:id="@+id/free_speaker"
@@ -166,7 +187,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:padding="10dp"
-            android:text="@string/main_free_speaker" />
+            android:text="@string/main_free_speaker"
+            />
 
         <Button
             android:id="@+id/show_messge_btn"
@@ -175,7 +197,8 @@
             android:layout_weight="1"
             android:padding="10dp"
             android:text="@string/main_message_text"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            />
     </LinearLayout>
 
 </LinearLayout>

@@ -2,30 +2,34 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:orientation="vertical">
+              android:orientation="vertical"
+    >
 
 
     <RelativeLayout
         android:id="@+id/rl_title_register"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_44">
+        android:layout_height="@dimen/dp_44"
+        >
 
         <ImageView
-           android:id="@+id/iv_back_login"
+            android:id="@+id/iv_back_login"
             android:layout_width="@dimen/dp_10"
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/dp_10"
-            android:src="@drawable/arrow_left"/>
+            android:src="@drawable/arrow_left"
+            />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="手机注册"
             android:inputType="phone"
+            android:text="手机注册"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_18"/>
+            android:textSize="@dimen/sp_18"
+            />
     </RelativeLayout>
 
     <ImageView
@@ -34,56 +38,50 @@
         android:layout_height="80dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="20dp"
-        android:background="@drawable/login_logo_240"/>
+        android:background="@drawable/login_logo_240"
+        />
 
     <RelativeLayout
         android:id="@+id/rl_activity_login_editphone"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_22"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="20dp"
+        >
 
         <TextView
-            android:textColor="@color/black"
             android:id="@+id/textView"
             android:layout_width="86dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="22dp"
             android:gravity="center"
             android:text="+86"
-            android:textSize="@dimen/sp_16"/>
-
-        <TextView
-            android:id="@+id/tv_text_login"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="22dp"
-            android:gravity="center"
-            android:text="获取验证码"
-            android:textColor="#ff4511"
-            android:textSize="@dimen/sp_16"/>
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_16"
+            />
 
         <View
             android:id="@+id/view"
             android:layout_width="1dp"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/textView"
-            android:background="@color/redFont"/>
+            android:background="@color/redFont"
+            />
 
 
         <EditText
-            android:paddingLeft="5dp"
-            android:background="@null"
             android:id="@+id/et_login_phone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="5dp"
-            android:numeric="integer"
             android:layout_toRightOf="@id/view"
+            android:background="@null"
+            android:cursorVisible="false"
             android:hint="请输入手机号"
-            android:textSize="@dimen/sp_16"/>
+            android:numeric="integer"
+            android:paddingLeft="5dp"
+            android:textSize="@dimen/sp_16"
+            />
 
 
         <View
@@ -91,8 +89,25 @@
             android:layout_height="1dp"
             android:layout_alignLeft="@id/textView"
             android:layout_alignParentBottom="true"
-            android:layout_alignRight="@id/tv_text_login"
-            android:background="@color/redFont"/>
+            android:background="@color/redFont"
+            />
+        <!--android:layout_alignRight="@id/tv_text_login"-->
+
+        <TextView
+            android:id="@+id/tv_text_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="24dp"
+            android:layout_marginRight="24dp"
+            android:gravity="center"
+            android:text="获取验证码"
+            android:textColor="#ff4511"
+            android:textSize="@dimen/sp_16"
+            />
+
     </RelativeLayout>
 
     <RelativeLayout
@@ -101,10 +116,10 @@
         android:layout_height="@dimen/dp_22"
         android:layout_below="@id/rl_activity_login_editphone"
         android:layout_marginTop="@dimen/dp_40"
-        android:gravity="center_horizontal">
+        android:gravity="center_horizontal"
+        >
 
         <TextView
-            android:textColor="@color/black"
             android:id="@+id/tv_activity_login_edit_smscode"
             android:layout_width="86dp"
             android:layout_height="wrap_content"
@@ -112,74 +127,88 @@
             android:layout_marginLeft="22dp"
             android:gravity="center"
             android:text="输入验证码"
-            android:textSize="@dimen/sp_16"/>
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_16"
+            />
 
         <View
             android:id="@+id/view_smscode"
             android:layout_width="1dp"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/tv_activity_login_edit_smscode"
-            android:background="@color/redFont"/>
+            android:background="@color/redFont"
+            />
 
         <EditText
-            android:textSize="@dimen/sp_16"
-            android:background="@null"
-            android:paddingLeft="5dp"
-            android:layout_marginRight="@dimen/dp_20"
             android:id="@+id/et_login_smscode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/dp_20"
             android:layout_toRightOf="@id/view_smscode"
-            android:hint="请输入验证码"/>
+            android:background="@null"
+            android:cursorVisible="false"
+            android:hint="请输入验证码"
+            android:paddingLeft="5dp"
+            android:textSize="@dimen/sp_16"
+            />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_alignLeft="@id/tv_activity_login_edit_smscode"
             android:layout_alignParentBottom="true"
-            android:layout_alignRight="@id/et_login_smscode"
-            android:background="@color/redFont"/>
+            android:background="@color/redFont"
+            />
+        <!--android:layout_alignRight="@id/et_login_smscode"-->
     </RelativeLayout>
 
 
     <Button
-        android:layout_marginTop="@dimen/dp_60"
-        android:textColor="@color/black"
-        android:background="@drawable/shape_baby_edit"
         android:id="@+id/bt_login"
         android:layout_width="330dp"
-        android:textSize="@dimen/sp_16"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="确认登录"/>
+        android:layout_marginTop="@dimen/dp_60"
+        android:background="@drawable/shape_baby_edit"
+        android:text="确认登录"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp_16"
+        />
+
     <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_20"
         android:gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        >
+
         <RadioButton
-            android:layout_centerVertical="true"
             android:id="@+id/rb_activity_login"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-        <TextView
-            android:textSize="@dimen/sp_16"
+            android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/rb_activity_login"
+            />
+
+        <TextView
             android:id="@+id/tv_activity_login_textview"
             android:layout_width="wrap_content"
-            android:text="阅读并同意"
-            android:layout_height="wrap_content"/>
-        <TextView
-
+            android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/tv_activity_login_textview"
+            android:layout_toRightOf="@id/rb_activity_login"
+            android:text="阅读并同意"
+            android:textSize="@dimen/sp_16"
+            />
+
+        <TextView
             android:id="@+id/tv_activity_login_textviewclick"
             android:layout_width="wrap_content"
-            android:textSize="@dimen/sp_16"
-            android:textColor="@color/redFont"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/tv_activity_login_textview"
             android:text="《童缘科技服务协议》"
-            android:layout_height="wrap_content"/>
+            android:textColor="@color/redFont"
+            android:textSize="@dimen/sp_16"
+            />
     </RelativeLayout>
 
 </LinearLayout>

@@ -19,6 +19,7 @@ import com.tongyuan.android.zhiquleyuan.adapter.BabyInfoListAdapter;
 import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListRequest;
 import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListResult;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
+import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
@@ -94,13 +95,13 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
 
     private void initData() {
 
-        mToken = SPUtils.getString(this, "TOKEN", "");
+        mToken = SPUtils.getString(this, "token", "");
         final String phone = SPUtils.getString(this, "phoneNum", "");
         Date date = new Date();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         final String time = simpleDateFormat.format(date);
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
+                .baseUrl(Constant.baseurl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);

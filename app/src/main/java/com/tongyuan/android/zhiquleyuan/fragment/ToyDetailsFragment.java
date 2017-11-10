@@ -40,6 +40,8 @@ import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListFromToyIdRes;
 import com.tongyuan.android.zhiquleyuan.bean.QueryPlayingMusicReqBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryPlayingMusicResBean;
 import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoRESBean;
+import com.tongyuan.android.zhiquleyuan.bean.UpdateToyVersionReqBean;
+import com.tongyuan.android.zhiquleyuan.bean.UpdateToyVersionResBean;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.request.RequestManager;
@@ -62,6 +64,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import static com.tongyuan.android.zhiquleyuan.R.id.iv_toy_details_call;
 import static com.tongyuan.android.zhiquleyuan.R.id.tv_fragment_toy_details_babyName;
+import static com.tongyuan.android.zhiquleyuan.R.id.tv_toy_details_playing;
 
 /**
  * Created by android on 2017/1/9.
@@ -116,17 +119,21 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     String[] mStrings = new String[]{"与玩具通话", "与电视,玩具通话"};
     private boolean isShow = false;
     private RelativeLayout mToyPlayControl;
+    private TextView mUpdate;
 
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle
+            savedInstanceState) {
         mToyDetails = inflater.inflate(R.layout.fragment_toy_details, null);
         mToyPlayControl = (RelativeLayout) mToyDetails.findViewById(R.id.rl_fragment_toy_playingcontrol);
         mListviewtitle = inflater.inflate(R.layout.discovery_recyclerview_listview_title, null);
         Log.i("timedate", "onCreateView");
 
-//        FrameLayout framelayoutControl =  (FrameLayout) mToyDetails.findViewById(R.id.fl_fragment_toy_details_playcontrol);
+//        FrameLayout framelayoutControl =  (FrameLayout) mToyDetails.findViewById(R.id
+// .fl_fragment_toy_details_playcontrol);
+        mUpdate = (TextView) mToyDetails.findViewById(R.id.tv_updatetoy);
         mListviewRecommand = (ListView) mToyDetails.findViewById(R.id.lv_fragment_toy_details_recommand);
 
         mCall = (ImageView) mToyDetails.findViewById(iv_toy_details_call);
@@ -144,11 +151,11 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         mCallMIc = (ImageView) mToyDetails.findViewById(R.id.iv_fragment_toy_details_call_mic);
         mCallCamera = (ImageView) mToyDetails.findViewById(R.id.iv_fragment_toy_details_call_camera);
 
-        mToyIsPlaying = (TextView) mToyDetails.findViewById(R.id.tv_toy_details_playing);
+        mToyIsPlaying = (TextView) mToyDetails.findViewById(tv_toy_details_playing);
         mToyDetails.findViewById(R.id.back_btn).setOnClickListener(this);
-
+        mToyIsPlaying.setOnClickListener(this);
+        mUpdate.setOnClickListener(this);
         mToyManagerFragment = new ToyManagerFragment();
-
 //        initView();
         getListRaw();
         return mToyDetails;
@@ -157,15 +164,18 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
 
     private void getListRaw() {
         DiscoveryListRequsetBean.BODYBean request = new DiscoveryListRequsetBean.BODYBean("10", "1");
-        Call<SuperModel<DiscoveryListResultBean.BODYBean>> discoveryListResult = RequestManager.getInstance().getDiscoveryListResult(getContext(),
-                request);
+        Call<SuperModel<DiscoveryListResultBean.BODYBean>> discoveryListResult = RequestManager.getInstance()
+                .getDiscoveryListResult(getContext(),
+                        request);
         discoveryListResult.enqueue(new Callback<SuperModel<DiscoveryListResultBean.BODYBean>>() {
             @Override
-            public void onResponse(Call<SuperModel<DiscoveryListResultBean.BODYBean>> call, Response<SuperModel<DiscoveryListResultBean.BODYBean>>
-                    response) {
+            public void onResponse(Call<SuperModel<DiscoveryListResultBean.BODYBean>> call,
+                                   Response<SuperModel<DiscoveryListResultBean.BODYBean>>
+                                           response) {
                 if ("0".equals(response.body().CODE)) {
                     //返回的list是一个空list
-                    Log.d(TAG, "onResponse: " + SPUtils.getString(getActivity(), "TOKEN", ""));
+                    Log.i(TAG, "onResponse: "+response.body().BODY);
+                    Log.d(TAG, "onResponse: " + SPUtils.getString(getActivity(), "token", ""));
 
                     mLAdapter = new DiscoveryListViewAdapter(getContext(), response.body().BODY.getLST());
                     mListviewRecommand.addHeaderView(mListviewtitle);
@@ -194,9 +204,9 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
             }
         });
     }
-
-
     public void setData(SingleToyInfoRESBean.BODYBean response, String image) {
+
+
         Log.i("timedate", "setData: went");
         mUserId = SPUtils.getString(getContext(), "ID", "");
         Log.i(TAG, "setData: went");
@@ -205,7 +215,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         //要传给videoactivity的宝宝头像
         SPUtils.putString(getContext(), "babyimg", mBabyimg);
         mToyId = response.getID();
-        mToken = SPUtils.getString(getContext(), "TOKEN", "");
+        mToken = SPUtils.getString(getContext(), "token", "");
         mPhoneNum = SPUtils.getString(getContext(), "phoneNum", "");
 
         String acttime = response.getACTTIME();
@@ -245,12 +255,14 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
         QueryBabyListFromToyIdReq.BODYBean bodyBean = new QueryBabyListFromToyIdReq.BODYBean(mToyId, "10", "1");
-        QueryBabyListFromToyIdReq queryBabyListFromToyIdReq = new QueryBabyListFromToyIdReq("REQ", "QRYTOYB", mPhoneNum, currentTime, bodyBean, "",
+        QueryBabyListFromToyIdReq queryBabyListFromToyIdReq = new QueryBabyListFromToyIdReq("REQ", "QRYTOYB",
+                mPhoneNum, currentTime, bodyBean, "",
                 mToken, "1");
         Gson gson = new Gson();
         String s = gson.toJson(queryBabyListFromToyIdReq);
 
-        Call<QueryBabyListFromToyIdRes> queryBabyListFromToyIdResCall = allInterface.QUERY_BABY_LIST_FROM_TOY_ID_CALL(s);
+        Call<QueryBabyListFromToyIdRes> queryBabyListFromToyIdResCall = allInterface.QUERY_BABY_LIST_FROM_TOY_ID_CALL
+                (s);
         queryBabyListFromToyIdResCall.enqueue(new Callback<QueryBabyListFromToyIdRes>() {
             @Override
             public void onResponse(Call<QueryBabyListFromToyIdRes> call, Response<QueryBabyListFromToyIdRes> response) {
@@ -315,9 +327,10 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                 if (isDestroy)
                     return;
 
-                RoundedBitmapDrawable mRoundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
+                RoundedBitmapDrawable mRoundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getActivity()
+                        .getResources(), resource);
                 mRoundedBitmapDrawable.setCircular(true);
-                if(mIv_fragment_toy_details_babyImg != null) {
+                if (mIv_fragment_toy_details_babyImg != null) {
                     mIv_fragment_toy_details_babyImg.setImageDrawable(mRoundedBitmapDrawable);
                 }
             }
@@ -327,6 +340,17 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.tv_updatetoy:
+                updateToyVersion();
+                break;
+            case tv_toy_details_playing:
+                isShow = !isShow;
+                if (isShow) {
+                    mToyPlayControl.setVisibility(View.VISIBLE);
+                } else {
+                    mToyPlayControl.setVisibility(View.GONE);
+                }
+                break;
             case iv_toy_details_call:
                 //通话控制
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
@@ -356,8 +380,10 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                                     bundle.getString("roomid");
                                     bundle.getString("token");
                                     bundle.getString("toyId");
-                                    Log.i("captureactivity", "onClick00: --" + bundle.getString("babyimgString") + "--");
-                                    Log.i("captureactivity", "onClick00: --" + bundle.getString("babynameString") + "--");
+                                    Log.i("captureactivity", "onClick00: --" + bundle.getString("babyimgString") +
+                                            "--");
+                                    Log.i("captureactivity", "onClick00: --" + bundle.getString("babynameString") +
+                                            "--");
                                     Log.i("captureactivity", "onClick00: --" + bundle.getString("roomid") + "--");
                                     Log.i("captureactivity", "onClick00: --" + bundle.getString("token") + "--");
                                     Log.i("captureactivity", "onClick00: --" + bundle.getString("toyId") + "--");
@@ -431,6 +457,31 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
 
     }
 
+    private void updateToyVersion() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constant.baseurl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        AllInterface allInterface = retrofit.create(AllInterface.class);
+        UpdateToyVersionReqBean.ParamBean paramBean = new UpdateToyVersionReqBean.ParamBean(ToySelectorFragment.mToyId);
+        UpdateToyVersionReqBean updateToyVersionReqBean = new UpdateToyVersionReqBean("update", paramBean, mToken);
+        Gson gson = new Gson();
+        String s = gson.toJson(updateToyVersionReqBean);
+        Call<UpdateToyVersionResBean> updateToyVersionResBeanCall = allInterface.UPDATE_TOY_VERSION_RES_BEAN_CALL(s);
+        updateToyVersionResBeanCall.enqueue(new Callback<UpdateToyVersionResBean>() {
+            @Override
+            public void onResponse(Call<UpdateToyVersionResBean> call, Response<UpdateToyVersionResBean> response) {
+                ToastUtil.showToast(getContext(),"发送玩具更新请求成功");
+                Log.i(TAG, "(updatetoy)onResponse: " + response.body().toString());
+            }
+
+            @Override
+            public void onFailure(Call<UpdateToyVersionResBean> call, Throwable t) {
+                Log.i(TAG, "(updatetoy)onFailure: " + t);
+            }
+        });
+    }
+
     //3.4.19 删除玩具和宝宝关心
 //    private void unBindBabyToToy() {
 //        Retrofit retrofit = new Retrofit.Builder()
@@ -438,12 +489,14 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
 //                .addConverterFactory(GsonConverterFactory.create())
 //                .build();
 //        AllInterface allInterface = retrofit.create(AllInterface.class);
-//        UnbindBabyToToyReqBean.BODYBean.LSTBean lstBean = new UnbindBabyToToyReqBean.BODYBean.LSTBean(mToyId, mToycode, );
+//        UnbindBabyToToyReqBean.BODYBean.LSTBean lstBean = new UnbindBabyToToyReqBean.BODYBean.LSTBean(mToyId,
+// mToycode, );
 //        List<UnbindBabyToToyReqBean.BODYBean.LSTBean> lstBeanList = new ArrayList<>();
 //        lstBeanList.add(lstBean);
 //
 //        UnbindBabyToToyReqBean.BODYBean bodyBean = new UnbindBabyToToyReqBean.BODYBean(lstBeanList);
-//        UnbindBabyToToyReqBean unbindBabyToToyReqBean = new UnbindBabyToToyReqBean("REQ", "DTOYB", mPhoneNum, new SimpleDateFormat
+//        UnbindBabyToToyReqBean unbindBabyToToyReqBean = new UnbindBabyToToyReqBean("REQ", "DTOYB", mPhoneNum, new
+// SimpleDateFormat
 // ("yyyyMMddmmssSSS")
 //                .format(new Date()), bodyBean, "", mToken, "1");
 //
@@ -451,8 +504,8 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
 //    }
 
     private void CallToToy() {
-        final String token = SPUtils.getString(getActivity(), "TOKEN", "");
-        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
+        final String token = SPUtils.getString(getActivity(), "token", "");
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(Constant.baseurl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
@@ -464,19 +517,21 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         callToToyResCall.enqueue(new Callback<CallToToyRes>() {
             @Override
             public void onResponse(Call<CallToToyRes> call, Response<CallToToyRes> response) {
-
-                Log.i("555555", "onResponse:+response " + response.body().toString());
+                Log.i(TAG, "onResponse: RESPONSE" + response.message());
+                Log.i(TAG, "onResponse:+response " + response.body().toString());
                 mRoomid = response.body().getRoomid();
                 if (mRoomid == null) {
                     ToastUtil.showToast(getActivity(), "房间号不存在");
-
-                    if (response.body().getCode().equals("-10008")) {
-                        ToastUtil.showToast(getActivity(), "推送失败");
-                    } else if (response.body().getCode().equals("-10009")) {
-                        ToastUtil.showToast(getActivity(), "玩具未登录");
-                    } else if (response.body().getCode().equals("-10012")) {
-                        ToastUtil.showToast(getActivity(), "玩具通话中");
-                    }
+                    return;
+                }
+                if (response.body().getCode().equals("-10008")) {
+                    ToastUtil.showToast(getActivity(), "推送失败");
+                    return;
+                } else if (response.body().getCode().equals("-10009")) {
+                    ToastUtil.showToast(getActivity(), "玩具未登录");
+                    return;
+                } else if (response.body().getCode().equals("-10012")) {
+                    ToastUtil.showToast(getActivity(), "玩具通话中");
                     return;
                 }
                 VideoActivity.launch(mContext, mBabyimg, mBabyName, mRoomid, mToken, mToyId, null);
@@ -510,18 +565,19 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     @Override
     public void onStart() {
         super.onStart();
-        //TODO 查询当前玩具是否正在播放音乐 3.4.43
-        queryPlayingMusic();
+        //TODO 查询当前玩具是否正在播放音乐 3.4.43  暂时先不查询了,因为玩具端不知道怎么上传当前播放的状态给服务器
+//        queryPlayingMusic();
     }
 
     private void queryPlayingMusic() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
+                .baseUrl(Constant.baseurl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
         QueryPlayingMusicReqBean.BODYBean bodyBean = new QueryPlayingMusicReqBean.BODYBean(ToySelectorFragment.mToyId);
-        QueryPlayingMusicReqBean queryPlayingMusicReqBean = new QueryPlayingMusicReqBean("REQ", "QPRES", mPhoneNum, mTime, bodyBean, "", "TOKEN",
+        QueryPlayingMusicReqBean queryPlayingMusicReqBean = new QueryPlayingMusicReqBean("REQ", "QPRES", mPhoneNum,
+                mTime, bodyBean, "", "token",
                 "1");
         Gson gson = new Gson();
         String s = gson.toJson(queryPlayingMusicReqBean);
@@ -530,6 +586,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
             @Override
             public void onResponse(Call<QueryPlayingMusicResBean> call, Response<QueryPlayingMusicResBean> response) {
                 Log.i("55555", response.body().toString());
+
                 if (response.body().getBODY().getID().equals("")) {
                     ToastUtil.showToast(getContext(), "当前玩具没有正在播放的歌曲");
                     mToyIsPlaying.setVisibility(View.GONE);
@@ -590,12 +647,13 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
 
     //拉去玩具的状态信息
     private void checkStateInfo() {
-        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://120.27.41.179:8081/zqpland/m/iface/").addConverterFactory(GsonConverterFactory
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(Constant.baseurl).addConverterFactory(GsonConverterFactory
                 .create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
         GetInstantStateInfoReq.BODYBean bodyBean = new GetInstantStateInfoReq.BODYBean(mToyId);
-        GetInstantStateInfoReq getInstantStateInfoReq = new GetInstantStateInfoReq("REQ", "TOYSTATE", mPhoneNum, mTime, bodyBean, "", mToken, "1");
+        GetInstantStateInfoReq getInstantStateInfoReq = new GetInstantStateInfoReq("REQ", "TOYSTATE", mPhoneNum,
+                mTime, bodyBean, "", mToken, "1");
 
         Gson gson = new Gson();
         String s = gson.toJson(getInstantStateInfoReq);
@@ -699,7 +757,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode==00){
+        if (resultCode == 00) {
             queryToyHasBindBaby();
         }
 //        if (requestCode == BIND_BABYTO_TOY && resultCode == 00) {

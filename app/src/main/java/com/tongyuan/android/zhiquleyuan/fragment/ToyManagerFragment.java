@@ -137,7 +137,7 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
     }
 
     private void initData() {
-        mToken = SPUtils.getString(getActivity(), "TOKEN", "");
+        mToken = SPUtils.getString(getActivity(), "token", "");
         mPhoneNum = SPUtils.getString(getActivity(), "phoneNum", "");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         mTime = simpleDateFormat.format(new Date());
@@ -152,7 +152,7 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
 
     private void getToyMember(String time, String token, String phoneNum, String toyId, final String toyCode) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
+                .baseUrl(Constant.baseurl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
@@ -267,7 +267,7 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
         mLst = lst;
         mOwnerId = ownerId;
         Log.i("manager", "setData");
-        mToken = SPUtils.getString(getActivity(), "TOKEN", "");
+        mToken = SPUtils.getString(getActivity(), "token", "");
         this.formatTime = formatTime;
         mPhoneNum = SPUtils.getString(getActivity(), "phoneNum", "");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
@@ -339,7 +339,7 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
     }
 
     private void checkStateInfo() {
-        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://120.27.41.179:8081/zqpland/m/iface/").addConverterFactory(GsonConverterFactory
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(Constant.baseurl).addConverterFactory(GsonConverterFactory
                 .create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);

@@ -5,7 +5,8 @@
               android:layout_height="match_parent">
     <TextView
         android:layout_width="match_parent"
-        android:text="这是测试版1.0"
+        android:gravity="center"
+        android:text="关于APP"
         android:textSize="20sp"
         android:layout_height="match_parent"/>
 

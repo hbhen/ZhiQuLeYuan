@@ -7,7 +7,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.OnScrollListener;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,7 +40,8 @@ import retrofit2.Response;
  * 先加载布局,再在布局里面添加数据.布局从哪个生命周期开始加载?数据从哪个生命周期开始加载?
  * Created by android on 2016/12/3.
  */
-public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener, View.OnClickListener {
+public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener, View
+        .OnClickListener {
     //public static final int REQUEST_CODE_LOGIN = 1001;
     //public static final String TAG = "discovery";
     private View mDiscoveryRoot;
@@ -60,7 +60,8 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle
+            savedInstanceState) {
         mDiscoveryRoot = inflater.inflate(R.layout.fragment_discovery_recycleview, null);
         initView();
         initListener();
@@ -82,7 +83,8 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
         mRecyclerView = (RecyclerView) mDiscoveryRoot.findViewById(R.id.recyclerView_discovery);
 
         mAdapter = new DiscoveryRecyclerAdapter(getContext(), discoveryGridViewList, discoveryListViewList);
-        final GridLayoutManager layoutManager = new GridLayoutManager(mRecyclerView.getContext(), 6, GridLayoutManager.VERTICAL, false);
+        final GridLayoutManager layoutManager = new GridLayoutManager(mRecyclerView.getContext(), 6,
+                GridLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setAdapter(mAdapter);
         int spacingInPixels = (int) getResources().getDimension(R.dimen.discovery_grid_space);
@@ -91,6 +93,7 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
         mRecyclerView.addOnScrollListener(new OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+
                 super.onScrollStateChanged(recyclerView, newState);
 
             }
@@ -99,7 +102,8 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
-                //Log.i("gengen", "lastVisibleItemPosition + 1==" +(lastVisibleItemPosition+1) + " count="+mAdapter.getItemCount());
+                //Log.i("gengen", "lastVisibleItemPosition + 1==" +(lastVisibleItemPosition+1) + " count="+mAdapter
+                // .getItemCount());
                 if (lastVisibleItemPosition + 1 == mAdapter.getItemCount()) {
                     /*boolean isRefreshing = mSwiperefresh.isRefreshing();
                     if (isRefreshing) {
@@ -159,11 +163,13 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
             ++page;
         }
         DiscoveryListRequsetBean.BODYBean request = new DiscoveryListRequsetBean.BODYBean("10", String.valueOf(page));
-        Call<SuperModel<DiscoveryListResultBean.BODYBean>> discoveryListResult = RequestManager.getInstance().getDiscoveryListResult(getContext(),
-                request);
+        Call<SuperModel<DiscoveryListResultBean.BODYBean>> discoveryListResult = RequestManager.getInstance()
+                .getDiscoveryListResult(getContext(),
+                        request);
         /*discoveryListResult.enqueue(new Callback<SuperModel<DiscoveryListResultBean.BODYBean>>() {
             @Override
-            public void onResponse(Call<SuperModel<DiscoveryListResultBean.BODYBean>> call, Response<SuperModel<DiscoveryListResultBean.BODYBean>>
+            public void onResponse(Call<SuperModel<DiscoveryListResultBean.BODYBean>> call,
+            Response<SuperModel<DiscoveryListResultBean.BODYBean>>
                     response) {
                 NC = response.body().BODY.getNC();
                 if ("0".equals(response.body().CODE)) {
@@ -201,7 +207,8 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
             }
 
             @Override
-            public void onResponseFilter(Call<SuperModel<DiscoveryListResultBean.BODYBean>> call, Response<SuperModel<DiscoveryListResultBean.BODYBean>> response) {
+            public void onResponseFilter(Call<SuperModel<DiscoveryListResultBean.BODYBean>> call,
+                                         Response<SuperModel<DiscoveryListResultBean.BODYBean>> response) {
                 NC = response.body().BODY.getNC();
                 if ("0".equals(response.body().CODE)) {
                     if (isLoadMore) {
@@ -227,10 +234,12 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
     //gridview的数据
     private void getIdCol() {
         final BaseRequest request = new BaseRequest<>(getContext(), new DiscoveryGridRequestBean("0", "-1", "1"));
-        Call<SuperModel<DiscoveryGridItemBean>> discoveryGridResult = RequestManager.getInstance().getDiscoveryGridResult(request);
+        Call<SuperModel<DiscoveryGridItemBean>> discoveryGridResult = RequestManager.getInstance()
+                .getDiscoveryGridResult(request);
         discoveryGridResult.enqueue(new Callback<SuperModel<DiscoveryGridItemBean>>() {
             @Override
-            public void onResponse(Call<SuperModel<DiscoveryGridItemBean>> call, Response<SuperModel<DiscoveryGridItemBean>> response) {
+            public void onResponse(Call<SuperModel<DiscoveryGridItemBean>> call,
+                                   Response<SuperModel<DiscoveryGridItemBean>> response) {
                 if ("0".equals(response.body().CODE)) {
                     if (response.body().BODY != null && response.body().BODY.LST != null) {
                         discoveryGridViewList.clear();

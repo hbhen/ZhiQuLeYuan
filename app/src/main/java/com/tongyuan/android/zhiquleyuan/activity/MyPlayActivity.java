@@ -223,7 +223,7 @@ public class MyPlayActivity extends BaseActivity {
         arraylist.add(lstBean);
         AddInCollectionReqBean.BODYBean bodyBean = new AddInCollectionReqBean.BODYBean(arraylist);
         AddInCollectionReqBean addInCollectionReqBean = new AddInCollectionReqBean("REQ", "FAVRES", SPUtils.getString(this, "phoneNum", ""), new
-                SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()), bodyBean, "", SPUtils.getString(this, "TOKEN", ""), "1");
+                SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()), bodyBean, "", SPUtils.getString(this, "token", ""), "1");
         Gson gson = new Gson();
         String s = gson.toJson(addInCollectionReqBean);
         Call<AddInCollectionResBean> addInCollectionResBeanCall = allInterface.ADDINCOLLECTION_RES_BEAN_CALL(s);

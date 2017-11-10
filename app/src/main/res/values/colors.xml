@@ -41,4 +41,7 @@
     <!--recording fragment -->
     <color name="record_arrow_bg">#ffdbdb</color>
     <color name="lable_blue">#3DB0FD</color>
+    <!--customdialogcolor-->
+    <color name="text_blue">#0076FF</color>
+    <color name="text_black">#333333</color>
 </resources>

@@ -20,6 +20,7 @@ import com.tongyuan.android.zhiquleyuan.base.BaseFragment;
 import com.tongyuan.android.zhiquleyuan.bean.CallHistoryRequestBean;
 import com.tongyuan.android.zhiquleyuan.bean.CallHistoryResultBean;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
+import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.swipe.refreshlib.AbListView;
 import com.tongyuan.android.zhiquleyuan.swipe.refreshlib.library.PullToRefreshBase;
 import com.tongyuan.android.zhiquleyuan.swipe.refreshlib.library.PullToRefreshScrollView;
@@ -67,7 +68,8 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle
+            savedInstanceState) {
         View historyRoot = inflater.inflate(R.layout.fragment_history, null);
         lv_fragment_history = (AbListView) historyRoot.findViewById(R.id.lv_fragment_history);
         iv_item_history_pic = (ImageView) lv_fragment_history.findViewById(R.id.iv_item_history_pic);
@@ -92,15 +94,13 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        if (!SPUtils.getString(getActivity(), "TOKEN", "").equals("")) {
-
+        if (!SPUtils.getString(getActivity(), "token", "").equals("")) {
             initData();
             initListener();
+        } else {
+            ToastUtil.showToast(getContext(), "未登录,请登录");
+            return;
         }
-        else {
-
-        }
-
     }
 
     private void initListener() {
@@ -109,35 +109,40 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
 
 
     private void initData() {
-        mToken = SPUtils.getString(getActivity(), "TOKEN", "");
+        mToken = SPUtils.getString(getActivity(), "token", "");
         mPhoneNum = SPUtils.getString(getActivity(), "phoneNum", "");
         mTime = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
         getData(mPhoneNum, mTime, mToken);
     }
 
 
-    private void getData(String phoneNum, String time, String token) {
+    private void getData(String phoneNum, String time, final String token) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
+                .baseUrl(Constant.baseurl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
 
         CallHistoryRequestBean.BODYBean callHistoryBody = new CallHistoryRequestBean.BODYBean("", "4", "1");
 
-        CallHistoryRequestBean callHistoryRequestBean = new CallHistoryRequestBean("REQ", "MTALK", phoneNum, time, callHistoryBody, "", token, "1");
+        CallHistoryRequestBean callHistoryRequestBean = new CallHistoryRequestBean("REQ", "MTALK", phoneNum, time,
+                callHistoryBody, "", token, "1");
         Gson gson = new Gson();
         String s = gson.toJson(callHistoryRequestBean);
         Call<CallHistoryResultBean> callHistoryResult = allInterface.getCallHistoryResult(s);
         callHistoryResult.enqueue(new Callback<CallHistoryResultBean>() {
             @Override
             public void onResponse(final Call<CallHistoryResultBean> call, Response<CallHistoryResultBean> response) {
-                if (response != null) {
+                if (response.body().getCODE().equals("-10006")) {
+                    Log.i(TAG, "onResponse: message" + response.body().getCODE().equals("-10006"));
+                } else {
+
                     //给recyclerview设置adapter数据,展示list
                     mResponseCallHist = response;
                     Log.i(TAG, "HistoryFragment:onResponse+response: " + response.body().toString() + ":");
                     mLst = (ArrayList<CallHistoryResultBean.BODYBean.LSTBean>) response.body()
                             .getBODY().getLST();
+
                     //展示数据
                     /*
                     * 这个adapter不用,换成不带删除功能的adapter
@@ -149,7 +154,6 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             ToastUtil.showToast(getContext(), "position" + position);
-
                     });
                     * */
 
@@ -167,87 +171,13 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
                         }
                     });
 
-                    /**
-                     *从这往下是不带侧滑的listview
-                     */
+                    //删除 不带侧滑的listview 模块
 
-//                    //放玩具头像
-//                    final ArrayList<String> listImg = new ArrayList<String>();
-//                    for (int i = 0; i < lst.size() - 1; i++) {
-//                        String toyimg = lst.get(i).getTOYIMG();
-//                        listImg.add(toyimg);
-//                    }
-//                    Log.d("ddd", "onResponse: " + listImg);
-//                    //放玩具Id
-//                    ArrayList<String> listId = new ArrayList<String>();
-//                    for (int i = 0; i < lst.size() - 1; i++) {
-//                        String toyid = lst.get(i).getTOYID();
-//                        listId.add(toyid);
-//                    }
-//                    //放通话日期
-////                    ArrayList<String> listDura = new ArrayList<String>();
-////                    for (int i = 0; i < lst.size() - 1; i++) {
-////                        String begintime = lst.get(i).getBEGINTIME();
-////                        listDura.add(begintime);
-////                    }
-////                    Log.d("ddd", "onResponse: " + listDura);
-//
-//                    //放通话时长
-
-
-                    //展示数据
-//                    final RAdapter mRAdapter = new RAdapter(getContext(), R.layout.item_content, listImg, listId);
-//                    lv_fragment_history.setAdapter(mRAdapter);
-//                    lv_fragment_history.addHeaderView(mItem_history_header);
-//                    mItem_history_header.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//                            FragmentManager fragmentManager = getFragmentManager();
-//                            FragmentTransaction transaction = fragmentManager.beginTransaction();
-//                            transaction.replace(R.id.fl_fragmentcontainer, new VideoFragment());
-//                            transaction.commit();
-//                        }
-//                    });
-//                    lv_fragment_history.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//                        @Override
-//                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//
-//
-//                        }
-//                    });
-//                    lv_fragment_history.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-//                        @Override
-//                        public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-//                            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-//                            builder.setMessage("确认删除吗");
-//                            builder.setTitle("提示");
-//                            builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-//                                @Override
-//                                public void onClick(DialogInterface dialog, int which) {
-//                                    dialog.dismiss();
-//                                }
-//                            });
-//                            builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-//                                @Override
-//                                public void onClick(DialogInterface dialog, int which) {
-//                                    listImg.remove(position);
-//
-//                                    mRAdapter.notifyDataSetChanged();
-//                                    ToastUtil.showToast(getActivity(), "删除成功");
-//                                    dialog.dismiss();
-//
-//
-//                                }
-//                            });
-//                            builder.create().show();
-//                            return true;
-//                        }
-//                    });
-
-
-                } else {
-                    Log.d("ddd", "response: 为空");
                 }
+//                else{
+//                    Log.d("ddd", "response: 为空");
+//                    return;
+//                }
 
 
                 Log.i("hhhhhh", "onResponse:+response " + response.body().toString());

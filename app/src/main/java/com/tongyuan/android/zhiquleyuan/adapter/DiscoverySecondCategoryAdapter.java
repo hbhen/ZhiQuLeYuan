@@ -151,7 +151,7 @@ public class DiscoverySecondCategoryAdapter extends BaseAdapter {
         public void onClick(View v) {
             int position = (int) v.getTag();
             if (v.getId() == R.id.dis_sub_item_play) {
-                String mToken = SPUtils.getString(mContext, "TOKEN", "");
+                String mToken = SPUtils.getString(mContext, "token", "");
                 if ("".equals(mToken)) {
                     ToastUtil.showToast(mContext, R.string.user_no_login);
                     return;
@@ -200,7 +200,7 @@ public class DiscoverySecondCategoryAdapter extends BaseAdapter {
         final DeleteMyCollectionReqBean.BODYBean bodyBean = new DeleteMyCollectionReqBean.BODYBean(arraylist);
         DeleteMyCollectionReqBean deleteMyCollectionReqBean = new DeleteMyCollectionReqBean("REQ", "DFAVRES", SPUtils.getString(mContext,
                 "phoneNum", ""), new
-                SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()), bodyBean, "", SPUtils.getString(mContext, "TOKEN", ""), "1");
+                SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()), bodyBean, "", SPUtils.getString(mContext, "token", ""), "1");
         Gson gson = new Gson();
         String s = gson.toJson(deleteMyCollectionReqBean);
         Call<DeleteMyCollectionResBean> deleteMyCollectionResBeanCall = allInterface.DELETE_MYCOLLECTION_RES_BEAN_CALL(s);
@@ -231,7 +231,7 @@ public class DiscoverySecondCategoryAdapter extends BaseAdapter {
         arraylist.add(lstBean);
         AddInCollectionReqBean.BODYBean bodyBean = new AddInCollectionReqBean.BODYBean(arraylist);
         AddInCollectionReqBean addInCollectionReqBean = new AddInCollectionReqBean("REQ", "FAVRES", SPUtils.getString(mContext, "phoneNum", ""), new
-                SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()), bodyBean, "", SPUtils.getString(mContext, "TOKEN", ""), "1");
+                SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()), bodyBean, "", SPUtils.getString(mContext, "token", ""), "1");
         Gson gson = new Gson();
         String s = gson.toJson(addInCollectionReqBean);
         Call<AddInCollectionResBean> addInCollectionResBeanCall = allInterface.ADDINCOLLECTION_RES_BEAN_CALL(s);

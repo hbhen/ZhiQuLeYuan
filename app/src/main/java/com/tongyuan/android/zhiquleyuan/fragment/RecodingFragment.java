@@ -84,6 +84,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
+import java.util.TimerTask;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -94,10 +95,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static java.lang.System.currentTimeMillis;
-
 //import com.tongyuan.android.zhiquleyuan.adapter.RecordAdapter;
-
 
 /**
  * Created by android on 2016/12/3.
@@ -179,15 +177,22 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
     private ShareAction mShareAction;
     private UMShareListener mShareListener;
     private boolean isShowPlayingControl = false;
-
-
+    private int count = 0;
     private int currentState = RECORDING;
+
+    int second = 0;
+    int minute = 0;
+    private TimerTask mTimerTask;
+    private Timer mTimer;
+    private String mMinString = "00";
+    private String mSecString = "00";
 
     public RecodingFragment() {
 
     }
 
     private static final int UPDATE_PLAY_PROGRESS_SHOW = 1;
+    private static final int UPDATE_PLAY_TIME_SHOW = 2;
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -196,6 +201,9 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
                     //一收到msg消息就走更新播放进度的方法
                     updatePlayProgressShow();
                     break;
+                case UPDATE_PLAY_TIME_SHOW:
+                    mTextview_startrecording.setText(minute + ":" + second);
+
             }
         }
     };
@@ -203,7 +211,8 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle
+            savedInstanceState) {
         View recordingRoot = initView(inflater);
         mDbHelper = new DBHelper(getActivity());
         Log.i(TAG, "onCreateView: went");
@@ -279,6 +288,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
         mRecordingComplete = (RelativeLayout) mLv_recoding.findViewById(R.id.rl_fragment_recording_complete);
 
         mTextview_startrecording = (TextView) recordingRoot.findViewById(R.id.tv_startrecording);
+
         recordList = new ArrayList<File>();
         mMediaPlayer = new MediaPlayer();
 //        View mHeadview = inflater.inflate(R.layout.fragment_recoding_headerview, null);
@@ -312,15 +322,15 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
     }
 
     private void showBottomPanel() {
-        if(currentState == PLAYRECORDING) {
+        if (currentState == PLAYRECORDING) {
             mRecordingFrag.setVisibility(View.GONE);
             mCompleteFrag.setVisibility(View.GONE);
             mPlayRecordingFrag.setVisibility(View.VISIBLE);
-        } else if(currentState == RECORDING) {
+        } else if (currentState == RECORDING) {
             mRecordingFrag.setVisibility(View.VISIBLE);
             mCompleteFrag.setVisibility(View.GONE);
             mPlayRecordingFrag.setVisibility(View.GONE);
-        } else if(currentState == RRCORDINGCOMPLETE) {
+        } else if (currentState == RRCORDINGCOMPLETE) {
             //录音布局
             mRecordingFrag.setVisibility(View.GONE);
             //录音完成布局
@@ -354,7 +364,8 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
 //    QueryRecordingReqBean.BODYBean bodyBean=new QueryRecordingReqBean.BODYBean("","10","1");
 ////    QueryRecordingReqBean queryRecordingReqBean = new QueryRecordingReqBean(bodyBean);
 //    BaseRequest baseRequest = new BaseRequest(getContext(), bodyBean, "MYREC");
-//    Call<SuperModel<QueryRecordingResBean>> queryRecordingResBeanResult = RequestManager.getInstance().queryRecordingResBean(baseRequest);
+//    Call<SuperModel<QueryRecordingResBean>> queryRecordingResBeanResult = RequestManager.getInstance()
+// .queryRecordingResBean(baseRequest);
         queryRecordingList();
 
 
@@ -396,7 +407,8 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
                 }
 
                 mShareAction
-                        .withText(SPUtils.getString(getContext(), "address", ""))
+//                        .withText(SPUtils.getString(getContext(), "address", ""))
+                        .withText(mUrl)
                         .setDisplayList(SHARE_MEDIA.WEIXIN, SHARE_MEDIA.SMS)
                         .setPlatform(SHARE_MEDIA.WEIXIN).setCallback(mShareListener)
                         .open();
@@ -575,7 +587,6 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
         }
     }
 
-
     private void sendRecordingToToy(String toyid) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constant.baseurl)
@@ -584,16 +595,20 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
         AllInterface allInterface = retrofit.create(AllInterface.class);
         System.out.println("mtoyid" + toyid);
 
-        ControlToyPlayRecordingReqBean.ParamBean paramBean = new ControlToyPlayRecordingReqBean.ParamBean(toyid, "1", mRecordingId,
+        ControlToyPlayRecordingReqBean.ParamBean paramBean = new ControlToyPlayRecordingReqBean.ParamBean(toyid, "1",
+                mRecordingId,
                 "0");
-        ControlToyPlayRecordingReqBean controlToyPlayRecordingReqBean = new ControlToyPlayRecordingReqBean("control_play", paramBean, mToken);
+        ControlToyPlayRecordingReqBean controlToyPlayRecordingReqBean = new ControlToyPlayRecordingReqBean
+                ("control_play", paramBean, mToken);
         Gson gson = new Gson();
         String s = gson.toJson(controlToyPlayRecordingReqBean);
         System.out.println("ssssssss" + s);
-        Call<ControlToyPlayRecordingResBean> controlToyPlayRecordingResBeanCall = allInterface.CONTROL_TOY_PLAY_RECORDING_RES_BEAN_CALL(s);
+        Call<ControlToyPlayRecordingResBean> controlToyPlayRecordingResBeanCall = allInterface
+                .CONTROL_TOY_PLAY_RECORDING_RES_BEAN_CALL(s);
         controlToyPlayRecordingResBeanCall.enqueue(new Callback<ControlToyPlayRecordingResBean>() {
             @Override
-            public void onResponse(Call<ControlToyPlayRecordingResBean> call, Response<ControlToyPlayRecordingResBean> response) {
+            public void onResponse(Call<ControlToyPlayRecordingResBean> call,
+                                   Response<ControlToyPlayRecordingResBean> response) {
 
                 System.out.println(response.body().toString());
 
@@ -646,20 +661,25 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
-        ChangeRecordingNameReqBean.BODYBean bodyBean = new ChangeRecordingNameReqBean.BODYBean("RADIO", mRecordingId, editTrim);
+        ChangeRecordingNameReqBean.BODYBean bodyBean = new ChangeRecordingNameReqBean.BODYBean("RADIO", mRecordingId,
+                editTrim);
 
-        ChangeRecordingNameReqBean changeRecordingNameReqBean = new ChangeRecordingNameReqBean("REQ", "ARES", mPhoneNum, mTime, bodyBean, "",
+        ChangeRecordingNameReqBean changeRecordingNameReqBean = new ChangeRecordingNameReqBean("REQ", "ARES",
+                mPhoneNum, mTime, bodyBean, "",
                 mToken, "1");
 
 
         Gson gson = new Gson();
         String babyListJson = gson.toJson(changeRecordingNameReqBean);
-        Call<ChangeRecordingNameResBean> babyListResult = allInterface.CHANGE_RECORDING_NAME_RES_BEAN_CALL(babyListJson);
+        Call<ChangeRecordingNameResBean> babyListResult = allInterface.CHANGE_RECORDING_NAME_RES_BEAN_CALL
+                (babyListJson);
         babyListResult.enqueue(new Callback<ChangeRecordingNameResBean>() {
             @Override
-            public void onResponse(Call<ChangeRecordingNameResBean> call, Response<ChangeRecordingNameResBean> response) {
+            public void onResponse(Call<ChangeRecordingNameResBean> call, Response<ChangeRecordingNameResBean>
+                    response) {
 
-                Log.i("555555", "recordingfragment+(changerecordingnamebean)onResponse: " + response.body().getBODY().toString());
+                Log.i("555555", "recordingfragment+(changerecordingnamebean)onResponse: " + response.body().getBODY()
+                        .toString());
                 //改变完了以后去访问网络,刷新listview
                 queryRecordingList();
             }
@@ -680,7 +700,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
     }
 
     private void queryRecordingList() {
-        mToken = SPUtils.getString(getContext(), "TOKEN", "");
+        mToken = SPUtils.getString(getContext(), "token", "");
         mPhoneNum = SPUtils.getString(getContext(), "phoneNum", "");
         Date date = new Date();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
@@ -691,7 +711,8 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
         QueryRecordingReqBean.BODYBean bodyBean = new QueryRecordingReqBean.BODYBean("", "10", "1");
-        QueryRecordingReqBean queryRecordingReqBean = new QueryRecordingReqBean("REQ", "MYREC", mPhoneNum, mTime, bodyBean, "", mToken, "1");
+        QueryRecordingReqBean queryRecordingReqBean = new QueryRecordingReqBean("REQ", "MYREC", mPhoneNum, mTime,
+                bodyBean, "", mToken, "1");
 
         Gson gson = new Gson();
         String babyListJson = gson.toJson(queryRecordingReqBean);
@@ -732,7 +753,8 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
                             mSwipelistview.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
                             mSwipelistview.setItemChecked(position, true);
                             //展示的时候同时保存当前的选中的录音文件的播放地址.
-                            SPUtils.putString(getContext(), "address", response.body().getBODY().getLST().get(position).getID());
+                            SPUtils.putString(getContext(), "address", response.body().getBODY().getLST().get
+                                    (position).getID());
                             //1,点击item,显示录音播放界面
 //                            isShowRecordingControl = false;
                             //保存position
@@ -749,7 +771,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
                             mPlayRecordingDesc.setText(mPlayName);
                             mPlayendTime.setText(mDur);
 //                            //带着id 去服务器申请本地播放
-//                            getLocalPlayApply(mToken, mPhoneNum, mRecordingId, mTime);
+                            getLocalPlayApply(mToken, mPhoneNum, mRecordingId, mTime);
 
 //                            ToastUtil.showToast(getContext(), "点击的是:" + selectedPosition);
 
@@ -802,10 +824,12 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
         LocalPlayApplyReqBean.BODYBean bodyBean1 = new LocalPlayApplyReqBean.BODYBean(recordingId);
 
         BaseRequest baseRequest = new BaseRequest(getContext(), bodyBean1, "PLAY");
-        Call<SuperModel<LocalPlayApplyResBean>> localPlayApplyResBeanCall = RequestManager.getInstance().requestMusicDetail(baseRequest);
+        Call<SuperModel<LocalPlayApplyResBean>> localPlayApplyResBeanCall = RequestManager.getInstance()
+                .requestMusicDetail(baseRequest);
         localPlayApplyResBeanCall.enqueue(new Callback<SuperModel<LocalPlayApplyResBean>>() {
             @Override
-            public void onResponse(Call<SuperModel<LocalPlayApplyResBean>> call, Response<SuperModel<LocalPlayApplyResBean>> response) {
+            public void onResponse(Call<SuperModel<LocalPlayApplyResBean>> call,
+                                   Response<SuperModel<LocalPlayApplyResBean>> response) {
                 if (response.body().CODE.equals("-700")) {
                     ToastUtil.showToast(getContext(), "资源不存在");
                     return;
@@ -819,7 +843,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
 
             @Override
             public void onFailure(Call<SuperModel<LocalPlayApplyResBean>> call, Throwable t) {
-
+                Log.i(TAG, "onFailure: " + t);
             }
         });
 
@@ -843,6 +867,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
     }
 
     private void deleteRecording(String time, int position, List<QueryRecordingResBean.BODYBean.LSTBean> lst) {
+
         String recordingId = lst.get(position).getID();
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constant.baseurl)
@@ -850,15 +875,18 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
         DeleteRecordingReqBean.BODYBean bodyBean = new DeleteRecordingReqBean.BODYBean(recordingId);
-        DeleteRecordingReqBean deleteRecordingReqBean = new DeleteRecordingReqBean("REQ", "DRES", mPhoneNum, time, bodyBean, "", mToken, "1");
+        DeleteRecordingReqBean deleteRecordingReqBean = new DeleteRecordingReqBean("REQ", "DRES", mPhoneNum, time,
+                bodyBean, "", mToken, "1");
 
         Gson gson = new Gson();
         String babyListJson = gson.toJson(deleteRecordingReqBean);
         Call<DeleteRecordingResBean> babyListResult = allInterface.DELETE_RECORDING_RES_BEAN_CALL(babyListJson);
         babyListResult.enqueue(new Callback<DeleteRecordingResBean>() {
+
             @Override
             public void onResponse(Call<DeleteRecordingResBean> call, Response<DeleteRecordingResBean> response) {
-                Log.i("555555", "recordingfragment+(deleteRecording)onResponse: " + response.body().getBODY().toString());
+                Log.i("555555", "recordingfragment+(deleteRecording)onResponse: " + response.body().getBODY()
+                        .toString());
             }
 
             @Override
@@ -871,6 +899,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
     private void editRecordingFile() {
 
         mSwipelistview.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
+
     }
 
     private void moveToBottom() {
@@ -882,7 +911,8 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
 //        mControl.measure(w, h);
 //        float measuredHeight = mControl.getMeasuredHeight();
 //        float heightPixels = getResources().getDisplayMetrics().heightPixels;
-//        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mControl, "Y", heightPixels - measuredHeight, heightPixels);
+//        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mControl, "Y", heightPixels - measuredHeight,
+// heightPixels);
 //        objectAnimator.setDuration(300);
 //        objectAnimator.start();
 
@@ -898,6 +928,10 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
         if (isRecordingPlaying) {
             stopPlayRecord();
         }
+        if (second <= 3 && minute == 0) {
+            ToastUtil.showToast(getContext(), "最小录音时间是3秒");
+            return;
+        }
         //往服务器上存储一份
         saveRecrodingToServer();
         recordList.add(mFile);
@@ -908,7 +942,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
 
     private void saveRecrodingToServer() {
         String phoneNum = SPUtils.getString(getContext(), "phoneNum", "");
-        String token = SPUtils.getString(getContext(), "TOKEN", "");
+        String token = SPUtils.getString(getContext(), "token", "");
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constant.baseurl)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -920,7 +954,8 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
         String time = simpleDateFormat.format(date);
         String name = mFile.getName();
         AddRecordingReqBean.BODYBean bodyBean = new AddRecordingReqBean.BODYBean("RADIO", "", name);
-        AddRecordingReqBean addRecordingReqBean = new AddRecordingReqBean("REQ", "ARES", phoneNum, time, bodyBean, "", token, "1");
+        AddRecordingReqBean addRecordingReqBean = new AddRecordingReqBean("REQ", "ARES", phoneNum, time, bodyBean,
+                "", token, "1");
 
         String s = gson.toJson(addRecordingReqBean);
 
@@ -1006,12 +1041,14 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
     //开始动画
     private void startAnimation() {
         if (mRotateAnimation == null) {
-            mRotateAnimation = new RotateAnimation(0f, 360f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+            mRotateAnimation = new RotateAnimation(0f, 360f, Animation.RELATIVE_TO_SELF, 0.5f, Animation
+                    .RELATIVE_TO_SELF, 0.5f);
         }
         if (isStartedAnimation == false) {
 
             isStartedAnimation = true;
-            mRotateAnimation = new RotateAnimation(0f, 360f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+            mRotateAnimation = new RotateAnimation(0f, 360f, Animation.RELATIVE_TO_SELF, 0.5f, Animation
+                    .RELATIVE_TO_SELF, 0.5f);
             mRotateAnimation.setDuration(3000);
             mRotateAnimation.setRepeatCount(Animation.INFINITE);
             LinearInterpolator linearInterpolator = new LinearInterpolator();
@@ -1040,12 +1077,14 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
         if (isNotRecording) {
             mRecordingButton.setImageResource(R.drawable.play_stop_240);
             try {
-                long l1 = System.currentTimeMillis();
-
+//                long l1 = System.currentTimeMillis();
+                second = 0;
+                minute = 0;
+                mTextview_startrecording.setText("点击开始录音");
                 mMediaRecorder = new MediaRecorder();
                 mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-                mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
-                mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
+                mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_WB);
+                mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_WB);
 
                 String dir = Environment.getExternalStorageDirectory().getPath() + "/AAmart";
                 File file = new File(dir);
@@ -1059,8 +1098,8 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
                 mMediaRecorder.setOutputFile(mFile.getAbsolutePath());
                 mMediaRecorder.prepare();
                 mMediaRecorder.start();
-                long l2 = System.currentTimeMillis();
-                Log.i("55555", "startRecoding: " + (l2 - l1));
+//                long l2 = System.currentTimeMillis();
+//                Log.i("55555", "startRecoding: " + (l2 - l1));
                 startTimer();//时间计时
 
                 isNotRecording = !isNotRecording;
@@ -1069,25 +1108,37 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
                 e.printStackTrace();
             }
         } else {
-            long end = System.currentTimeMillis();
-            long durat = end - l;
-            Log.i("555555", "haha: " + durat);
+//            long end = System.currentTimeMillis();
+//            long durat = end - l;
+//            Log.i("555555", "haha: " + durat);
             //没有录音状态
             mRecordingButton.setImageResource(R.drawable.recording_pressed_240);
-            mMediaRecorder.stop();
-            mMediaRecorder.release();
-            mMediaRecorder = null;
-
+//            mMediaRecorder.stop();
+//            mMediaRecorder.release();
+//            mMediaRecorder = null;
             //点击结束以后,地下的录音界面应该消失,并且显示录音完成与界面
             mRecordingFrag.setVisibility(View.INVISIBLE);
+            mCompleteFrag.setVisibility(View.VISIBLE);
+            isNotRecording = !isNotRecording;
+            stopTimer();
 
             mRecordingDesc.setText(mFile.getName());
-            long length = mFile.length();
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm:ss");
-            Date date = new Date(durat);
-            String duration = simpleDateFormat.format(date);
-            mRecordingDuration.setText(duration);
-            mCompleteFrag.setVisibility(View.VISIBLE);
+            if (minute < 9) {
+                mMinString = "0" + minute;
+            } else {
+                mMinString = minute + "";
+            }
+            if (second < 9) {
+                mSecString = "0" + second;
+            } else {
+                mSecString = second + "";
+            }
+            mRecordingDuration.setText(mMinString + ":" + mSecString);
+            Log.i(TAG, "startRecoding: " + mMinString + ":" + mSecString);
+//            long length = mFile.length();
+//            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm:ss");
+//            Date date = new Date(durat);
+//            String duration = simpleDateFormat.format(date);
 
 //            mDbHelper.addRecording(mFile.getName(), mFile.getPath(), mFile.length());
 
@@ -1095,7 +1146,6 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
 
             //将文件展示到listview上面, 文件以list的形式保存起来
 
-            isNotRecording = !isNotRecording;
 //            ToastUtil.showToast(getActivity(), "结束录音");
 
         }
@@ -1104,9 +1154,36 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
     long l;
 
     private void startTimer() {
-        l = currentTimeMillis();
-        Timer timer = new Timer();
-        int MaxTime = 10 * 60;
+//        l = currentTimeMillis();
+//        Timer timer = new Timer();
+//        int MaxTime = 10 * 60;
+        if (mMediaRecorder != null) {
+            mTimerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    second++;
+                    if (second >= 60) {
+                        second = 0;
+                        minute++;
+                    }
+                    mHandler.sendEmptyMessage(UPDATE_PLAY_TIME_SHOW);
+                }
+            };
+            mTimer = new Timer();
+            mTimer.schedule(mTimerTask, 1000, 1000);
+//            Runnable runnable = new Runnable() {
+//                @Override
+//                public void run() {
+//                    if (count == 1800) {
+//                        mMediaRecorder.stop();
+//                    }
+//                    count++;
+//                    String str = showTimeCount((long) count);
+//                    mTextview_startrecording.setText(str);
+//                    mHandler.postDelayed(this, 1000);
+//                }
+//            };
+        }
 
 //        stopTimer();
 //        Timer timer = new Timer();
@@ -1115,13 +1192,37 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
 //            public void run() {
 //                updateTimer();
 //            }
-//
-//
 //        }, 0, 1000);
     }
 
     private void stopTimer() {
+        if (mMediaRecorder != null) {
+            mMediaRecorder.stop();
+            mMediaRecorder.release();
+            mMediaRecorder = null;
+            mTimer.cancel();
+            mTimerTask.cancel();
+            mTextview_startrecording.setText("点击开始录音");
+        }
+    }
 
+    public String getCurrentTime() {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+        Date date = new Date(System.currentTimeMillis());
+        String str = simpleDateFormat.format(date);
+        return str;
+    }
+
+    public String showTimeCount(long time) {
+        String s = null;
+        if (time < 59) {
+            s = "00";
+            return time < 10 ? s + "0" + String.valueOf(time) : s + String.valueOf(time);
+        } else {
+            return (time % 60 < 10 ? s + "0" + String.valueOf(time) : s + String.valueOf(time)) + ":" + (time / 60 <
+                    10 ? s + "0" + String.valueOf
+                    (time) : s + String.valueOf(time));
+        }
     }
 
     private void updateTimer() {
@@ -1337,7 +1438,6 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
         super.onConfigurationChanged(newConfig);
         mShareAction.close();
     }
-
 
 
     @Override

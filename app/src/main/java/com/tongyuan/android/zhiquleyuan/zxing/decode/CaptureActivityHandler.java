@@ -190,7 +190,7 @@ public final class CaptureActivityHandler extends Handler {
     }
 
     private void callToToy(String thirdId) {
-        final String token = SPUtils.getString(activity, "TOKEN", "");
+        final String token = SPUtils.getString(activity, "token", "");
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Constant.baseurl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();

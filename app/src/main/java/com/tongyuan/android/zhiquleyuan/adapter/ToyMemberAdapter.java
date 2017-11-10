@@ -82,7 +82,7 @@ public class ToyMemberAdapter extends BaseAdapter {
         toyId = mResponse.getID();
         ownerUserId = mResponse.getOWNERID();
         code = mResponse.getCODE();
-        token = SPUtils.getString(mContext, "TOKEN", "");
+        token = SPUtils.getString(mContext, "token", "");
         phoneNum = SPUtils.getString(mContext, "phoneNum", "");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         time = simpleDateFormat.format(new Date());
@@ -340,7 +340,7 @@ public class ToyMemberAdapter extends BaseAdapter {
     };
 
     private void deleteMember(String toyId, String id, final int position) {
-        final Retrofit retrofit = new Retrofit.Builder().baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
+        final Retrofit retrofit = new Retrofit.Builder().baseUrl(Constant.baseurl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         final AllInterface allInterface = retrofit.create(AllInterface.class);

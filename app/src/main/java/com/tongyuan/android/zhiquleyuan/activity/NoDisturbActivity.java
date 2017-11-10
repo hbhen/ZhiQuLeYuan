@@ -112,7 +112,7 @@ public class NoDisturbActivity extends AppCompatActivity implements View.OnClick
 
 
     private void initData() {
-        mToken = SPUtils.getString(this, "TOKEN", "");
+        mToken = SPUtils.getString(this, "token", "");
         long currentTime = System.currentTimeMillis();
         long day = 24 * 60 * 60 * 1000;
         long lastYear = currentTime - day * 360;
@@ -131,7 +131,7 @@ public class NoDisturbActivity extends AppCompatActivity implements View.OnClick
         AllInterface allInterface = retrofit.create(AllInterface.class);
         NodisturbTimeReqBean.BODYBean bodyBean = new NodisturbTimeReqBean.BODYBean(ToySelectorFragment.mToyId, "10", "1");
         NodisturbTimeReqBean nodisturbTimeReqBean = new NodisturbTimeReqBean("REQ", "QTOYSP", SPUtils.getString(this, "phoneNum", ""), new
-                SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()), bodyBean, "", SPUtils.getString(this, "TOKEN", ""), "1");
+                SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()), bodyBean, "", SPUtils.getString(this, "token", ""), "1");
         Gson gson = new Gson();
         String s = gson.toJson(nodisturbTimeReqBean);
         Call<NodisturbTimeResBean> nodisturbTimeResBeanCall = allInterface.NODISTURB_TIME_RES_BEAN_CALL(s);

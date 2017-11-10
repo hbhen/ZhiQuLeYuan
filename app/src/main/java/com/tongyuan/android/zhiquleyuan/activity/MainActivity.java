@@ -32,6 +32,7 @@ import com.tongyuan.android.zhiquleyuan.fragment.ToySelectorFragment;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.interf.QueryToyInterface;
+import com.tongyuan.android.zhiquleyuan.service.CheckTokenService;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.StatusBarUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
@@ -79,6 +80,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private Stack<Fragment> fragmentStack = new Stack<>();
     private static final String TAG1 = "88888";
     UMShareListener mUMShareListener;
+//    private boolean isFirstInstall = true;
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -90,24 +92,24 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
-        checkToken();
         StatusBarUtils.setStatusBarLightMode(this, getResources().getColor(R.color.main_top_bg));
 
         CrashReport.initCrashReport(getApplicationContext(), "4d4412e3f1", true);
         Config.DEBUG = true;
         QueuedWork.isUseThreadPool = false;
         UMShareAPI.get(this);
-//        PlatformConfig.setWeixin("wx0d4463dd363141ea", "7d90d5ff4e4ecdc4f64f73af6b9bcc52");
+//        SPUtils.putString(this, "installation", "1");//第一次安装
+//        if (SPUtils.getString(this, "installation", "").equals("1")) {
+//            SPUtils.putString(this, "installation", "2");
+//            startActivityForResult(new Intent(this, ActivityLogin.class), 79);
+//        }
+        checkToken();
         PlatformConfig.setWeixin("wx0d4463dd363141ea", "c6d8ce330df02acdbdce34226ecff193");
 
-//        PlatformConfig.setWeixin("wx0d4463dd363141ea", "5b3ab6c855f847dc7a91a172634d694b");
         initView();
         initData();
-
         if (savedInstanceState == null) {
-
             initFragment();
-
         }
 
         rb_discovery.setSelected(true);
@@ -117,8 +119,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         rb_history.setOnClickListener(this);
         rb_mine.setOnClickListener(this);
         Log.i(TAG1, "mainactivity : onCreate went");
-
-        //请求网络,获得我的录音的文件数据,拿到里面,请求网络数据,需要准备
 
     }
 
@@ -153,14 +153,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void checkToken() {
-        String token = SPUtils.getString(this, "TOKEN", "");
-        getServiceToken(token);
-        if (token == null) {
-            //发送广播,通知,各个控件
-            return;
-        } else {
-            //token不为空,从服务器查询token,两次的token是否一致,一致就显示一种界面,不一致就显示未登录的界面
-        }
+        Intent intent = new Intent();
+        intent.setClass(this, CheckTokenService.class);
+        startService(intent);
+        Log.i(TAG, "checkToken: startservice +走了");
+//        String token = SPUtils.getString(this, "token", "");
+//        getServiceToken(token);
+//        if (token == null) {
+//            //发送广播,通知,各个控件
+//            return;
+//        } else {
+//            //token不为空,从服务器查询token,两次的token是否一致,一致就显示一种界面,不一致就显示未登录的界面
+//        }
     }
 
     private void getServiceToken(String token) {
@@ -170,7 +174,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
         PhoneHeartReqBean.BODYBean bodyBean = new PhoneHeartReqBean.BODYBean("A", "APP", "1.0", "", "", "", "", "", "");
-        PhoneHeartReqBean phoneHeartReqBean = new PhoneHeartReqBean("REQ", "HEART", "", new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()),
+        PhoneHeartReqBean phoneHeartReqBean = new PhoneHeartReqBean("REQ", "HEART", "", new SimpleDateFormat
+                ("yyyyMMddHHmmssSSS").format(new Date()),
                 bodyBean, "", token, "1");
         Gson gson = new Gson();
         String s = gson.toJson(phoneHeartReqBean);
@@ -181,7 +186,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             public void onResponse(Call<PhoneHeartResBean> call, Response<PhoneHeartResBean> response) {
                 if (response.body().getCODE().equals("-10006")) {
                     ToastUtil.showToast(getApplicationContext(), response.body().getMSG());
-                    SPUtils.putString(getApplicationContext(), "TOKEN", "");
+                    SPUtils.putString(getApplicationContext(), "token", "");
                 }
             }
 
@@ -194,8 +199,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void initData() {
+
         mCurrentTime = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
-        mMainToken = SPUtils.getString(this, "TOKEN", "");
+        mMainToken = SPUtils.getString(this, "token", "");
         mMainphoneNum = SPUtils.getString(this, "phoneNum", "");
         mList = new ArrayList<QueryToyResultBean.BODYBean.LSTBean>();
 
@@ -203,10 +209,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     protected void onNewIntent(Intent intent) {
+
         super.onNewIntent(intent);
+
     }
 
     private void initView() {
+
         rb_discovery = (LinearLayout) findViewById(R.id.rb_discovery);
         rb_recoding = (LinearLayout) findViewById(R.id.rb_recoding);
         rb_toy = (ImageView) findViewById(R.id.rb_toy);
@@ -216,6 +225,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void showFragment(Fragment f, String name) {
+
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         /*List<Fragment> fragmentList = fragmentManager.getFragments();
@@ -247,11 +257,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             } else if (name.equals(ToyAddFragment.class.getSimpleName())) {
                 //transaction.addToBackStack(null);
                 fragmentStack.push(f);
+            } else if (name.equals(MineFragment.class.getSimpleName())) {
+                fragmentStack.push(f);
             }
         }
 
         //transaction.commit();
         transaction.commitAllowingStateLoss();
+
     }
 
     private Fragment currentFragment;
@@ -370,6 +383,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         fragmentStack.clear();
         switch (view.getId()) {
             case R.id.rb_discovery:
+
                 rb_discovery.setSelected(true);
                 rb_recoding.setSelected(false);
                 rb_history.setSelected(false);
@@ -379,6 +393,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
                 break;
             case R.id.rb_recoding:
+
+                mMainToken = SPUtils.getString(this, "token", "");
+                if ("".equals(mMainToken)) {
+                    startActivityForResult(new Intent(this, ActivityLogin.class), 78);
+                    return;
+
+                }
                 rb_discovery.setSelected(false);
                 rb_recoding.setSelected(true);
                 rb_history.setSelected(false);
@@ -393,7 +414,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 break;
 
             case R.id.rb_history:
-                mMainToken = SPUtils.getString(this, "TOKEN", "");
+                mMainToken = SPUtils.getString(this, "token", "");
                 if ("".equals(mMainToken)) {
                     startActivityForResult(new Intent(this, ActivityLogin.class), 78);
                     return;
@@ -401,6 +422,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 showHistoryFragment();
                 break;
             case R.id.rb_mine:
+                mMainToken = SPUtils.getString(this, "token", "");
+                if ("".equals(mMainToken)) {
+                    startActivityForResult(new Intent(this, ActivityLogin.class), 78);
+                    return;
+                }
                 rb_mine.setSelected(true);
                 rb_discovery.setSelected(false);
                 rb_recoding.setSelected(false);
@@ -418,7 +444,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 rb_recoding.setSelected(false);
                 rb_history.setSelected(false);
                 rb_mine.setSelected(false);
-                mMainToken = SPUtils.getString(this, "TOKEN", "");
+                mMainToken = SPUtils.getString(this, "token", "");
                 if ("".equals(mMainToken)) {
                     chargeHasLogin();
                     return;
@@ -460,7 +486,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         //获取手机的心跳接口,获取最新的token,比较token,如果为空,去登录页,如果不相同 , 也去登录页面.
         //应该先判断是否登录,再判断是否有玩具
 
-        mMainToken = SPUtils.getString(this, "TOKEN", "");
+        mMainToken = SPUtils.getString(this, "token", "");
 
         //看是否有玩具,有玩具就去selector页面,无玩具,就去玩具添加页面
 
@@ -483,12 +509,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
 //        if (mList == null || mList.size() == 0) {
         Retrofit retrofit1 = new Retrofit.Builder()
-                .baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
+                .baseUrl(Constant.baseurl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         QueryToyInterface queryToyInterface = retrofit1.create(QueryToyInterface.class);
         QueryToyRequestBean.BODYBean queryToyRequestBody = new QueryToyRequestBean.BODYBean("0", "", "", "-1", "1");
-        QueryToyRequestBean queryToyRequestBean = new QueryToyRequestBean("REQ", "QRYTOYS", mMainphoneNum, mCurrentTime, queryToyRequestBody, "",
+        QueryToyRequestBean queryToyRequestBean = new QueryToyRequestBean("REQ", "QRYTOYS", mMainphoneNum,
+                mCurrentTime, queryToyRequestBody, "",
                 token, "1");
         Gson mainGson = new Gson();
         String queryToyjson = mainGson.toJson(queryToyRequestBean);
@@ -545,10 +572,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             showHistoryFragment();
             return;
         } else if (resultCode == 90) {
-
-            if(toyAddFragment != null)
+            if (toyAddFragment != null)
                 toyAddFragment.onActivityResult(requestCode, resultCode, data);
-
+        } else if (requestCode == 79) {
+            showFragment(DiscoveryFragment.class.getSimpleName());
+        } else if (requestCode == 80) {
+            showFragment(MineFragment.class.getSimpleName());
         }
         UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
     }

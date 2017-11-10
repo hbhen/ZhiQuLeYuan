@@ -95,7 +95,7 @@ public class UnBindBabyActivity extends AppCompatActivity implements View.OnClic
         mToyId = bundle.getString("toyid");
 
         mPhoneNum = SPUtils.getString(this, "phoneNum", "");
-        mToken = SPUtils.getString(this, "TOKEN", "");
+        mToken = SPUtils.getString(this, "token", "");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         mTime = simpleDateFormat.format(new Date());
         //3.4.24 通过玩具id拿到当前用户的宝宝列表
@@ -148,7 +148,7 @@ public class UnBindBabyActivity extends AppCompatActivity implements View.OnClic
 
     private void unBindBabyToToy(String babyID) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
+                .baseUrl(Constant.baseurl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);

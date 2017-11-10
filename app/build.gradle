@@ -2,14 +2,14 @@ apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
 
 android {
-//    signingConfigs {
-//        release {
-//            keyAlias 'zqly'
-//            keyPassword 'zqly1210'
-//            storeFile file('C:/Users/Android/Desktop/finalkey.jks')
-//            storePassword 'zqly1210'
-//        }
-//    }
+    signingConfigs {
+        release {
+            keyAlias 'zqly'
+            keyPassword 'zqly1210'
+            storeFile file('C:/Users/Android/Desktop/finalkey.jks')
+            storePassword 'zqly1210'
+        }
+    }
 
     compileSdkVersion 25
     buildToolsVersion '25.0.2'
@@ -85,4 +85,6 @@ dependencies {
     compile 'com.umeng.analytics:analytics:latest.integration'
     compile files('libs/SocialSDK_WeChat_Simplify.jar')
     compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.22'
+    //下载的框架 liulishuo
+    compile 'com.liulishuo.filedownloader:library:1.6.8'
 }

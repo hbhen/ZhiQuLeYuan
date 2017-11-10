@@ -27,6 +27,7 @@ import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.bean.BabyInfoRequestBean;
 import com.tongyuan.android.zhiquleyuan.bean.BabyInfoResultBean;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
+import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 import com.tongyuan.android.zhiquleyuan.utils.Utils;
@@ -180,7 +181,7 @@ public class MyBabyActivity extends AppCompatActivity {
 //        String formatdate = si.format(date1);
 //        Log.i("111", "confirmInfo: "+formatdate);
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
+                .baseUrl(Constant.baseurl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
@@ -338,9 +339,9 @@ public class MyBabyActivity extends AppCompatActivity {
     //用retrofit上传头像
     private void uploadPic(File file) {
         String phoneNum = SPUtils.getString(this, "phoneNum", "");
-        String babyToken = SPUtils.getString(this, "TOKEN", "");
+        String babyToken = SPUtils.getString(this, "token", "");
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
+                .baseUrl(Constant.baseurl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);

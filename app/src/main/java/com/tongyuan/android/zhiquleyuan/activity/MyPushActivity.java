@@ -86,7 +86,7 @@ public class MyPushActivity extends AppCompatActivity implements View.OnClickLis
         QueryBabyListResult babyinfo = intent.getParcelableExtra("babyinfo");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         String time = simpleDateFormat.format(new Date());
-        mToken = SPUtils.getString(this, "TOKEN", "");
+        mToken = SPUtils.getString(this, "token", "");
         mPhoneNum = SPUtils.getString(this, "phoneNum", "");
         getMyPushData(time, mToken, mPhoneNum);
     }
@@ -107,7 +107,7 @@ public class MyPushActivity extends AppCompatActivity implements View.OnClickLis
     private void getMyPushData(String time, final String token, final String phoneNum) {
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
+                .baseUrl(Constant.baseurl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

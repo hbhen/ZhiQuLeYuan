@@ -26,7 +26,7 @@ public class HttpUtils {
 
     public static void HttpConnection(final Context context, JSONObject obj, final Handler handler, String url, int TAG) {
         try {
-            obj.put("TOKEN","");
+            obj.put("token","");
         } catch (JSONException e) {
             e.printStackTrace();
         }

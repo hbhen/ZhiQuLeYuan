@@ -22,6 +22,7 @@ import com.tongyuan.android.zhiquleyuan.bean.BindBabyToToyRes;
 import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListRequest;
 import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListResult;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
+import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
@@ -106,7 +107,7 @@ public class BindBabyActivity extends AppCompatActivity implements View.OnClickL
         mToyId = bundle.getString("toyid");
 
         mPhoneNum = SPUtils.getString(this, "phoneNum", "");
-        mToken = SPUtils.getString(this, "TOKEN", "");
+        mToken = SPUtils.getString(this, "token", "");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         mTime = simpleDateFormat.format(new Date());
         //3.4.44 通过用户id拿到当前用户的宝宝列表
@@ -116,7 +117,7 @@ public class BindBabyActivity extends AppCompatActivity implements View.OnClickL
 
     private void getBabyList() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
+                .baseUrl(Constant.baseurl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
@@ -163,7 +164,7 @@ public class BindBabyActivity extends AppCompatActivity implements View.OnClickL
 
     private void bindBabyToToy(String babyID) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
+                .baseUrl(Constant.baseurl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);

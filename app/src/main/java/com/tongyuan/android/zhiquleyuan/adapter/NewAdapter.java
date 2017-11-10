@@ -111,7 +111,7 @@ public class NewAdapter extends BaseQuickAdapter<NodisturbTimeResBean.BODYBean.L
         list.add(lstBean);
         SetNodisturbTimeReqBean.BODYBean bodyBean = new SetNodisturbTimeReqBean.BODYBean(list);
         SetNodisturbTimeReqBean setNodisturbTimeReqBean = new SetNodisturbTimeReqBean("REQ", "TOYSP", "", new SimpleDateFormat("yyyyMMddHHmmssSSS")
-                .format(new Date()), bodyBean, "", SPUtils.getString(mContext, "TOKEN", ""), NoDisturbActivity.pstate);
+                .format(new Date()), bodyBean, "", SPUtils.getString(mContext, "token", ""), NoDisturbActivity.pstate);
         Gson gson = new Gson();
         String s = gson.toJson(setNodisturbTimeReqBean);
         Call<SetNodisturbTimeResBean> setNodisturbTimeResBeanCall = allInterface.SET_NODISTURB_TIME_RES_BEAN_CALL(s);

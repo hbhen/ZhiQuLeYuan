@@ -19,6 +19,7 @@ import com.tongyuan.android.zhiquleyuan.bean.LocalPlayApplyResBean;
 import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoREQBean;
 import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoRESBean;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
+import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.request.base.BaseRequest;
 import com.tongyuan.android.zhiquleyuan.request.base.SuperModel;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
@@ -28,7 +29,6 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- *
  * Created by zgg on 2017/6/4.
  */
 
@@ -44,7 +44,8 @@ public class RequestManager {
                 .setDateFormat("yyyy-MM-dd hh:mm:ss")
                 .create();
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
+//                .baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
+                .baseUrl(Constant.baseurl)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
         serves = retrofit.create(AllInterface.class);
@@ -52,7 +53,7 @@ public class RequestManager {
     }
 
     public static RequestManager getInstance() {
-        if(instance == null)
+        if (instance == null)
             instance = new RequestManager();
         return instance;
     }
@@ -71,7 +72,7 @@ public class RequestManager {
     /**
      * 请求音乐详情页
      */
-    public  Call<SuperModel<LocalPlayApplyResBean>> requestMusicDetail(BaseRequest params) {
+    public Call<SuperModel<LocalPlayApplyResBean>> requestMusicDetail(BaseRequest params) {
         String json = mGson.toJson(params);
         return serves.LOCAL_PLAY_APPLY_RES_BEAN_CALL(json);
     }
@@ -106,7 +107,8 @@ public class RequestManager {
     /**
      * 删除普通玩具
      */
-    public Call<SuperModel<DeleteToyFromNormalUserResBean.BODYBean>> deleteSeletedNormalToy(Context context, DeleteToyFromNormalUserReqBean.BODYBean params) {
+    public Call<SuperModel<DeleteToyFromNormalUserResBean.BODYBean>> deleteSeletedNormalToy(Context context, DeleteToyFromNormalUserReqBean
+            .BODYBean params) {
         BaseRequest request = new BaseRequest<>(context, params, "DATOY");
         String json = mGson.toJson(request);
         return serves.DELETE_TOY_FROM_NORMAL_USER_RES_BEAN_CALL(json);
@@ -116,9 +118,9 @@ public class RequestManager {
      * 向玩具端发送指令，播放
      */
     public Call<ControlToyPlayMusicResBean> ToyPlayCommand(Context context, ControlToyPlayMusicReqBean.ParamBean paramBean) {
-        String mToken = SPUtils.getString(context, "TOKEN", "");
+        String mToken = SPUtils.getString(context, "token", "");
         ControlToyPlayMusicReqBean control_play = new ControlToyPlayMusicReqBean("control_play", paramBean, mToken);
-        Gson gson=new Gson();
+        Gson gson = new Gson();
         String json = gson.toJson(control_play);
         return serves.CONTROL_TOY_PLAY_MUSIC_RES_BEAN_CALL(json);
     }

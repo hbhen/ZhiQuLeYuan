@@ -30,7 +30,7 @@ public class BaseRequest<T> {
         TIME  = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
         BODY  = body;
         VERI  = "";
-        TOKEN = SPUtils.getString(context, "TOKEN", "");
+        TOKEN = SPUtils.getString(context, "token", "");
         SEQ   = "1";
     }
 

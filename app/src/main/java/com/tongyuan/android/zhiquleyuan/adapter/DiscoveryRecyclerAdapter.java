@@ -56,7 +56,7 @@ public class DiscoveryRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         inflate = LayoutInflater.from(mContext);
         int width = (screenWidth - 4 * (int) context.getResources().getDimension(R.dimen.discovery_grid_space)) / 3;
         height = 86 * width / 112;
-        mToken = SPUtils.getString(mContext, "TOKEN", "");
+        mToken = SPUtils.getString(mContext, "token", "");
     }
 
 
@@ -279,7 +279,7 @@ public class DiscoveryRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
     }
 
     public boolean isLogin() {
-        mToken = SPUtils.getString(mContext, "TOKEN", "");
+        mToken = SPUtils.getString(mContext, "token", "");
         return (!"".equals(mToken));
     }
 

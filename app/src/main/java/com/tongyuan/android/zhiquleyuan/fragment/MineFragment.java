@@ -32,6 +32,8 @@ import com.tongyuan.android.zhiquleyuan.activity.SetUserInfoActivity;
 import com.tongyuan.android.zhiquleyuan.base.BaseFragment;
 import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListRequest;
 import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListResult;
+import com.tongyuan.android.zhiquleyuan.bean.QuerySingleUserInfoReQBean;
+import com.tongyuan.android.zhiquleyuan.bean.QuerySingleUserInfoReSBean;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
@@ -84,12 +86,12 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle
+            savedInstanceState) {
 
         mIntent = new Intent();
 
         View mineRoot = inflater.inflate(R.layout.fragment_mine, null);
-
 
         return mineRoot;
 
@@ -128,7 +130,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
         mMyLogout = (LinearLayout) getActivity().findViewById(R.id.ll_fragment_mine_logout);
         initData();
         Log.i("tag", "onCreateView: went");
-        showDifferentLoginInfo();
+//        showDifferentLoginInfo();
 
         mPic.setOnClickListener(this);
         myBaby.setOnClickListener(this);
@@ -145,12 +147,50 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void initData() {
-        mToken = SPUtils.getString(getContext(), "TOKEN", "");
+        //还是应该有一个网络请求,获取用户的信息
+        mToken = SPUtils.getString(getContext(), "token", "");
         mPhoneNum = SPUtils.getString(getContext(), "phoneNum", "");
+        getUserInfo();
         mUsername = SPUtils.getString(getContext(), "username", "");
         mUserimg = SPUtils.getString(getContext(), "userimg", "");
         Log.i(TAG, "initData: mUsername " + mUsername);
         Log.i(TAG, "initData: mUserimg " + mUserimg);
+    }
+
+    private void getUserInfo() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constant.baseurl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        AllInterface allinterface = retrofit.create(AllInterface.class);
+        QuerySingleUserInfoReQBean.BODYBean bodybean = new QuerySingleUserInfoReQBean.BODYBean(mPhoneNum);
+        QuerySingleUserInfoReQBean querysinglebean = new QuerySingleUserInfoReQBean("RES", "QRYUSER", mPhoneNum, new
+                SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()), bodybean, "", mToken, "1");
+        Gson gson = new Gson();
+        String s = gson.toJson(querysinglebean);
+        Call<QuerySingleUserInfoReSBean> querySingleUserInfoResult = allinterface.getQuerySingleUserInfoResult(s);
+        querySingleUserInfoResult.enqueue(new Callback<QuerySingleUserInfoReSBean>() {
+            @Override
+            public void onResponse(Call<QuerySingleUserInfoReSBean> call, Response<QuerySingleUserInfoReSBean>
+                    response) {
+                if (response == null) {
+                    ToastUtil.showToast(mContext, "数据请求为空");
+                    return;
+                } else {
+                    String birthday = response.body().getBODY().getBIRTHDAY();
+                    String img = response.body().getBODY().getIMG();
+                    String name = response.body().getBODY().getNAME();
+                    String nick = response.body().getBODY().getNICK();
+                    String sex = response.body().getBODY().getSEX();
+                    showDifferentLoginInfo();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<QuerySingleUserInfoReSBean> call, Throwable t) {
+                ToastUtil.showToast(mContext, t.toString());
+            }
+        });
 
     }
 
@@ -158,7 +198,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
 //        Log.i(TAG, "minefragment:onResume: token" + mToken);
-        mToken = SPUtils.getString(getActivity(), "TOKEN", "");//重新赋值mToken
+        mToken = SPUtils.getString(getActivity(), "token", "");//重新赋值mToken
         showDifferentLoginInfo();
     }
 
@@ -174,22 +214,32 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
         switch (id) {
             case R.id.rl_fragment_mine_clicklogin:
                 Log.i(TAG, "onClick: mToken undelelte1" + mToken);
-                mToken = SPUtils.getString(getActivity(), "TOKEN", "");
+                mToken = SPUtils.getString(getActivity(), "token", "");
                 Log.i(TAG, "onClick: mToken undelelte2" + mToken);
                 if (mToken.equals("")) {
+                    //进入登录页面
                     mIntent.setClass(getActivity(), ActivityLogin.class);
                     getActivity().startActivityForResult(mIntent, MINELOGIN);
                     ToastUtil.showToast(getActivity(), "进入登录信息页面");
                 } else {
+                    /*
+                    *  mToken = SPUtils.getString(getContext(), "token", "");
+        mPhoneNum = SPUtils.getString(getContext(), "phoneNum", "");
+        mUsername = SPUtils.getString(getContext(), "username", "");
+        mUserimg = SPUtils.getString(getContext(), "userimg", "");
+                    * */
+                    //进入用户设置页面
                     mIntent.setClass(getContext(), SetUserInfoActivity.class);
                     startActivity(mIntent);
                     ToastUtil.showToast(getActivity(), "进入设置用户信息页面");
                 }
                 break;
             case R.id.ll_fragment_mine_baby:
+                Log.i(TAG, "onClick: minefragment" + mToken + "------" + SPUtils.getString(getContext(), "token", ""));
                 if (!mToken.equals("")) {
                     getListInfo();
                 } else {
+                    Log.i(TAG, "onClick: minefragment走没有??");
                     ToastUtil.showToast(getActivity(), "您当前没有登录");
                 }
 
@@ -233,6 +283,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                 break;
             case R.id.ll_fragment_mine_about:
                 mIntent.setClass(getActivity(), AboutActivity.class);
+//                mIntent.setClass(getActivity(), ToyUpdateActivity.class);
                 startActivity(mIntent);
                 break;
             case R.id.ll_fragment_mine_logout:
@@ -249,11 +300,11 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                 builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-//                        SPUtils.remove(getActivity(), "TOKEN");
-                        SPUtils.putString(getActivity(), "TOKEN", "");
-                        mToken = SPUtils.getString(getActivity(), "TOKEN", "");
+//                        SPUtils.remove(getActivity(), "token");
+                        SPUtils.putString(getActivity(), "token", "");
+                        mToken = SPUtils.getString(getActivity(), "token", "");
                         Log.i(TAG, "onClick: mToken delelte" + mToken);
-//                        Log.i(TAG, "onClick: token" + SPUtils.getString(getActivity(), "TOKEN", ""));
+//                        Log.i(TAG, "onClick: token" + SPUtils.getString(getActivity(), "token", ""));
                         mMineTitle.setText("点击登录");
                         Glide.with(getActivity()).load(R.drawable.player_cover_default).asBitmap().into(mPic);
                         mTv_fragment_mine_desc.setText("登录后设置用户的信息");
@@ -289,6 +340,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                 .baseUrl(Constant.baseurl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
+
         //TODO 用户退出登录的接口  未完成2017/07/09 15:57
 
     }
@@ -298,12 +350,13 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         String time = simpleDateFormat.format(date);
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
+                .baseUrl(Constant.baseurl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
         QueryBabyListRequest.BODYBean queryBabyListBody = new QueryBabyListRequest.BODYBean("10", "1");
-        QueryBabyListRequest queryBabyListRequest = new QueryBabyListRequest("REQ", "QMYB", mPhoneNum, time, queryBabyListBody, "", mToken, "1");
+        QueryBabyListRequest queryBabyListRequest = new QueryBabyListRequest("REQ", "QMYB", mPhoneNum, time,
+                queryBabyListBody, "", mToken, "1");
         Gson gson = new Gson();
         String babyListJson = gson.toJson(queryBabyListRequest);
         Call<QueryBabyListResult> babyListResult = allInterface.getBabyListResult(babyListJson);
@@ -325,8 +378,8 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                     }
                 } else {
                     ToastUtil.showToast(getActivity(), response.body().getMSG());
+                    Log.i(TAG, "onResponse: minefragment" + response.body().getMSG());
                 }
-
             }
 
             @Override
@@ -342,9 +395,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
             Bundle bundle = data.getExtras();
             mUsername = bundle.getString("username");
             mUserimg = bundle.getString("userimg");
-//
 //            Log.i("444444", "minefragment:onActivityResult: " + mUsername);
-//
 //            Log.i("444444", "minefragment:onActivityResult: " + mUserimg);
             mMineTitle.setText(mUsername);
             Glide.with(getContext()).load(mUserimg).asBitmap().into(mPic);
@@ -357,17 +408,17 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
         super.onResume();
 //        SPUtils.getString(getActivity(),"username","");
 //        SPUtils.getString(getActivity(),"userimg","");
-        mToken = SPUtils.getString(getActivity(), "TOKEN", "");//重新赋值mToken
+        mToken = SPUtils.getString(getActivity(), "token", "");//重新赋值mToken
 
         Log.i(TAG, "minefragment:onResume: token" + mToken);
 
         showDifferentLoginInfo();
         Log.i("tag", "onResume: went");
+
     }
 
     public void showDifferentLoginInfo() {
-        //再重新赋值一次就行了呀,以前还想那么多!!思路跟不上!总是想着mToken是全局变量,就不用赋值了,真是傻!!!!!
-        mToken = SPUtils.getString(getActivity(), "TOKEN", "");
+        mToken = SPUtils.getString(getActivity(), "token", "");
         Log.i(TAG, "onClick: mToken delelte3" + mToken);
         if (!mToken.equals("")) {
             mUsername = SPUtils.getString(getActivity(), "username", "");//这个拿到的值是用户的id
@@ -378,7 +429,6 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
             if (mUsername.equals("")) {
                 mMineTitle.setText("设置用户名");
             } else {
-
                 mMineTitle.setText(mUsername);
             }
             mTv_fragment_mine_desc.setText(mPhoneNum);

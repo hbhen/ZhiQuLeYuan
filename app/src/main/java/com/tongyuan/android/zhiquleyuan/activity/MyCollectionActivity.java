@@ -107,7 +107,7 @@ public class MyCollectionActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void getMyCollection(String text) {
-        final String token = SPUtils.getString(this, "TOKEN", "");
+        final String token = SPUtils.getString(this, "token", "");
         final String phoneNum = SPUtils.getString(this, "phoneNum", "");
         Date date = new Date();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");

@@ -10,39 +10,47 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
+import com.tongyuan.android.zhiquleyuan.bean.GetSmsCodeReqBean;
+import com.tongyuan.android.zhiquleyuan.bean.GetSmsCodeResBean;
+import com.tongyuan.android.zhiquleyuan.bean.GetSmsCodeValueReqBean;
+import com.tongyuan.android.zhiquleyuan.bean.GetSmsCodeValueResBean;
 import com.tongyuan.android.zhiquleyuan.bean.QuerySingleUserInfoReQBean;
 import com.tongyuan.android.zhiquleyuan.bean.QuerySingleUserInfoReSBean;
-import com.tongyuan.android.zhiquleyuan.http.Config;
+import com.tongyuan.android.zhiquleyuan.bean.RegistAndLoginReqBean;
+import com.tongyuan.android.zhiquleyuan.bean.RegistAndLoginResBean;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
+import com.tongyuan.android.zhiquleyuan.interf.Constant;
+import com.tongyuan.android.zhiquleyuan.utils.CountDownTimersUtils;
 import com.tongyuan.android.zhiquleyuan.utils.SDCardUtils;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
-import com.zhy.http.okhttp.OkHttpUtils;
-import com.zhy.http.okhttp.callback.StringCallback;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.tongyuan.android.zhiquleyuan.utils.VersionCodeAndVersionNameUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import okhttp3.Call;
+import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+//import com.zhy.http.okhttp.callback.StringCallback;
+
+//import com.zhy.http.okhttp.OkHttpUtils;
 
 
 /**
  * Created by android on 2016/12/25.
  */
 
-
 public class ActivityLogin extends AppCompatActivity implements View.OnClickListener {
+    private static final String TAG = "444444";
     public static final int LOGINOK = 5011;
     public static final int SAVETOKEN = 5012;
     //界面控件
@@ -51,45 +59,64 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
     private Button bt_login;
     private TextView tv_text_login;
     private ImageView iv_login;
-    //private String mPhoneNum;
-    private String time = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
-    private String mPhoneNum;
-    //    public int LOGINSUCCESS = 7;
+    private String mPhoneNum = null;
     private String mPhoneNumSave;
     public static String mTokenSave;
-    private static final String TAG = "444444";
     private ImageView mIv_back;
-
+    CountDownTimersUtils mCountDownTimerUtils;
+    private RadioButton mBt_userAgreement;
+    private TextView mTv_userAgreement;
+    private boolean isRbChecked = false;
+    private String mIdx;
+    private String mSmsCode;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         initView();
-
-
     }
-
 
     private void initView() {
         mIv_back = (ImageView) findViewById(R.id.iv_back_login);
         iv_login = (ImageView) findViewById(R.id.iv_login);
-
         et_login_phone = (EditText) findViewById(R.id.et_login_phone);
-
         et_login_smscode = (EditText) findViewById(R.id.et_login_smscode);
-
         bt_login = (Button) findViewById(R.id.bt_login);
-
+        mBt_userAgreement = (RadioButton) findViewById(R.id.rb_activity_login);
+        mTv_userAgreement = (TextView) findViewById(R.id.tv_activity_login_textviewclick);
         tv_text_login = (TextView) findViewById(R.id.tv_text_login);
-
+        mCountDownTimerUtils = new CountDownTimersUtils(tv_text_login, 60000, 1000);
         iv_login.setOnClickListener(this);
         et_login_smscode.setOnClickListener(this);
         bt_login.setOnClickListener(this);
         tv_text_login.setOnClickListener(this);
         et_login_phone.setOnClickListener(this);
         mIv_back.setOnClickListener(this);
+        mTv_userAgreement.setOnClickListener(this);
+        //控制确认登录键是否可点击
+        mBt_userAgreement.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isRbChecked) {
 
+                    mBt_userAgreement.setChecked(false);
+                    isRbChecked = false;
+                    Log.i(TAG, "onCheckedChanged: isChecked1" + isRbChecked);
+                    bt_login.setClickable(false);
+                    Log.i(TAG, "onClick1: " + bt_login.isClickable());
+                } else {
+
+                    mBt_userAgreement.setChecked(true);
+                    isRbChecked = true;
+                    Log.i(TAG, "onCheckedChanged: isChecked2" + isRbChecked);
+                    bt_login.setClickable(true);
+                    Log.i(TAG, "onClick2: " + bt_login.isClickable());
+
+
+                }
+            }
+        });
     }
 
     @Override
@@ -100,274 +127,189 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
                 break;
             case R.id.iv_login:
                 break;
-            case R.id.et_login_phone:
+            case R.id.et_login_phone://输入手机号
                 break;
-
-            /*
-            * 获取验证码
-            * 1,获得用户输入的手机号(判断手机号为空否?1,为空,给提示;2不为空,则判断是否是手机号3正确就保存,获取验证码的时候去取
-            * 2,去服务器获得短信申请码(拿手机号去)
-            * 3,从服务器拿到返回的短信验证码的申请码(code),再拿着手机号和申请码去申请短信验证码,拿到返回的token,保存token,便于以后登录
-            * 4,以后进入app,在需要登录的时候,判断token是否正确,如果正确就返回就进入正常应用,如果不正确就接着弹出登录窗口登录
-            *
-            * */
-            case R.id.tv_text_login:
+            case R.id.tv_text_login://获取验证码按钮
                 //1,获取phone号码
                 mPhoneNum = et_login_phone.getText().toString().trim();
-
                 //2,获取短信验证码
-                getSmsCode(mPhoneNum);
-                //Log.i("M1-smscode", "smsCode:---------- " + smsCodedata);
-                // requestResourseID();
-                break;
+                //在这里只获取验证码,不能让他去获取token,在确认登录的时候再获取token,
+                //1,对手机号进行判断
+                //1.1 手机号是否为空
+                if (TextUtils.isEmpty(mPhoneNum)) {
+                    ToastUtil.showToast(this, "空,请输入手机号,");
 
-            case R.id.et_login_smscode:
+                } else {
+                    Log.d(TAG, "getSmsCode: " + isPhoneNum(mPhoneNum));
+                    if (!isPhoneNum(mPhoneNum)) {
+                        ToastUtil.showToast(this, "当前输入的手机号有误,请重新输入..");
+                    } else {
+                        //2获取短信验证申请码
+                        mCountDownTimerUtils.start();
+                        getSmsCode(mPhoneNum);
+                    }
+                }
+
 
                 break;
-            case R.id.bt_login:
+            case R.id.et_login_smscode://输入验证码
+
+                break;
+            case R.id.bt_login://确认登录
                 String smsCode = et_login_smscode.getText().toString();
+                String phone = et_login_phone.getText().toString();
                 Log.i(TAG, "onClick: 验证码.........." + smsCode);
-                String token = SPUtils.getString(this, "TOKEN", "");
+                String token = SPUtils.getString(this, "token", "");
                 Log.i("110011", "onClick: --!!" + token);
-                confirmLogin();
+                if (!isRbChecked) {
+                    ToastUtil.showToast(this, "请阅读并同意<<童缘科技服务协议>>");
+                    return;
+                }
+                if (!isPhoneNum(phone)) {
+                    ToastUtil.showToast(this, "请检查手机号");
+                    return;
+                }
+                if (smsCode.equals("")) {
+                    ToastUtil.showToast(this, "验证码不能为空");
+                    return;
+                }
+                getToken();
                 break;
+            case R.id.tv_activity_login_textviewclick://用户协议
+                Intent intent = new Intent();
+                intent.setClass(this, UserAgreementActivity.class);
+                startActivity(intent);
             default:
                 break;
         }
     }
 
-
-    private void getSmsCode(String phoneNum) {
-        //1,对手机号进行判断
-        //1.1 手机号是否为空
-        if (TextUtils.isEmpty(phoneNum)) {
-            ToastUtil.showToast(this, "空,请输入手机号,");
-
-        } else {
-            //1.1.1 判断是不是手机号phoneNum.length() != 11 &&
-            Log.d(TAG, "getSmsCode: " + isPhoneNum(phoneNum));
-            if (isPhoneNum(phoneNum) == false) {
-                ToastUtil.showToast(this, "当前输入的手机号有误,请重新输入..");
-            } else {
-                //2获取短信验证申请码
-                getSmsCodeApply(phoneNum);
+    private void getSmsCode(final String phoneNum) {
+        //用retrofit
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constant.baseurl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        AllInterface allInterface = retrofit.create(AllInterface.class);
+        GetSmsCodeReqBean.BODYBean bodyBean = new GetSmsCodeReqBean.BODYBean(phoneNum);
+        GetSmsCodeReqBean getSmsCodeReqBean = new GetSmsCodeReqBean("REQ", "SMSA", "", new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date())
+                , bodyBean, "", "", "1");
+        Gson gson = new Gson();
+        String s = gson.toJson(getSmsCodeReqBean);
+        retrofit2.Call<GetSmsCodeResBean> getSmsCodeResBeanCall = allInterface.GET_SMSCODE_RES_BEAN_CALL(s);
+        getSmsCodeResBeanCall.enqueue(new Callback<GetSmsCodeResBean>() {
+            @Override
+            public void onResponse(retrofit2.Call<GetSmsCodeResBean> call, Response<GetSmsCodeResBean> response) {
+                String tmp = response.body().getBODY().getTmp();
+                getSmsCodeValue(phoneNum, tmp);
+                Log.i(TAG, "response-------" + response);
             }
-        }
+
+            @Override
+            public void onFailure(retrofit2.Call<GetSmsCodeResBean> call, Throwable t) {
+
+            }
+        });
+
+
     }
 
-    private void getSmsCodeApply(final String phoneNum) {
-        //上传手机号,去服务器获取smscode,上传的内容是json对象
-        final String smsCodeApplyUrl = Config.smsCodeUrl;
-
-        JSONObject jsonObject = new JSONObject();
-        JSONObject bodyPhoneObject = new JSONObject();
-        try {
-
-            jsonObject.put("TYPE", "RES");
-            jsonObject.put("CMD", "SMSA");
-            jsonObject.put("ACCT", phoneNum);
-            jsonObject.put("TIME", time);
-            //这里的body后面又有一个大括号,所以还需要一个对象
-            jsonObject.put("BODY", bodyPhoneObject);
-            bodyPhoneObject.put("PHONE", phoneNum);
-            jsonObject.put("VERI", "");
-            jsonObject.put("TOKEN", "");
-            jsonObject.put("SEQ", "1");
-//          String s = String.valueOf(jsonObject);
-            String jsonPhoneString = jsonObject.toString();
-            //Log.i(TAG, "s是------" + jsonPhoneString);
-            OkHttpUtils.get().url(smsCodeApplyUrl)
-                    .addParams("params", jsonPhoneString)
-                    .build()
-                    .execute(new StringCallback() {
-                        @Override
-                        public void onError(Call call, Exception e, int id) {
-//                            ToastUtil.showToast(getApplicationContext(), "大天才输了");
-
-                        }
-
-                        @Override
-                        public void onResponse(String response, int id) {
-
-                            try {
-                                JSONObject jsonObject1 = new JSONObject(response);
-//                                Log.i(TAG, "jsonObject1------: "+jsonObject1);
-                                JSONObject jsonObject2 = jsonObject1.getJSONObject("BODY");
-                                String tmp = jsonObject2.getString("tmp");
-                                getSmsCodeValue(phoneNum, tmp, smsCodeApplyUrl);
-//                                Log.i(TAG, "tmp------" + jsonObject2.getString("tmp"));
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                            //Log.i(TAG, "s1------" + s1);
-                            Log.i(TAG, "response-------" + response);
-//                            ToastUtil.showToast(getApplicationContext(), "大天才赢了!" + response);
-                        }
-                    });
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void getSmsCodeValue(final String phoneNum, String tmp, String url) {
+    private void getSmsCodeValue(final String phoneNum, String tmp) {
         Log.i(TAG, "tmp------" + tmp);
-        JSONObject jsonObject = new JSONObject();
-        JSONObject bodySmsObject = new JSONObject();
-        try {
-            jsonObject.put("TYPE", "REQ");
-            jsonObject.put("CMD", "SMS");
-            jsonObject.put("ACCT", phoneNum);
-            jsonObject.put("TIME", time);
-            jsonObject.put("BODY", bodySmsObject);
-            bodySmsObject.put("CODETYPE", "REG");
-            bodySmsObject.put("PHONENO", phoneNum);
-            JSONObject agreeno = bodySmsObject.put("AGREENO", tmp);
-            String str = agreeno.toString();
-            Log.i(TAG, "str------ " + str);
-            bodySmsObject.put("test", "1");
-            jsonObject.put("VERI", "");
-            jsonObject.put("TOKEN", "");
-            jsonObject.put("SEQ", "1");
-            /*
-            * 这一步是为了拿着我的电话号码,上一个借口返回的agreeno的值(测试的时候用的是tmp的值)
-            * 我们要带着上面两个参数,以及另外两个参数  CODETYPE,test 去访问下一个借口,然后获得我们需要的数据(具体还是看接口返回的什么数据
-            * 以及下个借口需要的什么样的数据我们要往服务器传递的数据!)
-            * 没错 !我就是这么啰嗦!!
-            * */
-            String jsonSmsString = jsonObject.toString();
-            OkHttpUtils.get()
-                    .url(url)
-                    .addParams("params", jsonSmsString)
-                    .build()
-                    .execute(new StringCallback() {
-                        @Override
-                        public void onError(Call call, Exception e, int id) {
-//                            ToastUtil.showToast(getApplicationContext(), "我又失败了 ,请不要怪我");
-                            Log.i("444444", "onError: " + e.toString());
-                        }
 
-                        @Override
-                        public void onResponse(String response, int id) {
-                            /*
-                            * 好吧 ,我又成功的拿到数据了,恩!!!这次我是真的拿到了smscode,现在我要把smscode取出来了
-                            * 还是用返回的json数据里面一层一层的拿,直到拿到我的response;
-                            * */
-                            Log.i(TAG, "onResponse: _________" + response);
-                            //ToastUtil.showToast(getApplicationContext(), "我又成功了,请打印response____" + response);
-                            try {
-                                JSONObject responseThird = new JSONObject(response);
-                                JSONObject bodyBody = responseThird.getJSONObject("BODY");
-                                Log.i(TAG, "onResponse: ----" + bodyBody);
-                                String smsCode = bodyBody.getString("smscode");
-//                                Log.i("M1-mS3", "onResponse: _________mS3" + mS3 + "shuju" + bodyBody.getString("smscode"));
-                                String idx = bodyBody.getString("IDX");
-                                //拿到smscode以后,做相应的逻辑 把他的显示在验证码
-                                //把smscode显示出来,有两个做法:1,通过通知,让用户自己输入 2,直接把验证码传到smscode的输入框,暂时先用第2个方法
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constant.baseurl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        AllInterface allInterface = retrofit.create(AllInterface.class);
+        //test 为1时,是不发送信息给手机 正式环境不用1,用""代替
+//        GetSmsCodeValueReqBean.BODYBean bodyBean = new GetSmsCodeValueReqBean.BODYBean("REG", phoneNum, tmp, "");
+        GetSmsCodeValueReqBean.BODYBean bodyBean = new GetSmsCodeValueReqBean.BODYBean("REG", phoneNum, tmp, "1");
+        GetSmsCodeValueReqBean getSmsCodeValueReqBean = new GetSmsCodeValueReqBean("REQ", "SMS", "", new SimpleDateFormat("yyyyMMddHHmmssSSS")
+                .format(new Date()), bodyBean, "", "", "1");
+        Gson gson = new Gson();
+        String s = gson.toJson(getSmsCodeValueReqBean);
+        retrofit2.Call<GetSmsCodeValueResBean> getSmsCodeValueResBeanCall = allInterface.GET_SMSCODEVALUE_RES_BEAN_CALL(s);
+        getSmsCodeValueResBeanCall.enqueue(new Callback<GetSmsCodeValueResBean>() {
+            @Override
+            public void onResponse(retrofit2.Call<GetSmsCodeValueResBean> call, Response<GetSmsCodeValueResBean> response) {
+                Log.i(TAG, "onResponse: _________" + response);
+                Log.i(TAG, "onResponse: ----" + response.body());
+                mIdx = response.body().getBODY().getIDX();
+                mSmsCode = response.body().getBODY().getSmscode();
+                /*
+                * 现在这里还是用直接填的方式,正式的时候,两种方式
+                * 1,让用户看短息,并填写
+                * 2,直接获取用户的短信,自动填充到smscode的位置
+                * 选第一个
+                * */
+                //TODO 别忘了删,正式上线的时候
+                et_login_smscode.setText(mSmsCode);
+                //点击了获取验证码以后,再删除验证码,点击"确认登录"仍然能登录的原因就错在这了 ,不应该在这里
+//                getToken(smsCode, idx, phoneNum);
 
-                                et_login_smscode.setText(smsCode);
-                                Log.i("444444", "onResponse: " + bodyBody);
-                                getToken(response, phoneNum);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
+            }
 
-//            ToastUtil.showToast(this, "GameOver!!!!!");
-//            Log.i(TAG, "onResponse: _________mS3" + mS3 + "---返回给上面的ms3");
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-
-        }
-
+            @Override
+            public void onFailure(retrofit2.Call<GetSmsCodeValueResBean> call, Throwable t) {
+                Log.i(TAG, "onFailure: " + t);
+            }
+        });
 
     }
 
-    private void getToken(String response, final String phoneNum) {
-        String registerUrl = Config.register;
-        try {
-            JSONObject responseThird = new JSONObject(response);
-            JSONObject bodyBody = responseThird.getJSONObject("BODY");
-            String smscode = bodyBody.getString("smscode");
-            String idx = bodyBody.getString("IDX");
-            final JSONObject responseObject = new JSONObject();
-            JSONObject bodyObject = new JSONObject();
-            responseObject.put("TYPE", "REQ");
-            responseObject.put("CMD", "REG");
-            responseObject.put("ACCT", phoneNum);
-            responseObject.put("TIME", time);
-            responseObject.put("BODY", bodyObject);
-            bodyObject.put("PHONE", phoneNum);
-            bodyObject.put("SMSCODE", smscode);
-            Log.i(TAG, "smscode:----- " + smscode);
-            bodyObject.put("IDX", idx);
-            bodyObject.put("DEVCODE", "");
-            bodyObject.put("OS", "A");
-            //TODO 现在这个version是写死的,最后记得,这个是要从服务器获取的,获取当前的最新版本
-            bodyObject.put("VERSION", "1.0");
-            responseObject.put("VERI", "");
-            responseObject.put("TOKEN", "");
-            responseObject.put("SEQ", "1");
-            String responseString = responseObject.toString();
-            OkHttpUtils.get()
-                    .url(registerUrl)
-                    .addParams("params", responseString)
-                    .build().execute(new StringCallback() {
-                @Override
-                public void onError(Call call, Exception e, int id) {
-                    e.printStackTrace();
-                    ToastUtil.showToast(getApplicationContext(), "token获取失败,请检查网络");
-                }
+    private void getToken() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constant.baseurl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        AllInterface allInterface = retrofit.create(AllInterface.class);
+        RegistAndLoginReqBean.BODYBean bodyBean = new RegistAndLoginReqBean.BODYBean(mPhoneNum, mSmsCode, mIdx, "", "A",
+                VersionCodeAndVersionNameUtils.getLocalVersionName(this));
+        RegistAndLoginReqBean registAndLoginReqBean = new RegistAndLoginReqBean("REQ", "REG", "", new SimpleDateFormat("yyyyMMddHHmmssSSS").format
+                (new Date()), bodyBean, "", "", "1");
+        Gson gson = new Gson();
+        String s = gson.toJson(registAndLoginReqBean);
+        retrofit2.Call<RegistAndLoginResBean> registAndLoginResBeanCall = allInterface.REGIST_AND_LOGIN_RES_BEAN_CALL(s);
+        registAndLoginResBeanCall.enqueue(new Callback<RegistAndLoginResBean>() {
+            @Override
+            public void onResponse(retrofit2.Call<RegistAndLoginResBean> call, Response<RegistAndLoginResBean> response) {
+                Log.i(TAG, "onResponse: ------" + response);
+                Log.i("444444", "response" + response);
+                String token = response.body().getTOKEN();
+                String id = response.body().getBODY().getID();
+                String phone = response.body().getBODY().getPHONE();
+                mPhoneNum = phone;
+                Log.i(TAG, "userId" + id);
+                Log.i(TAG, "token: " + token);
+                Log.i(TAG, "phone: " + phone);
+                Log.i(TAG, "phoneNum: " + mPhoneNum);
 
-                @Override
-                public void onResponse(String response, int id) {
-                    Log.i(TAG, "onResponse: ------" + response);
-//                    ToastUtil.showToast(getApplicationContext(), "response" + response);
-                    Log.i("11223344", "response" + response);
-                    //response里面有token,取出这个token以后保存,以后每次进入app都先判断一下,判断是不是又token,然后判断token对不对
-                    //不需要每次都让用户输入手机号,登录,获取验证码,体验不好
-                    try {
-                        JSONObject responseObject3 = new JSONObject(response);
-                        JSONObject body = responseObject3.getJSONObject("BODY");
-                        String userId = body.getString("ID");
-//                        String userId = responseObject3.getString("ID");
-                        Log.i("444444", "userId" + userId);
+                saveToken(token, phone, id);
 
-                        String token = responseObject3.getString("TOKEN");
-//                        SPUtils.putString(getApplicationContext(),"TOKEN",token);
-                        Log.i("444444", "token: " + token);
+            }
 
-                        //保存token到本地
-//                        saveToken(token, phoneNum, userId);
-                        saveToken(token, phoneNum, userId);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        Log.i("444444", "onResponse: +error" + e.toString());
-                    }
-
-                }
-            });
-        } catch (JSONException e) {
-            e.printStackTrace();
-            Log.i("444444", "error:gettoken+" + e.toString());
-        }
+            @Override
+            public void onFailure(Call<RegistAndLoginResBean> call, Throwable t) {
+                Log.i(TAG, "onFailure: " + t);
+            }
+        });
     }
 
     private void saveToken(String token, String phoneNum, String id) {
-        boolean sdCardEnable = SDCardUtils.isSDCardEnable();
-        if (sdCardEnable == true) {
+        if (SDCardUtils.isSDCardEnable()) {
             SPUtils.putString(this, "phoneNum", phoneNum);
-            SPUtils.putString(this, "TOKEN", token);
+            SPUtils.putString(this, "token", token);
             SPUtils.putString(this, "ID", id);
-
-        } else if (!sdCardEnable) {
+        } else {
             ToastUtil.showToast(this, "sd卡不可用,请检查后重试");
-            Log.i(TAG, "sdcard -------" + sdCardEnable);
+            Log.i(TAG, "sdcard状态:" + SDCardUtils.isSDCardEnable());
         }
         mPhoneNumSave = SPUtils.getString(this, "phoneNum", "");
-        mTokenSave = SPUtils.getString(this, "TOKEN", "");
+        mTokenSave = SPUtils.getString(this, "token", "");
 
+        Log.i(TAG, "phoneNumSave: " + mPhoneNumSave);
+        Log.i(TAG, "tokenSave: " + mTokenSave);
 
         Intent intent = new Intent();
         Bundle bundle = new Bundle();
@@ -375,12 +317,9 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
         intent.putExtras(bundle);
 
         setResult(LOGINOK, intent);
-//        setResult(REQUEST_CODE_LOGIN, intent);
 
-        Log.i(TAG, "phoneNum1: " + mPhoneNumSave);
-        Log.i(TAG, "token1: " + mTokenSave);
+        confirmLogin();
     }
-
 
     private boolean isPhoneNum(String phoneNum) {
         String telRegex = "[1][3578]\\d{9}";
@@ -388,27 +327,21 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
     }
 
     private void confirmLogin() {
-
-//        String loginToken = SPUtils.getString(this, "TOKEN", "");
-//        Log.i("444444", "logintoken: " + loginToken);
         String phoneNum = SPUtils.getString(this, "phoneNum", "");
-        if (!mTokenSave.isEmpty()) {
+        if (!mTokenSave.equals("")) {
+            Log.i(TAG, "confirmLogin: 登录成功");
             ToastUtil.showToast(this, "登录成功");
-
-//            LOGIN_SUCCESS = 01;//登录成功的值
-
-            //token不为空,在点击确认登录的时候去查询user信息
             QueryUserInfo(phoneNum, mTokenSave);
-
         } else {
             ToastUtil.showToast(this, "登录失败");
         }
     }
 
+    //查询当前登录的用户信息
     private void QueryUserInfo(String phoneNum, String mTokenSave) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         String format = simpleDateFormat.format(new Date());
-        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(Constant.baseurl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
@@ -418,24 +351,24 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
         Gson gson = new Gson();
         String params = gson.toJson(querySingleUserInfoReQBean);
         retrofit2.Call<QuerySingleUserInfoReSBean> querySingleUserInfoResult = allInterface.getQuerySingleUserInfoResult(params);
+
         querySingleUserInfoResult.enqueue(new Callback<QuerySingleUserInfoReSBean>() {
+
             @Override
             public void onResponse(retrofit2.Call<QuerySingleUserInfoReSBean> call, Response<QuerySingleUserInfoReSBean> response) {
                 if (response.body().getCODE().equals("0")) {
                     String name = response.body().getBODY().getNAME();
                     String img = response.body().getBODY().getIMG();
-
-                    //Log.i(TAG, "activitylogin:onResponse: userinfo" + response.body().toString());
-                    //Log.i(TAG, "activitylogin:onResponse: userinfo" + name);
-                    //Log.i(TAG, "activitylogin:onResponse: userinfo" + img);
+                    String ID = response.body().getBODY().getID();
 
                     SPUtils.putString(getApplicationContext(), "username", name);
                     SPUtils.putString(getApplicationContext(), "userimg", img);
-                    SPUtils.putString(getApplicationContext(), "toyID", response.body().getBODY().getID());
+                    SPUtils.putString(getApplicationContext(), "userID", response.body().getBODY().getID());
+
                     String username = SPUtils.getString(getApplicationContext(), "username", "");
                     String userimg = SPUtils.getString(getApplicationContext(), "userimg", "");
-                    String toyID = SPUtils.getString(getApplicationContext(), "toyID", "");
-                    Log.i(TAG, "onResponse: " + "username" + username + "userimg" + userimg + "toyID" + toyID);
+                    String userID = SPUtils.getString(getApplicationContext(), "userID", "");
+                    Log.i(TAG, "onResponse: " + "username" + username + "userimg" + userimg + "userID" + userID);
 
                     Intent data = new Intent();
                     Bundle bundle = new Bundle();

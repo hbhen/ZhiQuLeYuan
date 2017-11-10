@@ -46,7 +46,6 @@ public class DiscoverySecondCategoryActivity extends AppCompatActivity implement
     //    @BindView(R.id.iv_album_details_one)
 //    ImageView coverImageView;
     private View footerView;
-
     private DiscoverySecondCategoryAdapter adapter;
     private String token;
     private String colid;
@@ -98,7 +97,7 @@ public class DiscoverySecondCategoryActivity extends AppCompatActivity implement
         colid = intent.getStringExtra("colid");
         Uri parse = Uri.parse(img);
 //        Glide.with(this).load(parse).asBitmap().into(coverImageView);
-        token = SPUtils.getString(this, "TOKEN", "");
+        token = SPUtils.getString(this, "token", "");
         getIdColSecondaryInfo(colid, false);
     }
 

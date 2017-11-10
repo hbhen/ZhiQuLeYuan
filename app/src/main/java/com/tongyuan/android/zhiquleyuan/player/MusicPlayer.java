@@ -52,6 +52,7 @@ public class MusicPlayer {
     }
 
     public static void unBindFromService(final ServiceToken token) {
+        //TODO token 是应该为空还是""??
         if (token == null) {
             return;
         }

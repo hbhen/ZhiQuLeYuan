@@ -1,5 +1,4 @@
 //package com.example.meetingsdkdemo;
-//
 //import android.Manifest;
 //import android.app.Activity;
 //import android.content.Context;
@@ -349,8 +348,6 @@
 ////        if(!_serverMix && hasAudio)
 ////            Session.getInstance().playAudio(peerId);
 //    }
-//
-//
 //    /**
 //     * 用户退出会议
 //     */
@@ -367,9 +364,7 @@
 ////            if(_fragment_meeting != null && _fragment_meeting._buttonWatch != null)
 ////                _fragment_meeting._buttonWatch.setText(R.string.main_watch_video);
 ////        }
-//
 //    }
-//
 //    /**
 //     * 有与会者User属性发生变化
 //     * peerID:变化user的id
@@ -515,7 +510,7 @@
 //    public void onWhitePadPageCount(int arg0) {
 //        // TODO Auto-generated method stub
 //
-//    }
+// 
 //
 //}
 package com.example.meetingsdkdemo;

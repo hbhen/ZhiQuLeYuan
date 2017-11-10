@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.hardware.Camera;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
@@ -46,6 +47,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
 
 public class VideoActivity extends AppCompatActivity implements View.OnClickListener, SessionInterface {
 
@@ -115,12 +117,11 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle arguments) {
         super.onCreate(arguments);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_videocall);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        setContentView(R.layout.activity_videocall);
         MeetingUserMgr meetingUserMgr = new MeetingUserMgr();
 
         //TODO  进来的时候还要获取一个玩具的初始音量 现在不加了
-
 
         mMy_video = (VideoView) findViewById(R.id.surfaceView5);
 // 其他的视频不显示了
@@ -165,8 +166,8 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
         mRoomid = intent.getStringExtra("roomid");
         mToken = intent.getStringExtra("token");
         mToyid = intent.getStringExtra("toyId");
-        if (mBabyimgString==null){
-            ToastUtil.showToast(this,"二维码错误");
+        if (mBabyimgString == null) {
+            ToastUtil.showToast(this, "二维码错误");
             return;
         }
         if (mBabyimgString.equals("")) {
@@ -293,29 +294,28 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
 
         switch (v.getId()) {
             case R.id.iv_fragment_videocall_stopcall:
-
-//                Session.getInstance().LeaveMeeting();
-//                showFragment(ToyDetailsFragment.class.getSimpleName());
-
                 Stop();
                 StopCallServer();
                 finish();
-                ToastUtil.showToast(this, "取消");
                 break;
             case R.id.iv_fragment_videocall_novideo:
-                ToastUtil.showToast(this, "不看视频");
 //                Session.getInstance().unplayVideo(_watchingPeerID, 0);
                 //Session.getInstance().unwatchOtherVideo(_watchingPeerID,0);
 
-                Session.getInstance().PlayVideo(_myPeerID, false, mMy_video, 0, 0, 1, 1, 0, false, 1, 0);
+//                Session.getInstance().PlayVideo(_myPeerID, false, mMy_video, 0, 0, 1, 1, 0, false, 1, 0);
 
-//                if (isShowVideo) {
-//                    isShowVideo = !isShowVideo;
-//                    //不显示
-////                    mMy_video.setBackgroundResource(R.drawable.videobackground_3x);
-//                } else {
-//                    isShowVideo = !isShowVideo;
-//                }
+                if (isShowVideo) {
+                    isShowVideo = !isShowVideo;
+                    ToastUtil.showToast(this, "不看视频");
+                    mMy_video.setBackgroundResource(R.drawable.videobackground_3x);
+                } else {
+                    isShowVideo = !isShowVideo;
+                    ToastUtil.showToast(this, "看视频");
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        mMy_video.setBackground(null);
+                    }
+                    Session.getInstance().PlayVideo(_watchingPeerID, false, mMy_video, 0, 0, 1, 1, 0, false, 1, 0);
+                }
 
                 break;
             //不显示小的视频窗口了,也不让他有点击切换的事件了
@@ -639,7 +639,7 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
 
     private void StopCallServer() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
+                .baseUrl(Constant.baseurl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);

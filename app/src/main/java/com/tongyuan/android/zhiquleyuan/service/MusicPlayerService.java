@@ -16,12 +16,12 @@ import com.tongyuan.android.zhiquleyuan.player.MusicAidlStub;
  */
 
 public class MusicPlayerService extends Service {
-    private static MusicAidlStub musicAidlStub ;
+    private static MusicAidlStub musicAidlStub;
     //private NotificationManager mNotificationManager;
     public static final int CODE_prepared = 1;
-    public static final int CODE_error    = 2;
+    public static final int CODE_error = 2;
     public static final int CODE_complete = 3;
-    public static final int CODE_playing  = 4;
+    public static final int CODE_playing = 4;
 
     @Override
     public void onCreate() {
@@ -32,7 +32,7 @@ public class MusicPlayerService extends Service {
     }
 
     public void sendBroadCastToReceiver(int code) {
-        Intent intent =null;
+        Intent intent = null;
         switch (code) {
             case CODE_prepared:
                 intent = new Intent(BaseActivity.PLAYER_PREPARED);
@@ -50,13 +50,13 @@ public class MusicPlayerService extends Service {
         sendBroadcast(intent);
     }
 
-    public static void launchService(Context mContext , String musicId) {
+    public static void launchService(Context mContext, String musicId) {
         Intent it = new Intent(mContext, MusicPlayerService.class);
         it.putExtra("musicId", musicId);
         mContext.startService(it);
     }
 
-    public static void stopService(Context mContext , boolean isStop) {
+    public static void stopService(Context mContext, boolean isStop) {
         Intent it = new Intent(mContext, MusicPlayerService.class);
         it.putExtra("isStop", isStop);
         mContext.startService(it);
@@ -77,13 +77,13 @@ public class MusicPlayerService extends Service {
             return super.onStartCommand(intent, flags, startId);
         String musicId = intent.getStringExtra("musicId");
         boolean isStop = intent.getBooleanExtra("isStop", false);
-        if(musicId != null) {
+        if (musicId != null) {
             try {
                 musicAidlStub.openAndStart(musicId);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
-        } else if(isStop) {
+        } else if (isStop) {
             try {
                 musicAidlStub.stop();
             } catch (RemoteException e) {
@@ -108,5 +108,4 @@ public class MusicPlayerService extends Service {
     public IBinder onBind(Intent intent) {
         return musicAidlStub;
     }
-
 }

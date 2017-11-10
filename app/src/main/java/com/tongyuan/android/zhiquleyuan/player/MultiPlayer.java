@@ -3,7 +3,6 @@ package com.tongyuan.android.zhiquleyuan.player;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.util.Log;
 
 import com.tongyuan.android.zhiquleyuan.bean.LocalPlayApplyReqBean;
 import com.tongyuan.android.zhiquleyuan.bean.LocalPlayApplyResBean;
@@ -22,7 +21,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
- *
  * Created by zgg on 2017/6/7.
  */
 
@@ -46,9 +44,9 @@ class MultiPlayer implements MediaPlayer.OnErrorListener,
 
     void openMediaPlayer(String musicId) {
         openAndStart = false;
-        if(urlMap.containsKey(musicId)) {
+        if (urlMap.containsKey(musicId)) {
             String url = urlMap.get(musicId);
-            if(url.equals(playUrl)) {
+            if (url.equals(playUrl)) {
                 mService.get().sendBroadCastToReceiver(MusicPlayerService.CODE_playing);
             } else {
                 setDataSource(url);
@@ -60,10 +58,10 @@ class MultiPlayer implements MediaPlayer.OnErrorListener,
 
     void openAndStart(String musicId) {
         openAndStart = true;
-        if(urlMap.containsKey(musicId)) {
+        if (urlMap.containsKey(musicId)) {
             String url = urlMap.get(musicId);
-            if(url.equals(playUrl)) {
-                if(!isPlaying())
+            if (url.equals(playUrl)) {
+                if (!isPlaying())
                     start();
                 mService.get().sendBroadCastToReceiver(MusicPlayerService.CODE_playing);
             } else {
@@ -99,7 +97,7 @@ class MultiPlayer implements MediaPlayer.OnErrorListener,
         localPlayApplyResBeanCall.enqueue(new Callback<SuperModel<LocalPlayApplyResBean>>() {
             @Override
             public void onResponse(Call<SuperModel<LocalPlayApplyResBean>> call, Response<SuperModel<LocalPlayApplyResBean>> response) {
-                if("0".equals(response.body().CODE)){
+                if ("0".equals(response.body().CODE)) {
                     LocalPlayApplyResBean bean = response.body().BODY;
                     setDataSource(bean.getURL());
                     urlMap.put(musicId, bean.getURL());
@@ -176,24 +174,25 @@ class MultiPlayer implements MediaPlayer.OnErrorListener,
     @Override
     public void onPrepared(MediaPlayer mp) {
         isPrepared = true;
-        if(openAndStart)
+        if (openAndStart)
             start();
         mService.get().sendBroadCastToReceiver(MusicPlayerService.CODE_prepared);
     }
 
     /**
      * 判断当前有没有正在播放该URL视频
-     * @param musicId  视频的ID
+     *
+     * @param musicId 视频的ID
      * @return
      */
     public boolean isPlayUrl(String musicId) {
-        if(urlMap.containsKey(musicId) && urlMap.get(musicId).equals(playUrl) && isPlaying()) {
+        if (urlMap.containsKey(musicId) && urlMap.get(musicId).equals(playUrl) && isPlaying()) {
             return true;
         }
         return false;
     }
 
-    public void release(){
+    public void release() {
         urlMap.clear();
         urlMap = null;
     }

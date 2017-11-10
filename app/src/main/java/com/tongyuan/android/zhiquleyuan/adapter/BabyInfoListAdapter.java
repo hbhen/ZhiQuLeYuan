@@ -24,6 +24,7 @@ import com.tongyuan.android.zhiquleyuan.bean.DeleteBabyInfoReQBean;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteBabyInfoReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListResult;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
+import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
 import java.text.SimpleDateFormat;
@@ -152,7 +153,7 @@ public class BabyInfoListAdapter extends BaseSwipeAdapter {
 
     private void deleteBabyInfo(int pos) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
+                .baseUrl(Constant.baseurl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

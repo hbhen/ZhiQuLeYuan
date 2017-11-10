@@ -17,6 +17,7 @@ import com.tongyuan.android.zhiquleyuan.bean.QuerySingleUserInfoReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoRESBean;
 import com.tongyuan.android.zhiquleyuan.fragment.ToyManagerFragment;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
+import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
@@ -80,10 +81,10 @@ public class AddMemberToGroup extends AppCompatActivity implements View.OnClickL
         mPhoneNum = SPUtils.getString(this, "phoneNum", "");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         mTime = simpleDateFormat.format(new Date());
-        mToken = SPUtils.getString(this, "TOKEN", "");
+        mToken = SPUtils.getString(this, "token", "");
 
     }
-
+//TODO // FIXME: 2017/10/25
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -102,7 +103,7 @@ public class AddMemberToGroup extends AppCompatActivity implements View.OnClickL
 
     private void QuerySingleUserInfo(final String phone) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
+                .baseUrl(Constant.baseurl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
@@ -156,7 +157,7 @@ public class AddMemberToGroup extends AppCompatActivity implements View.OnClickL
 
     private void addMemberToGroup(String userId) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
+                .baseUrl(Constant.baseurl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);

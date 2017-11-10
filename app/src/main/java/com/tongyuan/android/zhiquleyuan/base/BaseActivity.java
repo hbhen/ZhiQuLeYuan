@@ -25,9 +25,9 @@ import java.lang.ref.WeakReference;
 public abstract class BaseActivity extends AppCompatActivity implements ServiceConnection {
 
     public static final String PLAYER_PREPARED = "toy.player.prepared";
-    public static final String PLAYER_ERROR    = "toy.player.error";
+    public static final String PLAYER_ERROR = "toy.player.error";
     public static final String PLAYER_COMPLETE = "toy.player.complete";
-    public static final String PLAYER_PLAYING  = "toy.player.playing";
+    public static final String PLAYER_PLAYING = "toy.player.playing";
 
     protected MusicPlayer.ServiceToken mToken;
     private PlaybackStatus mPlaybackStatus;
@@ -36,10 +36,10 @@ public abstract class BaseActivity extends AppCompatActivity implements ServiceC
 
     @Override
     public Resources getResources() {
-        Resources resource=super.getResources();
-        Configuration configuration=new Configuration();
-        configuration.fontScale=1.0f;
-        resource.updateConfiguration(configuration,resource.getDisplayMetrics());
+        Resources resource = super.getResources();
+        Configuration configuration = new Configuration();
+        configuration.fontScale = 1.0f;
+        resource.updateConfiguration(configuration, resource.getDisplayMetrics());
         return resource;
     }
 
@@ -54,7 +54,7 @@ public abstract class BaseActivity extends AppCompatActivity implements ServiceC
         super.onCreate(savedInstanceState);
         mContext = this;
         mToken = MusicPlayer.bindToService(this, this);
-        mPlaybackStatus = new PlaybackStatus(this);
+        mPlaybackStatus = new PlaybackStatus(this);//广播的类
         IntentFilter f = new IntentFilter();
         f.addAction(PLAYER_PREPARED);
         f.addAction(PLAYER_ERROR);
@@ -108,6 +108,7 @@ public abstract class BaseActivity extends AppCompatActivity implements ServiceC
     private final static class PlaybackStatus extends BroadcastReceiver {
 
         private final WeakReference<BaseActivity> mReference;
+
         public PlaybackStatus(final BaseActivity activity) {
             mReference = new WeakReference<>(activity);
         }
@@ -120,9 +121,9 @@ public abstract class BaseActivity extends AppCompatActivity implements ServiceC
                 return;
             if (action.equals(PLAYER_PREPARED)) {
                 baseActivity.onPrepared();
-            } else if(action.equals(PLAYER_ERROR)){
+            } else if (action.equals(PLAYER_ERROR)) {
                 baseActivity.onError();
-            } else if(action.equals(PLAYER_COMPLETE)) {
+            } else if (action.equals(PLAYER_COMPLETE)) {
                 baseActivity.onCompleted();
             } else if (action.equals(PLAYER_PLAYING)) {
                 baseActivity.isSimplePlayUrl();

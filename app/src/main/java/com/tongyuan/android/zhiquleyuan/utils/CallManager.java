@@ -8,6 +8,7 @@ import com.tongyuan.android.zhiquleyuan.activity.VideoActivity;
 import com.tongyuan.android.zhiquleyuan.bean.CallToToyReq;
 import com.tongyuan.android.zhiquleyuan.bean.CallToToyRes;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
+import com.tongyuan.android.zhiquleyuan.interf.Constant;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -23,8 +24,8 @@ public class CallManager {
 
     public static void CallToToy(final String toyId, final Context context) {
 
-        final String token = SPUtils.getString(context, "TOKEN", "");
-        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
+        final String token = SPUtils.getString(context, "token", "");
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(Constant.baseurl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);

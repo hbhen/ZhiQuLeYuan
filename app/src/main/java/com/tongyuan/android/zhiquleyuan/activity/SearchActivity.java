@@ -90,7 +90,7 @@ public class SearchActivity extends AppCompatActivity {
         AllInterface allInterface = retrofit.create(AllInterface.class);
         SearchReqBean.BODYBean bodyBean = new SearchReqBean.BODYBean(text, "10", "1");
         SearchReqBean searchReqBean = new SearchReqBean("REQ", "SEARES", SPUtils.getString(this, "phoneNum", ""), new SimpleDateFormat
-                ("yyyyMMddHHmmssSSS").format(new Date()), bodyBean, "", SPUtils.getString(this, "TOKEN", ""), "1");
+                ("yyyyMMddHHmmssSSS").format(new Date()), bodyBean, "", SPUtils.getString(this, "token", ""), "1");
 
         Gson gson = new Gson();
         String s = gson.toJson(searchReqBean);

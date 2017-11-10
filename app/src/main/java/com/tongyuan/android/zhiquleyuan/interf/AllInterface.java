@@ -9,6 +9,7 @@ import com.tongyuan.android.zhiquleyuan.bean.BindBabyToToyRes;
 import com.tongyuan.android.zhiquleyuan.bean.CallHistoryResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.CallToToyRes;
 import com.tongyuan.android.zhiquleyuan.bean.ChangeRecordingNameResBean;
+import com.tongyuan.android.zhiquleyuan.bean.CheckTokenResBean;
 import com.tongyuan.android.zhiquleyuan.bean.CommitSuggestionResBean;
 import com.tongyuan.android.zhiquleyuan.bean.ControlToyPlayMusicResBean;
 import com.tongyuan.android.zhiquleyuan.bean.ControlToyPlayRecordingResBean;
@@ -26,6 +27,9 @@ import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridItemBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridSecondaryResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.GetInstantStateInfoRes;
+import com.tongyuan.android.zhiquleyuan.bean.GetNewestVersionResBean;
+import com.tongyuan.android.zhiquleyuan.bean.GetSmsCodeResBean;
+import com.tongyuan.android.zhiquleyuan.bean.GetSmsCodeValueResBean;
 import com.tongyuan.android.zhiquleyuan.bean.LocalPlayApplyResBean;
 import com.tongyuan.android.zhiquleyuan.bean.ModifyRecordingResBean;
 import com.tongyuan.android.zhiquleyuan.bean.NodisturbTimeResBean;
@@ -39,11 +43,13 @@ import com.tongyuan.android.zhiquleyuan.bean.QueryPlayingMusicResBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryRecordingResBean;
 import com.tongyuan.android.zhiquleyuan.bean.QuerySingleUserInfoReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryToyMemberReSBean;
+import com.tongyuan.android.zhiquleyuan.bean.RegistAndLoginResBean;
 import com.tongyuan.android.zhiquleyuan.bean.SearchResBean;
 import com.tongyuan.android.zhiquleyuan.bean.SetNodisturbTimeResBean;
 import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoRESBean;
 import com.tongyuan.android.zhiquleyuan.bean.TransferPermissionsResBean;
 import com.tongyuan.android.zhiquleyuan.bean.UnbindBabyToToyResBean;
+import com.tongyuan.android.zhiquleyuan.bean.UpdateToyVersionResBean;
 import com.tongyuan.android.zhiquleyuan.bean.UserInfoResBean;
 import com.tongyuan.android.zhiquleyuan.request.base.SuperModel;
 
@@ -76,14 +82,17 @@ public interface AllInterface {
 
     //    @Multipart
 //    @POST("busi")
-//    Call<BabyInfoResultBean> BABY_INFO_RESULT_BEAN_CALL(@Body RequestBody description, @Part("file") MultipartBody.Part file);
+//    Call<BabyInfoResultBean> BABY_INFO_RESULT_BEAN_CALL(@Body RequestBody description, @Part("file") MultipartBody
+// .Part file);
 //    @Multipart
 //    @POST("busi")
-//    Call<BabyInfoResultBean> BABY_INFO_RESULT_BEAN_CALL(@Part("params") String params, @Part("file") MultipartBody.Part file);
+//    Call<BabyInfoResultBean> BABY_INFO_RESULT_BEAN_CALL(@Part("params") String params, @Part("file") MultipartBody
+// .Part file);
     @Multipart
     @POST("busi")
     Call<BabyInfoResultBean> BABY_INFO_RESULT_BEAN_CALL(@Part List<MultipartBody.Part> partList);
-//    Call<BabyInfoResultBean> BABY_INFO_RESULT_BEAN_CALL(@Part("params") BabyInfoRequestBean params, @Part("file") MultipartBody.Part file);
+//    Call<BabyInfoResultBean> BABY_INFO_RESULT_BEAN_CALL(@Part("params") BabyInfoRequestBean params, @Part("file")
+// MultipartBody.Part file);
 
     //删除宝宝的信息(或者个人信息) 3.4.10
     @GET("busi")
@@ -181,7 +190,8 @@ public interface AllInterface {
 
     //查询我的录音 3.4.37
     @GET("busi")
-    Call<SuperModel<QueryRecordingResBean>> SUPER_MODEL_CALL_QUERY_RECORDING_RES_BEAN_CALL(@Query("params") String params);
+    Call<SuperModel<QueryRecordingResBean>> SUPER_MODEL_CALL_QUERY_RECORDING_RES_BEAN_CALL(@Query("params") String
+                                                                                                   params);
 
     //没有封装的  3.4.37
     @GET("busi")
@@ -267,4 +277,28 @@ public interface AllInterface {
     //3.4.16 删除免打扰时间
     @GET("busi")
     Call<DeleteNodisturbTimeResBean> DELETE_NODISTURB_TIME_RES_BEAN_CALL(@Query("params") String params);
+
+    //3.4.6 心跳接口
+    @GET("heart")
+    Call<CheckTokenResBean> CHECK_TOKEN_RES_BEAN_CALL(@Query("params") String params);
+
+    //3.4.2 获取最新版本
+    @GET("lastverion")
+    Call<GetNewestVersionResBean> GET_NEWEST_VERSION_CALL(@Query("params") String params);
+
+    //3.4.7 获取短信接口授权号
+    @GET("smscode")
+    Call<GetSmsCodeResBean> GET_SMSCODE_RES_BEAN_CALL(@Query("params") String params);
+
+    //3.4.8 获取短信验证码
+    @GET("smscode")
+    Call<GetSmsCodeValueResBean> GET_SMSCODEVALUE_RES_BEAN_CALL(@Query("params") String params);
+
+    //3.4.4 用户注册登录
+    @GET("register")
+    Call<RegistAndLoginResBean> REGIST_AND_LOGIN_RES_BEAN_CALL(@Query("params") String params);
+    //3.4.53  控制玩具更新程序
+    @GET("jpush")
+    Call<UpdateToyVersionResBean> UPDATE_TOY_VERSION_RES_BEAN_CALL (@Query("params") String params);
+
 }
