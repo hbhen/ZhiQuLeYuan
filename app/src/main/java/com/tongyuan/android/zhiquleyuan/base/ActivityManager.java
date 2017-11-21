@@ -27,4 +27,13 @@ public class ActivityManager {
             }
         }
     }
+
+    public static List queryActivity() {
+//        if (sActivities == null) {
+//            List<String> arrayList = new ArrayList<>();
+//            arrayList.add("测试的list");
+//            return arrayList;
+//        }
+        return sActivities;
+    }
 }

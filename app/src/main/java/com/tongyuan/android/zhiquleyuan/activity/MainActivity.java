@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import com.google.gson.Gson;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.tongyuan.android.zhiquleyuan.R;
+import com.tongyuan.android.zhiquleyuan.base.ActivityManager;
 import com.tongyuan.android.zhiquleyuan.base.BaseActivity;
 import com.tongyuan.android.zhiquleyuan.bean.PhoneHeartReqBean;
 import com.tongyuan.android.zhiquleyuan.bean.PhoneHeartResBean;
@@ -49,6 +50,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Stack;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -79,6 +82,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private CallWaitingConnectFragment mCallWaitingConnectFragment;
     private Stack<Fragment> fragmentStack = new Stack<>();
     private static final String TAG1 = "88888";
+    private Boolean isQuit = false;
+    private Timer mTimer = new Timer();
+    private long exitTime = 0;
     UMShareListener mUMShareListener;
 //    private boolean isFirstInstall = true;
 
@@ -92,6 +98,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
+        ActivityManager.addAvtivity(this);
         StatusBarUtils.setStatusBarLightMode(this, getResources().getColor(R.color.main_top_bg));
 
         CrashReport.initCrashReport(getApplicationContext(), "4d4412e3f1", true);
@@ -209,8 +216,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     protected void onNewIntent(Intent intent) {
-
         super.onNewIntent(intent);
+        if (intent != null) {
+            //TAG_EXIT="exit"
+            boolean isExit = intent.getBooleanExtra("exit", false);
+            if (isExit) {
+                this.finish();
+            }
+        }
 
     }
 
@@ -541,7 +554,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 ToastUtil.showToast(getApplicationContext(), "失败,网络异常");
             }
         });
-//        }
 
     }
 
@@ -553,13 +565,59 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         } else {
             //为空,去玩具添加页面
             showFragment(ToyAddFragment.class.getSimpleName());
-
         }
     }
 
+//    @Override
+//    public boolean onKeyDown(int keyCode, KeyEvent event) {
+//
+//        if (keyCode == KeyEvent.KEYCODE_BACK) {
+//            exit();
+//            return false;
+//        }
+//        return super.onKeyDown(keyCode, event);
+//    }
+
+//    private void exit() {
+
+    //    }
     @Override
     public void onBackPressed() {
-        backToTop();
+//        ArrayList<String> arrayList = new ArrayList<>();
+//        if (System.currentTimeMillis() - exitTime > 2000) {
+//            ToastUtil.showToast(this, "再按一次退出程序");
+//            exitTime = System.currentTimeMillis();
+//        } else {
+//            for (Object s : ActivityManager.queryActivity()) {
+//                Activity activity = (Activity) s;
+//                Log.d("uiu", "onBackPressed: activity" + activity.toString());
+//            }
+//
+//            ActivityManager.finishAll();
+//            finish();
+//            System.exit(0);
+//            android.os.Process.killProcess(Process.myPid());
+//        }
+//        backToTop();
+        if (isQuit == false) {
+            isQuit = true;
+            ToastUtil.showToast(this, "再按一次返回键退出程序");
+            TimerTask timerTask = null;
+            timerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    isQuit = false;
+                }
+            };
+            mTimer.schedule(timerTask, 2000);
+        } else {
+            int size = ActivityManager.queryActivity().size();
+            Log.d(TAG, "onBackPressed: "+ActivityManager.queryActivity().size());
+            ActivityManager.finishAll();
+            finish();
+            System.exit(0);
+            android.os.Process.killProcess(android.os.Process.myPid());
+        }
     }
 
     @Override
