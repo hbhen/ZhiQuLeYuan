@@ -2,6 +2,7 @@ package com.tongyuan.android.zhiquleyuan.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -581,8 +582,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 //    private void exit() {
 
     //    }
+
+
     @Override
     public void onBackPressed() {
+        //点两次返回键,退出程序
 //        ArrayList<String> arrayList = new ArrayList<>();
 //        if (System.currentTimeMillis() - exitTime > 2000) {
 //            ToastUtil.showToast(this, "再按一次退出程序");
@@ -611,15 +615,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             };
             mTimer.schedule(timerTask, 2000);
         } else {
-            int size = ActivityManager.queryActivity().size();
-            Log.d(TAG, "onBackPressed: "+ActivityManager.queryActivity().size());
+
+            Log.d(TAG, "onBackPressed: " + ActivityManager.queryActivity().size());
             ActivityManager.finishAll();
             finish();
             System.exit(0);
+            long l = SystemClock.elapsedRealtime();
             android.os.Process.killProcess(android.os.Process.myPid());
         }
     }
 
+    //接收来自fragment的result 用getactivity();来接收的;
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 //        super.onActivityResult(requestCode, resultCode, data);

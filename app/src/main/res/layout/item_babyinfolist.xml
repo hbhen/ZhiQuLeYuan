@@ -36,7 +36,7 @@
                 android:layout_height="60dp"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/dp_10"
-                android:src="@drawable/ic_launcher"/>
+                android:src="@drawable/player_cover_default"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"

@@ -88,13 +88,9 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle
             savedInstanceState) {
-
         mIntent = new Intent();
-
         View mineRoot = inflater.inflate(R.layout.fragment_mine, null);
-
         return mineRoot;
-
     }
 
 
@@ -150,11 +146,11 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
         //还是应该有一个网络请求,获取用户的信息
         mToken = SPUtils.getString(getContext(), "token", "");
         mPhoneNum = SPUtils.getString(getContext(), "phoneNum", "");
-        getUserInfo();
         mUsername = SPUtils.getString(getContext(), "username", "");
         mUserimg = SPUtils.getString(getContext(), "userimg", "");
         Log.i(TAG, "initData: mUsername " + mUsername);
         Log.i(TAG, "initData: mUserimg " + mUserimg);
+        getUserInfo();
     }
 
     private void getUserInfo() {
@@ -182,6 +178,14 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                     String name = response.body().getBODY().getNAME();
                     String nick = response.body().getBODY().getNICK();
                     String sex = response.body().getBODY().getSEX();
+
+                    mUsername = name;
+                    mUserimg = img;
+                    Log.i(TAG, "(MineFragment-getUserInfo)onResponse: " + response.body().toString());
+                    //所以这里不用放用户的信息
+                    SPUtils.putString(getContext(), "username", name);
+                    SPUtils.putString(getContext(), "userimg", img);
+                    SPUtils.putString(getContext(), "userbirthday", birthday);
                     showDifferentLoginInfo();
                 }
             }
@@ -191,7 +195,6 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                 ToastUtil.showToast(mContext, t.toString());
             }
         });
-
     }
 
     @Override
@@ -239,7 +242,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                 if (!mToken.equals("")) {
                     getListInfo();
                 } else {
-                    Log.i(TAG, "onClick: minefragment走没有??");
+                    Log.i(TAG, "onClick: minefragment 您当前没有登录");
                     ToastUtil.showToast(getActivity(), "您当前没有登录");
                 }
 

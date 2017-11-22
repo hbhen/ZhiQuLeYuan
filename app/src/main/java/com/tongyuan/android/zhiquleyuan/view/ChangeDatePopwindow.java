@@ -87,7 +87,6 @@ public class ChangeDatePopwindow extends PopupWindow implements View.OnClickList
         mMWvBirthYear = (WheelView) view.findViewById(R.id.wv_birth_year);
         mMWvBirthMonth = (WheelView) view.findViewById(R.id.wv_birth_month);
         mMWvBirthDay = (WheelView) view.findViewById(R.id.wv_birth_day);
-
         this.setContentView(view);
         this.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
         this.setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
@@ -306,7 +305,7 @@ public class ChangeDatePopwindow extends PopupWindow implements View.OnClickList
         if (view == mBtnMyinfoSure) {
             if (onBirthListener != null) {
                 onBirthListener.onClick(selectYear, selectMonth, selectDay);
-                Log.i("cy", "" + selectYear + "" + selectMonth + "" + selectDay);
+                Log.i("111", "" + selectYear + "" + selectMonth + "" + selectDay);
             }
         } else if (view == mBtnMyinfoSure) {
 
@@ -452,5 +451,9 @@ public class ChangeDatePopwindow extends PopupWindow implements View.OnClickList
 
     public interface OnBirthListener {
         public void onClick(String year, String month, String day);
+    }
+    public Boolean isBirthdatChanged(){
+
+        return false;
     }
 }

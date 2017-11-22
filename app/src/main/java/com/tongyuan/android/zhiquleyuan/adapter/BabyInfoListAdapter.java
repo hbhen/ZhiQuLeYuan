@@ -1,6 +1,7 @@
 package com.tongyuan.android.zhiquleyuan.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
@@ -18,6 +19,7 @@ import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.BaseSwipeAdapter;
 import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
+import com.tongyuan.android.zhiquleyuan.activity.AddMemberToGroup;
 import com.tongyuan.android.zhiquleyuan.activity.BabyInfoListActivity;
 import com.tongyuan.android.zhiquleyuan.activity.SetInitVolumeActivity;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteBabyInfoReQBean;
@@ -124,21 +126,28 @@ public class BabyInfoListAdapter extends BaseSwipeAdapter {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        Glide.with(mContext).load(mLSTBeen.get(pos).getIMG()).asBitmap().centerCrop().into(new BitmapImageViewTarget(mIv_item_babyinfolist) {
-            @Override
-            protected void setResource(Bitmap resource) {
-                RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(mContext.getResources(), resource);
-                roundedBitmapDrawable.setCircular(true);
-                mIv_item_babyinfolist.setImageDrawable(roundedBitmapDrawable);
-            }
-        });
+        Glide.with(mContext).
+                load(mLSTBeen.get(pos).getIMG())
+                .asBitmap()
+                .centerCrop()
+                .placeholder(R.drawable.player_cover_default)
+                .into(new BitmapImageViewTarget(mIv_item_babyinfolist) {
+                    @Override
+                    protected void setResource(Bitmap resource) {
+                        RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(mContext.getResources(), resource);
+                        roundedBitmapDrawable.setCircular(true);
+                        mIv_item_babyinfolist.setImageDrawable(roundedBitmapDrawable);
+                    }
+                });
         mTv_title_item_babyinfolist.setText(mLSTBeen.get(pos).getNAME());
         mTv_item_babyinfolist_sexy.setText(mLSTBeen.get(pos).getSEX());
         mTv_item_babyinfolist_invite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ToastUtil.showToast(mContext, "点击的是邀请");
+                Intent intent = new Intent(mContext, AddMemberToGroup.class);
+                intent.putExtra("flag", 1);
+                mContext.startActivity(intent);
+//                ToastUtil.showToast(mContext, "点击的是邀请");
             }
         });
         mTv_item_babyinfolist_primarysound.setOnClickListener(new View.OnClickListener() {

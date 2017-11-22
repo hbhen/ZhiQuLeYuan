@@ -54,6 +54,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class ToyMemberAdapter extends BaseAdapter {
 
+    public static final int TOYMEMBER_ADAPTER_TO_ADDMEMEBER_GROUP = 1;
     private Context mContext;
     private List<QueryToyMemberReSBean.BODYBean.LSTBean> mLSTBeanlist;
     private String ownerUserId;
@@ -71,7 +72,6 @@ public class ToyMemberAdapter extends BaseAdapter {
     }
 
     public SetManagerMode mSetManagerMode = SetManagerMode.UNSET;
-
 
     private Constant.Mode mMode = Constant.Mode.NORMAL;//默认给的初始状态是 normal;
 
@@ -107,7 +107,6 @@ public class ToyMemberAdapter extends BaseAdapter {
             return 0;
         return mLSTBeanlist.size() + 2;
     }
-
 
     @Override
     public Object getItem(int position) {
@@ -314,6 +313,7 @@ public class ToyMemberAdapter extends BaseAdapter {
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("toyinfo", mResponse);
                 intent.putExtras(bundle);
+                intent.putExtra("flag",TOYMEMBER_ADAPTER_TO_ADDMEMEBER_GROUP);
                 intent.setClass(mContext, AddMemberToGroup.class);
                 mContext.startActivity(intent);
             } else if (position == getCount() - 1) {

@@ -40,6 +40,7 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
 
 
     private static final int ADD_BABYINFO = 502;
+    public static final int SuccessCode = 66;
     private ListView mListview;
     private String mToken;
     private ImageView mIv_babayinfolist_addbabyinfo;
@@ -141,6 +142,7 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
         });
     }
 
+
     private void showBabyList(Response<QueryBabyListResult> response, String time, String phone, String token, List<QueryBabyListResult.BODYBean
             .LSTBean> lst) {
         System.out.println("222222222222" + response.body().toString());
@@ -155,9 +157,11 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
 
                 ToastUtil.showToast(getApplicationContext(), "click postion" + position);
 
+
             }
         });
     }
+
 
     @Override
     public void onClick(View v) {
@@ -180,7 +184,6 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
         }
     }
 
-    public static final int SuccessCode = 66;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

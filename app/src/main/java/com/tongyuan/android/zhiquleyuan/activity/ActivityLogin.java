@@ -179,6 +179,7 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
                 Intent intent = new Intent();
                 intent.setClass(this, UserAgreementActivity.class);
                 startActivity(intent);
+                break;
             default:
                 break;
         }
@@ -280,7 +281,7 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
                 String id = response.body().getBODY().getID();
                 String phone = response.body().getBODY().getPHONE();
                 mPhoneNum = phone;
-                Log.i(TAG, "userId" + id);
+                Log.i(TAG, "userID" + id);
                 Log.i(TAG, "token: " + token);
                 Log.i(TAG, "phone: " + phone);
                 Log.i(TAG, "phoneNum: " + mPhoneNum);
@@ -296,11 +297,16 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
         });
     }
 
+    //    SPUtils.putString(getApplicationContext(), "username", name);
+//    SPUtils.putString(getApplicationContext(), "userimg", img);
+//    SPUtils.putString(this, "phoneNum", phoneNum);
+//    SPUtils.putString(this, "token", token);
+//    SPUtils.putString(this, "userID", id);
     private void saveToken(String token, String phoneNum, String id) {
         if (SDCardUtils.isSDCardEnable()) {
             SPUtils.putString(this, "phoneNum", phoneNum);
             SPUtils.putString(this, "token", token);
-            SPUtils.putString(this, "ID", id);
+            SPUtils.putString(this, "userID", id);
         } else {
             ToastUtil.showToast(this, "sd卡不可用,请检查后重试");
             Log.i(TAG, "sdcard状态:" + SDCardUtils.isSDCardEnable());
@@ -360,15 +366,23 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
                     String name = response.body().getBODY().getNAME();
                     String img = response.body().getBODY().getIMG();
                     String ID = response.body().getBODY().getID();
+                    String birthday = response.body().getBODY().getBIRTHDAY();
+                    String sex = response.body().getBODY().getSEX();
 
                     SPUtils.putString(getApplicationContext(), "username", name);
                     SPUtils.putString(getApplicationContext(), "userimg", img);
-                    SPUtils.putString(getApplicationContext(), "userID", response.body().getBODY().getID());
+                    SPUtils.putString(getApplicationContext(), "userID", ID);
+                    SPUtils.putString(getApplicationContext(), "userbirthday", birthday);
+                    SPUtils.putString(getApplicationContext(), "usersex", sex);
 
                     String username = SPUtils.getString(getApplicationContext(), "username", "");
                     String userimg = SPUtils.getString(getApplicationContext(), "userimg", "");
                     String userID = SPUtils.getString(getApplicationContext(), "userID", "");
-                    Log.i(TAG, "onResponse: " + "username" + username + "userimg" + userimg + "userID" + userID);
+                    String userBirthday = SPUtils.getString(getApplicationContext(), "userbirthday", birthday);
+                    String userSex = SPUtils.getString(getApplicationContext(), "usersex", sex);
+
+                    Log.i(TAG, "onResponse: " + "username:-" + username + "userimg:-" + userimg + "userID:-" + userID + "userbirthday:-" + userBirthday +
+                            "usersex:-" + userSex);
 
                     Intent data = new Intent();
                     Bundle bundle = new Bundle();

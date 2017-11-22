@@ -4,12 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
+import com.tongyuan.android.zhiquleyuan.adapter.ToyMemberAdapter;
 import com.tongyuan.android.zhiquleyuan.bean.AddMemberToGroupReQBean;
 import com.tongyuan.android.zhiquleyuan.bean.AddMemberToGroupReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.QuerySingleUserInfoReQBean;
@@ -34,6 +36,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by DTC on 2017/4/18.
  */
 public class AddMemberToGroup extends AppCompatActivity implements View.OnClickListener {
+    private static final String TAG = "addmember";
 
     private EditText mEt_addmembertogroup;
     private Button mBt_addmembertogroup;
@@ -70,12 +73,15 @@ public class AddMemberToGroup extends AppCompatActivity implements View.OnClickL
     private void initDate() {
 
         Intent intent = getIntent();
-        Bundle bundle = intent.getExtras();
-
-        SingleToyInfoRESBean.BODYBean toyinfo = bundle.getParcelable("toyinfo");
-
-        mToyinfoID = toyinfo.getID();
-        mCode = toyinfo.getCODE();
+        int flag = intent.getIntExtra("flag", ToyMemberAdapter.TOYMEMBER_ADAPTER_TO_ADDMEMEBER_GROUP);
+        if (flag == ToyMemberAdapter.TOYMEMBER_ADAPTER_TO_ADDMEMEBER_GROUP) {
+            Bundle bundle = intent.getExtras();
+            SingleToyInfoRESBean.BODYBean toyinfo = bundle.getParcelable("toyinfo");
+            mToyinfoID = toyinfo.getID();
+            mCode = toyinfo.getCODE();
+        } else {
+            Log.i(TAG, "initDate: ");
+        }
 
         mIntent = new Intent();
         mPhoneNum = SPUtils.getString(this, "phoneNum", "");
@@ -84,7 +90,8 @@ public class AddMemberToGroup extends AppCompatActivity implements View.OnClickL
         mToken = SPUtils.getString(this, "token", "");
 
     }
-//TODO // FIXME: 2017/10/25
+
+    //TODO // FIXME: 2017/10/25
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
