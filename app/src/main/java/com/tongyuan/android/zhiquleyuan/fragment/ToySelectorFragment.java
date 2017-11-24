@@ -296,10 +296,14 @@ public class ToySelectorFragment extends BaseFragment {
         SingleToyInfoREQBean.BODYBean bodyBean = new SingleToyInfoREQBean.BODYBean(toyid, toycode);
         Call<SuperModel<SingleToyInfoRESBean.BODYBean>> singleToyInfoResult = RequestManager.getInstance().getToyDetail(getActivity(), bodyBean);
         singleToyInfoResult.enqueue(new Callback<SuperModel<SingleToyInfoRESBean.BODYBean>>() {
+
+
+
             @Override
             public void onResponse(Call<SuperModel<SingleToyInfoRESBean.BODYBean>> call, Response<SuperModel<SingleToyInfoRESBean.BODYBean>> response) {
                 if (response.body().CODE.equals("0")) {
                     Log.i(TAG, "onResponse: +toyinfo"+response.body().BODY.toString());
+                    String toyCode = response.body().BODY.getCODE();
                     MainActivity mainActivity = (MainActivity) getActivity();
                     mainActivity.getToyDetailsFragment().setData(response.body().BODY, toyList.get(mCurrentPosition).getBABYIMG());
                     showFragment(ToyDetailsFragment.class.getSimpleName());

@@ -70,7 +70,7 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
     private List<QueryToyMemberReSBean.BODYBean.LSTBean> lst = new ArrayList<>();
     ToyMemberAdapter toyMemberAdapter;
     boolean removeState = false;//定义删除状态
-    private SingleToyInfoRESBean.BODYBean mResponse;
+    public SingleToyInfoRESBean.BODYBean mResponse;
     private String mToken;
     private String mPhoneNum;
     private String formatTime;
@@ -90,8 +90,6 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
     private String mOwnerId;
     private ImageView mIv_back;
     private int count;
-
-
 
 
     private Constant.Mode mMode = Constant.Mode.NORMAL;
@@ -120,6 +118,7 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
         mCallCamera = (ImageView) fragment_manageToy.findViewById(R.id.iv_fragment_managetoy_call_camera);
         mIv_back = (ImageView) fragment_manageToy.findViewById(R.id.iv_back);
 
+        //玩具群成员GridView
         mMygrid = (MyGridView) fragment_manageToy.findViewById(R.id.mygrid);
         toyMemberAdapter = new ToyMemberAdapter(getActivity(), lst, mResponse);
         mMygrid.setNumColumns(5);
@@ -131,7 +130,6 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
         initListener();
         Log.i("manager", "onCreateView");
         refreshView();
-
         return fragment_manageToy;
 
     }
@@ -260,8 +258,7 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
         getToyMember(mTime, mToken, mPhoneNum, mToyId, mToyCode);
     }
 
-    public void setData(SingleToyInfoRESBean.BODYBean response, String formatTime, String babyimg, String babyName, String ownerName,
-                        List<QueryBabyListFromToyIdRes.BODYBean.LSTBean> lst, String ownerId) {
+    public void setData(SingleToyInfoRESBean.BODYBean response, String formatTime, String babyimg, String babyName, String ownerName, List<QueryBabyListFromToyIdRes.BODYBean.LSTBean> lst, String ownerId) {
         this.mResponse = response;
         this.mBabyimg = babyimg;
         mLst = lst;
@@ -272,6 +269,8 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
         mPhoneNum = SPUtils.getString(getActivity(), "phoneNum", "");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         mTime = simpleDateFormat.format(new Date());
+
+
 //        Bundle arguments = getArguments();
 //        //singletoyinfo
 //        mResponse = arguments.getParcelable("response");
@@ -383,11 +382,9 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
         int elecValue = 0;
         if (!wifi.equals("")) {
             wifiValue = Integer.parseInt(wifi);
-
         }
         if (!elec.equals("")) {
             elecValue = Integer.parseInt(elec);
-
         }
         //设置状态的图片
 

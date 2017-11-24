@@ -11,10 +11,10 @@ import com.tongyuan.android.zhiquleyuan.bean.DeleteToyFromNormalUserResBean;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteToyFromPowerUserReqBean;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteToyFromPowerUserResBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridItemBean;
-import com.tongyuan.android.zhiquleyuan.bean.DiscoverySubReqBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridSecondaryResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListRequsetBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListResultBean;
+import com.tongyuan.android.zhiquleyuan.bean.DiscoverySubReqBean;
 import com.tongyuan.android.zhiquleyuan.bean.LocalPlayApplyResBean;
 import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoREQBean;
 import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoRESBean;
@@ -39,28 +39,35 @@ public class RequestManager {
     private static Gson mGson;
 
     private RequestManager() {
+
         Gson gson = new GsonBuilder()
                 //配置你的Gson
                 .setDateFormat("yyyy-MM-dd hh:mm:ss")
                 .create();
         Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl("http://120.27.41.179:8081/zqpland/m/iface/")
                 .baseUrl(Constant.baseurl)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
+
         serves = retrofit.create(AllInterface.class);
+
         mGson = new Gson();
+
     }
 
     public static RequestManager getInstance() {
+
         if (instance == null)
             instance = new RequestManager();
         return instance;
+
     }
 
     public Call<SuperModel<DiscoveryGridItemBean>> getDiscoveryGridResult(BaseRequest params) {
+
         String json = mGson.toJson(params);
         return serves.getDiscoveryGridResult(json);
+
     }
 
     public Call<SuperModel<DiscoveryGridSecondaryResultBean>> getDiscoverySubList(Context cxt, DiscoverySubReqBean bodyBean) {
@@ -84,6 +91,7 @@ public class RequestManager {
         BaseRequest request = new BaseRequest<>(context, params, "QRYREC");
         String json = mGson.toJson(request);
         return serves.getDiscoveryListResult2(json);
+
     }
 
     /**
@@ -118,10 +126,14 @@ public class RequestManager {
      * 向玩具端发送指令，播放
      */
     public Call<ControlToyPlayMusicResBean> ToyPlayCommand(Context context, ControlToyPlayMusicReqBean.ParamBean paramBean) {
+
         String mToken = SPUtils.getString(context, "token", "");
         ControlToyPlayMusicReqBean control_play = new ControlToyPlayMusicReqBean("control_play", paramBean, mToken);
         Gson gson = new Gson();
         String json = gson.toJson(control_play);
         return serves.CONTROL_TOY_PLAY_MUSIC_RES_BEAN_CALL(json);
+
     }
+
+
 }

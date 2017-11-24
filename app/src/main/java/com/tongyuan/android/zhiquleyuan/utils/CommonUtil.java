@@ -8,11 +8,11 @@ package com.tongyuan.android.zhiquleyuan.utils;
  */
 public class CommonUtil {
 	public static String getString(int resId){
-		return ZhiQuLeYuanApplication.context.getResources().getString(resId);
+		return ZQLYApp.context.getResources().getString(resId);
 	}
 	
 	public static String[] getStringArray(int resId){
-		return ZhiQuLeYuanApplication.context.getResources().getStringArray(resId);
+		return ZQLYApp.context.getResources().getStringArray(resId);
 	}
 	/**
 	 * 获取dimens中的资源,但是获取的数值是将dp转换为px之后的值
@@ -20,6 +20,6 @@ public class CommonUtil {
 	 * @return
 	 */
 	public static int getDimens(int resId){
-		return ZhiQuLeYuanApplication.context.getResources().getDimensionPixelSize(resId);
+		return ZQLYApp.context.getResources().getDimensionPixelSize(resId);
 	}
 }

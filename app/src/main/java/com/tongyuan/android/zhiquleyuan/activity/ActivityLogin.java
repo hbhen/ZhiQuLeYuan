@@ -347,6 +347,7 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
     private void QueryUserInfo(String phoneNum, String mTokenSave) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         String format = simpleDateFormat.format(new Date());
+
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Constant.baseurl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();

@@ -19,7 +19,7 @@ import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.BaseSwipeAdapter;
 import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
-import com.tongyuan.android.zhiquleyuan.activity.AddMemberToGroup;
+import com.tongyuan.android.zhiquleyuan.activity.AddMemberToGroupActivity;
 import com.tongyuan.android.zhiquleyuan.activity.BabyInfoListActivity;
 import com.tongyuan.android.zhiquleyuan.activity.SetInitVolumeActivity;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteBabyInfoReQBean;
@@ -59,6 +59,7 @@ public class BabyInfoListAdapter extends BaseSwipeAdapter {
     private String time;
     private String phone;
     private String token;
+    public static final int BabyInfoListAdapter_TO_ADDMEMEBER_GROUP=2;
 
 
     public BabyInfoListAdapter(Context context, List<QueryBabyListResult.BODYBean.LSTBean> lst) {
@@ -144,8 +145,8 @@ public class BabyInfoListAdapter extends BaseSwipeAdapter {
         mTv_item_babyinfolist_invite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext, AddMemberToGroup.class);
-                intent.putExtra("flag", 1);
+                Intent intent = new Intent(mContext, AddMemberToGroupActivity.class);
+                intent.putExtra("flag", 2);
                 mContext.startActivity(intent);
 //                ToastUtil.showToast(mContext, "点击的是邀请");
             }

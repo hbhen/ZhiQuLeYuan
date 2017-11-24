@@ -4,7 +4,7 @@ import android.content.Intent;
 
 import com.tongyuan.android.zhiquleyuan.activity.ActivityLogin;
 import com.tongyuan.android.zhiquleyuan.request.base.SuperModel;
-import com.tongyuan.android.zhiquleyuan.utils.ZhiQuLeYuanApplication;
+import com.tongyuan.android.zhiquleyuan.utils.ZQLYApp;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -26,10 +26,10 @@ public abstract class CallbackFilter<T> implements Callback<T> {
         if(notLogin.equals(result.CODE)) {
             //跳转到Login页
             Intent intent = new Intent();
-            intent.setClass(ZhiQuLeYuanApplication.context.getApplicationContext(), ActivityLogin.class);
+            intent.setClass(ZQLYApp.context.getApplicationContext(), ActivityLogin.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            ZhiQuLeYuanApplication.context.getApplicationContext().startActivity(intent);
+            ZQLYApp.context.getApplicationContext().startActivity(intent);
         } else {
             onResponseFilter(call, response);
         }

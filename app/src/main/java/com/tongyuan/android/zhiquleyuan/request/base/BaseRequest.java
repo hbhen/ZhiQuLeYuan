@@ -8,14 +8,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- *
  * Created by zgg on 2017/6/4.
  */
 
 public class BaseRequest<T> {
 
-    public String TYPE ;
-    public String CMD  ;
+    public String TYPE;
+    public String CMD;
     public String ACCT;
     public String TIME;
     public T BODY;
@@ -24,14 +23,14 @@ public class BaseRequest<T> {
     public String SEQ;
 
     public BaseRequest(Context context, T body) {
-        TYPE  = "RES";
-        CMD   = "QRYCOL";
-        ACCT  = SPUtils.getString(context, "phoneNum", "");
-        TIME  = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
-        BODY  = body;
-        VERI  = "";
+        TYPE = "RES";
+        CMD = "QRYCOL";
+        ACCT = SPUtils.getString(context, "phoneNum", "");
+        TIME = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
+        BODY = body;
+        VERI = "";
         TOKEN = SPUtils.getString(context, "token", "");
-        SEQ   = "1";
+        SEQ = "1";
     }
 
     public BaseRequest(Context context, T body, String cmd) {

@@ -1,5 +1,6 @@
 package com.tongyuan.android.zhiquleyuan.activity;
 
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,7 +12,6 @@ import android.widget.EditText;
 
 import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
-import com.tongyuan.android.zhiquleyuan.adapter.ToyMemberAdapter;
 import com.tongyuan.android.zhiquleyuan.bean.AddMemberToGroupReQBean;
 import com.tongyuan.android.zhiquleyuan.bean.AddMemberToGroupReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.QuerySingleUserInfoReQBean;
@@ -35,9 +35,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /**
  * Created by DTC on 2017/4/18.
  */
-public class AddMemberToGroup extends AppCompatActivity implements View.OnClickListener {
-    private static final String TAG = "addmember";
+public class AddMemberToGroupActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private static final String TAG = "addmember";
     private EditText mEt_addmembertogroup;
     private Button mBt_addmembertogroup;
     private Intent mIntent;
@@ -62,7 +62,6 @@ public class AddMemberToGroup extends AppCompatActivity implements View.OnClickL
     private void initView() {
         mEt_addmembertogroup = (EditText) findViewById(R.id.et_addmembertogroup);
         mBt_addmembertogroup = (Button) findViewById(R.id.bt_addmembertogroup);
-
     }
 
     private void initListener() {
@@ -71,23 +70,33 @@ public class AddMemberToGroup extends AppCompatActivity implements View.OnClickL
     }
 
     private void initDate() {
-
-        Intent intent = getIntent();
-        int flag = intent.getIntExtra("flag", ToyMemberAdapter.TOYMEMBER_ADAPTER_TO_ADDMEMEBER_GROUP);
-        if (flag == ToyMemberAdapter.TOYMEMBER_ADAPTER_TO_ADDMEMEBER_GROUP) {
-            Bundle bundle = intent.getExtras();
-            SingleToyInfoRESBean.BODYBean toyinfo = bundle.getParcelable("toyinfo");
-            mToyinfoID = toyinfo.getID();
-            mCode = toyinfo.getCODE();
-        } else {
-            Log.i(TAG, "initDate: ");
-        }
-
         mIntent = new Intent();
         mPhoneNum = SPUtils.getString(this, "phoneNum", "");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         mTime = simpleDateFormat.format(new Date());
         mToken = SPUtils.getString(this, "token", "");
+
+        Intent intent = getIntent();
+        Log.d(TAG, "initDate: +" + intent.toString());
+        int flag = intent.getIntExtra("flag", 0);
+        //传过来的参数是1,就是从玩具群的邀请成员传过来的.
+        if (flag == 1) {
+            Bundle bundle = intent.getExtras();
+            Log.d(TAG, "initDate: " + bundle.toString());
+            SingleToyInfoRESBean.BODYBean toyinfo = bundle.getParcelable("toyinfo");
+
+            mToyinfoID = toyinfo.getID();
+            mCode = toyinfo.getCODE();
+            //传过来的参数是2,就是BabyInfoListActivity的BabyInfoListAdapter传过来的.
+        } else if (flag == 2) {
+//            ToyManagerFragment toymanagerfragment = (ToyManagerFragment) ToyManagerFragment.instantiate(this, ToyManagerFragment.class
+//                    .getSimpleName());
+//            SingleToyInfoRESBean.BODYBean response = toymanagerfragment.mResponse;
+//            String string = response.toString();
+            Log.d(TAG, "initDate: string(addmembertogroupactivity)" + "");
+            Log.d(TAG, "initDate: BabyInfoListActivity的BabyInfoListAdapter传过来的");
+        }
+
 
     }
 
@@ -100,7 +109,8 @@ public class AddMemberToGroup extends AppCompatActivity implements View.OnClickL
                 break;
             case R.id.bt_addmembertogroup:
                 mPhone = mEt_addmembertogroup.getText().toString().trim();
-                ToastUtil.showToast(this, "phone" + mPhone);
+//                ToastUtil.showToast(this, "phone" + mPhone);
+                Log.d(TAG, "onClick: phone+" + mPhone);
                 QuerySingleUserInfo(mPhone);
                 break;
             default:
@@ -122,6 +132,7 @@ public class AddMemberToGroup extends AppCompatActivity implements View.OnClickL
         Gson gson = new Gson();
         String s = gson.toJson(querySingleUserInfoReQBean);
         Call<QuerySingleUserInfoReSBean> querySingleUserInfoResult = allInterface.getQuerySingleUserInfoResult(s);
+        Log.d(TAG, "QuerySingleUserInfo: ssss+"+s);
         querySingleUserInfoResult.enqueue(new Callback<QuerySingleUserInfoReSBean>() {
             @Override
             public void onResponse(Call<QuerySingleUserInfoReSBean> call, Response<QuerySingleUserInfoReSBean> response) {
@@ -180,12 +191,13 @@ public class AddMemberToGroup extends AppCompatActivity implements View.OnClickL
 //                FragmentTransaction transaction = supportFragmentManager.beginTransaction();
 //                transaction.add(R.id.fl_fragmentcontainer, new ToyManagerFragment());
 //                transaction.commit();
+                Log.d(TAG, "onResponse: (完成逻辑)+ " + response.body().toString());
                 finish();
             }
 
             @Override
             public void onFailure(Call<AddMemberToGroupReSBean> call, Throwable t) {
-
+                Log.d(TAG, "onFailure: " + t);
 
             }
         });

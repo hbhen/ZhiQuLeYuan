@@ -541,7 +541,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 //只有list有想要的数据,所以只传list就行
                 if ("0".equals(response.body().getCODE())) {
                     mList = response.body().getBODY().getLST();
-                    //Log.i(TAG, "MainActivity+onResponse:list1" + mList.toString());
+                    Log.i(TAG, "MainActivity+onResponse:list1" + mList.toString());
                     if (mList != null) {
                         showDifferentToyFragment(mList);
                     }

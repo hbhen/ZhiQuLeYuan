@@ -18,7 +18,7 @@ import java.util.List;
 
 import static com.tongyuan.android.zhiquleyuan.R.id.tv_desc_detailstimes;
 import static com.tongyuan.android.zhiquleyuan.R.id.tv_desc_times_notitle;
-import static com.tongyuan.android.zhiquleyuan.utils.ZhiQuLeYuanApplication.context;
+import static com.tongyuan.android.zhiquleyuan.utils.ZQLYApp.context;
 
 /**
  * Created by DTC on 2017/3/23.

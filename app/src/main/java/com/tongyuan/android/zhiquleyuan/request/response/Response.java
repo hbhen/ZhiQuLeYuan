@@ -1,8 +1,8 @@
 package com.tongyuan.android.zhiquleyuan.request.response;
 
-import java.util.Map;
-
 import com.tongyuan.android.zhiquleyuan.request.network.HttpException;
+
+import java.util.Map;
 
 /**
  * Http request response package type, containing the request header, request
@@ -57,4 +57,5 @@ public class Response<T> {
 	public static <T> Response<T> error(HttpException error) {
 		return new Response<T>(error);
 	}
+
 }

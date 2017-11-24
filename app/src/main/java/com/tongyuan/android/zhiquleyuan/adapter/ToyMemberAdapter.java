@@ -23,7 +23,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
-import com.tongyuan.android.zhiquleyuan.activity.AddMemberToGroup;
+import com.tongyuan.android.zhiquleyuan.activity.AddMemberToGroupActivity;
 import com.tongyuan.android.zhiquleyuan.bean.DelMembFromGroupReQBean;
 import com.tongyuan.android.zhiquleyuan.bean.DelMembFromGroupReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryToyMemberReSBean;
@@ -313,8 +313,8 @@ public class ToyMemberAdapter extends BaseAdapter {
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("toyinfo", mResponse);
                 intent.putExtras(bundle);
-                intent.putExtra("flag",TOYMEMBER_ADAPTER_TO_ADDMEMEBER_GROUP);
-                intent.setClass(mContext, AddMemberToGroup.class);
+                intent.putExtra("flag", 1);
+                intent.setClass(mContext, AddMemberToGroupActivity.class);
                 mContext.startActivity(intent);
             } else if (position == getCount() - 1) {
                 if (mMode == Constant.Mode.NORMAL) {
