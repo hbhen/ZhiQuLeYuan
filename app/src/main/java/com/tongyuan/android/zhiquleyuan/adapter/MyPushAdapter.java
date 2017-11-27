@@ -19,6 +19,8 @@ import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.bean.QueryMyPushResBean;
 import com.tongyuan.android.zhiquleyuan.holder.MyPushHolder;
 
+import java.util.ArrayList;
+
 import retrofit2.Response;
 
 /**
@@ -29,21 +31,31 @@ public class MyPushAdapter extends BaseAdapter {
     private Response<QueryMyPushResBean> response;
     private MyPushHolder mMPHolder;
     private String mFormattime;
+    private ArrayList<QueryMyPushResBean.BODYBean.LSTBean> myPushList;
 
     public MyPushAdapter(Context myPushActivity, Response<QueryMyPushResBean> response) {
         this.mContext = myPushActivity;
         this.response = response;
     }
 
+    public MyPushAdapter(Context myPushActivity, ArrayList<QueryMyPushResBean.BODYBean.LSTBean> myPushList) {
+        this.mContext = myPushActivity;
+        this.myPushList = myPushList;
+
+    }
+
 
     @Override
     public int getCount() {
-        return response.body().getBODY().getLST().size();
+//        return response.body().getBODY().getLST().size();
+        return myPushList.size();
     }
+
 
     @Override
     public Object getItem(int position) {
-        return response.body().getBODY().getLST().get(position);
+//        return response.body().getBODY().getLST().get(position);
+        return myPushList.get(position);
     }
 
     @Override
@@ -53,10 +65,14 @@ public class MyPushAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        String img = response.body().getBODY().getLST().get(position).getIMG();
-        String name = response.body().getBODY().getLST().get(position).getNAME();
+        String img = myPushList.get(position).getIMG();
+
+//        String img = response.body().getBODY().getLST().get(position).getIMG();
+        String name = myPushList.get(position).getNAME();
+//        String name = response.body().getBODY().getLST().get(position).getNAME();
 //        String times = response.body().getBODY().getLST().get(position).getTIMES();
-        String begintime = response.body().getBODY().getLST().get(position).getBEGINTIME();
+        String begintime = myPushList.get(position).getBEGINTIME();
+//        String begintime = response.body().getBODY().getLST().get(position).getBEGINTIME();
 //        String colname = response.body().getBODY().getLST().get(position).getCOLNAME();
 
         if (convertView == null) {

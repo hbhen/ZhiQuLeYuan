@@ -41,6 +41,7 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.actitvity_splash);
+
         ActivityManager.addAvtivity(this);
         boolean isFirst = SPUtils.getBoolean(this, "isFirst", true);
 

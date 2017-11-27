@@ -5,11 +5,16 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -22,6 +27,7 @@ import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.adapter.MyPushAdapter;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteMyPushReqBean;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteMyPushResBean;
+import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListResult;
 import com.tongyuan.android.zhiquleyuan.bean.QueryMyPushReqBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryMyPushResBean;
@@ -48,17 +54,22 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by android on 2016/12/23.
  */
 
-public class MyPushActivity extends AppCompatActivity implements View.OnClickListener {
+public class MyPushActivity extends AppCompatActivity implements View.OnClickListener, AbsListView.OnScrollListener {
 
     private SwipeMenuListView mLv_myPush;
     private ImageView mPush_back;
-    private List<QueryBabyListResult.BODYBean.LSTBean> mLst;
     private String mToyid;
     private SwipeRefreshLayout mSpRefresh;
     private String mToken;
     private String mPhoneNum;
     private RelativeLayout mMyPushHeader;
+    private View footerView;
+    private EditText mEditTextView;
+    private String keyWord = "";
+    private int currentPage = 1;
 
+    ArrayList<QueryMyPushResBean.BODYBean.LSTBean> myPushList = new ArrayList<>();
+    ArrayList<DiscoveryListResultBean.BODYBean.LSTBean> mList = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,6 +88,10 @@ public class MyPushActivity extends AppCompatActivity implements View.OnClickLis
         mLv_myPush = (SwipeMenuListView) findViewById(R.id.rv_mypush);
         mPush_back = (ImageView) findViewById(R.id.iv_push_back);
         mSpRefresh = (SwipeRefreshLayout) findViewById(R.id.sprefresh);
+        mEditTextView = (EditText) findViewById(R.id.et_mycollection_mypush);
+        footerView = LayoutInflater.from(this).inflate(R.layout.discovery_sub_item_foot, null);
+        footerView.setVisibility(View.GONE);
+        mLv_myPush.addFooterView(footerView);
 
     }
 
@@ -84,11 +99,10 @@ public class MyPushActivity extends AppCompatActivity implements View.OnClickLis
         mToyid = SPUtils.getString(this, "toyidtopush", "");
         Intent intent = getIntent();
         QueryBabyListResult babyinfo = intent.getParcelableExtra("babyinfo");
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-        String time = simpleDateFormat.format(new Date());
+
         mToken = SPUtils.getString(this, "token", "");
         mPhoneNum = SPUtils.getString(this, "phoneNum", "");
-        getMyPushData(time, mToken, mPhoneNum);
+        getMyPushData(mToken, mPhoneNum, false);
     }
 
     private void initListener() {
@@ -97,15 +111,39 @@ public class MyPushActivity extends AppCompatActivity implements View.OnClickLis
         mSpRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getMyPushData(new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()), mToken, mPhoneNum);
+                getMyPushData(mToken, mPhoneNum, false);
                 mSpRefresh.setRefreshing(false);
             }
         });
+        mEditTextView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                keyWord = s.toString();
+                getMyPushData(mToken, mPhoneNum, false);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        mLv_myPush.setOnScrollListener(this);
+
     }
 
 
-    private void getMyPushData(String time, final String token, final String phoneNum) {
-
+    private void getMyPushData(final String token, final String phoneNum, final boolean isLoadMore) {
+        int page = currentPage;
+        if (isLoadMore) {
+            page++;
+        }
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        String time = simpleDateFormat.format(new Date());
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constant.baseurl)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -113,8 +151,8 @@ public class MyPushActivity extends AppCompatActivity implements View.OnClickLis
 
         AllInterface allInterface = retrofit.create(AllInterface.class);
         //TODO 我的页面下的推送是查看当前玩具的推送,还是该用户的所有推送???
-        QueryMyPushReqBean.BODYBean bodyBean = new QueryMyPushReqBean.BODYBean("", "10", "1", "", mToyid);
-        QueryMyPushReqBean queryMyPushReqBean = new QueryMyPushReqBean("REQ", "MYPUSH", phoneNum, time, bodyBean, "", token, "1");
+        QueryMyPushReqBean.BODYBean bodyBean = new QueryMyPushReqBean.BODYBean("", "10", "1", keyWord, mToyid);
+        final QueryMyPushReqBean queryMyPushReqBean = new QueryMyPushReqBean("REQ", "MYPUSH", phoneNum, time, bodyBean, "", token, "1");
         Gson gson = new Gson();
         String s = gson.toJson(queryMyPushReqBean);
         Call<QueryMyPushResBean> queryMyPushResult = allInterface.getQueryMyPushResult(s);
@@ -125,22 +163,40 @@ public class MyPushActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onResponse(Call<QueryMyPushResBean> call, final Response<QueryMyPushResBean> response) {
                 if (response.body().getCODE().equals("0")) {
-                    final MyPushAdapter myPushAdapter = new MyPushAdapter(getApplicationContext(), response);
+                    if (isLoadMore) {
+                        currentPage++;
+                    } else {
+                        myPushList.clear();
+                        currentPage = 1;
+                    }
                     mLst = response.body().getBODY().getLST();
-
+                    myPushList.addAll(mLst);
+                    final MyPushAdapter myPushAdapter = new MyPushAdapter(getApplicationContext(), myPushList);
                     mLv_myPush.setAdapter(myPushAdapter);
+                    if ("0".equals(response.body().getBODY().getNC())) {
+                        footerView.setVisibility(View.GONE);
+                    } else {
+                        footerView.setVisibility(View.VISIBLE);
+                    }
+                    for (QueryMyPushResBean.BODYBean.LSTBean bean : mLst) {
+                        DiscoveryListResultBean.BODYBean.LSTBean listBean = new DiscoveryListResultBean.BODYBean.LSTBean();
+                        listBean.setID(bean.getID());
+                        listBean.setIMG(bean.getIMG());
+                        listBean.setNAME(bean.getNAME());
+                        mList.add(listBean);
+                    }
 
                     mLv_myPush.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            ArrayList<QueryMyPushResBean.BODYBean.LSTBean> arrayList = new ArrayList<QueryMyPushResBean.BODYBean.LSTBean>();
-                            for (int i = 0; i < mLst.size(); i++) {
-
-                                arrayList.add(i, response.body().getBODY().getLST().get(i));
-
-                            }
-                            Log.i("121212", "onItemClick: list" + arrayList.size() + "---" + position);
-                            MyPlayActivity.launch(getApplicationContext(), arrayList, position);
+//                            ArrayList<QueryMyPushResBean.BODYBean.LSTBean> arrayList = new ArrayList<QueryMyPushResBean.BODYBean.LSTBean>();
+//                            for (int i = 0; i < mLst.size(); i++) {
+//
+//                                arrayList.add(i, response.body().getBODY().getLST().get(i));
+//
+//                            }
+//                            Log.i("121212", "onItemClick: list" + arrayList.size() + "---" + position);
+                            MyPlayActivity.launch(getApplicationContext(), mList, position);
 
                         }
                     });
@@ -155,6 +211,7 @@ public class MyPushActivity extends AppCompatActivity implements View.OnClickLis
                             deleteItem.setTitleSize(16);
                             deleteItem.setTitleColor(R.color.white);
                             menu.addMenuItem(deleteItem);
+
                         }
                     };
                     mLv_myPush.setMenuCreator(mCreator);
@@ -179,11 +236,12 @@ public class MyPushActivity extends AppCompatActivity implements View.OnClickLis
                 } else {
                     ToastUtil.showToast(getApplicationContext(), response.body().getMSG());
                 }
+                isLoading = false;
             }
 
             @Override
             public void onFailure(Call<QueryMyPushResBean> call, Throwable t) {
-
+                isLoading = false;
             }
         });
     }
@@ -209,7 +267,7 @@ public class MyPushActivity extends AppCompatActivity implements View.OnClickLis
         babyListResult.enqueue(new Callback<DeleteMyPushResBean>() {
             @Override
             public void onResponse(Call<DeleteMyPushResBean> call, Response<DeleteMyPushResBean> response) {
-                ToastUtil.showToast(getApplicationContext(),"走没走");
+                ToastUtil.showToast(getApplicationContext(), "走没走");
                 Log.i("555555", "recordingfragment+(deleteRecording)onResponse: " + response.body().getBODY().toString());
             }
 
@@ -242,5 +300,24 @@ public class MyPushActivity extends AppCompatActivity implements View.OnClickLis
             default:
                 break;
         }
+    }
+
+    private int totalItemCount;
+    private int lastItem;
+    private boolean isLoading = false;
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+        if (!isLoading && lastItem == totalItemCount && scrollState == SCROLL_STATE_IDLE) {
+            //显示加载更多
+            isLoading = true;
+            getMyPushData(mToken, mPhoneNum, true);
+        }
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        lastItem = firstVisibleItem + visibleItemCount;
+        this.totalItemCount = totalItemCount;
     }
 }

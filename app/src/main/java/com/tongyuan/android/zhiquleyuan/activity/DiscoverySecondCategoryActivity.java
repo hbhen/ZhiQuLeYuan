@@ -44,7 +44,7 @@ public class DiscoverySecondCategoryActivity extends AppCompatActivity implement
     @BindView(R.id.lv_activity_discovery_secondcategory)
     ListView listView;
     //    @BindView(R.id.iv_album_details_one)
-//    ImageView coverImageView;
+    //    ImageView coverImageView;
     private View footerView;
     private DiscoverySecondCategoryAdapter adapter;
     private String token;
@@ -65,7 +65,6 @@ public class DiscoverySecondCategoryActivity extends AppCompatActivity implement
         setContentView(R.layout.activity_discovery_secondcategory);
         ButterKnife.bind(this);
         StatusBarUtils.setStatusBarLightMode(this, getResources().getColor(R.color.main_top_bg));
-
         adapter = new DiscoverySecondCategoryAdapter(this, list);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

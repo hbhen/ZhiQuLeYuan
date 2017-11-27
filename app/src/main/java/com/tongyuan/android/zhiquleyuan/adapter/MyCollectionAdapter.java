@@ -54,8 +54,9 @@ public class MyCollectionAdapter extends BaseAdapter {
         String colname = mLSTBeen.get(position).getCOLNAME();
 
         if (convertView == null) {
-            View view = LayoutInflater.from(mContext).inflate(R.layout.item_mycollection, null);
-            convertView = view;
+//            View view = LayoutInflater.from(mContext).inflate(R.layout.item_mycollection, null);
+//            convertView = view;
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.item_mycollection, null);
             mMCHolder = new MyCollectionHolder();
             mMCHolder.imageView = (ImageView) convertView.findViewById(R.id.iv_item_mycollection);
             mMCHolder.textViewTitle = (TextView) convertView.findViewById(R.id.tv_item_mycollection);

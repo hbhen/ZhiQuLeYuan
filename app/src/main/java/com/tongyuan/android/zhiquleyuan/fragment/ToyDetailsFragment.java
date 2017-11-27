@@ -174,7 +174,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                                            response) {
                 if ("0".equals(response.body().CODE)) {
                     //返回的list是一个空list
-                    Log.i(TAG, "onResponse: "+response.body().BODY);
+                    Log.i(TAG, "onResponse: " + response.body().BODY);
                     Log.d(TAG, "onResponse: " + SPUtils.getString(getActivity(), "token", ""));
 
                     mLAdapter = new DiscoveryListViewAdapter(getContext(), response.body().BODY.getLST());
@@ -204,6 +204,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
             }
         });
     }
+
     public void setData(SingleToyInfoRESBean.BODYBean response, String image) {
 
 
@@ -321,7 +322,8 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     }
 
     private void displayBabyInfo() {
-        Glide.with(mContext).load(mBabyimg).asBitmap().placeholder(R.mipmap.default_babyimage).into(new BitmapImageViewTarget(mIv_fragment_toy_details_babyImg) {
+        Glide.with(mContext).load(mBabyimg).asBitmap().placeholder(R.mipmap.default_babyimage).into(new BitmapImageViewTarget
+                (mIv_fragment_toy_details_babyImg) {
             @Override
             protected void setResource(Bitmap resource) {
                 if (isDestroy)
@@ -471,7 +473,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         updateToyVersionResBeanCall.enqueue(new Callback<UpdateToyVersionResBean>() {
             @Override
             public void onResponse(Call<UpdateToyVersionResBean> call, Response<UpdateToyVersionResBean> response) {
-                ToastUtil.showToast(getContext(),"发送玩具更新请求成功");
+                ToastUtil.showToast(getContext(), "发送玩具更新请求成功");
                 Log.i(TAG, "(updatetoy)onResponse: " + response.body().toString());
             }
 
@@ -633,7 +635,6 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     @Override
     public void onDestroy() {
         super.onDestroy();
-
     }
 
 //    @Override
