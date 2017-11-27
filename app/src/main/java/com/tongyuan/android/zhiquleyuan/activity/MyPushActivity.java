@@ -70,6 +70,7 @@ public class MyPushActivity extends AppCompatActivity implements View.OnClickLis
 
     ArrayList<QueryMyPushResBean.BODYBean.LSTBean> myPushList = new ArrayList<>();
     ArrayList<DiscoveryListResultBean.BODYBean.LSTBean> mList = new ArrayList<>();
+    private MyPushAdapter mMyPushAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -171,8 +172,8 @@ public class MyPushActivity extends AppCompatActivity implements View.OnClickLis
                     }
                     mLst = response.body().getBODY().getLST();
                     myPushList.addAll(mLst);
-                    final MyPushAdapter myPushAdapter = new MyPushAdapter(getApplicationContext(), myPushList);
-                    mLv_myPush.setAdapter(myPushAdapter);
+                    mMyPushAdapter = new MyPushAdapter(getApplicationContext(), myPushList);
+                    mLv_myPush.setAdapter(mMyPushAdapter);
                     if ("0".equals(response.body().getBODY().getNC())) {
                         footerView.setVisibility(View.GONE);
                     } else {
@@ -218,14 +219,11 @@ public class MyPushActivity extends AppCompatActivity implements View.OnClickLis
                     mLv_myPush.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
-                            deletePush(phoneNum, new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()), position, mLst, token);
-                            mLst.remove(position);
-                            myPushAdapter.notifyDataSetChanged();
-
+                            deletePush(phoneNum, new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()), position, myPushList, token);
+                            myPushList.remove(position);
+                            mMyPushAdapter.notifyDataSetChanged();
                             ToastUtil.showToast(getApplicationContext(), "点击删除");
-
                             return false;
-
                         }
                     });
 
@@ -267,6 +265,8 @@ public class MyPushActivity extends AppCompatActivity implements View.OnClickLis
         babyListResult.enqueue(new Callback<DeleteMyPushResBean>() {
             @Override
             public void onResponse(Call<DeleteMyPushResBean> call, Response<DeleteMyPushResBean> response) {
+                footerView.setVisibility(View.GONE);
+                mMyPushAdapter.notifyDataSetChanged();
                 ToastUtil.showToast(getApplicationContext(), "走没走");
                 Log.i("555555", "recordingfragment+(deleteRecording)onResponse: " + response.body().getBODY().toString());
             }

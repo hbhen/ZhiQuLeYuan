@@ -150,10 +150,8 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
         //宝宝的名字
         mBabyName = (TextView) findViewById(R.id.tv_activity_videocall_babyname);
 
-//
 //        Intent intent = getIntent();
 //        Bundle extras = intent.getExtras();
-//
 //        mRoomid = extras.getString("roomid");
 //        mToken = extras.getString("token");
 //        mToyid = extras.getString("toyid");

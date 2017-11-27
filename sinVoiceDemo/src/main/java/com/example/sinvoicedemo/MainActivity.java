@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
-
 import com.libra.sinvoice.LogHelper;
 import com.libra.sinvoice.SinVoicePlayer;
 import com.libra.sinvoice.SinVoiceRecognition;
