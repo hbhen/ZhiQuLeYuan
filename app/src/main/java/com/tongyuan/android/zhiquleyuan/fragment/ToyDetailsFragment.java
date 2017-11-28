@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -69,7 +70,7 @@ import static com.tongyuan.android.zhiquleyuan.R.id.tv_toy_details_playing;
 /**
  * Created by android on 2017/1/9.
  */
-public class ToyDetailsFragment extends BaseFragment implements View.OnClickListener {
+public class ToyDetailsFragment extends BaseFragment implements View.OnClickListener, SeekBar.OnSeekBarChangeListener {
 
     private static final int BIND_BABYTO_TOY = 3001;
     private static final int UNBIND_BABY = 3002;
@@ -120,6 +121,11 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     private boolean isShow = false;
     private RelativeLayout mToyPlayControl;
     private TextView mUpdate;
+    private TextView mTv_toyPlayControl_time;
+    private ImageView mIv_toyPlayControl_pre;
+    private ImageView mIv_toyPlayControl_next;
+    private ImageView mIv_toyPlayControl_play;
+    private SeekBar mIv_toyPlayControl_seekbar;
 
 
     @Nullable
@@ -127,15 +133,21 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle
             savedInstanceState) {
         mToyDetails = inflater.inflate(R.layout.fragment_toy_details, null);
+
         mToyPlayControl = (RelativeLayout) mToyDetails.findViewById(R.id.rl_fragment_toy_playingcontrol);
+        mTv_toyPlayControl_time = (TextView) mToyPlayControl.findViewById(R.id.tv_fragment_recoding_time);
+        mIv_toyPlayControl_pre = (ImageView) mToyPlayControl.findViewById(R.id.iv_recoding_prev);
+        mIv_toyPlayControl_next = (ImageView) mToyPlayControl.findViewById(R.id.iv_recoding_next);
+        mIv_toyPlayControl_play = (ImageView) mToyPlayControl.findViewById(R.id.iv_recoding_play);
+        mIv_toyPlayControl_seekbar = (SeekBar) mToyPlayControl.findViewById(R.id.seekbar);
+
         mListviewtitle = inflater.inflate(R.layout.discovery_recyclerview_listview_title, null);
         Log.i("timedate", "onCreateView");
-
+        //TODO 动态设置布局的位置:mIsPlaying 显示,mListviewRecommand在它下面; 不显示,mListviewRecommand在Relativlayout的下面.
 //        FrameLayout framelayoutControl =  (FrameLayout) mToyDetails.findViewById(R.id
 // .fl_fragment_toy_details_playcontrol);
         mUpdate = (TextView) mToyDetails.findViewById(R.id.tv_updatetoy);
         mListviewRecommand = (ListView) mToyDetails.findViewById(R.id.lv_fragment_toy_details_recommand);
-
         mCall = (ImageView) mToyDetails.findViewById(iv_toy_details_call);
         mToyManager = (TextView) mToyDetails.findViewById(R.id.tv_toy_details_manager);
         mIv_fragment_toy_details_babyImg = (ImageView) mToyDetails.findViewById(R.id.iv_fragment_toy_details_babyImg);
@@ -155,6 +167,12 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         mToyDetails.findViewById(R.id.back_btn).setOnClickListener(this);
         mToyIsPlaying.setOnClickListener(this);
         mUpdate.setOnClickListener(this);
+
+        mTv_toyPlayControl_time.setOnClickListener(this);
+        mIv_toyPlayControl_pre.setOnClickListener(this);
+        mIv_toyPlayControl_next.setOnClickListener(this);
+        mIv_toyPlayControl_play.setOnClickListener(this);
+        mIv_toyPlayControl_seekbar.setOnSeekBarChangeListener(this);
         mToyManagerFragment = new ToyManagerFragment();
 //        initView();
         getListRaw();
@@ -349,8 +367,10 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                 isShow = !isShow;
                 if (isShow) {
                     mToyPlayControl.setVisibility(View.VISIBLE);
+                    mListviewRecommand.setVisibility(View.GONE);
                 } else {
                     mToyPlayControl.setVisibility(View.GONE);
+                    mListviewRecommand.setVisibility(View.VISIBLE);
                 }
                 break;
             case iv_toy_details_call:
@@ -600,8 +620,10 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                             isShow = !isShow;
                             if (isShow) {
                                 mToyPlayControl.setVisibility(View.VISIBLE);
+                                mListviewRecommand.setVisibility(View.GONE);
                             } else {
                                 mToyPlayControl.setVisibility(View.GONE);
+                                mListviewRecommand.setVisibility(View.VISIBLE);
                             }
 
                         }
@@ -770,5 +792,20 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
 //            System.out.println("scan_result------" + scan_result);
 //            Log.i("scan_result", "onActivityResult: +scan_result" + scan_result);
 //        }
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+
     }
 }

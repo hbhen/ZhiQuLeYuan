@@ -101,7 +101,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         setContentView(R.layout.activity_main);
         ActivityManager.addAvtivity(this);
         StatusBarUtils.setStatusBarLightMode(this, getResources().getColor(R.color.main_top_bg));
-
         CrashReport.initCrashReport(getApplicationContext(), "4d4412e3f1", true);
         Config.DEBUG = true;
         QueuedWork.isUseThreadPool = false;

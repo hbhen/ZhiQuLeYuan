@@ -184,7 +184,7 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_weight="1"
-            android:src="@drawable/play_before_104"/>
+            android:src="@drawable/play_recording_prev_3x"/>
 
         <ImageView
             android:id="@+id/player_play_btn"
@@ -200,7 +200,7 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_weight="1"
-            android:src="@drawable/play_after_104"/>
+            android:src="@drawable/play_recording_next_3x"/>
 
         <ImageView
             android:layout_width="17dp"
