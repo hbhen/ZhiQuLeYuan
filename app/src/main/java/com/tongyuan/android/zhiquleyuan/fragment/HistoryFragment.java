@@ -161,6 +161,7 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
                     lv_fragment_history.setAdapter(historyAdapter);
 //                    lv_fragment_history.addHeaderView(mItem_history_header);
                     lv_fragment_history.setDivider(null);
+                    lv_fragment_history.setFooterDividersEnabled(false);
                     lv_fragment_history.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

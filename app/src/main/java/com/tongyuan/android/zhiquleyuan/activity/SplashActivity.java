@@ -46,18 +46,18 @@ public class SplashActivity extends AppCompatActivity {
         boolean isFirst = SPUtils.getBoolean(this, "isFirst", true);
 
         if (isFirst) {
-            ToastUtil.showToast(this, "First time start");
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    requestStoragePermission();
-                    Intent intent = new Intent(SplashActivity.this, MainActivity.class);
-                    Log.i(TAG, "run: start 始");
-                    startActivity(intent);
-                    Log.i(TAG, "run: start 完");
-                    SPUtils.putBoolean(SplashActivity.this, "isFirst", false);
-                }
-            }).start();
+//            ToastUtil.showToast(this, "First time start");
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+            requestStoragePermission();
+            Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+            Log.i(TAG, "run: start 始");
+            startActivity(intent);
+            Log.i(TAG, "run: start 完");
+            SPUtils.putBoolean(SplashActivity.this, "isFirst", false);
+//                }
+//            }).start();
         } else {
             goHome();
             ToastUtil.showToast(this, "Second time start");
@@ -68,27 +68,31 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void goHome() {
+        requestStoragePermission();
         SPUtils.putBoolean(this, "isFirst", false);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                requestStoragePermission();
-                Intent intent = new Intent(SplashActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        }).start();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                requestStoragePermission();
+        Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
+//            }
+//        }).start();
     }
 
     private void requestStoragePermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             // 检查该权限是否已经获取
+//            int i = ContextCompat.checkSelfPermission(this, PERMISSION_STORAGES[0]);
             int i = ContextCompat.checkSelfPermission(this, PERMISSION_STORAGES[0]);
             // 权限是否已经 授权 GRANTED---授权 DINIED---拒绝
             if (i != PackageManager.PERMISSION_GRANTED) {
                 // 如果没有授予该权限，就去提示用户请求
                 showDialogTipUserRequestPermission();
             }
+        } else {
+            ToastUtil.showToast(this, "权限已经获取");
         }
     }
 
@@ -128,15 +132,15 @@ public class SplashActivity extends AppCompatActivity {
                         // 用户还是想用我的 APP 的
                         // 提示用户去应用设置界面手动开启权限
                         showDialogTipUserGoToAppSettting();
-                    } else
+                    } else {
+                        showDialogTipUserGoToAppSettting();
                         finish();
+                    }
                 } else {
                     Toast.makeText(this, "权限获取成功", Toast.LENGTH_SHORT).show();
                 }
             }
         }
-
-
     }
 
     private void showDialogTipUserGoToAppSettting() {

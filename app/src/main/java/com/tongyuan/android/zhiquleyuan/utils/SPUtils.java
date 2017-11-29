@@ -252,6 +252,20 @@ public class SPUtils {
         return sp.getString(key, defValue);
     }
 
+    public static void putInt(Context ctx, String key, int value) {
+        if (sp == null) {
+            sp = ctx.getSharedPreferences("config", Context.MODE_PRIVATE);
+        }
+        sp.edit().putInt(key, value).commit();
+    }
+
+    public static int getInt(Context ctx, String key, int value) {
+        if (sp == null) {
+            sp = ctx.getSharedPreferences("config", Context.MODE_PRIVATE);
+        }
+        return sp.getInt(key, value);
+    }
+
     /**
      * 从sp中移除指定节点
      *

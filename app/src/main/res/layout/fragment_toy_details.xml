@@ -298,7 +298,7 @@
             android:background="@color/main_top_bg"
             android:clickable="true"
             android:padding="10dp"
-            android:visibility="visible"
+            android:visibility="gone"
             >
 
             <!--<TextView-->
@@ -449,14 +449,22 @@
             </RelativeLayout>
         </RelativeLayout>
 
-        <ListView
-            android:id="@+id/lv_fragment_toy_details_recommand"
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_toydetails"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:divider="@null"
-            android:scrollbars="none"
-            android:visibility="gone"
-            />
+            android:layout_height="wrap_content"
+            >
+
+            <ListView
+                android:id="@+id/lv_fragment_toy_details_recommand"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:footerDividersEnabled="false"
+                android:scrollbars="none"
+                android:visibility="visible"
+                />
+        </android.support.v4.widget.SwipeRefreshLayout>
+
 
     </RelativeLayout>
 

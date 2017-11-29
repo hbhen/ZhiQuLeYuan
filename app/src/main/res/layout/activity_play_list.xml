@@ -11,7 +11,10 @@
         android:id="@+id/tb_activity_play_list"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_44"
-        android:layout_alignParentLeft="true" android:layout_alignParentStart="true" android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="@color/titlebackground"
         >
 
         <ImageView
@@ -37,7 +40,7 @@
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/sprefresh"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_below="@id/tb_activity_play_list"
         >
 
@@ -45,6 +48,8 @@
             android:id="@+id/sp_activity_play_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="#ffffff"
+            android:footerDividersEnabled="false"
             />
 
     </android.support.v4.widget.SwipeRefreshLayout>

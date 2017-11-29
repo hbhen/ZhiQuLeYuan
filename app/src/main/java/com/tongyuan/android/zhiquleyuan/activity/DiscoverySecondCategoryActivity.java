@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
@@ -22,6 +24,7 @@ import com.tongyuan.android.zhiquleyuan.request.base.SuperModel;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.StatusBarUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
+import com.tongyuan.android.zhiquleyuan.utils.ZQLYApp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +35,6 @@ import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
 
 /**
  * 发现页二级目录
@@ -45,12 +47,16 @@ public class DiscoverySecondCategoryActivity extends AppCompatActivity implement
     ListView listView;
     //    @BindView(R.id.iv_album_details_one)
     //    ImageView coverImageView;
+    @BindView(R.id.swipe_seconde_category)
+    SwipeRefreshLayout swipeRefresh;
     private View footerView;
     private DiscoverySecondCategoryAdapter adapter;
     private String token;
     private String colid;
     private List<DiscoveryListResultBean.BODYBean.LSTBean> list = new ArrayList<>();
     private int currPage = 1;
+    private static final String TAG
+            = "tag";
 
     public static void launch(Context context, String imgPath, String colId) {
         Intent intent = new Intent(context, DiscoverySecondCategoryActivity.class);
@@ -81,6 +87,14 @@ public class DiscoverySecondCategoryActivity extends AppCompatActivity implement
         footerView = LayoutInflater.from(this).inflate(R.layout.discovery_sub_item_foot, null);
         footerView.setVisibility(View.GONE);
         listView.addFooterView(footerView);
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                currPage=1;
+                getIdColSecondaryInfo(colid, false);
+                swipeRefresh.setRefreshing(false);
+            }
+        });
         initData();
     }
 
@@ -112,6 +126,7 @@ public class DiscoverySecondCategoryActivity extends AppCompatActivity implement
             @Override
             public void onResponse(Call<SuperModel<DiscoveryGridSecondaryResultBean>> call, Response<SuperModel<DiscoveryGridSecondaryResultBean>>
                     response) {
+                Log.d(TAG, "onResponse:(discoverysubreqbean) " + response.body().toString() + "__________" + response.body().BODY.toString());
                 if ("0".equals(response.body().CODE)) {
                     if (isLoadMore) {
                         currPage++;
@@ -126,8 +141,10 @@ public class DiscoverySecondCategoryActivity extends AppCompatActivity implement
                         footerView.setVisibility(View.VISIBLE);
                     }
                     adapter.notifyDataSetChanged();
+                    ToastUtil.showToast(ZQLYApp.context, "成功");
                 } else {
-                    ToastUtil.showToast(getApplicationContext(), response.body().MSG);
+                    ToastUtil.showToast(ZQLYApp.context, "没成功");
+//                    ToastUtil.showToast(getApplicationContext(), response.body().MSG);
                     footerView.setVisibility(View.GONE);
                 }
                 isLoading = false;

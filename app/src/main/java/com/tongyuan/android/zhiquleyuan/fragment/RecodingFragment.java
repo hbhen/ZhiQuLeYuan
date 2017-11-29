@@ -55,6 +55,7 @@ import com.tongyuan.android.zhiquleyuan.bean.ControlToyPlayRecordingReqBean;
 import com.tongyuan.android.zhiquleyuan.bean.ControlToyPlayRecordingResBean;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteRecordingReqBean;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteRecordingResBean;
+import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.LocalPlayApplyReqBean;
 import com.tongyuan.android.zhiquleyuan.bean.LocalPlayApplyResBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryRecordingReqBean;
@@ -101,7 +102,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by android on 2016/12/3.
  */
 
-public class RecodingFragment extends BaseRecordingFragment implements View.OnClickListener {
+public class RecodingFragment extends BaseRecordingFragment implements View.OnClickListener, AbsListView.OnScrollListener {
     private static final String TAG = "222222";
     private ImageView mRecordingButton;
     private ListView mLv_recoding;
@@ -173,6 +174,8 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
     private static final int PLAYRECORDING = 2;
     private static final int RRCORDINGCOMPLETE = 3;
     private List<QueryRecordingResBean.BODYBean.LSTBean> mLst;
+    private List<QueryRecordingResBean.BODYBean.LSTBean> recordingResList = new ArrayList<>();
+    private List<DiscoveryListResultBean.BODYBean.LSTBean> list = new ArrayList<>();
     private String mDur;
     private ShareAction mShareAction;
     private UMShareListener mShareListener;
@@ -186,6 +189,9 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
     private Timer mTimer;
     private String mMinString = "00";
     private String mSecString = "00";
+    private int currentPage = 1;
+    private RecordingListAdapter mRecordingListAdapter;
+    private View footerView;
 
     public RecodingFragment() {
 
@@ -302,15 +308,21 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
 //                showFile(recordList);
 //            }
 //        };
-
         sprefresh = (SwipeRefreshLayout) recordingRoot.findViewById(R.id.sprefresh);
         mSwipelistview = (SwipeMenuListView) recordingRoot.findViewById(R.id.lv_recoding);
+        mSwipelistview.setOnScrollListener(this);
         mSwipelistview.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
+        mRecordingListAdapter = new RecordingListAdapter(getContext(), recordingResList);
+        footerView = LayoutInflater.from(getContext()).inflate(R.layout.discovery_sub_item_foot, null);
+        footerView.setVisibility(View.GONE);
+        mSwipelistview.addFooterView(footerView);
+//        mSwipelistview.setAdapter(mRecordingListAdapter);
         sprefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 
             @Override
             public void onRefresh() {
-                queryRecordingList();
+                currentPage = 1;
+                queryRecordingList(false);
                 sprefresh.setRefreshing(false);
             }
 
@@ -322,21 +334,29 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
     }
 
     private void showBottomPanel() {
-        if (currentState == PLAYRECORDING) {
-            mRecordingFrag.setVisibility(View.GONE);
-            mCompleteFrag.setVisibility(View.GONE);
-            mPlayRecordingFrag.setVisibility(View.VISIBLE);
-        } else if (currentState == RECORDING) {
-            mRecordingFrag.setVisibility(View.VISIBLE);
-            mCompleteFrag.setVisibility(View.GONE);
-            mPlayRecordingFrag.setVisibility(View.GONE);
-        } else if (currentState == RRCORDINGCOMPLETE) {
-            //录音布局
-            mRecordingFrag.setVisibility(View.GONE);
-            //录音完成布局
-            mCompleteFrag.setVisibility(View.VISIBLE);
-            //录音播放布局
-            mPlayRecordingFrag.setVisibility(View.GONE);
+        int isShowBottomPanel = SPUtils.getInt(getContext(), "isShowBottomPanel", View.GONE);
+        if (isShowBottomPanel == View.VISIBLE) {
+            if (currentState == PLAYRECORDING) {
+                mRecordingFrag.setVisibility(View.GONE);
+                mCompleteFrag.setVisibility(View.GONE);
+                mPlayRecordingFrag.setVisibility(View.VISIBLE);
+            } else if (currentState == RECORDING) {
+                mRecordingFrag.setVisibility(View.VISIBLE);
+                mCompleteFrag.setVisibility(View.GONE);
+                mPlayRecordingFrag.setVisibility(View.GONE);
+            } else if (currentState == RRCORDINGCOMPLETE) {
+                //录音布局
+                mRecordingFrag.setVisibility(View.GONE);
+                //录音完成布局
+                mCompleteFrag.setVisibility(View.VISIBLE);
+                //录音播放布局
+                mPlayRecordingFrag.setVisibility(View.GONE);
+            }
+            SPUtils.putInt(getContext(), "isShowBottomPanel", View.VISIBLE);
+        } else {
+            SPUtils.putInt(getContext(), "isShowBottomPanel", View.GONE);
+            mBottomControl.setVisibility(View.GONE);
+
         }
     }
 
@@ -366,7 +386,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
 //    BaseRequest baseRequest = new BaseRequest(getContext(), bodyBean, "MYREC");
 //    Call<SuperModel<QueryRecordingResBean>> queryRecordingResBeanResult = RequestManager.getInstance()
 // .queryRecordingResBean(baseRequest);
-        queryRecordingList();
+        queryRecordingList(false);
 
 
     }
@@ -526,15 +546,15 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
                     return;
                 }
                 --selectedPosition;
-                mRecordingId = mLst.get(selectedPosition).getID();
+                mRecordingId = recordingResList.get(selectedPosition).getID();
                 playMusic(false);
                 break;
             case R.id.iv_recoding_next:
-                if (selectedPosition == mLst.size() - 1) {
+                if (selectedPosition == recordingResList.size() - 1) {
                     return;
                 }
                 ++selectedPosition;
-                mRecordingId = mLst.get(selectedPosition).getID();
+                mRecordingId = recordingResList.get(selectedPosition).getID();
                 playMusic(false);
                 break;
             //播放界面的返回
@@ -571,14 +591,14 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
         if (!activity.isBound())
             return;
         if (!MusicPlayer.isPrepared() && isPlay) {
-            MusicPlayer.openAndStart(mLst.get(selectedPosition).getID());
+            MusicPlayer.openAndStart(recordingResList.get(selectedPosition).getID());
             return;
         }
         if (isPlay) {
             if (MusicPlayerService.isPlayUrl(mRecordingId)) {
                 MusicPlayer.start();
             } else {
-                MusicPlayer.openAndStart(mLst.get(selectedPosition).getID());
+                MusicPlayer.openAndStart(recordingResList.get(selectedPosition).getID());
             }
             showStartView();
         } else {
@@ -681,7 +701,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
                 Log.i("555555", "recordingfragment+(changerecordingnamebean)onResponse: " + response.body().getBODY()
                         .toString());
                 //改变完了以后去访问网络,刷新listview
-                queryRecordingList();
+                queryRecordingList(false);
             }
 
             @Override
@@ -699,7 +719,11 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
         mEditListener = editListener;
     }
 
-    private void queryRecordingList() {
+    private void queryRecordingList(final boolean isLoadMore) {
+        int page = currentPage;
+        if (isLoadMore) {
+            page++;
+        }
         mToken = SPUtils.getString(getContext(), "token", "");
         mPhoneNum = SPUtils.getString(getContext(), "phoneNum", "");
         Date date = new Date();
@@ -710,7 +734,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
-        QueryRecordingReqBean.BODYBean bodyBean = new QueryRecordingReqBean.BODYBean("", "10", "1");
+        QueryRecordingReqBean.BODYBean bodyBean = new QueryRecordingReqBean.BODYBean("", "10", String.valueOf(page));
         QueryRecordingReqBean queryRecordingReqBean = new QueryRecordingReqBean("REQ", "MYREC", mPhoneNum, mTime,
                 bodyBean, "", mToken, "1");
 
@@ -720,23 +744,42 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
         babyListResult.enqueue(new Callback<QueryRecordingResBean>() {
 
 
-            private RecordingListAdapter mRecordingListAdapter;
-
             @Override
             public void onResponse(Call<QueryRecordingResBean> call, final Response<QueryRecordingResBean> response) {
                 if (response.body() != null && response.body().getCODE().equals("0")) {
-                    Log.i("1111111", "queryRecordingList:response" + response.body().getBODY().toString());
                     mLst = response.body().getBODY().getLST();//这里拿的是所有的录音的列表
                     Log.i(TAG, "onResponse: mlist" + mLst.toString());
-                    final List<String> list = new ArrayList<String>();
-
-                    for (int i = 0; i < mLst.size(); i++) {
-                        String id = mLst.get(i).getID();
-                        list.add(id);
+                    if (isLoadMore) {
+                        currentPage++;
+                    } else {
+                        recordingResList.clear();
+                        currentPage = 1;
                     }
-                    Log.i("555555", "onResponse:+list的长度: " + list.size() + "list的内容:");
-                    mRecordingListAdapter = new RecordingListAdapter(getContext(), mLst);
+                    recordingResList.addAll(mLst);
+                    if ("0".equals(response.body().getBODY().getNC())) {
+                        footerView.setVisibility(View.GONE);
+                    } else {
+                        footerView.setVisibility(View.VISIBLE);
+                    }
                     mSwipelistview.setAdapter(mRecordingListAdapter);
+
+                    mRecordingListAdapter.notifyDataSetChanged();
+                    Log.i("1111111", "queryRecordingList:response" + response.body().getBODY().toString());
+                    for (QueryRecordingResBean.BODYBean.LSTBean bean : recordingResList) {
+                        DiscoveryListResultBean.BODYBean.LSTBean listBean = new DiscoveryListResultBean.BODYBean.LSTBean();
+                        listBean.setID(bean.getID());
+                        listBean.setIMG(bean.getIMG());
+                        listBean.setNAME(bean.getNAME());
+                        list.add(listBean);
+                    }
+
+                    final List<String> idList = new ArrayList<String>();
+                    for (int i = 0; i < recordingResList.size(); i++) {
+                        String id = recordingResList.get(i).getID();
+                        idList.add(id);
+                    }
+                    Log.i("555555", "onResponse:+list的长度: " + recordingResList.size() + "recordingResList的内容:");
+
                     mSwipelistview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -744,8 +787,8 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
                              //2,拿到item的信息(name,duration),展示到播放界面上
                              //3,点击播放,开始播放,seekbar的begintime开始走 ,seekbar的进度也跟着走,同时播放按钮变成暂停按钮
                              //4,点击暂停,录音播放暂停,seekbar停止进度,记住当前的播放位置,并停留在当前的显示位置
-                             //5,点击上一首,去list列表获取上一首的信息,如果是第一首就仍然是第一首,点击上一首,直接开始播放
-                             //6,点击下一首,去list列表获取下一首的信息,如果是最后一首就仍然是最后一首,点击下一首,直接开始播放
+                             //5,点击上一首,去recordingResList列表获取上一首的信息,如果是第一首就仍然是第一首,点击上一首,直接开始播放
+                             //6,点击下一首,去recordingResList列表获取下一首的信息,如果是最后一首就仍然是最后一首,点击下一首,直接开始播放
                              //7,播放结束的监听,当音乐播放完,进度条停止,暂停按钮变成播放按钮
                              //8,点击音量控制,去设置初始化音量界面,设置音量并上传到服务器
                              **/
@@ -762,12 +805,12 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
                             showRecordingPlayView(true);
                             //拿到item的信息(name,duration),展示到播放界面上
                             //播放的id
-//                            Log.i(TAG, "onItemClick: list"+list.toString());
-                            mRecordingId = list.get(selectedPosition);
+//                            Log.i(TAG, "onItemClick: recordingResList"+recordingResList.toString());
+                            mRecordingId = idList.get(selectedPosition);
                             Log.i(TAG, "onItemClick: mrecoding" + mRecordingId);
                             //2,拿到item的信息(name,duration),展示到播放界面上
-                            mPlayName = mLst.get(position).getNAME();
-                            mDur = mLst.get(position).getDUR();
+                            mPlayName = recordingResList.get(position).getNAME();
+                            mDur = recordingResList.get(position).getDUR();
                             mPlayRecordingDesc.setText(mPlayName);
                             mPlayendTime.setText(mDur);
 //                            //带着id 去服务器申请本地播放
@@ -796,8 +839,8 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
                     mSwipelistview.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
-                            deleteRecording(mTime, position, mLst);
-                            mLst.remove(position);
+                            deleteRecording(mTime, position, recordingResList);
+                            recordingResList.remove(position);
                             mRecordingListAdapter.notifyDataSetChanged();
 //                            ToastUtil.showToast(getContext(), "点击删除");
                             return false;
@@ -809,12 +852,17 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
                     mSwipelistview.setOpenInterpolator(new AccelerateInterpolator());
                     mSwipelistview.setCloseInterpolator(new AccelerateInterpolator());
 
+                } else {
+                    ToastUtil.showToast(getActivity(), response.body().getMSG());
+                    footerView.setVisibility(View.GONE);
                 }
+                isLoading = false;
             }
 
             @Override
             public void onFailure(Call<QueryRecordingResBean> call, Throwable t) {
-
+                isLoading = false;
+                Log.d(TAG, "onFailure<QueryRecordingResBean>: " + t.toString());
             }
         });
 
@@ -916,10 +964,17 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
 //        objectAnimator.setDuration(300);
 //        objectAnimator.start();
 
-        if (mBottomControl.getVisibility() == View.VISIBLE) {
+//        if (mBottomControl.getVisibility() == View.VISIBLE) {
+//            mBottomControl.setVisibility(View.GONE);
+//        } else {
+//            mBottomControl.setVisibility(View.VISIBLE);
+//        }
+        if (SPUtils.getInt(getContext(), "isShowBottomPanel", View.GONE) == View.VISIBLE) {
             mBottomControl.setVisibility(View.GONE);
+            SPUtils.putInt(getContext(), "isShowBottomPanel", View.GONE);
         } else {
             mBottomControl.setVisibility(View.VISIBLE);
+            SPUtils.putInt(getContext(), "isShowBottomPanel", View.VISIBLE);
         }
     }
 
@@ -1270,6 +1325,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
     public void onResume() {
         super.onResume();
         Log.i(TAG, "onResume: went");
+        showBottomPanel();
         String dir = Environment.getExternalStorageDirectory().getPath() + "/AAmart";
         final File file = new File(dir);
         if (!file.exists()) {
@@ -1450,5 +1506,24 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
     public void onDetach() {
         super.onDetach();
         Log.i(TAG, "onDetach: went");
+    }
+
+    private int totalItemCount;
+    private int lastItem;
+    private boolean isLoading = false;
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+        if (!isLoading && lastItem == totalItemCount && scrollState == SCROLL_STATE_IDLE) {
+            //显示加载更多
+            isLoading = true;
+            queryRecordingList(true);
+        }
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        lastItem = firstVisibleItem + visibleItemCount;
+        this.totalItemCount = totalItemCount;
     }
 }

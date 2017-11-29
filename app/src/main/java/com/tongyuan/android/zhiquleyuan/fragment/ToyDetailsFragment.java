@@ -8,10 +8,12 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -70,7 +72,7 @@ import static com.tongyuan.android.zhiquleyuan.R.id.tv_toy_details_playing;
 /**
  * Created by android on 2017/1/9.
  */
-public class ToyDetailsFragment extends BaseFragment implements View.OnClickListener, SeekBar.OnSeekBarChangeListener {
+public class ToyDetailsFragment extends BaseFragment implements View.OnClickListener, SeekBar.OnSeekBarChangeListener, AbsListView.OnScrollListener {
 
     private static final int BIND_BABYTO_TOY = 3001;
     private static final int UNBIND_BABY = 3002;
@@ -116,6 +118,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     private String mUserId;
     private String mBabyid;
     private List<QueryBabyListFromToyIdRes.BODYBean.LSTBean> mLst = new ArrayList<>();
+    ArrayList<DiscoveryListResultBean.BODYBean.LSTBean> list = new ArrayList<>();
     private String mBabyName;
     String[] mStrings = new String[]{"与玩具通话", "与电视,玩具通话"};
     private boolean isShow = false;
@@ -126,6 +129,9 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     private ImageView mIv_toyPlayControl_next;
     private ImageView mIv_toyPlayControl_play;
     private SeekBar mIv_toyPlayControl_seekbar;
+    private SwipeRefreshLayout mRefresh;
+    private View footerView;
+    int currentPage = 1;
 
 
     @Nullable
@@ -133,6 +139,8 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle
             savedInstanceState) {
         mToyDetails = inflater.inflate(R.layout.fragment_toy_details, null);
+
+        mRefresh = (SwipeRefreshLayout) mToyDetails.findViewById(R.id.swipe_toydetails);
 
         mToyPlayControl = (RelativeLayout) mToyDetails.findViewById(R.id.rl_fragment_toy_playingcontrol);
         mTv_toyPlayControl_time = (TextView) mToyPlayControl.findViewById(R.id.tv_fragment_recoding_time);
@@ -162,26 +170,46 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         mCallButtery = (ImageView) mToyDetails.findViewById(R.id.iv_fragment_toy_details_call_buttery);
         mCallMIc = (ImageView) mToyDetails.findViewById(R.id.iv_fragment_toy_details_call_mic);
         mCallCamera = (ImageView) mToyDetails.findViewById(R.id.iv_fragment_toy_details_call_camera);
-
         mToyIsPlaying = (TextView) mToyDetails.findViewById(tv_toy_details_playing);
+
+        footerView = LayoutInflater.from(getContext()).inflate(R.layout.discovery_sub_item_foot, null);
+        footerView.setVisibility(View.GONE);
+        mListviewRecommand.addFooterView(footerView);
         mToyDetails.findViewById(R.id.back_btn).setOnClickListener(this);
         mToyIsPlaying.setOnClickListener(this);
         mUpdate.setOnClickListener(this);
-
         mTv_toyPlayControl_time.setOnClickListener(this);
         mIv_toyPlayControl_pre.setOnClickListener(this);
         mIv_toyPlayControl_next.setOnClickListener(this);
         mIv_toyPlayControl_play.setOnClickListener(this);
         mIv_toyPlayControl_seekbar.setOnSeekBarChangeListener(this);
+        mListviewRecommand.setOnScrollListener(this);
+        mRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                currentPage = 1;
+                getListRaw(false);
+                mRefresh.setRefreshing(false);
+            }
+        });
         mToyManagerFragment = new ToyManagerFragment();
+        mLAdapter = new DiscoveryListViewAdapter(getContext(), list);
+        mListviewRecommand.addHeaderView(mListviewtitle);
+        mListviewtitle.setClickable(false);
+        mListviewRecommand.setAdapter(mLAdapter);
+        mListviewRecommand.setHeaderDividersEnabled(false);
 //        initView();
-        getListRaw();
+        getListRaw(false);
         return mToyDetails;
     }
 
 
-    private void getListRaw() {
-        DiscoveryListRequsetBean.BODYBean request = new DiscoveryListRequsetBean.BODYBean("10", "1");
+    private void getListRaw(final boolean isLoadMore) {
+        int page = currentPage;
+        if (isLoadMore) {
+            page++;
+        }
+        DiscoveryListRequsetBean.BODYBean request = new DiscoveryListRequsetBean.BODYBean("10", String.valueOf(page));
         Call<SuperModel<DiscoveryListResultBean.BODYBean>> discoveryListResult = RequestManager.getInstance()
                 .getDiscoveryListResult(getContext(),
                         request);
@@ -191,16 +219,30 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                                    Response<SuperModel<DiscoveryListResultBean.BODYBean>>
                                            response) {
                 if ("0".equals(response.body().CODE)) {
+                    if (isLoadMore) {
+                        currentPage++;
+                    } else {
+                        list.clear();
+                        currentPage = 1;
+                    }
+                    list.addAll(response.body().BODY.getLST());
+                    if ("0".equals(response.body().BODY.getNC())) {
+                        footerView.setVisibility(View.GONE);
+                    } else {
+                        footerView.setVisibility(View.VISIBLE);
+                    }
+                    mLAdapter.notifyDataSetChanged();
+
                     //返回的list是一个空list
                     Log.i(TAG, "onResponse: " + response.body().BODY);
                     Log.d(TAG, "onResponse: " + SPUtils.getString(getActivity(), "token", ""));
 
-                    mLAdapter = new DiscoveryListViewAdapter(getContext(), response.body().BODY.getLST());
-                    mListviewRecommand.addHeaderView(mListviewtitle);
-                    mListviewtitle.setClickable(false);
-                    mListviewRecommand.setAdapter(mLAdapter);
 
-                    mListviewRecommand.setHeaderDividersEnabled(false);
+//                    mLAdapter = new DiscoveryListViewAdapter(getContext(), response.body().BODY.getLST());
+//                    mListviewRecommand.addHeaderView(mListviewtitle);
+//                    mListviewtitle.setClickable(false);
+//                    mListviewRecommand.setAdapter(mLAdapter);
+//                    mListviewRecommand.setHeaderDividersEnabled(false);
                     mListviewRecommand.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -213,12 +255,16 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                     });
                 } else {
                     ToastUtil.showToast(getActivity(), response.body().MSG);
+                    footerView.setVisibility(View.GONE);
                 }
+                isLoading = false;
             }
 
             @Override
             public void onFailure(Call<SuperModel<DiscoveryListResultBean.BODYBean>> call, Throwable t) {
-                ToastUtil.showToast(getActivity(), "shibai2");
+                ToastUtil.showToast(getActivity(), "获取数据失败");
+                Log.d(TAG, "onFailure: (toydetailsfragment)" + t.toString());
+                isLoading = false;
             }
         });
     }
@@ -258,8 +304,6 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         mOwnerid = response.getOWNERID();
         mOwnername = response.getOWNERNAME();
         Log.i(TAG, "mbabyimg: " + mBabyimg.toString());
-
-
         //请求一次网络,查询当前玩具的宝宝信息: 3.4.24
         queryToyHasBindBaby();
 
@@ -807,5 +851,24 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
 
+    }
+
+    private int totalItemCount;
+    private int lastItem;
+    private boolean isLoading = false;
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+        if (!isLoading && lastItem == totalItemCount && scrollState == SCROLL_STATE_IDLE) {
+            //显示加载更多
+            isLoading = true;
+            getListRaw(true);
+        }
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        lastItem = firstVisibleItem + visibleItemCount;
+        this.totalItemCount = totalItemCount;
     }
 }

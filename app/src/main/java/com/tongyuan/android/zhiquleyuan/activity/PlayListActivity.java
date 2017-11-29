@@ -76,6 +76,8 @@ public class PlayListActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void initData() {
+        mPlayListAdapter = new PlayListAdapter(getApplicationContext(), queryMusicList);
+        mSwipelistview.setAdapter(mPlayListAdapter);
         getMyPlayList(false);
     }
 
@@ -102,8 +104,6 @@ public class PlayListActivity extends AppCompatActivity implements View.OnClickL
 
         babyListResult.enqueue(new Callback<QueryMyPlayResBean>() {
 
-
-
             @Override
             public void onResponse(Call<QueryMyPlayResBean> call, Response<QueryMyPlayResBean> response) {
                 int size = response.body().getBODY().getLST().size();
@@ -119,8 +119,7 @@ public class PlayListActivity extends AppCompatActivity implements View.OnClickL
                     mLst = response.body().getBODY().getLST();
                     Log.d(TAG, "onResponse: mlst" + mLst.size());
                     queryMusicList.addAll(mLst);
-                    mPlayListAdapter = new PlayListAdapter(getApplicationContext(), queryMusicList);
-                    mSwipelistview.setAdapter(mPlayListAdapter);
+
                     Log.d(TAG, "onResponse: querymusic:" + queryMusicList.size());
                     if ("0".equals(response.body().getBODY().getNC())) {
                         footerView.setVisibility(View.GONE);
@@ -161,7 +160,7 @@ public class PlayListActivity extends AppCompatActivity implements View.OnClickL
                         public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
                             queryMusicList.remove(position);
                             deleteMyPlay(phoneNum, time, position, queryMusicList, token);
-                            mPlayListAdapter.notifyDataSetChanged();
+//                            mPlayListAdapter.notifyDataSetChanged();
                             ToastUtil.showToast(getApplicationContext(), "点击删除");
                             return false;
                         }
@@ -231,6 +230,7 @@ public class PlayListActivity extends AppCompatActivity implements View.OnClickL
 
             @Override
             public void onRefresh() {
+                currentPage=1;
                 getMyPlayList(false);
                 sprefresh.setRefreshing(false);
             }
