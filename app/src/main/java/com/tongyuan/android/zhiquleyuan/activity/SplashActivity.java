@@ -55,12 +55,12 @@ public class SplashActivity extends AppCompatActivity {
             Log.i(TAG, "run: start 始");
             startActivity(intent);
             Log.i(TAG, "run: start 完");
-            SPUtils.putBoolean(SplashActivity.this, "isFirst", false);
+//            SPUtils.putBoolean(SplashActivity.this, "isFirst", false);
 //                }
 //            }).start();
         } else {
             goHome();
-            ToastUtil.showToast(this, "Second time start");
+//            ToastUtil.showToast(this, "Second time start");
         }
 
 //        Log.e(TAG, "wakeup 完");

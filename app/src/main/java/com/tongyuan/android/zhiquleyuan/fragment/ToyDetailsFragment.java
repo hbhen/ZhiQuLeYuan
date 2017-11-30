@@ -118,7 +118,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     private String mUserId;
     private String mBabyid;
     private List<QueryBabyListFromToyIdRes.BODYBean.LSTBean> mLst = new ArrayList<>();
-    ArrayList<DiscoveryListResultBean.BODYBean.LSTBean> list = new ArrayList<>();
+    List<DiscoveryListResultBean.BODYBean.LSTBean> list = new ArrayList<>();
     private String mBabyName;
     String[] mStrings = new String[]{"与玩具通话", "与电视,玩具通话"};
     private boolean isShow = false;
@@ -193,11 +193,11 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
             }
         });
         mToyManagerFragment = new ToyManagerFragment();
-        mLAdapter = new DiscoveryListViewAdapter(getContext(), list);
+
         mListviewRecommand.addHeaderView(mListviewtitle);
-        mListviewtitle.setClickable(false);
-        mListviewRecommand.setAdapter(mLAdapter);
         mListviewRecommand.setHeaderDividersEnabled(false);
+        mListviewtitle.setClickable(false);
+
 //        initView();
         getListRaw(false);
         return mToyDetails;
@@ -209,7 +209,9 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         if (isLoadMore) {
             page++;
         }
-        DiscoveryListRequsetBean.BODYBean request = new DiscoveryListRequsetBean.BODYBean("10", String.valueOf(page));
+
+
+        final DiscoveryListRequsetBean.BODYBean request = new DiscoveryListRequsetBean.BODYBean("10", String.valueOf(page));
         Call<SuperModel<DiscoveryListResultBean.BODYBean>> discoveryListResult = RequestManager.getInstance()
                 .getDiscoveryListResult(getContext(),
                         request);
@@ -225,13 +227,21 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                         list.clear();
                         currentPage = 1;
                     }
-                    list.addAll(response.body().BODY.getLST());
                     if ("0".equals(response.body().BODY.getNC())) {
+                        list = response.body().BODY.getLST();
                         footerView.setVisibility(View.GONE);
                     } else {
+                        list.addAll(response.body().BODY.getLST());
                         footerView.setVisibility(View.VISIBLE);
                     }
-                    mLAdapter.notifyDataSetChanged();
+                    mLAdapter = new DiscoveryListViewAdapter(getContext(), list);
+                    mListviewRecommand.setAdapter(mLAdapter);
+//                    if ("0".equals(response.body().BODY.getNC())) {
+//
+//                    } else {
+//
+//                    }
+//                    mLAdapter.notifyDataSetChanged();
 
                     //返回的list是一个空list
                     Log.i(TAG, "onResponse: " + response.body().BODY);

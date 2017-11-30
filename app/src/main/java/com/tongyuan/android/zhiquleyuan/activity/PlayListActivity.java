@@ -49,7 +49,7 @@ public class PlayListActivity extends AppCompatActivity implements View.OnClickL
     ArrayList<QueryMyPlayResBean.BODYBean.LSTBean> queryMusicList = new ArrayList<QueryMyPlayResBean.BODYBean.LSTBean>();
     private int currentPage = 1;
     private View footerView;
-    private List<QueryMyPlayResBean.BODYBean.LSTBean> mLst;
+    private ArrayList<QueryMyPlayResBean.BODYBean.LSTBean> mLst;
     private PlayListAdapter mPlayListAdapter;
 
     @Override
@@ -76,8 +76,7 @@ public class PlayListActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void initData() {
-        mPlayListAdapter = new PlayListAdapter(getApplicationContext(), queryMusicList);
-        mSwipelistview.setAdapter(mPlayListAdapter);
+
         getMyPlayList(false);
     }
 
@@ -109,6 +108,7 @@ public class PlayListActivity extends AppCompatActivity implements View.OnClickL
                 int size = response.body().getBODY().getLST().size();
                 Log.i(TAG, "onResponse: size" + size);
                 if (response.body() != null && response.body().getCODE().equals("0")) {
+                    Log.d(TAG, "onResponse: <QueryMyPlayResBean>" + response.body().getBODY().toString());
                     Log.i("555555", "queryRecordingList:response" + response.body().getBODY().toString());
                     if (isLoadMore) {
                         currentPage++;
@@ -116,17 +116,18 @@ public class PlayListActivity extends AppCompatActivity implements View.OnClickL
                         queryMusicList.clear();
                         currentPage = 1;
                     }
-                    mLst = response.body().getBODY().getLST();
+                    mLst = (ArrayList<QueryMyPlayResBean.BODYBean.LSTBean>) response.body().getBODY().getLST();
                     Log.d(TAG, "onResponse: mlst" + mLst.size());
                     queryMusicList.addAll(mLst);
-
+                    mPlayListAdapter = new PlayListAdapter(getApplicationContext(), queryMusicList);
+                    mSwipelistview.setAdapter(mPlayListAdapter);
                     Log.d(TAG, "onResponse: querymusic:" + queryMusicList.size());
                     if ("0".equals(response.body().getBODY().getNC())) {
                         footerView.setVisibility(View.GONE);
                     } else {
                         footerView.setVisibility(View.VISIBLE);
                     }
-                    mPlayListAdapter.notifyDataSetChanged();
+//                    mPlayListAdapter.notifyDataSetChanged();
                     for (QueryMyPlayResBean.BODYBean.LSTBean bean : queryMusicList) {
                         DiscoveryListResultBean.BODYBean.LSTBean listBean = new DiscoveryListResultBean.BODYBean.LSTBean();
                         listBean.setID(bean.getID());
@@ -230,7 +231,7 @@ public class PlayListActivity extends AppCompatActivity implements View.OnClickL
 
             @Override
             public void onRefresh() {
-                currentPage=1;
+                currentPage = 1;
                 getMyPlayList(false);
                 sprefresh.setRefreshing(false);
             }

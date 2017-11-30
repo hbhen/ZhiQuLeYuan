@@ -159,14 +159,16 @@ public class MyCollectionActivity extends AppCompatActivity implements View.OnCl
                         currentPage = 1;
 
                     }
-                    collectionList.addAll(lst);
-                    mMyCollectionAdapter = new MyCollectionAdapter(getApplicationContext(), collectionList);
-                    mSwipeListview.setAdapter(mMyCollectionAdapter);
                     if ("0".equals(response.body().getBODY().getNC())) {
+
                         footerView.setVisibility(View.GONE);
                     } else {
+                    collectionList.addAll(lst);
                         footerView.setVisibility(View.VISIBLE);
                     }
+                    mMyCollectionAdapter = new MyCollectionAdapter(getApplicationContext(), collectionList);
+                    mSwipeListview.setAdapter(mMyCollectionAdapter);
+
 //                    mMyCollectionAdapter.notifyDataSetChanged();
                     //把list封装,传到MyPlay去播放
                     for (QueryMyCollectionResBean.BODYBean.LSTBean lstBean : collectionList) {

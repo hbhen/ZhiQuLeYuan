@@ -2,7 +2,6 @@ package com.tongyuan.android.zhiquleyuan.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -83,12 +82,8 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
         sp.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        sp.setRefreshing(false);
-                    }
-                }, 300);
+                initData();
+                sp.setRefreshing(false);
             }
         });
     }

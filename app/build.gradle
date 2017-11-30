@@ -9,8 +9,15 @@ android {
             storeFile file('C:/Users/Android/Desktop/finalkey.jks')
             storePassword 'zqly1210'
         }
-    }
 
+    }
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+    }
     compileSdkVersion 25
     buildToolsVersion '25.0.2'
 
@@ -31,7 +38,7 @@ android {
 //            signingConfig signingConfigs.release
         }
         debug {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles 'proguard-rules.pro'
 //            signingConfig signingConfigs.release
         }

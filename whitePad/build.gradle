@@ -23,6 +23,8 @@ android {
             debuggable true
         }
         debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt')
 //            signingConfig signingConfigs.zqly
         }
     }
