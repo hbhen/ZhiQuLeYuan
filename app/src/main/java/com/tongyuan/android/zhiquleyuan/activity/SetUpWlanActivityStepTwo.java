@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import com.libra.sinvoice.LogHelper;
 import com.libra.sinvoice.SinVoicePlayer;
-import com.libra.sinvoice.SinVoiceRecognition;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 
@@ -31,7 +30,7 @@ import butterknife.OnClick;
  * Created by Android on 2017/7/6.
  */
 
-public class SetUpWlanActivityStepTwo extends AppCompatActivity implements SinVoicePlayer.Listener, SinVoiceRecognition.Listener {
+public class SetUpWlanActivityStepTwo extends AppCompatActivity implements SinVoicePlayer.Listener {
 
     private final static String TAG = "MainActivity";
     private final static int MAX_NUMBER = 5;
@@ -116,20 +115,6 @@ public class SetUpWlanActivityStepTwo extends AppCompatActivity implements SinVo
         LogHelper.d(TAG, "stop play");
     }
 
-    @Override
-    public void onRecognitionStart() {
-
-    }
-
-    @Override
-    public void onRecognition(char ch) {
-
-    }
-
-    @Override
-    public void onRecognitionEnd() {
-
-    }
 
     private String returnStr(String str) {
         String tempY = "-2";

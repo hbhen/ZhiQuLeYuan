@@ -83,6 +83,7 @@ public class DiscoverySecondCategoryActivity extends AppCompatActivity implement
                 MyPlayActivity.launch(DiscoverySecondCategoryActivity.this, adapter.getList(), position);
             }
         });
+
         listView.setOnScrollListener(this);
         footerView = LayoutInflater.from(this).inflate(R.layout.discovery_sub_item_foot, null);
         footerView.setVisibility(View.GONE);
@@ -90,7 +91,7 @@ public class DiscoverySecondCategoryActivity extends AppCompatActivity implement
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                currPage=1;
+                currPage = 1;
                 getIdColSecondaryInfo(colid, false);
                 swipeRefresh.setRefreshing(false);
             }
@@ -119,6 +120,7 @@ public class DiscoverySecondCategoryActivity extends AppCompatActivity implement
         if (isLoadMore) {
             page++;
         }
+
         DiscoverySubReqBean bodyBean = new DiscoverySubReqBean(colid, "10", String.valueOf(page));
         Call<SuperModel<DiscoveryGridSecondaryResultBean>> result = RequestManager.getInstance().
                 getDiscoverySubList(this, bodyBean);
@@ -134,6 +136,7 @@ public class DiscoverySecondCategoryActivity extends AppCompatActivity implement
                         list.clear();
                         currPage = 1;
                     }
+
                     list.addAll(response.body().BODY.LST);
                     if ("0".equals(response.body().BODY.NC)) {
                         footerView.setVisibility(View.GONE);
@@ -192,5 +195,3 @@ public class DiscoverySecondCategoryActivity extends AppCompatActivity implement
         this.totalItemCount = totalItemCount;
     }
 }
-
-

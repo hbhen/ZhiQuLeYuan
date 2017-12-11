@@ -199,7 +199,7 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
         EnterMeeting();
 
 //        seekBar.setOnClickListener(this);
-        mSeekBar.setMax(100);
+        mSeekBar.setMax(15);
         //TODO 给textview设置一个当前的音量值,这个值是从网络获取的 ,如果没有获取到就默认给50,这个值需不需要传给玩具再说!
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -283,7 +283,7 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
         * paramMap:null即可
         * */
 
-        Session.getInstance().joinmeeting(ip, port, mUserFlag + uid, meetingId, "", uid, 0, null);
+        Session.getInstance().joinmeeting(ip, port, mUserFlag + uid, meetingId, "", uid, 1, null);
 
     }
 
@@ -312,7 +312,7 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                         mMy_video.setBackground(null);
                     }
-                    Session.getInstance().PlayVideo(_watchingPeerID, false, mMy_video, 0, 0, 1, 1, 0, false, 1, 0);
+                    Session.getInstance().PlayVideo(_watchingPeerID, true, mMy_video, 0, 0, 1, 1, 0, false, 1, 0);
                 }
 
                 break;
@@ -496,11 +496,12 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
         _userList.add(peerId);
         MeetingUser user = Session.getInstance().getM_thisUserMgr().getUser(peerId);
         String name = user.getName();
-        if (name.equals("toy")) {
+        if (name.contains("toy")) {
             toyId = peerId;
             seeYou();
         }
-        if (name.equals("tv")) {
+
+        if (name.contains("tv")) {
             tvId = peerId;
             seeYou();
 //            Session.getInstance().PlayVideo(toyId, true, mMy_video, 0, 0, 1, 1, 0, false, 1, 0);

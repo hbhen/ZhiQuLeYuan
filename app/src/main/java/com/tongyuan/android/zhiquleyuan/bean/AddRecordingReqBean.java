@@ -115,7 +115,9 @@ public class AddRecordingReqBean {
         this.SEQ = SEQ;
     }
 
+    //这是内部类,有很多这样的
     public static class BODYBean {
+
         /**
          * TYPE : RADIO
          * ID :
