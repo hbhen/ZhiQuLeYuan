@@ -46,7 +46,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
- *
  * Created by android on 2016/12/3.
  */
 
@@ -56,10 +55,9 @@ public class ToySelectorFragment extends BaseFragment {
     ImageView mHeadImageView;
     @BindView(R.id.id_viewpager)
     ViewPager mViewPageToy;
-    private static final String TAG = "222222";
+    private static final String TAG = ToySelectorFragment.class.getSimpleName();
     public static String mToyId;
-
-//    ArrayList<String> toyImg = new ArrayList<String>();
+    //    ArrayList<String> toyImg = new ArrayList<String>();
 //    ArrayList<String> babyImg = new ArrayList<String>();
 //    ArrayList<String> toyId = new ArrayList<String>();
 //    ArrayList<String> toyCode = new ArrayList<String>();
@@ -120,16 +118,20 @@ public class ToySelectorFragment extends BaseFragment {
 
     /**
      * 显示baby的头像
+     *
      * @param position pager的位置
      */
     private void displayBabyHead(int position) {
-        if (toyList==null||toyList.size()==0){
+        if (toyList == null || toyList.size() == 0) {
             mHeadImageView.setVisibility(View.GONE);
             return;
         }
+        if (toyList != null && toyList.size() == 0) {
+            showFragment(ToyAddFragment.class.getSimpleName());
+        }
 //        Log.i(TAG, "displayBabyHead: toylist"+toyList.size()+"&&"+toyList.get(position).toString());
         String s = toyList.get(position).getBABYIMG();//获得宝宝的头像
-        Log.i(TAG, "displayBabyHead:s"+s);
+        Log.i(TAG, "displayBabyHead:s" + s);
         /*if (s == null) {
             Glide.with(getContext()).load(R.drawable.ic_launcher).asBitmap().into(new BitmapImageViewTarget(mHeadImageView) {
                 @Override
@@ -142,7 +144,7 @@ public class ToySelectorFragment extends BaseFragment {
             return;
         }*/
 //        .placeholder(R.drawable.player_cover_default)
-        if (s.equals("")){
+        if (s.equals("")) {
             Glide.with(mContext).load(R.drawable.player_cover_default).asBitmap().into(mHeadImageView);
 //            Glide.with(getContext()).load(R.drawable.player_cover_default).asBitmap().into(new BitmapImageViewTarget(mHeadImageView) {
 //                @Override
@@ -152,9 +154,9 @@ public class ToySelectorFragment extends BaseFragment {
 //                    mHeadImageView.setImageDrawable(roundedBitmapDrawable);
 //               }
 //            });
-        }else{
+        } else {
             Glide.with(mContext).load(s).asBitmap().into(mHeadImageView);
-            Log.i(TAG, "displayBabyHead: sss"+s);
+            Log.i(TAG, "displayBabyHead: sss" + s);
 //            Glide.with(mContext).load(s).asBitmap().into(new BitmapImageViewTarget(mHeadImageView) {
 //                @Override
 //                protected void setResource(Bitmap resource) {
@@ -176,7 +178,7 @@ public class ToySelectorFragment extends BaseFragment {
 
     @Override
     public void onHiddenChanged(boolean hidden) {
-        if(!hidden) {
+        if (!hidden) {
             refreshPagerAdapter();
         }
     }
@@ -194,14 +196,16 @@ public class ToySelectorFragment extends BaseFragment {
     }
 
     private void removeToy() {
-        if(toyList == null || toyList.size()==0)
-
+        if (toyList == null || toyList.size() == 0) {
             return;
+        }
+
         final String deleteId = toyList.get(mCurrentPosition).getID();
         final String deleteCode = toyList.get(mCurrentPosition).getCODE();
         String toyOwnerId = toyList.get(mCurrentPosition).getOWNERID();
 
-        if (toyOwnerId.equals(SPUtils.getString(getContext(), "ID", ""))) {
+        if (toyOwnerId.equals(SPUtils.getString(getContext(), "userID", ""))) {
+            //是玩具的所有者,即管理员
             //弹窗:提示用户当前是管理员,是否删除玩具,并解散玩具群 3.4.47
             final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             builder.setMessage("您是当前玩具的管理员,确认删除玩具并解散群?");
@@ -210,13 +214,13 @@ public class ToySelectorFragment extends BaseFragment {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     //mContainer.removeViewAt(mCurrentPosition);
-//                                    mViewPageToy.removeViewAt(position);
+                    //mViewPageToy.removeViewAt(position);
                     deleteToyFromPowerUser(mCurrentPosition, deleteId, deleteCode);
                 }
             });
             builder.show();
-
         } else {
+            //非管理员
             //弹窗:提示用户,是否删除玩具,并退出玩具群 3.4.12
             final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             builder.setMessage("确认退出玩具群?");
@@ -243,11 +247,13 @@ public class ToySelectorFragment extends BaseFragment {
     private void deleteToyFromPowerUser(final int currentPosition, String deleteId, String deleteCode) {
         DeleteToyFromPowerUserReqBean bodyBean = new DeleteToyFromPowerUserReqBean(deleteId, deleteCode);
 
-        Call<SuperModel<DeleteToyFromPowerUserResBean.BODYBean>> deleteToyFromPowerUserResBeanCall = RequestManager.getInstance().deleteSeletedToy(getActivity(), bodyBean);
+        Call<SuperModel<DeleteToyFromPowerUserResBean.BODYBean>> deleteToyFromPowerUserResBeanCall = RequestManager.getInstance().deleteSeletedToy
+                (getActivity(), bodyBean);
         deleteToyFromPowerUserResBeanCall.enqueue(new Callback<SuperModel<DeleteToyFromPowerUserResBean.BODYBean>>() {
             @Override
-            public void onResponse(Call<SuperModel<DeleteToyFromPowerUserResBean.BODYBean>> call, Response<SuperModel<DeleteToyFromPowerUserResBean.BODYBean>> response) {
-                if("0".equals(response.body().CODE)) {
+            public void onResponse(Call<SuperModel<DeleteToyFromPowerUserResBean.BODYBean>> call, Response<SuperModel<DeleteToyFromPowerUserResBean
+                    .BODYBean>> response) {
+                if ("0".equals(response.body().CODE)) {
                     toyList.remove(currentPosition);
                     refreshPagerAdapter();
                     //Log.i(TAG, "onResponse: respnose12" + response.body().toString());
@@ -266,13 +272,15 @@ public class ToySelectorFragment extends BaseFragment {
 
     private void deleteToyFromNormalUser(final int position, String deleteId, String deleteCode) {
         DeleteToyFromNormalUserReqBean.BODYBean bodyBean = new DeleteToyFromNormalUserReqBean.BODYBean(deleteId, deleteCode);
-        Call<SuperModel<DeleteToyFromNormalUserResBean.BODYBean>> result = RequestManager.getInstance().deleteSeletedNormalToy(getActivity(), bodyBean);
+        Call<SuperModel<DeleteToyFromNormalUserResBean.BODYBean>> result = RequestManager.getInstance().deleteSeletedNormalToy(getActivity(),
+                bodyBean);
         result.enqueue(new Callback<SuperModel<DeleteToyFromNormalUserResBean.BODYBean>>() {
             @Override
-            public void onResponse(Call<SuperModel<DeleteToyFromNormalUserResBean.BODYBean>> call, Response<SuperModel<DeleteToyFromNormalUserResBean.BODYBean>> response) {
+            public void onResponse(Call<SuperModel<DeleteToyFromNormalUserResBean.BODYBean>> call,
+                                   Response<SuperModel<DeleteToyFromNormalUserResBean.BODYBean>> response) {
 
-                if("0".equals(response.body().CODE)) {
-                    mCurrentPosition --;
+                if ("0".equals(response.body().CODE)) {
+                    mCurrentPosition--;
                     toyList.remove(position);
                     refreshPagerAdapter();
                     //Log.i(TAG, "onResponse: respnose12" + response.body().toString());
@@ -292,17 +300,17 @@ public class ToySelectorFragment extends BaseFragment {
 
     //查询单个玩具的信息
     private void QuerySingleToyInfo(String toyid, String toycode, final int position) {
-        mCurrentPosition=position;
+        mCurrentPosition = position;
         SingleToyInfoREQBean.BODYBean bodyBean = new SingleToyInfoREQBean.BODYBean(toyid, toycode);
         Call<SuperModel<SingleToyInfoRESBean.BODYBean>> singleToyInfoResult = RequestManager.getInstance().getToyDetail(getActivity(), bodyBean);
         singleToyInfoResult.enqueue(new Callback<SuperModel<SingleToyInfoRESBean.BODYBean>>() {
 
 
-
             @Override
-            public void onResponse(Call<SuperModel<SingleToyInfoRESBean.BODYBean>> call, Response<SuperModel<SingleToyInfoRESBean.BODYBean>> response) {
+            public void onResponse(Call<SuperModel<SingleToyInfoRESBean.BODYBean>> call, Response<SuperModel<SingleToyInfoRESBean.BODYBean>>
+                    response) {
                 if (response.body().CODE.equals("0")) {
-                    Log.i(TAG, "onResponse: +toyinfo"+response.body().BODY.toString());
+                    Log.i(TAG, "onResponse: +toyinfo" + response.body().BODY.toString());
                     String toyCode = response.body().BODY.getCODE();
                     MainActivity mainActivity = (MainActivity) getActivity();
                     mainActivity.getToyDetailsFragment().setData(response.body().BODY, toyList.get(mCurrentPosition).getBABYIMG());
@@ -350,6 +358,7 @@ public class ToySelectorFragment extends BaseFragment {
         String id = addToyMessageEvent.mAddToyResultBeanResponse.body().getBODY().getID();
         String code = addToyMessageEvent.mAddToyResultBeanResponse.body().getCODE();
         String ownerId = addToyMessageEvent.mAddToyResultBeanResponse.body().getBODY().getOWNERID();
+
         //这里应该做个判断,判断当前的list里面有没有这个玩具,有就不添加
         boolean isAdd = true;
         for (int i = 0; i < toyList.size(); i++) {
@@ -359,18 +368,19 @@ public class ToySelectorFragment extends BaseFragment {
         }
 
         if (isAdd) {
-            QueryToyResultBean.BODYBean.LSTBean bean =  new QueryToyResultBean.BODYBean.LSTBean();
+            QueryToyResultBean.BODYBean.LSTBean bean = new QueryToyResultBean.BODYBean.LSTBean();
             bean.setIMG(img);
             bean.setID(id);
             bean.setCODE(code);
             bean.setOWNERID(ownerId);
             bean.setBABYIMG("");
             toyList.add(bean);
-
             //Log.i("gengen", "onGetToyAddMessage notifyDataSetChangeed...");
-            if (mPagerAdapter != null)
+            if (mPagerAdapter != null) {
                 refreshPagerAdapter();
                 //mPagerAdapter.notifyDataSetChanged();
+
+            }
 
         }
     }
@@ -389,7 +399,7 @@ public class ToySelectorFragment extends BaseFragment {
                 mToyId = toyList.get(position).getID();
                 mViewPageToy.setCurrentItem(position);
 
-                Log.i(TAG, "itemClick:toyselectorfragment mToyId"+mToyId);
+                Log.i(TAG, "itemClick:toyselectorfragment mToyId" + mToyId);
                 //Log.i(TAG, "onClick:toyid " + mToyId);
                 SPUtils.putString(getActivity(), "toyidtopush", mToyId);
                 String toycode = toyList.get(position).getCODE();

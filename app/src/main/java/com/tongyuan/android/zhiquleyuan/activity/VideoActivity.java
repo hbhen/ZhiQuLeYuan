@@ -199,7 +199,7 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
         EnterMeeting();
 
 //        seekBar.setOnClickListener(this);
-        mSeekBar.setMax(15);
+        mSeekBar.setMax(100);
         //TODO 给textview设置一个当前的音量值,这个值是从网络获取的 ,如果没有获取到就默认给50,这个值需不需要传给玩具再说!
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
