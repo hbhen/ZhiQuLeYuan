@@ -78,10 +78,13 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     private TextView mTv_fragment_mine_desc;
     private QueryBabyListResult mBody;
     private final String TAG = "minefragment";
+    private final String TAG1 = "userinfo";
+
     private String mUsername;
     private String mUserimg;
     private Toolbar mToolbar;
     private ImageView mBack;
+    private String mBirthday;
 
 
     @Nullable
@@ -148,8 +151,10 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
         mPhoneNum = SPUtils.getString(getContext(), "phoneNum", "");
         mUsername = SPUtils.getString(getContext(), "username", "");
         mUserimg = SPUtils.getString(getContext(), "userimg", "");
-        Log.i(TAG, "initData: mUsername " + mUsername);
-        Log.i(TAG, "initData: mUserimg " + mUserimg);
+        mBirthday=SPUtils.getString(getContext(),"userbirthday","");
+        Log.i(TAG1, "<mine>initData: mUsername " + mUsername);
+        Log.i(TAG1, "<mine>initData: mUserimg " + mUserimg);
+        Log.i(TAG1, "<mine>initData: mBirthday " + mBirthday);
         getUserInfo();
     }
 
@@ -174,6 +179,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                     return;
                 } else {
                     String birthday = response.body().getBODY().getBIRTHDAY();
+                    Log.i(TAG1, "<mine>onResponse: <minefragment>birthday+"+ birthday);
                     String img = response.body().getBODY().getIMG();
                     String name = response.body().getBODY().getNAME();
                     String nick = response.body().getBODY().getNICK();
@@ -181,11 +187,14 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
 
                     mUsername = name;
                     mUserimg = img;
+                    mBirthday=birthday;
                     Log.i(TAG, "(MineFragment-getUserInfo)onResponse: " + response.body().toString());
+                    Log.i(TAG1, "<mine>(MineFragment-getUserInfo)onResponse: " + response.body().toString());
                     //所以这里不用放用户的信息
                     SPUtils.putString(getContext(), "username", name);
                     SPUtils.putString(getContext(), "userimg", img);
-                    SPUtils.putString(getContext(), "userbirthday", birthday);
+                    SPUtils.putString(getContext(), "userbirthday", mBirthday);
+                    SPUtils.putString(getContext(), "sex", sex);
                     showDifferentLoginInfo();
                 }
             }
@@ -233,6 +242,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                     * */
                     //进入用户设置页面
                     mIntent.setClass(getContext(), SetUserInfoActivity.class);
+                    mIntent.putExtra("userbirthday",mBirthday);
                     startActivity(mIntent);
                     ToastUtil.showToast(getActivity(), "进入设置用户信息页面");
                 }

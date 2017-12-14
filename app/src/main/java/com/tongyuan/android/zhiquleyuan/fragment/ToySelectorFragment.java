@@ -123,14 +123,21 @@ public class ToySelectorFragment extends BaseFragment {
      */
     private void displayBabyHead(int position) {
         if (toyList == null || toyList.size() == 0) {
-            mHeadImageView.setVisibility(View.GONE);
+//            mHeadImageView.setVisibility(View.GONE);
+            showFragment(ToyAddFragment.class.getSimpleName());
             return;
         }
+
         if (toyList != null && toyList.size() == 0) {
             showFragment(ToyAddFragment.class.getSimpleName());
         }
-//        Log.i(TAG, "displayBabyHead: toylist"+toyList.size()+"&&"+toyList.get(position).toString());
-        String s = toyList.get(position).getBABYIMG();//获得宝宝的头像
+
+        if (position<0){
+//            showFragment(ToyAddFragment.class.getSimpleName());
+            return;
+        }
+        //        Log.i(TAG, "displayBabyHead: toylist"+toyList.size()+"&&"+toyList.get(position).toString());
+        String s = toyList.get(position).getBABYIMG();//获得宝宝的头像  -1
         Log.i(TAG, "displayBabyHead:s" + s);
         /*if (s == null) {
             Glide.with(getContext()).load(R.drawable.ic_launcher).asBitmap().into(new BitmapImageViewTarget(mHeadImageView) {
@@ -165,7 +172,9 @@ public class ToySelectorFragment extends BaseFragment {
 //                    mHeadImageView.setImageDrawable(roundedBitmapDrawable);
 //                }
 //            });
+
         }
+
 
     }
 
@@ -203,7 +212,6 @@ public class ToySelectorFragment extends BaseFragment {
         final String deleteId = toyList.get(mCurrentPosition).getID();
         final String deleteCode = toyList.get(mCurrentPosition).getCODE();
         String toyOwnerId = toyList.get(mCurrentPosition).getOWNERID();
-
         if (toyOwnerId.equals(SPUtils.getString(getContext(), "userID", ""))) {
             //是玩具的所有者,即管理员
             //弹窗:提示用户当前是管理员,是否删除玩具,并解散玩具群 3.4.47
@@ -234,7 +242,7 @@ public class ToySelectorFragment extends BaseFragment {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     //mContainer.removeViewAt(mCurrentPosition);
-//                                    mViewPageToy.removeViewAt(position);
+                    //mViewPageToy.removeViewAt(position);
                     deleteToyFromNormalUser(mCurrentPosition, deleteId, deleteCode);
                 }
             });
@@ -254,6 +262,7 @@ public class ToySelectorFragment extends BaseFragment {
             public void onResponse(Call<SuperModel<DeleteToyFromPowerUserResBean.BODYBean>> call, Response<SuperModel<DeleteToyFromPowerUserResBean
                     .BODYBean>> response) {
                 if ("0".equals(response.body().CODE)) {
+                    mCurrentPosition--;
                     toyList.remove(currentPosition);
                     refreshPagerAdapter();
                     //Log.i(TAG, "onResponse: respnose12" + response.body().toString());
@@ -283,6 +292,10 @@ public class ToySelectorFragment extends BaseFragment {
                     mCurrentPosition--;
                     toyList.remove(position);
                     refreshPagerAdapter();
+                    if (toyList.size() == 0) {
+                        showFragment(ToyAddFragment.class.getSimpleName());
+                        mPagerAdapter.notifyDataSetChanged();
+                    }
                     //Log.i(TAG, "onResponse: respnose12" + response.body().toString());
                     //ToastUtil.showToast(getContext(), "确实已经删除了111");
                 } else {
@@ -392,24 +405,29 @@ public class ToySelectorFragment extends BaseFragment {
     }
 
     private void refreshPagerAdapter() {
-        mPagerAdapter = new ToySelectPagerAdapter(getActivity(), toyList);
-        mPagerAdapter.setOnItemClick(new ToySelectPagerAdapter.OnItemClick() {
-            @Override
-            public void itemClick(int position) {
-                mToyId = toyList.get(position).getID();
-                mViewPageToy.setCurrentItem(position);
+        if (toyList.size() == 0) {
+            showFragment(ToyAddFragment.class.getSimpleName());
+        } else {
+            mPagerAdapter = new ToySelectPagerAdapter(getActivity(), toyList);
+            mPagerAdapter.setOnItemClick(new ToySelectPagerAdapter.OnItemClick() {
+                @Override
+                public void itemClick(int position) {
+                    mToyId = toyList.get(position).getID();
+                    mViewPageToy.setCurrentItem(position);
 
-                Log.i(TAG, "itemClick:toyselectorfragment mToyId" + mToyId);
-                //Log.i(TAG, "onClick:toyid " + mToyId);
-                SPUtils.putString(getActivity(), "toyidtopush", mToyId);
-                String toycode = toyList.get(position).getCODE();
-                //Log.i(TAG, "onClick:toycode " + toycode);
-                QuerySingleToyInfo(mToyId, toycode, position);
-            }
-        });
+                    Log.i(TAG, "itemClick:toyselectorfragment mToyId" + mToyId);
+                    //Log.i(TAG, "onClick:toyid " + mToyId);
+                    SPUtils.putString(getActivity(), "toyidtopush", mToyId);
+                    String toycode = toyList.get(position).getCODE();
+                    //Log.i(TAG, "onClick:toycode " + toycode);
+                    QuerySingleToyInfo(mToyId, toycode, position);
+                }
+            });
 
-        mViewPageToy.setAdapter(mPagerAdapter);
-        mViewPageToy.setCurrentItem(mCurrentPosition);
+            mViewPageToy.setAdapter(mPagerAdapter);
+            mViewPageToy.setCurrentItem(mCurrentPosition);
+        }
+
     }
 
 

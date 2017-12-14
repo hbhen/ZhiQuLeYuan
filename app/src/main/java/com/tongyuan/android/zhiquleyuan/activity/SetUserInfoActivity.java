@@ -56,7 +56,7 @@ import static android.os.Environment.DIRECTORY_PICTURES;
  * Created by Android on 2017/7/3.
  */
 public class SetUserInfoActivity extends AppCompatActivity {
-    private static final String TAG = "tagset";
+    private static final String TAG = "userinfo";
     protected static final int CHOOSE_PICTURE = 0;
     protected static final int TAKE_PICTURE = 1;
     private static final int CROP_SMALL_PICTURE = 2;
@@ -90,7 +90,7 @@ public class SetUserInfoActivity extends AppCompatActivity {
     private String mDatetime;
     private String mTimedate;
     private Intent uriIntent;
-    private String sex;
+    private String mSex;
     private String mUserName;
     private String mUserid;
     private String mPhoneNum;
@@ -112,14 +112,22 @@ public class SetUserInfoActivity extends AppCompatActivity {
         uploadFilePath = getExternalFilesDir(DIRECTORY_PICTURES).getAbsolutePath();
         uploadFileName = "icon.png";
         mUserimg = SPUtils.getString(getApplicationContext(), "userimg", "");
+        Log.d(TAG, "onCreate: mUserimg"+mUserimg);
         Glide.with(getApplicationContext()).load(mUserimg).placeholder(R.drawable.player_cover_default).into
                 (mIvSetuserinfo);
         mEtSetuserinfo.setText(SPUtils.getString(getApplicationContext(), "username", ""));
-        switch (SPUtils.getString(getApplicationContext(), "usersex", "")) {
+
+//        String usersex = SPUtils.getString(getApplicationContext(), "usersex", "");
+//        Log.d(TAG, "onCreate: setuserinfoactivity - usersex" + usersex);
+        String usersex = SPUtils.getString(getApplicationContext(), "usersex", "");
+        Log.d(TAG, "onCreate: setuserinfoactivity - usersex" + usersex);
+        switch (usersex) {
             case "男":
+                mSex = "M";
                 mRadioButtonBoy.setChecked(true);
                 break;
             case "女":
+                mSex = "W";
                 mRadiobuttonGirls.setChecked(true);
                 break;
             default:
@@ -127,11 +135,16 @@ public class SetUserInfoActivity extends AppCompatActivity {
         }
         //这个日期应该从哪拿??
         String birthday = SPUtils.getString(getApplicationContext(), "userbirthday", "");
-//        Log.i(TAG, "onCreate: birthday11"+birthday);
+        Log.i(TAG, "<setuserinfoactivity>onCreate: birthday11" + birthday);
         //但是这样有个问题,如果,再次进入用户信息页面的时候,如果没有选择日期,那么这个时候,birthday就是空,上传的和保存的不一致????
 //        mTvActivitySetuserinfoDate.setText(year + " " + month + " " + day + " ");
         if (birthday.equals("")) {
             mTvActivitySetuserinfoDate.setText("日期选择");
+            String newUserBirthday = new SimpleDateFormat("yyyyMMddHHssSSS").format(new Date());
+            birthday = newUserBirthday;
+            mYear = birthday.substring(0, 4);
+            mMonth = birthday.substring(4, 6);
+            mDay = birthday.substring(6, 8);
         } else {
             mYear = birthday.substring(0, 4);
             mMonth = birthday.substring(4, 6);
@@ -153,14 +166,16 @@ public class SetUserInfoActivity extends AppCompatActivity {
 //            case R.id.et_setuserinfo:
 //                break;
             case R.id.radioButtonBoy:
+                Log.i(TAG, "onViewClicked: boy went");
                 //用户的性别选择(男), 如果选中,就给定一个值
-                sex = "M";
+                mSex = "M";
                 break;
             case R.id.radiobuttonGirls:
                 //用户的性别选择(女)
-                sex = "W";
-                mUserName = mEtSetuserinfo.getText().toString().trim();
-                Log.i(TAG, "onViewClicked1: " + mUserName);
+                Log.i(TAG, "onViewClicked: girl went");
+                mSex = "W";
+//                mUserName = mEtSetuserinfo.getText().toString().trim();
+//                Log.i(TAG, "<setuserinfoactivity>onViewClicked1: " + mUserName);
                 break;
 //            case R.id.rg_setuserinfo:
 //                break;
@@ -174,7 +189,7 @@ public class SetUserInfoActivity extends AppCompatActivity {
                 //添加用户的姓名或者说是用户的ID
                 mUserName = mEtSetuserinfo.getText().toString().trim();
                 SPUtils.putString(getApplicationContext(), "username", mUserName);
-                Log.i(TAG, "onViewClicked: " + mUserName);
+                Log.i(TAG, "<setuserinfoactivity>onViewClicked: " + mUserName);
                 //确认键,将头像,用户的姓名(id),性别,出生年月日上传到服务器
                 //把头像,上传到服务器
 //                uploadPic(new File(uploadFilePath + File.separator + uploadFileName));
@@ -214,17 +229,17 @@ public class SetUserInfoActivity extends AppCompatActivity {
                                 1));
                 str[0] = year + "" + month + "" + day;
                 mDatetime = year + month + day;
-                Log.i("111", "sb=========: " + sb);
-                Log.i("111", "mDatetime=========: " + mDatetime);
-                Log.i("111", "str[0]=========: " + str[0]);
+                Log.i("111", "<setuserinfoactivity>sb=========: " + sb);
+                Log.i("111", "<setuserinfoactivity>mDatetime=========: " + mDatetime);
+                Log.i("111", "<setuserinfoactivity>str[0]=========: " + str[0]);
 
                 str[1] = sb.toString();
-                Log.i("111", "str[1]=========: " + str[1]);
+                Log.i("111", "<setuserinfoactivity>str[1]=========: " + str[1]);
                 //对mDatetime去进行筛选,剔除里面的年月日,拼接成日期,然后在integer.parse
 
                 mTvActivitySetuserinfoDate.setText(year + " " + month + " " + day);
                 mTimedate = sb + "0000000";
-                Log.i("111", "timedate: " + mTimedate);
+                Log.i("111", "<setuserinfoactivity>timedate: " + mTimedate);
             }
         });
         return str;
@@ -321,7 +336,8 @@ public class SetUserInfoActivity extends AppCompatActivity {
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
         UserInfoReqBean.BODYBean userInfoBody = new UserInfoReqBean.BODYBean("USER", mUserid, mUserName, mUserName,
-                mTimedate, sex);
+                mTimedate, mSex);
+        Log.i(TAG, "confirmInfo: sex"+mSex);
         UserInfoReqBean userInfoReqBean = new UserInfoReqBean("REQ", "INFO", mPhoneNum, time, userInfoBody, "",
                 mToken, "1");
         Gson gson = new Gson();
@@ -331,23 +347,24 @@ public class SetUserInfoActivity extends AppCompatActivity {
         userInfoResBeanCall.enqueue(new Callback<UserInfoResBean>() {
             @Override
             public void onResponse(Call<UserInfoResBean> call, Response<UserInfoResBean> response) {
-                Log.i("111", "onResponse: ======================" + response.body().toString());
-                Log.i("1111", "onResponse: " + response.body().toString());
+                Log.i("111", "<setuserinfoactivity>onResponse: ======================" + response.body().toString());
+                Log.i("1111", "<setuserinfoactivity>onResponse: " + response.body().toString());
                 String code = response.body().getCODE();
                 if (code.equals("0")) {
                     String name = response.body().getBODY().getNAME();
                     String img = response.body().getBODY().getIMG();
                     String sex = response.body().getBODY().getSEX();
                     String birthday = response.body().getBODY().getBIRTHDAY();
-                    Log.i(TAG, "onResponse: birthday22" + birthday);
+                    Log.i(TAG, "<setuserinfoactivity>onResponse: birthday22" + birthday);
+                    Log.i(TAG, "<setuserinfoactivity>onResponse: sex22" + sex);
 
                     SPUtils.putString(getApplicationContext(), "userimg", img);
                     SPUtils.putString(getApplicationContext(), "username", name);
                     SPUtils.putString(getApplicationContext(), "sex", sex);
                     SPUtils.putString(getApplicationContext(), "userbirthday", birthday);
-                    Log.i(TAG, "onResponse:set ---" + img);
-                    Log.i(TAG, "onResponse:set ---" + sex);
-                    Log.i(TAG, "onResponse:set ---" + birthday);
+                    Log.i(TAG, "<setuserinfoactivityconfirm>onResponse:set ---imgimg" + img);
+                    Log.i(TAG, "<setuserinfoactivityconfirm>onResponse:set ---sexsex" + sex);
+                    Log.i(TAG, "<setuserinfoactivityconfirm>onResponse:set ---birthdaybirthday" + birthday);
                     finish();
                 }
             }
@@ -373,7 +390,7 @@ public class SetUserInfoActivity extends AppCompatActivity {
         String time = simpleDateFormat.format(date);
 
         UserInfoReqBean.BODYBean userInfoBody = new UserInfoReqBean.BODYBean("USER", mUserid, mUserName, mUserName,
-                mTimedate, sex);
+                mTimedate, mSex);
         UserInfoReqBean userInfoReqBean = new UserInfoReqBean("REQ", "INFO", mPhoneNum, time, userInfoBody, "",
                 mToken, "1");
         Log.i(TAG, "uploadPic: " + userInfoBody.toString());
@@ -391,22 +408,25 @@ public class SetUserInfoActivity extends AppCompatActivity {
         userInfoResultBeanCall.enqueue(new Callback<UserInfoResBean>() {
             @Override
             public void onResponse(Call<UserInfoResBean> call, Response<UserInfoResBean> response) {
-                Log.i("pengyounihen6", "onResponse: " + response.body().toString());
+                Log.i("pengyounihen6", "<setuserinfoactivity>onResponse: " + response.body().toString());
                 String code = response.body().getCODE();
                 if (code.equals("0")) {
                     String name = response.body().getBODY().getNAME();
                     String img = response.body().getBODY().getIMG();
                     String sex = response.body().getBODY().getSEX();
                     String birthday = response.body().getBODY().getBIRTHDAY();
-                    Log.i(TAG, "onResponse: birthday22" + birthday);
+//                    Log.i(TAG, "<setuserinfoactivity>onResponse: name22" + birthday);
+//                    Log.i(TAG, "<setuserinfoactivity>onResponse: img22" + birthday);
+//                    Log.i(TAG, "<setuserinfoactivity>onResponse: sex22" + birthday);
+//                    Log.i(TAG, "<setuserinfoactivity>onResponse: birthday22" + birthday);
 
                     SPUtils.putString(getApplicationContext(), "userimg", img);
                     SPUtils.putString(getApplicationContext(), "username", name);
                     SPUtils.putString(getApplicationContext(), "sex", sex);
                     SPUtils.putString(getApplicationContext(), "userbirthday", birthday);
-                    Log.i(TAG, "onResponse:set ---" + img);
-                    Log.i(TAG, "onResponse:set ---" + sex);
-                    Log.i(TAG, "onResponse:set ---" + birthday);
+                    Log.i(TAG, "<setuserinfoactivityupload>onResponse:set ---img" + img);
+                    Log.i(TAG, "<setuserinfoactivityupload>onResponse:set ---sex" + sex);
+                    Log.i(TAG, "<setuserinfoactivityupload>onResponse:set ---birthday" + birthday);
                 }
             }
 
