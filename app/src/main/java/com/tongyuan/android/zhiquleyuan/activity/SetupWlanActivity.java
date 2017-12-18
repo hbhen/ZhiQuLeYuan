@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
+import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -23,6 +25,7 @@ import butterknife.OnClick;
  */
 
 public class SetupWlanActivity extends AppCompatActivity {
+    private static final String TAG = "setwlan";
     @BindView(R.id.tb_netconfig_inputinfo_name)
     RelativeLayout mTbNetconfigInputinfoName;
     @BindView(R.id.tv_netconfig_inputinfo_name)
@@ -47,8 +50,6 @@ public class SetupWlanActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_netconfig_inputinfo);
         ButterKnife.bind(this);
-
-
     }
 
     @OnClick({R.id.et_setwlanname, R.id.et_setwlan, R.id.bt_confirm, R.id.iv_back})
@@ -64,8 +65,13 @@ public class SetupWlanActivity extends AppCompatActivity {
             case R.id.bt_confirm:
                 String wlanName = mEtSetwlanname.getText().toString().trim();
                 String wlanSecret = mEtSetwlan.getText().toString().trim();
-                SPUtils.putString(this, "wlanname", wlanName);
-                SPUtils.putString(this, "wlansecret", wlanSecret);
+                Log.d(TAG, "onViewClicked: +wlanName:" + wlanName + "+wlanSecret:" + wlanSecret);
+                if (wlanName.equals("") || wlanSecret.equals("")) {
+                    ToastUtil.showToast(this, "无线名称和无线密码不能为空");
+                    return;
+                }
+                SPUtils.putString(this, "wlanname", "" + wlanName);
+                SPUtils.putString(this, "wlansecret", "" + wlanSecret);
                 Intent intent = new Intent();
                 intent.setClass(this, SetUpWlanActivityStepOne.class);
                 startActivity(intent);

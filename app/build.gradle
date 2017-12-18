@@ -26,14 +26,14 @@ android {
         applicationId "com.tongyuan.android.zhiquleyuan"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 3
+        versionCode 4
         versionName "1.4"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), ('proguard-rules.pro')
 //            signingConfig signingConfigs.release
         }

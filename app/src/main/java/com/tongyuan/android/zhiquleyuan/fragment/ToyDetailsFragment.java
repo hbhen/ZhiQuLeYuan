@@ -132,6 +132,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     private SwipeRefreshLayout mRefresh;
     private View footerView;
     int currentPage = 1;
+    private boolean isToyPlaying = false;
 
 
     @Nullable
@@ -171,12 +172,16 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         mCallMIc = (ImageView) mToyDetails.findViewById(R.id.iv_fragment_toy_details_call_mic);
         mCallCamera = (ImageView) mToyDetails.findViewById(R.id.iv_fragment_toy_details_call_camera);
         mToyIsPlaying = (TextView) mToyDetails.findViewById(tv_toy_details_playing);
-
+        if (isToyPlaying) {
+            mToyIsPlaying.setOnClickListener(this);
+        } else {
+            mToyIsPlaying.setText("当前玩具未播放");
+        }
         footerView = LayoutInflater.from(getContext()).inflate(R.layout.discovery_sub_item_foot, null);
         footerView.setVisibility(View.GONE);
         mListviewRecommand.addFooterView(footerView);
         mToyDetails.findViewById(R.id.back_btn).setOnClickListener(this);
-        mToyIsPlaying.setOnClickListener(this);
+//        mToyIsPlaying.setOnClickListener(this);
         mUpdate.setOnClickListener(this);
         mTv_toyPlayControl_time.setOnClickListener(this);
         mIv_toyPlayControl_pre.setOnClickListener(this);
@@ -418,6 +423,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                 updateToyVersion();
                 break;
             case tv_toy_details_playing:
+
                 isShow = !isShow;
                 if (isShow) {
                     mToyPlayControl.setVisibility(View.VISIBLE);
@@ -438,7 +444,6 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                                     CallToToy();
                                     ToastUtil.showToast(getActivity(), "跳转到通话界面");//是fragemnt界面
                                 } else {
-
                                     //去扫描二维码,获得电视端的唯一识别码,然后就直接从二维码那个页面去获取三方会议号,并申请三方会议通话
                                     Intent it = new Intent();
                                     it.setClass(getActivity(), CaptureActivity.class);

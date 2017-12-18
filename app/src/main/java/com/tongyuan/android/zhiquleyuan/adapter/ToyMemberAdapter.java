@@ -34,7 +34,6 @@ import com.tongyuan.android.zhiquleyuan.fragment.ToySelectorFragment;
 import com.tongyuan.android.zhiquleyuan.holder.MemberHolder;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.interf.Constant;
-import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
@@ -53,7 +52,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by DTC on 2017/4/13.
  */
 public class ToyMemberAdapter extends BaseAdapter {
-
+    private static final String TAG="adapter-toymember";
     public static final int TOYMEMBER_ADAPTER_TO_ADDMEMEBER_GROUP = 1;
     private Context mContext;
     private List<QueryToyMemberReSBean.BODYBean.LSTBean> mLSTBeanlist;
@@ -293,7 +292,7 @@ public class ToyMemberAdapter extends BaseAdapter {
 
             @Override
             public void onFailure(Call<TransferPermissionsResBean> call, Throwable t) {
-                Log.i("toymember", "onFailure: " + t);
+                Log.i(TAG, "onFailure: " + t);
             }
         });
 
@@ -307,7 +306,7 @@ public class ToyMemberAdapter extends BaseAdapter {
             ToastUtil.showToast(mContext, "点击的是:" + position);
 
             if (position == getCount() - 2) {
-                LogUtil.d("will jump to add member");
+                Log.d(TAG,"will jump to add member");
                 ToastUtil.showToast(mContext, "点击了加号,开始执行加号的逻辑");
                 Intent intent = new Intent();
                 Bundle bundle = new Bundle();
@@ -322,7 +321,7 @@ public class ToyMemberAdapter extends BaseAdapter {
                 } else {
                     mMode = Constant.Mode.NORMAL;
                 }
-                LogUtil.d("switch mode , mMode=>" + mMode);
+                Log.d(TAG,"switch mode , mMode=>" + mMode);
                 refreshUI();
             } else {
 

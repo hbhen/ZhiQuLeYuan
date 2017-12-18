@@ -68,6 +68,7 @@ import com.tongyuan.android.zhiquleyuan.request.RequestManager;
 import com.tongyuan.android.zhiquleyuan.request.base.BaseRequest;
 import com.tongyuan.android.zhiquleyuan.request.base.SuperModel;
 import com.tongyuan.android.zhiquleyuan.service.MusicPlayerService;
+import com.tongyuan.android.zhiquleyuan.utils.SPUtil;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 import com.tongyuan.android.zhiquleyuan.utils.Util;
@@ -334,7 +335,9 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
     }
 
     private void showBottomPanel() {
-        int isShowBottomPanel = SPUtils.getInt(getContext(), "isShowBottomPanel", View.GONE);
+//        int isShowBottomPanel = SPUtils.getInt(getContext(), "isShowBottomPanel", View.GONE);
+//        String isShowBottomPanel = SPUtils.getString(getContext(), "isShowBottomPanel", "8");
+        int isShowBottomPanel = SPUtil.getInstance().getInt("isShowBottomPanel", View.GONE);
         if (isShowBottomPanel == View.VISIBLE) {
             if (currentState == PLAYRECORDING) {
                 mRecordingFrag.setVisibility(View.GONE);
@@ -352,11 +355,12 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
                 //录音播放布局
                 mPlayRecordingFrag.setVisibility(View.GONE);
             }
-            SPUtils.putInt(getContext(), "isShowBottomPanel", View.VISIBLE);
+//            SPUtils.putInt(getContext(), "isShowBottomPanel", View.VISIBLE);
+            SPUtil.getInstance().put("isShowBottomPanel", View.VISIBLE);
         } else {
-            SPUtils.putInt(getContext(), "isShowBottomPanel", View.GONE);
+//            SPUtils.putInt(getContext(), "isShowBottomPanel", View.GONE);
+            SPUtil.getInstance().put("isShowBottomPanel", View.GONE);
             mBottomControl.setVisibility(View.GONE);
-
         }
     }
 
@@ -969,12 +973,14 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
 //        } else {
 //            mBottomControl.setVisibility(View.VISIBLE);
 //        }
-        if (SPUtils.getInt(getContext(), "isShowBottomPanel", View.GONE) == View.VISIBLE) {
+        if (SPUtil.getInstance().getInt("isShowBottomPanel", View.GONE) == View.VISIBLE) {
             mBottomControl.setVisibility(View.GONE);
-            SPUtils.putInt(getContext(), "isShowBottomPanel", View.GONE);
+//            SPUtils.putInt(getContext(), "isShowBottomPanel", View.GONE);
+            SPUtil.getInstance().put("isShowBottomPanel", View.GONE);
         } else {
             mBottomControl.setVisibility(View.VISIBLE);
-            SPUtils.putInt(getContext(), "isShowBottomPanel", View.VISIBLE);
+//            SPUtils.putInt(getContext(), "isShowBottomPanel", View.VISIBLE);
+            SPUtil.getInstance().put("isShowBottomPanel", View.VISIBLE);
         }
     }
 
