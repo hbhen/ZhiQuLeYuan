@@ -16,13 +16,13 @@
  */
 package com.libra.sinvoice;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.media.AudioFormat;
 import android.text.TextUtils;
 
 import com.libra.sinvoice.Buffer.BufferData;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SinVoicePlayer implements Encoder.Listener, Encoder.Callback, PcmPlayer.Listener, PcmPlayer.Callback {
     private final static String TAG = "SinVoicePlayer";
@@ -62,7 +62,6 @@ public class SinVoicePlayer implements Encoder.Listener, Encoder.Callback, PcmPl
     public SinVoicePlayer(String codeBook, int sampleRate, int bufferSize, int buffCount) {
         mState = STATE_STOP;
         mBuffer = new Buffer(buffCount, bufferSize);
-
         mEncoder = new Encoder(this, sampleRate, SinGenerator.BITS_16, bufferSize);
         mEncoder.setListener(this);
         mPlayer = new PcmPlayer(this, sampleRate, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT, bufferSize);

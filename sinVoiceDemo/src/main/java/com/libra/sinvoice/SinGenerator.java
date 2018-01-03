@@ -17,7 +17,6 @@
 package com.libra.sinvoice;
 
 import com.libra.sinvoice.Buffer.BufferData;
-import com.libra.sinvoice.LogHelper;
 
 public class SinGenerator {
     private static final String TAG = "SinGenerator";
@@ -65,7 +64,7 @@ public class SinGenerator {
     public SinGenerator(Callback callback) {
         this(callback, DEFAULT_SAMPLE_RATE, DEFAULT_BITS, DEFAULT_BUFFER_SIZE);
     }
-
+    //正弦产生器 初始化
     public SinGenerator(Callback callback, int sampleRate, int bits, int bufferSize) {
         mCallback = callback;
 
@@ -93,7 +92,7 @@ public class SinGenerator {
             mState = STATE_START;
         }
     }
-
+    //真正的发生
     public void gen(int genRate, int duration) {
         if (STATE_START == mState) {
             mGenRate = genRate;
@@ -110,6 +109,7 @@ public class SinGenerator {
 
             LogHelper.d(TAG, "genRate:" + genRate);
             if (null != mCallback) {
+                //已经填充的
                 mFilledSize = 0;
                 BufferData buffer = mCallback.getGenBuffer();
                 if (null != buffer) {

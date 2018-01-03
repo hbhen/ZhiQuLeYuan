@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -69,15 +70,19 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
     private boolean isRbChecked = false;
     private String mIdx;
     private String mSmsCode;
+    private RelativeLayout mRl_tv_text;
+    private boolean mIsfirstlogin;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        mIsfirstlogin = SPUtils.getBoolean(this, "isfirstlogin", true);
         initView();
     }
 
     private void initView() {
+
         mIv_back = (ImageView) findViewById(R.id.iv_back_login);
         iv_login = (ImageView) findViewById(R.id.iv_login);
         et_login_phone = (EditText) findViewById(R.id.et_login_phone);
@@ -86,6 +91,14 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
         mBt_userAgreement = (RadioButton) findViewById(R.id.rb_activity_login);
         mTv_userAgreement = (TextView) findViewById(R.id.tv_activity_login_textviewclick);
         tv_text_login = (TextView) findViewById(R.id.tv_text_login);
+        mRl_tv_text = (RelativeLayout) findViewById(R.id.rl_textview_readandconfirm);
+        if (mIsfirstlogin) {
+            mRl_tv_text.setVisibility(View.VISIBLE);
+            SPUtils.putBoolean(this, "isfirstlogin", false);
+        } else {
+            isRbChecked = true;
+            mRl_tv_text.setVisibility(View.GONE);
+        }
         mCountDownTimerUtils = new CountDownTimersUtils(tv_text_login, 60000, 1000);
         iv_login.setOnClickListener(this);
         et_login_smscode.setOnClickListener(this);
@@ -382,7 +395,8 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
                     String userBirthday = SPUtils.getString(getApplicationContext(), "userbirthday", birthday);
                     String userSex = SPUtils.getString(getApplicationContext(), "usersex", sex);
 
-                    Log.i(TAG, "onResponse: " + "username:-" + username + "userimg:-" + userimg + "userID:-" + userID + "userbirthday:-" + userBirthday +
+                    Log.i(TAG, "onResponse: " + "username:-" + username + "userimg:-" + userimg + "userID:-" + userID + "userbirthday:-" +
+                            userBirthday +
                             "usersex:-" + userSex);
 
                     Intent data = new Intent();
