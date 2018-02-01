@@ -70,6 +70,8 @@ public class NoDisturbActivity extends AppCompatActivity implements View.OnClick
     ImageView mAddNodisturb;
     @BindView(R.id.ll_parent)
     LinearLayout mLayout_parent;
+    @BindView(R.id.iv_activity_nodisturb_back)
+    LinearLayout nodisturb_back;
 
     private String ymdData[] = new String[720];
     private PopupWindow popupWindow;

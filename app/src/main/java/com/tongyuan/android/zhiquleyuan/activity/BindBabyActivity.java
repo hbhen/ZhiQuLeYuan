@@ -11,7 +11,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.google.gson.Gson;
@@ -47,7 +47,7 @@ public class BindBabyActivity extends AppCompatActivity implements View.OnClickL
     private String mBabyId;
     private ListView mListview_bindbaby;
     private Button mButton_confirm;
-    private ImageView mBack_bindbaby;
+    private LinearLayout mBack_bindbaby;
     private String mPhoneNum;
     private String mToken;
     private String mTime;
@@ -72,7 +72,7 @@ public class BindBabyActivity extends AppCompatActivity implements View.OnClickL
 
         mListview_bindbaby = (ListView) findViewById(R.id.lv_bindbaby);
         mButton_confirm = (Button) findViewById(R.id.bt_bindbaby);
-        mBack_bindbaby = (ImageView) findViewById(R.id.iv_bindbaby_backa);
+        mBack_bindbaby = (LinearLayout) findViewById(R.id.iv_bindbaby_backa);
         View inflate = LayoutInflater.from(this).inflate(R.layout.item_bindbaby, null);
         mCheck = (ImageButton) inflate.findViewById(R.id.iv_item_bindbaby_checked);
 

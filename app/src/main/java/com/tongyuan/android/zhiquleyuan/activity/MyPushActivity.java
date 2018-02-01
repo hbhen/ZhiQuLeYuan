@@ -15,7 +15,7 @@ import android.view.animation.AccelerateInterpolator;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.baoyz.swipemenulistview.SwipeMenu;
@@ -57,7 +57,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MyPushActivity extends AppCompatActivity implements View.OnClickListener, AbsListView.OnScrollListener {
 
     private SwipeMenuListView mLv_myPush;
-    private ImageView mPush_back;
+    private LinearLayout mPush_back;
     private String mToyid;
     private SwipeRefreshLayout mSpRefresh;
     private String mToken;
@@ -87,7 +87,7 @@ public class MyPushActivity extends AppCompatActivity implements View.OnClickLis
     private void initView() {
         mMyPushHeader = (RelativeLayout) findViewById(R.id.rl_mypush_header);
         mLv_myPush = (SwipeMenuListView) findViewById(R.id.rv_mypush);
-        mPush_back = (ImageView) findViewById(R.id.iv_push_back);
+        mPush_back = (LinearLayout) findViewById(R.id.iv_push_back);
         mSpRefresh = (SwipeRefreshLayout) findViewById(R.id.sprefresh);
         mEditTextView = (EditText) findViewById(R.id.et_mycollection_mypush);
         footerView = LayoutInflater.from(this).inflate(R.layout.discovery_sub_item_foot, null);

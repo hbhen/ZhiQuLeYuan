@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -22,7 +23,7 @@ import butterknife.OnClick;
 
 public class SetUpWlanActivityStepFour extends AppCompatActivity {
     @BindView(R.id.iv_back4)
-    ImageView mIvBack4;
+    LinearLayout mIvBack4;
     @BindView(R.id.tb_netconfig_prepare)
     RelativeLayout mTbNetconfigPrepare;
     @BindView(R.id.iv_netconfig_waitconnect)

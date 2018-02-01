@@ -2,8 +2,11 @@ package com.tongyuan.android.zhiquleyuan.fragment;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.activity.MainActivity;
 import com.tongyuan.android.zhiquleyuan.adapter.ToySelectPagerAdapter;
@@ -44,6 +48,7 @@ import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
 
 /**
  * Created by android on 2016/12/3.
@@ -132,13 +137,13 @@ public class ToySelectorFragment extends BaseFragment {
             showFragment(ToyAddFragment.class.getSimpleName());
         }
 
-        if (position<0){
+        if (position < 0) {
 //            showFragment(ToyAddFragment.class.getSimpleName());
             return;
         }
         //        Log.i(TAG, "displayBabyHead: toylist"+toyList.size()+"&&"+toyList.get(position).toString());
         String s = toyList.get(position).getBABYIMG();//获得宝宝的头像  -1
-        Log.i(TAG, "displayBabyHead:s" + s);
+        Log.i(TAG, "displayBabyHead:s=" + s);
         /*if (s == null) {
             Glide.with(getContext()).load(R.drawable.ic_launcher).asBitmap().into(new BitmapImageViewTarget(mHeadImageView) {
                 @Override
@@ -152,30 +157,26 @@ public class ToySelectorFragment extends BaseFragment {
         }*/
 //        .placeholder(R.drawable.player_cover_default)
         if (s.equals("")) {
-            Glide.with(mContext).load(R.drawable.player_cover_default).asBitmap().into(mHeadImageView);
-//            Glide.with(getContext()).load(R.drawable.player_cover_default).asBitmap().into(new BitmapImageViewTarget(mHeadImageView) {
-//                @Override
-//                protected void setResource(Bitmap resource) {
-//                    RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
-//                    roundedBitmapDrawable.setCircular(true);
-//                    mHeadImageView.setImageDrawable(roundedBitmapDrawable);
-//               }
-//            });
+            Log.i(TAG, "displayBabyHead 1 : s为空");
+            Glide.with(mContext).load(R.drawable.player_cover_default).asBitmap().into(new BitmapImageViewTarget(mHeadImageView) {
+                @Override
+                protected void setResource(Bitmap resource) {
+                    RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
+                    roundedBitmapDrawable.setCircular(true);
+                    mHeadImageView.setImageDrawable(roundedBitmapDrawable);
+                }
+            });
         } else {
-            Glide.with(mContext).load(s).asBitmap().into(mHeadImageView);
-            Log.i(TAG, "displayBabyHead: sss" + s);
-//            Glide.with(mContext).load(s).asBitmap().into(new BitmapImageViewTarget(mHeadImageView) {
-//                @Override
-//                protected void setResource(Bitmap resource) {
-//                    RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(mContext.getResources(), resource);
-//                    roundedBitmapDrawable.setCircular(true);
-//                    mHeadImageView.setImageDrawable(roundedBitmapDrawable);
-//                }
-//            });
-
+            Log.i(TAG, "displayBabyHead: 不为空 " + s);
+            Glide.with(mContext).load(s).asBitmap().placeholder(R.drawable.player_cover_default).into(new BitmapImageViewTarget(mHeadImageView) {
+                @Override
+                protected void setResource(Bitmap resource) {
+                    RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(mContext.getResources(), resource);
+                    roundedBitmapDrawable.setCircular(true);
+                    mHeadImageView.setImageDrawable(roundedBitmapDrawable);
+                }
+            });
         }
-
-
     }
 
     @Override

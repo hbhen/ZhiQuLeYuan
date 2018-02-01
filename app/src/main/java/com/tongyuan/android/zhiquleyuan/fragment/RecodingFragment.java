@@ -1123,7 +1123,6 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
     //停止动画
     private void stopAnimation() {
         if (isStartedAnimation == true) {
-
             isStartedAnimation = false;
             mRotateAnimation.cancel();
 //            mRotateAnimation.reset();

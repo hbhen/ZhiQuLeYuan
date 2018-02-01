@@ -18,7 +18,7 @@
                 android:id="@+id/iv_manager_gridview_item"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:src="@mipmap/ic_launcher"/>
+                android:src="@mipmap/default_babyimage"/>
 
             <ImageView
                 android:id="@+id/iv_manager_gridview_item_remove"

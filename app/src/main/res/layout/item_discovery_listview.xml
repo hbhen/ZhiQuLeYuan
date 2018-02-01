@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/discovery_list"
-    android:layout_width="match_parent"
-    android:layout_height="70dp"
-    android:orientation="horizontal">
+                android:id="@+id/discovery_list"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:orientation="horizontal">
 
 
     <ImageView
@@ -11,13 +11,13 @@
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/player_cover_default" />
+        android:src="@drawable/player_cover_default"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:layout_toRightOf="@id/iv_desc"
         android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@id/iv_desc"
         android:orientation="vertical">
 
         <TextView
@@ -27,7 +27,7 @@
             android:text="TED-Ed原创课程"
             android:textColor="#000000"
             android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"/>
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -42,7 +42,7 @@
                 android:layout_height="wrap_content"
                 android:text="播放次数"
                 android:textColor="#8f8f8f"
-                android:textSize="12dp" />
+                android:textSize="12dp"/>
 
             <TextView
                 android:id="@+id/tv_desc_detailstimes"
@@ -52,7 +52,7 @@
                 android:layout_toRightOf="@+id/tv_desc_times"
                 android:text="336"
                 android:textColor="#ff4511"
-                android:textSize="12dp" />
+                android:textSize="12dp"/>
 
             <TextView
                 android:id="@+id/tv_desc_category"
@@ -62,7 +62,7 @@
                 android:layout_toRightOf="@id/tv_desc_times"
                 android:text="所属品类"
                 android:textColor="#8f8f8f"
-                android:textSize="12dp" />
+                android:textSize="12dp"/>
 
             <TextView
                 android:id="@+id/tv_desc_detailscategory"
@@ -72,27 +72,30 @@
                 android:layout_toRightOf="@id/tv_desc_category"
                 android:text="生活百科"
                 android:textColor="#ff4511"
-                android:textSize="12dp" />
+                android:textSize="12dp"/>
 
         </RelativeLayout>
 
         <View
-            android:background="@color/divide"
             android:layout_width="match_parent"
+            android:layout_height="1dp"
             android:layout_alignParentBottom="true"
-            android:layout_height="1dp" />
+            android:background="@color/divide"/>
     </RelativeLayout>
 
 
-
-    <ImageView
+    <RelativeLayout
         android:id="@+id/iv_desc_rightarrow"
-        android:layout_width="10dp"
-        android:layout_height="20dp"
+        android:layout_width="30dp"
+        android:layout_height="match_parent"
         android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_gravity="center_vertical"
-        android:layout_marginRight="10dp"
-        android:src="@drawable/arrow_right" />
+        android:clickable="true"
+        android:paddingRight="@dimen/dp_10">
 
+        <ImageView
+            android:layout_width="10dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/arrow_right"/>
+    </RelativeLayout>
 </RelativeLayout>

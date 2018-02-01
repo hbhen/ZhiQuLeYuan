@@ -1,32 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:text="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/main_top_bg">
+                xmlns:text="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/main_top_bg">
 
     <RelativeLayout
         android:id="@+id/rl_play_details_title"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_44">
 
-        <ImageView
+        <LinearLayout
             android:id="@+id/player_back"
-            android:layout_width="10dp"
+            android:layout_width="30dp"
             android:layout_height="match_parent"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:src="@drawable/arrow_left"/>
+            android:clickable="true"
+            android:paddingLeft="@dimen/dp_10">
+
+            <ImageView
+                android:layout_width="10dp"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:src="@drawable/arrow_left"/>
+        </LinearLayout>
 
         <TextView
             android:id="@+id/player_details_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:textSize="18sp"
             android:layout_centerInParent="true"
-            android:textColor="@color/black"/>
+            android:layout_centerVertical="true"
+            android:textColor="@color/black"
+            android:textSize="18sp"/>
 
         <TextView
             android:id="@+id/player_collection"
@@ -54,15 +60,15 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             text:titleIcon="@drawable/selector_player_bottom_phone"
+            text:titlePadding="5dp"
             text:titleText="@string/player_phone"
             text:titleTextColor="@drawable/selector_main_bottom_color"
-            text:titleTextSize="18sp"
-            text:titlePadding="5dp" />
+            text:titleTextSize="18sp"/>
 
         <View
             android:layout_width="1dp"
             android:layout_height="46dp"
-            android:background="@color/main_top_edit_stroke" />
+            android:background="@color/main_top_edit_stroke"/>
 
         <com.tongyuan.android.zhiquleyuan.view.IconTextView
             android:id="@+id/player_toy"
@@ -71,18 +77,18 @@
             android:layout_weight="1"
             android:padding="10dp"
             text:titleIcon="@drawable/selector_player_bottom_toy"
+            text:titlePadding="5dp"
             text:titleText="@string/player_toy"
             text:titleTextColor="@drawable/selector_main_bottom_color"
-            text:titleTextSize="18sp"
-            text:titlePadding="5dp"/>
+            text:titleTextSize="18sp"/>
     </LinearLayout>
 
     <ProgressBar
         android:id="@+id/player_progress"
-        android:layout_above="@id/rl_play_details_bottom"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_above="@id/rl_play_details_bottom"
         android:max="100"
         android:progressDrawable="@drawable/progressbar_color"/>
 
@@ -90,45 +96,44 @@
         android:id="@+id/player_start_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
         android:layout_above="@id/player_progress"
-        android:text="@string/player_start_time" />
+        android:layout_marginLeft="10dp"
+        android:text="@string/player_start_time"/>
 
     <TextView
         android:id="@+id/player_duration_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
         android:layout_above="@id/player_progress"
+        android:layout_alignParentRight="true"
         android:layout_marginRight="10dp"
         android:text="@string/player_start_time"/>
-
 
 
     <ImageView
         android:id="@+id/iv_playing_details_slide"
         android:layout_width="221dp"
         android:layout_height="221dp"
-        android:padding="10dp"
         android:layout_below="@id/rl_play_details_title"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="30dp"
         android:background="@drawable/player_cover_bg"
+        android:padding="10dp"
         android:scaleType="centerCrop"
         android:src="@drawable/player_cover_default"/>
 
     <ImageView
         android:id="@+id/player_lighting"
-        android:layout_alignLeft="@id/iv_playing_details_slide"
-        android:layout_alignTop="@id/iv_playing_details_slide"
-        android:layout_marginLeft="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/iv_playing_details_slide"
+        android:layout_alignTop="@id/iv_playing_details_slide"
         android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
-        android:visibility="gone"
-        android:src="@drawable/player_lighting"/>
+        android:src="@drawable/player_lighting"
+        android:visibility="gone"/>
 
     <View
         android:id="@+id/view_play_details"
@@ -139,27 +144,27 @@
         android:layout_alignParentStart="true"/>
 
     <!--<TextView-->
-        <!--android:id="@+id/tv_activity_playing_details_start"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignParentLeft="true"-->
-        <!--android:layout_marginLeft="10dp"-->
-        <!--android:text="00:00"/>-->
+    <!--android:id="@+id/tv_activity_playing_details_start"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignParentLeft="true"-->
+    <!--android:layout_marginLeft="10dp"-->
+    <!--android:text="00:00"/>-->
 
     <!--<SeekBar-->
-        <!--android:id="@+id/sb_playing_details"-->
-        <!--android:layout_width="250dp"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_centerHorizontal="true"/>-->
+    <!--android:id="@+id/sb_playing_details"-->
+    <!--android:layout_width="250dp"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_centerHorizontal="true"/>-->
 
 
     <!--<TextView-->
-        <!--android:id="@+id/tv_activity_playing_details_duration"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignParentRight="true"-->
-        <!--android:layout_marginRight="10dp"-->
-        <!--android:text="02:20"/>-->
+    <!--android:id="@+id/tv_activity_playing_details_duration"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignParentRight="true"-->
+    <!--android:layout_marginRight="10dp"-->
+    <!--android:text="02:20"/>-->
 
     <LinearLayout
         android:layout_width="match_parent"

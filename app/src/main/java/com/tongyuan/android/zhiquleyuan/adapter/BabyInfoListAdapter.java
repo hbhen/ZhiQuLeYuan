@@ -21,6 +21,7 @@ import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.activity.AddMemberToGroupActivity;
 import com.tongyuan.android.zhiquleyuan.activity.BabyInfoListActivity;
+import com.tongyuan.android.zhiquleyuan.activity.MyBabyActivity;
 import com.tongyuan.android.zhiquleyuan.activity.SetInitVolumeActivity;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteBabyInfoReQBean;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteBabyInfoReSBean;
@@ -59,7 +60,7 @@ public class BabyInfoListAdapter extends BaseSwipeAdapter {
     private String time;
     private String phone;
     private String token;
-    public static final int BabyInfoListAdapter_TO_ADDMEMEBER_GROUP=2;
+    public static final int BabyInfoListAdapter_TO_ADDMEMEBER_GROUP = 2;
 
 
     public BabyInfoListAdapter(Context context, List<QueryBabyListResult.BODYBean.LSTBean> lst) {
@@ -105,6 +106,30 @@ public class BabyInfoListAdapter extends BaseSwipeAdapter {
         mTv_item_babyinfolist_birthday = (TextView) convertView.findViewById(R.id.tv_item_babyinfolist_birthday);
         mTv_item_babyinfolist_primarysound = (TextView) convertView.findViewById(R.id.tv_item_babyinfolist_primarysound);
         mSwipe_babyinfolist_delete = (Button) convertView.findViewById(R.id.swipe_babyinfolist_delete);
+        swipeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mLSTBeen != null) {
+                    Intent intent = new Intent();
+                    intent.putExtra("fromtype", "contains");
+                    String birthday = mLSTBeen.get(pos).getBIRTHDAY();
+                    String img = mLSTBeen.get(pos).getIMG();
+                    String name = mLSTBeen.get(pos).getNAME();
+                    String sex = mLSTBeen.get(pos).getSEX();
+                    String nick = mLSTBeen.get(pos).getNICK();
+                    intent.putExtra("birthday", birthday);
+                    intent.putExtra("img", img);
+                    intent.putExtra("name", name);
+                    intent.putExtra("sex", sex);
+                    intent.putExtra("nick", nick);
+                    intent.setClass(mContext, MyBabyActivity.class);
+                    mContext.startActivity(intent);
+                    ToastUtil.showToast(mContext, "点击的条目是:" + pos);
+                } else {
+                    return;
+                }
+            }
+        });
         mSwipe_babyinfolist_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

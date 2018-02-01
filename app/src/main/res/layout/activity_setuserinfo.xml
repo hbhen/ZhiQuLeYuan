@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
+
     <RelativeLayout
         android:id="@+id/tb_setuserinfo"
         android:layout_width="match_parent"
@@ -10,13 +11,20 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true">
 
-        <ImageView
-            android:id="@+id/baby_back"
-            android:layout_width="10dp"
-            android:layout_height="21dp"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/dp_10"
-            android:src="@drawable/arrow_left"/>
+        <LinearLayout
+            android:id="@+id/iv_setuser_back"
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:paddingLeft="@dimen/dp_10">
+
+            <ImageView
+                android:layout_width="10dp"
+                android:layout_height="21dp"
+                android:layout_gravity="center"
+                android:layout_centerVertical="true"
+                android:src="@drawable/arrow_left"/>
+        </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
@@ -27,6 +35,7 @@
             android:textColor="@color/black"
             android:textSize="@dimen/sp_18"/>
     </RelativeLayout>
+
     <ImageView
         android:id="@+id/iv_setuserinfo"
         android:layout_width="60dp"
@@ -34,8 +43,8 @@
         android:layout_below="@id/tb_setuserinfo"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="19dp"
-        android:scaleType="centerInside"
         android:background="@drawable/babyimagebackground_3x"
+        android:scaleType="centerInside"
         android:src="@drawable/player_cover_default"/>
 
     <EditText
@@ -128,7 +137,6 @@
         android:text="确定"
         android:textColor="@color/black"
         android:textSize="16sp"/>
-
 
 
 </RelativeLayout>

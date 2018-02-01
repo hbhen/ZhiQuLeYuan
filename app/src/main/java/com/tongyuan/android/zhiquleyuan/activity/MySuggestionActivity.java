@@ -8,7 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.google.gson.Gson;
@@ -39,7 +39,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MySuggestionActivity extends AppCompatActivity {
 
     @BindView(R.id.iv_suggestion_back)
-    ImageView mIvSuggestionBack;
+    LinearLayout mIvSuggestionBack;
     @BindView(R.id.tb_suggestion)
     RelativeLayout mTbSuggestion;
     @BindView(R.id.et_suggestion)

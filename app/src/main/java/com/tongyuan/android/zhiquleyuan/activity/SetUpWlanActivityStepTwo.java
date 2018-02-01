@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,7 +41,7 @@ public class SetUpWlanActivityStepTwo extends AppCompatActivity implements SinVo
 
     private final static String CODEBOOK = "0123456789￥$";
     @BindView(R.id.iv_back)
-    ImageView mIvBack;
+    LinearLayout mIvBack;
     @BindView(R.id.tb_netconfig_prepare)
     RelativeLayout mTbNetconfigPrepare;
     @BindView(R.id.iv_netconfig_prepare)
@@ -99,6 +100,7 @@ public class SetUpWlanActivityStepTwo extends AppCompatActivity implements SinVo
             case R.id.tv_netconfig_retry2_sendvoice:
 
                 break;
+
         }
     }
 

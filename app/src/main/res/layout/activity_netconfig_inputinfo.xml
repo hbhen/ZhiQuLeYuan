@@ -11,13 +11,19 @@
         android:background="@color/titlebackground"
         >
 
-        <ImageView
+        <LinearLayout
             android:id="@+id/iv_back"
-            android:layout_width="@dimen/dp_10"
+            android:layout_width="30dp"
             android:layout_height="match_parent"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/dp_10"
-            android:src="@drawable/arrow_left"/>
+            android:clickable="true"
+            android:paddingLeft="@dimen/dp_10">
+
+            <ImageView
+                android:layout_width="@dimen/dp_10"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:src="@drawable/arrow_left"/>
+        </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
@@ -50,13 +56,13 @@
             android:textSize="@dimen/sp_16"/>
 
         <EditText
-            android:background="@null"
             android:id="@+id/et_setwlanname"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_40"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/dp_9"
             android:layout_toRightOf="@id/tv_netconfig_inputinfo_name"
+            android:background="@null"
             android:hint="网络名称"
             android:textColor="#d1d1d1"
             android:textSize="@dimen/sp_16"/>
@@ -83,13 +89,13 @@
             android:textSize="@dimen/sp_16"/>
 
         <EditText
-            android:background="@null"
             android:id="@+id/et_setwlan"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_40"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/dp_9"
             android:layout_toRightOf="@id/tv_netconfig_inputinfo_psd"
+            android:background="@null"
             android:hint="请输入密码"
             android:textColor="#d1d1d1"
             android:textSize="@dimen/sp_16"/>

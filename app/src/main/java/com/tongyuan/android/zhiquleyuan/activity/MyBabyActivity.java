@@ -20,8 +20,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.bean.BabyInfoRequestBean;
@@ -97,12 +97,17 @@ public class MyBabyActivity extends AppCompatActivity {
     private String mTimedate;
     private Intent uriIntent;
     private String sex;
+    private String mYear;
+    private String mMonth;
+    private String mDay;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_addbabyinfo);
         ButterKnife.bind(this);
+        init();
+
         mRgAddbabyinfo.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -119,6 +124,43 @@ public class MyBabyActivity extends AppCompatActivity {
         uploadFilePath = getExternalFilesDir(DIRECTORY_PICTURES).getAbsolutePath();
         uploadFileName = "icon.png";
 
+    }
+
+    private void init() {
+        Intent intent = getIntent();
+        if (intent.getStringExtra("fromtype").equals("contains")) {
+            String babyBirthday = intent.getStringExtra("birthday");
+            String babyImg = intent.getStringExtra("img");
+            String babyName = intent.getStringExtra("name");
+            String babySex = intent.getStringExtra("sex");
+            String babyNick = intent.getStringExtra("nick");
+            if (babyBirthday.equals("")) {
+                mTvActivityAddbabyinfoDate.setText("日期选择");
+                String newUserBirthday = new SimpleDateFormat("yyyyMMddHHssSSS").format(new Date());
+                babyBirthday = newUserBirthday;
+                mYear = babyBirthday.substring(0, 4);
+                mMonth = babyBirthday.substring(4, 6);
+                mDay = babyBirthday.substring(6, 8);
+            } else {
+                mYear = babyBirthday.substring(0, 4);
+                mMonth = babyBirthday.substring(4, 6);
+                mDay = babyBirthday.substring(6, 8);
+                mTvActivityAddbabyinfoDate.setText(mYear + " 年 " + mMonth + " 月 " + mDay + " 日 ");
+            }
+            if (!babyImg.equals("")) {
+                Glide.with(getApplicationContext()).load(babyImg).placeholder(R.drawable.player_cover_default).into
+                        (mIvAddbabyinfo);
+            }
+            if (!babyName.equals("")) {
+                mEtAddbabyinfo.setText(babyName);
+            }
+            if (babySex.equals("男")) {
+                mRadioButtonBoy.toggle();
+            }
+            if (babySex.equals("女")) {
+                mRadioButtonGirls.toggle();
+            }
+        }
     }
 
     @OnClick({R.id.iv_addbabyinfo, R.id.et_addbabyinfo, R.id.rg_addbabyinfo,
@@ -235,7 +277,7 @@ public class MyBabyActivity extends AppCompatActivity {
 
             @Override
             public void onClick(String year, String month, String day) {
-                Toast.makeText(MyBabyActivity.this, year + " " + month + " " + day, Toast.LENGTH_LONG).show();
+//                Toast.makeText(MyBabyActivity.this, year + " " + month + " " + day, Toast.LENGTH_LONG).show();
                 StringBuilder sb = new StringBuilder();
 //                sb.append(year.substring(0, year.length() - 1)).append("-").append(month.substring(0, day.length() - 1)).append("-").append(day);
                 sb.append(year.substring(0, year.length() - 1)).append(month.substring(0, day.length() - 1)).append(day.substring(0, day.length() -

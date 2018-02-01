@@ -8,13 +8,18 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_44">
 
-        <ImageView
+        <LinearLayout
             android:id="@+id/baby_back"
-            android:layout_marginLeft="@dimen/dp_7"
-            android:layout_centerVertical="true"
-            android:layout_width="@dimen/dp_10"
+            android:layout_width="30dp"
             android:layout_height="match_parent"
-            android:src="@drawable/arrow_left"/>
+            android:paddingLeft="@dimen/dp_10">
+
+            <ImageView
+                android:layout_width="@dimen/dp_10"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:src="@drawable/arrow_left"/>
+        </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
@@ -33,7 +38,7 @@
         android:layout_below="@id/tb_addbatyinfo"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="19dp"
-        android:src="@mipmap/ic_launcher"/>
+        android:src="@mipmap/default_babyimage"/>
 
     <EditText
         android:id="@+id/et_addbabyinfo"
@@ -43,19 +48,19 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:background="@drawable/shape_baby_edit"
+        android:gravity="center"
+        android:hint="请输入宝宝昵称"
         android:textColor="@color/black"
         android:textColorHint="@color/divide"
-        android:textSize="16sp"
-        android:gravity="center"
-        android:hint="请输入宝宝昵称"/>
+        android:textSize="16sp"/>
 
     <RadioGroup
         android:id="@+id/rg_addbabyinfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/et_addbabyinfo"
         android:layout_marginTop="19dp"
         android:gravity="center_horizontal"
-        android:layout_below="@id/et_addbabyinfo"
         android:orientation="horizontal">
 
         <RadioButton

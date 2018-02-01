@@ -10,13 +10,19 @@
         android:layout_height="@dimen/dp_44"
         android:background="@color/titlebackground">
 
-        <ImageView
+        <LinearLayout
             android:id="@+id/iv_back"
-            android:layout_width="@dimen/dp_10"
+            android:layout_width="30dp"
             android:layout_height="match_parent"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/dp_10"
-            android:src="@drawable/arrow_left"/>
+            android:clickable="true"
+            android:paddingLeft="@dimen/dp_10">
+
+            <ImageView
+                android:layout_width="@dimen/dp_10"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:src="@drawable/arrow_left"/>
+        </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
@@ -29,7 +35,6 @@
     </RelativeLayout>
 
     <ImageView
-        android:layout_marginTop="@dimen/dp_40"
         android:id="@+id/iv_netconfig_prepare"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -37,6 +42,7 @@
         android:layout_centerInParent="true"
         android:layout_marginLeft="@dimen/dp_20"
         android:layout_marginRight="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_40"
         android:src="@drawable/tishitu023"
         />
 
@@ -52,25 +58,26 @@
 
     <Button
         android:id="@+id/bt_sendvoice"
-        android:layout_below="@id/iv_netconfig_prepare"
         android:layout_width="@dimen/dp_120"
         android:layout_height="@dimen/dp_40"
-        android:layout_marginTop="@dimen/dp_116"
+        android:layout_below="@id/iv_netconfig_prepare"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dp_116"
 
         android:background="@drawable/shape_discovery_sendvoice"
         android:text="发送声波"
         android:textColor="#ffffff"
         android:textSize="@dimen/sp_18"/>
+
     <TextView
-        android:layout_marginTop="@dimen/dp_10"
-        android:textColor="@color/black"
         android:id="@+id/tv_netconfig_retry2_sendvoice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/bt_sendvoice"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dp_10"
         android:text="如未听到提示音,重新点击发送声波."
+        android:textColor="@color/black"
         android:textSize="@dimen/sp_18"/>
 
 </RelativeLayout>

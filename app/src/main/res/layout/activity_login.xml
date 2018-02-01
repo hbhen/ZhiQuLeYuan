@@ -12,14 +12,20 @@
         android:layout_height="@dimen/dp_44"
         >
 
-        <ImageView
+        <LinearLayout
             android:id="@+id/iv_back_login"
-            android:layout_width="@dimen/dp_10"
+            android:layout_width="30dp"
             android:layout_height="match_parent"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/dp_10"
-            android:src="@drawable/arrow_left"
-            />
+            android:clickable="true"
+            android:paddingLeft="@dimen/dp_10">
+
+            <ImageView
+                android:layout_width="@dimen/dp_10"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:src="@drawable/arrow_left"
+                />
+        </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
@@ -176,12 +182,12 @@
         />
 
     <RelativeLayout
-        android:visibility="gone"
         android:id="@+id/rl_textview_readandconfirm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_20"
         android:gravity="center"
+        android:visibility="gone"
         >
 
         <RadioButton

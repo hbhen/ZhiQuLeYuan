@@ -10,57 +10,61 @@
         android:layout_height="@dimen/dp_44"
         android:background="@color/titlebackground">
 
+        <LinearLayout
+            android:id="@+id/iv_bindbaby_backa"
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:paddingLeft="@dimen/dp_10">
 
             <ImageView
-                android:id="@+id/iv_bindbaby_backa"
                 android:layout_width="10dp"
                 android:layout_height="match_parent"
-                android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/dp_7"
                 android:src="@drawable/arrow_left"/>
+        </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:text="玩具指定宝宝"
-                android:textColor="#000000"
-                android:textSize="18sp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="玩具指定宝宝"
+            android:textColor="#000000"
+            android:textSize="18sp"/>
 
-            <!--<ImageView-->
-                <!--android:id="@+id/iv_bindbaby_addbabyinfo"-->
-                <!--android:layout_width="20dp"-->
-                <!--android:layout_height="20dp"-->
-                <!--android:layout_alignParentRight="true"-->
-                <!--android:layout_centerVertical="true"-->
-                <!--android:layout_marginRight="10dp"-->
-                <!--android:src="@drawable/babyadd_3x"/>-->
-        </RelativeLayout>
+        <!--<ImageView-->
+        <!--android:id="@+id/iv_bindbaby_addbabyinfo"-->
+        <!--android:layout_width="20dp"-->
+        <!--android:layout_height="20dp"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:layout_marginRight="10dp"-->
+        <!--android:src="@drawable/babyadd_3x"/>-->
+    </RelativeLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <ListView
-            android:choiceMode="singleChoice"
             android:id="@+id/lv_bindbaby"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:choiceMode="singleChoice">
 
         </ListView>
 
         <Button
-            android:visibility="visible"
             android:id="@+id/bt_bindbaby"
             android:layout_width="80dp"
             android:layout_height="40dp"
             android:layout_gravity="bottom|center"
-            android:background="@drawable/shape_edit_rect"
             android:layout_marginBottom="60dp"
+            android:background="@drawable/shape_edit_rect"
             android:text="确定"
-            android:textColor="#000000"/>
+            android:textColor="#000000"
+            android:visibility="visible"/>
     </FrameLayout>
 
 </LinearLayout>

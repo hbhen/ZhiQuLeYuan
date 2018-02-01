@@ -5,39 +5,51 @@
                 android:orientation="vertical">
 
 
-        <RelativeLayout
-            android:background="#f1f1f1"
-            android:id="@+id/tb_babyinfolist"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_44">
+    <RelativeLayout
+        android:id="@+id/tb_babyinfolist"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_44"
+        android:background="#f1f1f1">
+
+        <LinearLayout
+            android:id="@+id/iv_babyinfolist_backa"
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:paddingLeft="@dimen/dp_10">
 
             <ImageView
-                android:id="@+id/iv_babyinfolist_backa"
                 android:layout_width="@dimen/dp_10"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="@dimen/dp_10"
                 android:layout_centerVertical="true"
                 android:src="@drawable/arrow_left"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_gravity="center"
-                android:text="宝宝信息列表"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_18"/>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:text="宝宝信息列表"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_18"/>
+
+        <RelativeLayout
+            android:id="@+id/iv_babayinfolist_addbabyinfo"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:clickable="true"
+            android:paddingRight="@dimen/dp_10">
 
             <ImageView
-                android:id="@+id/iv_babayinfolist_addbabyinfo"
                 android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="10dp"
                 android:src="@drawable/babyadd_3x"/>
         </RelativeLayout>
-
+    </RelativeLayout>
 
 
     <android.support.v4.widget.SwipeRefreshLayout
@@ -52,6 +64,7 @@
             android:layout_height="match_parent"
             android:layout_marginTop="10dp"
             android:background="#ffffff"
+            android:clickable="true"
             android:listSelector="@color/transparent">
         </com.tongyuan.android.zhiquleyuan.swipe.refreshlib.AbListView>
     </android.support.v4.widget.SwipeRefreshLayout>

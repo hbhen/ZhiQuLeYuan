@@ -11,13 +11,19 @@
         android:background="@color/titlebackground"
         >
 
-        <ImageView
+        <LinearLayout
             android:id="@+id/iv_push_back"
-            android:layout_width="@dimen/dp_10"
+            android:layout_width="30dp"
             android:layout_height="match_parent"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/dp_10"
-            android:src="@drawable/arrow_left"/>
+            android:clickable="true"
+            android:paddingLeft="@dimen/dp_10">
+
+            <ImageView
+                android:layout_width="@dimen/dp_10"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:src="@drawable/arrow_left"/>
+        </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"

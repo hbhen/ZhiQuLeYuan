@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -30,7 +30,7 @@ import static com.tongyuan.android.zhiquleyuan.fragment.ToySelectorFragment.mToy
 
 public class SetInitVolumeActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private ImageView mVolume_back;
+    private LinearLayout mVolume_back;
     private TextView mVolumeValue;
     private Button mPlayReduce;
     private Button mPlay;
@@ -60,7 +60,7 @@ public class SetInitVolumeActivity extends AppCompatActivity implements View.OnC
         mBabyid = intent.getStringExtra("babyid");
         //TODO   设置初始音量
 
-        mVolume_back = (ImageView) findViewById(R.id.iv_initvolum_back);
+        mVolume_back = (LinearLayout) findViewById(R.id.iv_initvolum_back);
         mVolumeValue = (TextView) findViewById(R.id.tv_activity_setinitvolume_value);
         mVolumeSeekBar = (SeekBar) findViewById(R.id.sb_activity_setinitvolume);
         mVolumeReduce = (ImageButton) findViewById(R.id.ib_activity_setinitvolume_reduce);

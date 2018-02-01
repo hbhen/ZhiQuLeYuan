@@ -4,8 +4,8 @@
     android:id="@+id/ll_linearlayout_notitle"
     android:layout_width="match_parent"
     android:layout_height="80dp"
-   android:paddingLeft="10dp"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:paddingLeft="10dp">
 
     <ImageView
         android:id="@+id/iv_desc_notitle"
@@ -14,7 +14,7 @@
         android:layout_marginBottom="9dp"
         android:layout_marginTop="9dp"
         android:scaleType="centerCrop"
-        android:src="@mipmap/ic_launcher"/>
+        android:src="@drawable/player_cover_default"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -80,15 +80,20 @@
 
         </RelativeLayout>
 
-        <ImageView
-
+        <RelativeLayout
             android:id="@+id/iv_desc_rightarrow_notitle"
-            android:layout_width="10dp"
-            android:layout_height="20dp"
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
             android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"
-            android:src="@drawable/arrow_right"/>
+            android:clickable="true"
+            android:paddingRight="@dimen/dp_10">
+
+            <ImageView
+                android:layout_width="10dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/arrow_right"/>
+        </RelativeLayout>
 
         <View
             android:layout_width="match_parent"

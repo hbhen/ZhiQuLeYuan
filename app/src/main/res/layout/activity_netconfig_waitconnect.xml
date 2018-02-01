@@ -10,13 +10,19 @@
         android:background="@color/titlebackground"
         >
 
-        <ImageView
+        <LinearLayout
             android:id="@+id/iv_back4"
-            android:layout_width="@dimen/dp_10"
+            android:layout_width="30dp"
             android:layout_height="match_parent"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/dp_10"
-            android:src="@drawable/arrow_left"/>
+            android:clickable="true"
+            android:paddingLeft="@dimen/dp_10">
+
+            <ImageView
+                android:layout_width="@dimen/dp_10"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:src="@drawable/arrow_left"/>
+        </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
@@ -54,9 +60,9 @@
 
     <TextView
         android:id="@+id/tv_tips"
-        android:layout_below="@id/iv_netconfig_waitconnect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/iv_netconfig_waitconnect"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="160dp"
         android:text="未听到成功提示,请检查网络设置"
@@ -64,12 +70,12 @@
         android:textSize="@dimen/sp_18"/>
 
     <TextView
-        android:layout_marginTop="@dimen/dp_10"
-        android:layout_below="@id/tv_tips"
         android:id="@+id/tv_netconfig_again"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/tv_tips"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dp_10"
         android:text="重新设置网络"
         android:textColor="@color/redFont"
         android:textSize="@dimen/sp_18"/>

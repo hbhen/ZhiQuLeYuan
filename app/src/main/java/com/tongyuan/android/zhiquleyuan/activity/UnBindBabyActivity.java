@@ -11,7 +11,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.google.gson.Gson;
@@ -44,7 +44,7 @@ public class UnBindBabyActivity extends AppCompatActivity implements View.OnClic
 
     private ListView mListview_unbindbaby;
     private Button mButton_confirm;
-    private ImageView mBack_unbindbaby;
+    private LinearLayout mBack_unbindbaby;
     private ImageButton mCheck;
     private String mToyCode;
     private String mToyId;
@@ -69,7 +69,7 @@ public class UnBindBabyActivity extends AppCompatActivity implements View.OnClic
 
         mListview_unbindbaby = (ListView) findViewById(R.id.lv_unbindbaby);
         mButton_confirm = (Button) findViewById(R.id.bt_unbindbaby);
-        mBack_unbindbaby = (ImageView) findViewById(R.id.iv_unbindbaby_backa);
+        mBack_unbindbaby = (LinearLayout) findViewById(R.id.iv_unbindbaby_backa);
         View inflate = LayoutInflater.from(this).inflate(R.layout.item_unbindbaby, null);
         mCheck = (ImageButton) inflate.findViewById(R.id.iv_item_unbindbaby_checked);
 

@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
@@ -78,8 +79,8 @@ public class SetUserInfoActivity extends AppCompatActivity {
     TextView mTvActivitySetuserinfoDate;
     @BindView(R.id.bt_activity_setuserinfo_confirm)
     Button mBtActivitySetuserinfoConfirm;
-    @BindView(R.id.baby_back)
-    ImageView mBabyBack;
+    @BindView(R.id.iv_setuser_back)
+    LinearLayout mBabyBack;
     @BindView(R.id.tb_setuserinfo)
     RelativeLayout mTbSetuserinfo;
 
@@ -167,7 +168,7 @@ public class SetUserInfoActivity extends AppCompatActivity {
     @OnClick({R.id.iv_setuserinfo, R.id.et_setuserinfo, R.id.radioButtonBoy, R.id.radiobuttonGirls, R.id
             .rg_setuserinfo, R.id
             .tv_setuserinfo_hint_up, R.id.tv_activity_setuserinfo_date, R.id.bt_activity_setuserinfo_confirm, R.id
-            .baby_back, R.id.tb_setuserinfo})
+            .iv_setuser_back, R.id.tb_setuserinfo})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_setuserinfo:
@@ -208,7 +209,7 @@ public class SetUserInfoActivity extends AppCompatActivity {
 //                uploadPic(new File(uploadFilePath + File.separator + uploadFileName));
                 confirmInfo();
                 break;
-            case R.id.baby_back:
+            case R.id.iv_setuser_back:
                 finish();
                 break;
             default:

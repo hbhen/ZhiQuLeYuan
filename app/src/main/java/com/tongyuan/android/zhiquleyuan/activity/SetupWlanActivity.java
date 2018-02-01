@@ -8,7 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -43,7 +43,7 @@ public class SetupWlanActivity extends AppCompatActivity {
     @BindView(R.id.bt_confirm)
     Button mBtConfirm;
     @BindView(R.id.iv_back)
-    ImageView mIvBack;
+    LinearLayout mIvBack;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

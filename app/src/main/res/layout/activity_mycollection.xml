@@ -9,13 +9,19 @@
         android:layout_height="@dimen/dp_44"
         android:background="@color/titlebackground">
 
-        <ImageView
+        <LinearLayout
             android:id="@+id/iv_collection_back"
-            android:layout_width="10dp"
+            android:layout_width="30dp"
             android:layout_height="match_parent"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/dp_10"
-            android:src="@drawable/arrow_left"/>
+            android:clickable="true"
+            android:paddingLeft="@dimen/dp_10">
+
+            <ImageView
+                android:layout_width="10dp"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:src="@drawable/arrow_left"/>
+        </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
@@ -61,11 +67,11 @@
 
         <com.baoyz.swipemenulistview.SwipeMenuListView
             android:id="@+id/lv_mycollection"
-            android:divider="@null"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="10dp"
-            android:background="#ffffff"/>
+            android:background="#ffffff"
+            android:divider="@null"/>
 
     </android.support.v4.widget.SwipeRefreshLayout>
 

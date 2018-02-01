@@ -34,6 +34,8 @@ public class UnRegisterUserInvite extends AppCompatActivity {
     LinearLayout mLlActivityUnregisteruserinviteWechat;
     @BindView(R.id.ll_activity_unregisteruserinvite_sms)
     LinearLayout mLlActivityUnregisteruserinviteSms;
+    @BindView(R.id.iv_suggestion_back)
+    LinearLayout suggestion_back;
     private ShareAction mShareAction;
     private CustomUShareListener mCustomUShareListener;
 
@@ -48,9 +50,11 @@ public class UnRegisterUserInvite extends AppCompatActivity {
         mCustomUShareListener = new CustomUShareListener(this);
     }
 
-    @OnClick({R.id.switch_button, R.id.ll_activity_unregisteruserinvite_wechat, R.id.ll_activity_unregisteruserinvite_sms})
+    @OnClick({R.id.switch_button, R.id.ll_activity_unregisteruserinvite_wechat, R.id.ll_activity_unregisteruserinvite_sms,R.id.iv_suggestion_back})
     public void onViewClicked(View view) {
         switch (view.getId()) {
+            case R.id.iv_suggestion_back:
+                finish();
             case R.id.switch_button:
                 break;
             case R.id.ll_activity_unregisteruserinvite_wechat:

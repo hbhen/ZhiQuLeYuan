@@ -14,7 +14,7 @@ import android.view.animation.AccelerateInterpolator;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.baoyz.swipemenulistview.SwipeMenu;
@@ -54,7 +54,7 @@ public class MyCollectionActivity extends AppCompatActivity implements View.OnCl
     private ListView lv_mycollection;
     private SwipeRefreshLayout mSpRefresh;
     private SwipeMenuListView mSwipeListview;
-    private ImageView mCollection_back;
+    private LinearLayout mCollection_back;
     private EditText mEditText;
     private View footerView;
     private int currentPage = 1;
@@ -79,7 +79,7 @@ public class MyCollectionActivity extends AppCompatActivity implements View.OnCl
         mSpRefresh = (SwipeRefreshLayout) findViewById(R.id.sprefresh);
         mSwipeListview = (SwipeMenuListView) findViewById(R.id.lv_mycollection);
         lv_mycollection = (ListView) findViewById(R.id.lv_mycollection);
-        mCollection_back = (ImageView) findViewById(R.id.iv_collection_back);
+        mCollection_back = (LinearLayout) findViewById(R.id.iv_collection_back);
         mEditText = (EditText) findViewById(R.id.et_activity_mycollection);
         footerView = LayoutInflater.from(this).inflate(R.layout.discovery_sub_item_foot, null);
         footerView.setVisibility(View.GONE);

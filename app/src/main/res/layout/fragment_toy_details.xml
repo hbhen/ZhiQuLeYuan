@@ -12,13 +12,19 @@
         android:background="@color/titlebackground"
         >
 
-        <ImageView
+        <LinearLayout
             android:id="@+id/back_btn"
-            android:layout_width="@dimen/dp_10"
+            android:layout_width="30dp"
             android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/dp_10"
-            android:src="@drawable/arrow_left"
-            />
+            android:clickable="true"
+            android:paddingLeft="@dimen/dp_10">
+
+            <ImageView
+                android:layout_width="@dimen/dp_10"
+                android:layout_height="match_parent"
+                android:src="@drawable/arrow_left"
+                />
+        </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"

@@ -9,14 +9,19 @@
         android:layout_height="@dimen/dp_44"
         android:background="@color/titlebackground">
 
-        <ImageView
+        <LinearLayout
             android:id="@+id/iv_back"
-            android:layout_width="@dimen/dp_10"
+            android:layout_width="30dp"
             android:layout_height="match_parent"
+            android:clickable="true"
+            android:paddingLeft="@dimen/dp_10">
 
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/dp_10"
-            android:src="@drawable/arrow_left"/>
+            <ImageView
+                android:layout_width="@dimen/dp_10"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:src="@drawable/arrow_left"/>
+        </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
@@ -54,26 +59,26 @@
         android:textSize="@dimen/sp_18"/>
 
     <Button
-        android:layout_marginTop="110dp"
-        android:layout_below="@id/iv_netconfig_prepare"
         android:id="@+id/bt_sendpre"
         android:layout_width="@dimen/dp_220"
         android:layout_height="@dimen/dp_40"
+        android:layout_below="@id/iv_netconfig_prepare"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="110dp"
         android:background="@drawable/shape_discovery_sendvoice"
         android:text="听到玩具准备好提示音"
         android:textColor="#ffffff"
         android:textSize="@dimen/sp_18"/>
 
     <TextView
-        android:layout_marginTop="@dimen/dp_10"
-        android:layout_below="@id/bt_sendpre"
         android:id="@+id/tv_netconfig_retry1_prepare"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/bt_sendpre"
         android:layout_centerHorizontal="true"
-        android:textColor="@color/black"
+        android:layout_marginTop="@dimen/dp_10"
         android:text="未听到&quot;好&quot;提示音,重新发送"
+        android:textColor="@color/black"
         android:textSize="@dimen/sp_18"/>
 
 

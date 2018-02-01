@@ -16,13 +16,19 @@
         android:layout_alignParentTop="true"
         android:background="#f1f1f1">
 
-        <ImageView
+        <LinearLayout
             android:id="@+id/iv_initvolum_back"
-            android:layout_marginLeft="@dimen/dp_7"
-            android:layout_centerVertical="true"
-            android:layout_width="@dimen/dp_10"
+            android:layout_width="30dp"
             android:layout_height="match_parent"
-            android:src="@drawable/arrow_left"/>
+            android:clickable="true"
+            android:paddingLeft="@dimen/dp_10">
+
+            <ImageView
+                android:layout_width="@dimen/dp_10"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:src="@drawable/arrow_left"/>
+        </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"

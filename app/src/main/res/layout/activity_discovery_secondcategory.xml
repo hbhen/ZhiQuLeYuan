@@ -13,14 +13,20 @@
         android:background="@color/main_top_bg"
         >
 
-        <ImageView
+        <LinearLayout
             android:id="@+id/sub_discovery_back"
-            android:layout_width="@dimen/dp_10"
+            android:layout_width="30dp"
             android:layout_height="match_parent"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:src="@drawable/arrow_left"
-            />
+            android:clickable="true"
+            android:paddingLeft="@dimen/dp_10">
+
+            <ImageView
+                android:layout_width="@dimen/dp_10"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:src="@drawable/arrow_left"
+                />
+        </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
@@ -37,10 +43,10 @@
     <!--layout="@layout/item_album_details_one" />-->
 
     <!--<View-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="10dp"-->
-        <!--android:background="@color/main_top_bg"-->
-        <!--/>-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="10dp"-->
+    <!--android:background="@color/main_top_bg"-->
+    <!--/>-->
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_seconde_category"

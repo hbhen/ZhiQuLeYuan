@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -88,7 +89,7 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
     private List<QueryBabyListFromToyIdRes.BODYBean.LSTBean> mLst;
     private String mCurrentUserId;
     private String mOwnerId;
-    private ImageView mIv_back;
+    private LinearLayout mIv_back;
     private int count;
 
 
@@ -116,7 +117,7 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
         mCallButtery = (ImageView) fragment_manageToy.findViewById(R.id.iv_fragment_managetoy_call_buttery);
         mCallMIc = (ImageView) fragment_manageToy.findViewById(R.id.iv_fragment_managetoy_call_mic);
         mCallCamera = (ImageView) fragment_manageToy.findViewById(R.id.iv_fragment_managetoy_call_camera);
-        mIv_back = (ImageView) fragment_manageToy.findViewById(R.id.iv_back);
+        mIv_back = (LinearLayout) fragment_manageToy.findViewById(R.id.iv_back);
 
         //玩具群成员GridView
         mMygrid = (MyGridView) fragment_manageToy.findViewById(R.id.mygrid);

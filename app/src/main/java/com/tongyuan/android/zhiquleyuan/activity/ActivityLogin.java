@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -63,7 +64,7 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
     private String mPhoneNum = null;
     private String mPhoneNumSave;
     public static String mTokenSave;
-    private ImageView mIv_back;
+    private LinearLayout mIv_back;
     CountDownTimersUtils mCountDownTimerUtils;
     private RadioButton mBt_userAgreement;
     private TextView mTv_userAgreement;
@@ -83,7 +84,7 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
 
     private void initView() {
 
-        mIv_back = (ImageView) findViewById(R.id.iv_back_login);
+        mIv_back = (LinearLayout) findViewById(R.id.iv_back_login);
         iv_login = (ImageView) findViewById(R.id.iv_login);
         et_login_phone = (EditText) findViewById(R.id.et_login_phone);
         et_login_smscode = (EditText) findViewById(R.id.et_login_smscode);

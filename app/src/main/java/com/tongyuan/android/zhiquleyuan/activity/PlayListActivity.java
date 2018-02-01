@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
@@ -44,7 +44,7 @@ public class PlayListActivity extends AppCompatActivity implements View.OnClickL
     private static final String TAG = "responsetag";
     private SwipeMenuListView mSwipelistview;
     private SwipeRefreshLayout sprefresh;
-    private ImageView mBack;
+    private LinearLayout mBack;
     ArrayList<DiscoveryListResultBean.BODYBean.LSTBean> mList = new ArrayList<DiscoveryListResultBean.BODYBean.LSTBean>();
     ArrayList<QueryMyPlayResBean.BODYBean.LSTBean> queryMusicList = new ArrayList<QueryMyPlayResBean.BODYBean.LSTBean>();
     private int currentPage = 1;
@@ -69,7 +69,7 @@ public class PlayListActivity extends AppCompatActivity implements View.OnClickL
     private void initView() {
         sprefresh = (SwipeRefreshLayout) findViewById(R.id.sprefresh);
         mSwipelistview = (SwipeMenuListView) findViewById(R.id.sp_activity_play_list);
-        mBack = (ImageView) findViewById(R.id.baby_back);
+        mBack = (LinearLayout) findViewById(R.id.iv_playlist_back);
         footerView = LayoutInflater.from(this).inflate(R.layout.discovery_sub_item_foot, null);
         footerView.setVisibility(View.GONE);
         mSwipelistview.addFooterView(footerView);
@@ -248,7 +248,7 @@ public class PlayListActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.baby_back:
+            case R.id.iv_playlist_back:
                 finish();
                 break;
         }

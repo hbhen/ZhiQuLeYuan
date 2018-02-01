@@ -9,7 +9,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.ListView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.daimajia.swipe.util.Attributes;
 import com.google.gson.Gson;
@@ -37,45 +38,39 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class BabyInfoListActivity extends AppCompatActivity implements View.OnClickListener {
 
-
     private static final int ADD_BABYINFO = 502;
     public static final int SuccessCode = 66;
-    private ListView mListview;
+    private com.tongyuan.android.zhiquleyuan.swipe.refreshlib.AbListView mListview;
     private String mToken;
-    private ImageView mIv_babayinfolist_addbabyinfo;
+    private RelativeLayout mIv_babayinfolist_addbabyinfo;
     private ImageView mIv_babyinfolist_backa;
     private SwipeRefreshLayout sp;
     private static final String TAG = "88888";
-    private ImageView iv_back;
-
+    private LinearLayout iv_back;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.babyinfolist);
         initView();
-
         initData();
         initListener();
         Log.i(TAG, "babyinfolistactivity : onCreatea went");
     }
 
-
     private void initView() {
-        mListview = (ListView) findViewById(R.id.lv_babyinfolist);
-        iv_back = (ImageView) findViewById(R.id.iv_babyinfolist_backa);
+        mListview = (com.tongyuan.android.zhiquleyuan.swipe.refreshlib.AbListView) findViewById(R.id.lv_babyinfolist);
+        iv_back = (LinearLayout) findViewById(R.id.iv_babyinfolist_backa);
         sp = (SwipeRefreshLayout) findViewById(R.id.sp);
-        mIv_babayinfolist_addbabyinfo = (ImageView) findViewById(R.id.iv_babayinfolist_addbabyinfo);
-        mIv_babyinfolist_backa = (ImageView) findViewById(R.id.iv_babyinfolist_backa);
+        mIv_babayinfolist_addbabyinfo = (RelativeLayout) findViewById(R.id.iv_babayinfolist_addbabyinfo);
+//        mIv_babyinfolist_backa = (ImageView) findViewById(R.id.iv_babyinfolist_backa);
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-
     }
-
 
     private void initListener() {
         mIv_babayinfolist_addbabyinfo.setOnClickListener(this);
@@ -88,9 +83,7 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
         });
     }
 
-
     private void initData() {
-
         mToken = SPUtils.getString(this, "token", "");
         final String phone = SPUtils.getString(this, "phoneNum", "");
         Date date = new Date();
@@ -104,7 +97,6 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
         //3.4.44
         QueryBabyListRequest.BODYBean queryBabyListBody = new QueryBabyListRequest.BODYBean("10", "1");
         QueryBabyListRequest queryBabyListRequest = new QueryBabyListRequest("REQ", "QMYB", phone, time, queryBabyListBody, "", mToken, "1");
-
         Gson gson = new Gson();
         String babyListJson = gson.toJson(queryBabyListRequest);
         Call<QueryBabyListResult> babyListResult = allInterface.getBabyListResult(babyListJson);
@@ -112,21 +104,16 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
             @Override
             public void onResponse(Call<QueryBabyListResult> call, Response<QueryBabyListResult> response) {
                 String listResponse = response.body().toString();
-
                 Log.i("111", "listResponse: " + listResponse);
-
                 List<QueryBabyListResult.BODYBean.LSTBean> lst = response.body().getBODY().getLST();
-
                 QueryBabyListResult.BODYBean.LSTBean lstBean = null;
                 if (mToken.equals("")) {
                     ToastUtil.showToast(getApplicationContext(), "当前未登录,请登录后操作");
                 } else {
 //                    ToastUtil.showToast(getApplicationContext(), "chenggong" + response.body().getBODY().toString());
-
 //                    showBabyList(lst);
                     showBabyList(response, time, phone, mToken, lst);//传一个response就行了,之前做的是把response.body.getBody().getLst()也传过去了
                 }
-
             }
 
             @Override
@@ -137,7 +124,6 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
         });
     }
 
-
     private void showBabyList(Response<QueryBabyListResult> response, String time, String phone, String token, List<QueryBabyListResult.BODYBean
             .LSTBean> lst) {
         System.out.println("222222222222" + response.body().toString());
@@ -146,28 +132,28 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
         mListview.setDividerHeight(0);
         mAdapter.setMode(Attributes.Mode.Single);
         mListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                ToastUtil.showToast(getApplicationContext(), "click postion" + position);
-
-
+                ToastUtil.showToast(BabyInfoListActivity.this, "点击的条目是:" + position);
             }
         });
+//        mListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                ToastUtil.showToast(getApplicationContext(), "click postion" + position);
+//            }
+//        });
     }
-
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-
             case R.id.iv_babayinfolist_addbabyinfo:
                 Intent mIntent = new Intent();
+                mIntent.putExtra("fromtype", "notcontains");
                 mIntent.setClass(this, MyBabyActivity.class);
                 startActivityForResult(mIntent, ADD_BABYINFO);
                 break;
-
             case R.id.iv_babyinfolist_backa:
                 finish();
 //                FragmentManager supportFragmentManager = getSupportFragmentManager();
@@ -175,7 +161,8 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
 //                transaction.replace(R.id.fl_fragmentcontainer, new MineFragment());
 //                transaction.commit();
                 break;
-
+            default:
+                break;
         }
     }
 
@@ -186,7 +173,6 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
         if (resultCode == SuccessCode) {
             initData();
         }
-
     }
 
     @Override
