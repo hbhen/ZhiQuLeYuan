@@ -6,7 +6,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +30,7 @@ import com.tongyuan.android.zhiquleyuan.bean.QueryMyCollectionReqBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryMyCollectionResBean;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.interf.Constant;
+import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
@@ -58,6 +58,7 @@ public class MyCollectionActivity extends AppCompatActivity implements View.OnCl
     private EditText mEditText;
     private View footerView;
     private int currentPage = 1;
+    private String NC = "-1";
     private String keyWord = "";
     ArrayList<DiscoveryListResultBean.BODYBean.LSTBean> mList = new ArrayList<>();
     List<QueryMyCollectionResBean.BODYBean.LSTBean> collectionList = new ArrayList<>();
@@ -88,6 +89,8 @@ public class MyCollectionActivity extends AppCompatActivity implements View.OnCl
 
     private void initData() {
 //        getMyCollection("");
+        mMyCollectionAdapter = new MyCollectionAdapter(getApplicationContext(), collectionList);
+        mSwipeListview.setAdapter(mMyCollectionAdapter);
         getMyCollection(keyWord, false);
     }
 
@@ -97,6 +100,8 @@ public class MyCollectionActivity extends AppCompatActivity implements View.OnCl
         mSpRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                currentPage = 1;
+                NC = "-1";
 //                getMyCollection("");
                 keyWord = "";
                 getMyCollection(keyWord, false);
@@ -113,13 +118,13 @@ public class MyCollectionActivity extends AppCompatActivity implements View.OnCl
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 //                getMyCollection(s.toString());
-                keyWord = s.toString();
-                getMyCollection(keyWord, false);
+
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                keyWord = s.toString();
+                getMyCollection(keyWord, false);
             }
         });
 
@@ -130,61 +135,60 @@ public class MyCollectionActivity extends AppCompatActivity implements View.OnCl
         if (isLoadMore) {
             page++;
         }
-        final String token = SPUtils.getString(this, "token", "");
-        final String phoneNum = SPUtils.getString(this, "phoneNum", "");
-        Date date = new Date();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-        final String time = simpleDateFormat.format(date);
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constant.baseurl)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        AllInterface allInterface = retrofit.create(AllInterface.class);
-        QueryMyCollectionReqBean.BODYBean bodyBean = new QueryMyCollectionReqBean.BODYBean("", "", "10", String.valueOf(page));
-        QueryMyCollectionReqBean queryMyCollectionReqBean = new QueryMyCollectionReqBean("REQ", "MYFAV", phoneNum, time, bodyBean, "", token, "1");
+        if (!NC.equals("0")) {
+            final String token = SPUtils.getString(this, "token", "");
+            final String phoneNum = SPUtils.getString(this, "phoneNum", "");
+            Date date = new Date();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+            final String time = simpleDateFormat.format(date);
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(Constant.baseurl)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+            AllInterface allInterface = retrofit.create(AllInterface.class);
+            QueryMyCollectionReqBean.BODYBean bodyBean = new QueryMyCollectionReqBean.BODYBean("", "", "10", String.valueOf(page));
+            QueryMyCollectionReqBean queryMyCollectionReqBean = new QueryMyCollectionReqBean("REQ", "MYFAV", phoneNum, time, bodyBean, "", token,
+                    "1");
+            Gson gson = new Gson();
+            String babyListJson = gson.toJson(queryMyCollectionReqBean);
+            Call<QueryMyCollectionResBean> babyListResult = allInterface.QUERY_MYCOLLECTION_RES_BEAN_CALL(babyListJson);
+            babyListResult.enqueue(new Callback<QueryMyCollectionResBean>() {
+                @Override
+                public void onResponse(Call<QueryMyCollectionResBean> call, final Response<QueryMyCollectionResBean> response) {
+                    if (response.body() != null && response.body().getCODE().equals("0")) {
+                        NC = response.body().getBODY().getNC();
+                        LogUtil.i("555555", "queryRecordingList:response" + response.body().getBODY().toString());
+                        List<QueryMyCollectionResBean.BODYBean.LSTBean> lst = response.body().getBODY().getLST();
+                        if (isLoadMore) {
+                            currentPage++;
+                        } else {
+                            collectionList.clear();
+                            currentPage = 1;
 
-        Gson gson = new Gson();
-        String babyListJson = gson.toJson(queryMyCollectionReqBean);
-        Call<QueryMyCollectionResBean> babyListResult = allInterface.QUERY_MYCOLLECTION_RES_BEAN_CALL(babyListJson);
-        babyListResult.enqueue(new Callback<QueryMyCollectionResBean>() {
-            @Override
-            public void onResponse(Call<QueryMyCollectionResBean> call, final Response<QueryMyCollectionResBean> response) {
-                if (response.body() != null && response.body().getCODE().equals("0")) {
-                    Log.i("555555", "queryRecordingList:response" + response.body().getBODY().toString());
-                    List<QueryMyCollectionResBean.BODYBean.LSTBean> lst = response.body().getBODY().getLST();
-                    if (isLoadMore) {
-                        currentPage++;
-                    } else {
-                        collectionList.clear();
-                        currentPage = 1;
+                        }
+                        collectionList.addAll(lst);
+                        if ("0".equals(response.body().getBODY().getNC())) {
+                            footerView.setVisibility(View.GONE);
+                        } else {
+                            footerView.setVisibility(View.VISIBLE);
+                        }
+                        mMyCollectionAdapter.notifyDataSetChanged();
+//                    mSwipeListview.setAdapter(mMyCollectionAdapter);
+                        //把list封装,传到MyPlay去播放
+                        for (QueryMyCollectionResBean.BODYBean.LSTBean lstBean : collectionList) {
+                            DiscoveryListResultBean.BODYBean.LSTBean listBean = new DiscoveryListResultBean.BODYBean.LSTBean();
+                            listBean.setID(lstBean.getID());
+                            listBean.setIMG(lstBean.getIMG());
+                            listBean.setNAME(lstBean.getNAME());
+                            mList.add(listBean);
+                        }
 
-                    }
-                    if ("0".equals(response.body().getBODY().getNC())) {
+                        // 如果list为空怎么办??2017.6.14
+                        mSwipeListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                        footerView.setVisibility(View.GONE);
-                    } else {
-                    collectionList.addAll(lst);
-                        footerView.setVisibility(View.VISIBLE);
-                    }
-                    mMyCollectionAdapter = new MyCollectionAdapter(getApplicationContext(), collectionList);
-                    mSwipeListview.setAdapter(mMyCollectionAdapter);
-
-//                    mMyCollectionAdapter.notifyDataSetChanged();
-                    //把list封装,传到MyPlay去播放
-                    for (QueryMyCollectionResBean.BODYBean.LSTBean lstBean : collectionList) {
-                        DiscoveryListResultBean.BODYBean.LSTBean listBean = new DiscoveryListResultBean.BODYBean.LSTBean();
-                        listBean.setID(lstBean.getID());
-                        listBean.setIMG(lstBean.getIMG());
-                        listBean.setNAME(lstBean.getNAME());
-                        mList.add(listBean);
-                    }
-
-                    // 如果list为空怎么办??2017.6.14
-                    mSwipeListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                            //TODO list取不到
+                                //TODO list取不到
 //                            Intent intent = new Intent();
 //                            intent.setClass(MyCollectionActivity.this,MyPlayActivity.class);
 //                            Bundle bundle = new Bundle();
@@ -197,57 +201,58 @@ public class MyCollectionActivity extends AppCompatActivity implements View.OnCl
 //                            for (int i = 0; i < lst.size(); i++) {
 //                                arrayList.add(i, response.body().getBODY().getLST().get(i));
 //                            }
-                            MyPlayActivity.launch(getApplicationContext(), mList, position);
-                            ToastUtil.showToast(getApplicationContext(), "点击的是:" + position);
-                        }
-                    });
+                                MyPlayActivity.launch(getApplicationContext(), mList, position);
+                                ToastUtil.showToast(getApplicationContext(), "点击的是:" + position);
+                            }
+                        });
 
-                    SwipeMenuCreator mCreator = new SwipeMenuCreator() {
+                        SwipeMenuCreator mCreator = new SwipeMenuCreator() {
 
-                        @Override
-                        public void create(SwipeMenu menu) {
-                            SwipeMenuItem deleteItem = new SwipeMenuItem(getApplicationContext());
-                            deleteItem.setTitle("删除");
-                            deleteItem.setBackground(R.color.redFont);
-                            deleteItem.setWidth(dp2px(70));
-                            deleteItem.setTitleSize(18);
-                            deleteItem.setTitleColor(R.color.white);
-                            menu.addMenuItem(deleteItem);
-                        }
-                    };
-                    mSwipeListview.setMenuCreator(mCreator);
-                    mSwipeListview.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
+                            @Override
+                            public void create(SwipeMenu menu) {
+                                SwipeMenuItem deleteItem = new SwipeMenuItem(getApplicationContext());
+                                deleteItem.setTitle("删除");
+                                deleteItem.setBackground(R.color.redFont);
+                                deleteItem.setWidth(dp2px(70));
+                                deleteItem.setTitleSize(18);
+                                deleteItem.setTitleColor(R.color.white);
+                                menu.addMenuItem(deleteItem);
+                            }
+                        };
+                        mSwipeListview.setMenuCreator(mCreator);
+                        mSwipeListview.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
+                            @Override
+                            public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
 
-                            deleteCollection(phoneNum, time, position, collectionList, token);
-                            collectionList.remove(position);
-                            mMyCollectionAdapter.notifyDataSetChanged();
-                            ToastUtil.showToast(getApplicationContext(), "点击删除");
-                            return false;
+                                deleteCollection(phoneNum, time, position, collectionList, token);
+                                collectionList.remove(position);
+                                mMyCollectionAdapter.notifyDataSetChanged();
+                                ToastUtil.showToast(getApplicationContext(), "点击删除");
+                                return false;
 
-                        }
-                    });
+                            }
+                        });
 
-                    mSwipeListview.setSmoothScrollbarEnabled(true);
-                    mSwipeListview.setSwipeDirection(SwipeMenuListView.DIRECTION_LEFT);
-                    mSwipeListview.setOpenInterpolator(new AccelerateInterpolator());
-                    mSwipeListview.setCloseInterpolator(new AccelerateInterpolator());
-                } else {
-                    ToastUtil.showToast(getApplicationContext(), response.body().getMSG());
-                    footerView.setVisibility(View.GONE);
+                        mSwipeListview.setSmoothScrollbarEnabled(true);
+                        mSwipeListview.setSwipeDirection(SwipeMenuListView.DIRECTION_LEFT);
+                        mSwipeListview.setOpenInterpolator(new AccelerateInterpolator());
+                        mSwipeListview.setCloseInterpolator(new AccelerateInterpolator());
+                    } else {
+                        ToastUtil.showToast(getApplicationContext(), response.body().getMSG());
+                        footerView.setVisibility(View.GONE);
+                    }
+                    isLoading = false;
                 }
-                isLoading = false;
-            }
 
-            @Override
-            public void onFailure(Call<QueryMyCollectionResBean> call, Throwable t) {
-                isLoading = false;
-                Log.i("555555", "querymycollection+List:failure" + t.toString());
+                @Override
+                public void onFailure(Call<QueryMyCollectionResBean> call, Throwable t) {
+                    isLoading = false;
+                    LogUtil.i("555555", "querymycollection+List:failure" + t.toString());
 
-            }
+                }
 
-        });
+            });
+        }
     }
 
     private void deleteCollection(String phoneNum, String time, int position, List<QueryMyCollectionResBean.BODYBean.LSTBean> qlst, String token) {
@@ -272,13 +277,13 @@ public class MyCollectionActivity extends AppCompatActivity implements View.OnCl
             public void onResponse(Call<DeleteMyCollectionResBean> call, Response<DeleteMyCollectionResBean> response) {
                 footerView.setVisibility(View.GONE);
                 mMyCollectionAdapter.notifyDataSetChanged();
-                Log.i("555555", "recordingfragment+(deleteRecording)onResponse: " + response.body().getBODY().toString());
+                LogUtil.i("555555", "recordingfragment+(deleteRecording)onResponse: " + response.body().getBODY().toString());
 
             }
 
             @Override
             public void onFailure(Call<DeleteMyCollectionResBean> call, Throwable t) {
-                Log.i("555555", "recordingfragment+(deleteRecording)onFailure: " + t.toString());
+                LogUtil.i("555555", "recordingfragment+(deleteRecording)onFailure: " + t.toString());
             }
         });
 

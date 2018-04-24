@@ -60,7 +60,6 @@ public class NewAdapter extends BaseQuickAdapter<NodisturbTimeResBean.BODYBean.L
 //                return onCreateDefViewHolder(parent, viewType);
 //        }
 //    }
-
     @Override
     protected void convert(final BaseViewHolder helper, NodisturbTimeResBean.BODYBean.LSTBean item) {
         this.mHelper = helper;
@@ -118,6 +117,8 @@ public class NewAdapter extends BaseQuickAdapter<NodisturbTimeResBean.BODYBean.L
         setNodisturbTimeResBeanCall.enqueue(new Callback<SetNodisturbTimeResBean>() {
             @Override
             public void onResponse(Call<SetNodisturbTimeResBean> call, Response<SetNodisturbTimeResBean> response) {
+                String s1 = response.body().toString();
+                String s2 = response.body().getBODY().getLST().toString();
 //                if (response.body().getCODE().equals("0")) {
 ////                    BaseViewHolder baseViewHolder = mAdapter.returnView();
 ////                    if (baseViewHolder == null) {
@@ -130,7 +131,7 @@ public class NewAdapter extends BaseQuickAdapter<NodisturbTimeResBean.BODYBean.L
 ////                        mAdapter.notifyDataSetChanged();
 ////                        popupWindow.dismiss();
 ////                    } else {
-////                        Log.i("1212321", "onResponse: " + mStart_hour + "_" + mStart_min + "_" + mEnd_hour + "_" + mEnd_min + ":");
+////                        LogUtil.i("1212321", "onResponse: " + mStart_hour + "_" + mStart_min + "_" + mEnd_hour + "_" + mEnd_min + ":");
 //                        baseViewHolder.setText(R.id.tv_nodisturb_start, mStart_hour + ":" + mStart_min + "-");
 //                        baseViewHolder.setText(R.id.tv_nodisturb_end, mEnd_hour + ":" + mEnd_min);
 ////                        ToastUtil.showToast(getApplicationContext(), "ok");

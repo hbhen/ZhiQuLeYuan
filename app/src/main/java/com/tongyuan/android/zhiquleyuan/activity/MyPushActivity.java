@@ -7,7 +7,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +34,7 @@ import com.tongyuan.android.zhiquleyuan.fragment.ToySelectorFragment;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.utils.CallManager;
+import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
@@ -56,6 +56,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MyPushActivity extends AppCompatActivity implements View.OnClickListener, AbsListView.OnScrollListener {
 
+
     private SwipeMenuListView mLv_myPush;
     private LinearLayout mPush_back;
     private String mToyid;
@@ -67,6 +68,7 @@ public class MyPushActivity extends AppCompatActivity implements View.OnClickLis
     private EditText mEditTextView;
     private String keyWord = "";
     private int currentPage = 1;
+    private String NC = "-1";
 
     ArrayList<QueryMyPushResBean.BODYBean.LSTBean> myPushList = new ArrayList<>();
     ArrayList<DiscoveryListResultBean.BODYBean.LSTBean> mList = new ArrayList<>();
@@ -103,6 +105,8 @@ public class MyPushActivity extends AppCompatActivity implements View.OnClickLis
 
         mToken = SPUtils.getString(this, "token", "");
         mPhoneNum = SPUtils.getString(this, "phoneNum", "");
+        mMyPushAdapter = new MyPushAdapter(getApplicationContext(), myPushList);
+        mLv_myPush.setAdapter(mMyPushAdapter);
         getMyPushData(mToken, mPhoneNum, false);
     }
 
@@ -112,6 +116,8 @@ public class MyPushActivity extends AppCompatActivity implements View.OnClickLis
         mSpRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                currentPage = 1;
+                NC = "-1";
                 getMyPushData(mToken, mPhoneNum, false);
                 mSpRefresh.setRefreshing(false);
             }
@@ -139,109 +145,112 @@ public class MyPushActivity extends AppCompatActivity implements View.OnClickLis
 
 
     private void getMyPushData(final String token, final String phoneNum, final boolean isLoadMore) {
-        int page = currentPage;
-        if (isLoadMore) {
-            page++;
-        }
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-        String time = simpleDateFormat.format(new Date());
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constant.baseurl)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        if (!NC.equals("0")) {
 
-        AllInterface allInterface = retrofit.create(AllInterface.class);
-        //TODO 我的页面下的推送是查看当前玩具的推送,还是该用户的所有推送???
-        QueryMyPushReqBean.BODYBean bodyBean = new QueryMyPushReqBean.BODYBean("", "10", "1", keyWord, mToyid);
-        final QueryMyPushReqBean queryMyPushReqBean = new QueryMyPushReqBean("REQ", "MYPUSH", phoneNum, time, bodyBean, "", token, "1");
-        Gson gson = new Gson();
-        String s = gson.toJson(queryMyPushReqBean);
-        Call<QueryMyPushResBean> queryMyPushResult = allInterface.getQueryMyPushResult(s);
-        queryMyPushResult.enqueue(new Callback<QueryMyPushResBean>() {
+            int page = currentPage;
+            if (isLoadMore) {
+                page++;
+            }
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+            String time = simpleDateFormat.format(new Date());
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(Constant.baseurl)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+            AllInterface allInterface = retrofit.create(AllInterface.class);
+            //TODO 我的页面下的推送是查看当前玩具的推送,还是该用户的所有推送???
+            QueryMyPushReqBean.BODYBean bodyBean = new QueryMyPushReqBean.BODYBean("", "10", String.valueOf(page), keyWord, mToyid);
+            final QueryMyPushReqBean queryMyPushReqBean = new QueryMyPushReqBean("REQ", "MYPUSH", phoneNum, time, bodyBean, "", token, "1");
+            Gson gson = new Gson();
+            String s = gson.toJson(queryMyPushReqBean);
+            Call<QueryMyPushResBean> queryMyPushResult = allInterface.getQueryMyPushResult(s);
+            queryMyPushResult.enqueue(new Callback<QueryMyPushResBean>() {
 
-            private List<QueryMyPushResBean.BODYBean.LSTBean> mLst;
+                private List<QueryMyPushResBean.BODYBean.LSTBean> mLst;
 
-            @Override
-            public void onResponse(Call<QueryMyPushResBean> call, final Response<QueryMyPushResBean> response) {
-                if (response.body().getCODE().equals("0")) {
-                    if (isLoadMore) {
-                        currentPage++;
-                    } else {
-                        myPushList.clear();
-                        currentPage = 1;
-                    }
-                    mLst = response.body().getBODY().getLST();
-                    myPushList.addAll(mLst);
-                    mMyPushAdapter = new MyPushAdapter(getApplicationContext(), myPushList);
-                    mLv_myPush.setAdapter(mMyPushAdapter);
-                    if ("0".equals(response.body().getBODY().getNC())) {
-                        footerView.setVisibility(View.GONE);
-                    } else {
-                        footerView.setVisibility(View.VISIBLE);
-                    }
-                    for (QueryMyPushResBean.BODYBean.LSTBean bean : mLst) {
-                        DiscoveryListResultBean.BODYBean.LSTBean listBean = new DiscoveryListResultBean.BODYBean.LSTBean();
-                        listBean.setID(bean.getID());
-                        listBean.setIMG(bean.getIMG());
-                        listBean.setNAME(bean.getNAME());
-                        mList.add(listBean);
-                    }
+                @Override
+                public void onResponse(Call<QueryMyPushResBean> call, final Response<QueryMyPushResBean> response) {
+                    if (response.body().getCODE().equals("0")) {
+                        NC=response.body().getBODY().getNC();
+                        if (isLoadMore) {
+                            currentPage++;
+                        } else {
+                            myPushList.clear();
+                            currentPage = 1;
+                        }
+                        mLst = response.body().getBODY().getLST();
+                        myPushList.addAll(mLst);
 
-                    mLv_myPush.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        if ("0".equals(response.body().getBODY().getNC())) {
+                            footerView.setVisibility(View.GONE);
+                        } else {
+                            footerView.setVisibility(View.VISIBLE);
+                        }
+                        mMyPushAdapter.notifyDataSetChanged();
+                        for (QueryMyPushResBean.BODYBean.LSTBean bean : mLst) {
+                            DiscoveryListResultBean.BODYBean.LSTBean listBean = new DiscoveryListResultBean.BODYBean.LSTBean();
+                            listBean.setID(bean.getID());
+                            listBean.setIMG(bean.getIMG());
+                            listBean.setNAME(bean.getNAME());
+                            mList.add(listBean);
+                        }
+
+                        mLv_myPush.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 //                            ArrayList<QueryMyPushResBean.BODYBean.LSTBean> arrayList = new ArrayList<QueryMyPushResBean.BODYBean.LSTBean>();
 //                            for (int i = 0; i < mLst.size(); i++) {
 //
 //                                arrayList.add(i, response.body().getBODY().getLST().get(i));
 //
 //                            }
-//                            Log.i("121212", "onItemClick: list" + arrayList.size() + "---" + position);
-                            MyPlayActivity.launch(getApplicationContext(), mList, position);
+//                            LogUtil.i("121212", "onItemClick: list" + arrayList.size() + "---" + position);
+                                MyPlayActivity.launch(getApplicationContext(), mList, position);
 
-                        }
-                    });
-                    SwipeMenuCreator mCreator = new SwipeMenuCreator() {
+                            }
+                        });
+                        SwipeMenuCreator mCreator = new SwipeMenuCreator() {
 
-                        @Override
-                        public void create(SwipeMenu menu) {
-                            SwipeMenuItem deleteItem = new SwipeMenuItem(getApplicationContext());
-                            deleteItem.setTitle("删除");
-                            deleteItem.setBackground(R.color.redFont);
-                            deleteItem.setWidth(dp2px(70));
-                            deleteItem.setTitleSize(16);
-                            deleteItem.setTitleColor(R.color.white);
-                            menu.addMenuItem(deleteItem);
+                            @Override
+                            public void create(SwipeMenu menu) {
+                                SwipeMenuItem deleteItem = new SwipeMenuItem(getApplicationContext());
+                                deleteItem.setTitle("删除");
+                                deleteItem.setBackground(R.color.redFont);
+                                deleteItem.setWidth(dp2px(70));
+                                deleteItem.setTitleSize(16);
+                                deleteItem.setTitleColor(R.color.white);
+                                menu.addMenuItem(deleteItem);
 
-                        }
-                    };
-                    mLv_myPush.setMenuCreator(mCreator);
-                    mLv_myPush.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
-                            deletePush(phoneNum, new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()), position, myPushList, token);
-                            myPushList.remove(position);
-                            mMyPushAdapter.notifyDataSetChanged();
-                            ToastUtil.showToast(getApplicationContext(), "点击删除");
-                            return false;
-                        }
-                    });
+                            }
+                        };
+                        mLv_myPush.setMenuCreator(mCreator);
+                        mLv_myPush.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
+                            @Override
+                            public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
+                                deletePush(phoneNum, new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()), position, myPushList, token);
+                                myPushList.remove(position);
+                                mMyPushAdapter.notifyDataSetChanged();
+                                ToastUtil.showToast(getApplicationContext(), "点击删除");
+                                return false;
+                            }
+                        });
 
-                    mLv_myPush.setSmoothScrollbarEnabled(true);
-                    mLv_myPush.setSwipeDirection(SwipeMenuListView.DIRECTION_LEFT);
-                    mLv_myPush.setOpenInterpolator(new AccelerateInterpolator());
-                    mLv_myPush.setCloseInterpolator(new AccelerateInterpolator());
-                } else {
-                    ToastUtil.showToast(getApplicationContext(), response.body().getMSG());
+                        mLv_myPush.setSmoothScrollbarEnabled(true);
+                        mLv_myPush.setSwipeDirection(SwipeMenuListView.DIRECTION_LEFT);
+                        mLv_myPush.setOpenInterpolator(new AccelerateInterpolator());
+                        mLv_myPush.setCloseInterpolator(new AccelerateInterpolator());
+                    } else {
+                        ToastUtil.showToast(getApplicationContext(), response.body().getMSG());
+                    }
+                    isLoading = false;
                 }
-                isLoading = false;
-            }
 
-            @Override
-            public void onFailure(Call<QueryMyPushResBean> call, Throwable t) {
-                isLoading = false;
-            }
-        });
+                @Override
+                public void onFailure(Call<QueryMyPushResBean> call, Throwable t) {
+                    isLoading = false;
+                }
+            });
+        }
     }
 
     private void deletePush(String phoneNum, String time, int position, List<QueryMyPushResBean.BODYBean.LSTBean> list, String
@@ -268,12 +277,12 @@ public class MyPushActivity extends AppCompatActivity implements View.OnClickLis
                 footerView.setVisibility(View.GONE);
                 mMyPushAdapter.notifyDataSetChanged();
                 ToastUtil.showToast(getApplicationContext(), "走没走");
-                Log.i("555555", "recordingfragment+(deleteRecording)onResponse: " + response.body().getBODY().toString());
+                LogUtil.i("555555", "recordingfragment+(deleteRecording)onResponse: " + response.body().getBODY().toString());
             }
 
             @Override
             public void onFailure(Call<DeleteMyPushResBean> call, Throwable t) {
-                Log.i("555555", "recordingfragment+(deleteRecording)onFailure: " + t.toString());
+                LogUtil.i("555555", "recordingfragment+(deleteRecording)onFailure: " + t.toString());
             }
         });
 

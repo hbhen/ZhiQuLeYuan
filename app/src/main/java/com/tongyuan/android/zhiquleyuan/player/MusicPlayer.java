@@ -18,6 +18,7 @@ import java.util.WeakHashMap;
  *
  * Created by zgg on 2017/6/6.
  */
+
 public class MusicPlayer {
 
     private static IMusicAidl mService;

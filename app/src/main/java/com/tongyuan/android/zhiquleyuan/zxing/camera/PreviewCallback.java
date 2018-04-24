@@ -20,7 +20,8 @@ import android.graphics.Point;
 import android.hardware.Camera;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
+
+import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 
 final class PreviewCallback implements Camera.PreviewCallback
 {
@@ -59,7 +60,7 @@ final class PreviewCallback implements Camera.PreviewCallback
 		}
 		else
 		{
-			Log.d(TAG, "Got preview callback, but no handler for it");
+			LogUtil.d(TAG, "Got preview callback, but no handler for it");
 		}
 	}
 

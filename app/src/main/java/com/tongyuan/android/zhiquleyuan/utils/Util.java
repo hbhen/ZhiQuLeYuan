@@ -59,17 +59,17 @@ public class Util {
             return;
         }
 
-        Log.i(TAG, "总共有" + cursor.getCount() + "条数据");
+        LogUtil.i(TAG, "总共有" + cursor.getCount() + "条数据");
 
         // 遍历所有的行
         while (cursor.moveToNext()) {
 
-            Log.i(TAG, " ------------------ ");
+            LogUtil.i(TAG, " ------------------ ");
             // 遍历一行中所有的列
             for (int i = 0; i < cursor.getColumnCount(); i++) {
                 String columnName = cursor.getColumnName(i);    // 获取列名
                 String columnValue = cursor.getString(i);       // 获取列的值
-                Log.i(TAG, columnName + " = " + columnValue);
+                LogUtil.i(TAG, columnName + " = " + columnValue);
             }
         }
     }

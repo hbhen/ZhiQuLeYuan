@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -28,6 +27,7 @@ import com.tongyuan.android.zhiquleyuan.bean.ControlToyVolumeReq;
 import com.tongyuan.android.zhiquleyuan.bean.ControlToyVolumeRes;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.interf.Constant;
+import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 import com.weiyicloud.whitepad.ControlMode;
 import com.weiyicloud.whitepad.SharePadMgr;
@@ -204,12 +204,12 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                Log.i("video", "onProgressChanged: " + progress);
+                LogUtil.i("video", "onProgressChanged: " + progress);
                 mVolumeString = String.valueOf(progress);
                 mVolume_text.setText(mVolumeString);
                 mVolumeInt = Integer.parseInt(mVolumeString);
 
-                Log.i("video", "onProgressChanged----changelistenera: " + mVolumeString);
+                LogUtil.i("video", "onProgressChanged----changelistenera: " + mVolumeString);
             }
 
             @Override
@@ -223,7 +223,7 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
                 int progress = seekBar.getProgress();
                 String volume = String.valueOf(progress);
                 pushValueToToy(volume);
-                Log.i("video", "onProgressChanged:(stoptrackingtouch " + progress);
+                LogUtil.i("video", "onProgressChanged:(stoptrackingtouch " + progress);
             }
         });
         volume_reduce.setOnClickListener(this);
@@ -319,12 +319,12 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
             //不显示小的视频窗口了,也不让他有点击切换的事件了
 //            case R.id.surfaceView6:
 //                if (!change) {
-//                    Log.d("surfaceview", "surfaceview: +change1");
+//                    LogUtil.d("surfaceview", "surfaceview: +change1");
 //                    Session.getInstance().PlayVideo(0, true, mOther_video, 0, 0, 1, 1, 0, false, 1, 0);
 //                    Session.getInstance().PlayVideo(_watchingPeerID, true, mMy_video, 0, 0, 1, 1, 65, false, 1, 0);
 //                    change = true;
 //                } else {
-//                    Log.d("surfaceview", "surfaceview: +change2");
+//                    LogUtil.d("surfaceview", "surfaceview: +change2");
 //                    Session.getInstance().PlayVideo(0, true, mMy_video, 0, 0, 1, 1, 0, false, 1, 0);
 //                    Session.getInstance().PlayVideo(_watchingPeerID, true, mOther_video, 0, 0, 1, 1, 65, false, 1, 0);
 //                    change = false;
@@ -413,7 +413,7 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void seeMe() {
-        Log.d("surfaceview", "surfaceview3 ");
+        LogUtil.d("surfaceview", "surfaceview3 ");
 
         if (_myPeerID == 0)
             return;
@@ -431,7 +431,7 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void seeYou() {
-        Log.d("surfaceview", "surfaceview4 ");
+        LogUtil.d("surfaceview", "surfaceview4 ");
 
         if (_userList.size() == 0)
             return;
@@ -439,7 +439,7 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
             int peerID = _userList.get(0);
             Session.getInstance().PlayVideo(peerID, true, mMy_video, 0, 0, 1, 1, 0, false, 1, 0);
             Session.getInstance().requestSpeaking(peerID);
-            Log.d("surfaceview", "surfaceview5 ");
+            LogUtil.d("surfaceview", "surfaceview5 ");
             _watchingPeerID = peerID;
         } else {
             Session.getInstance().PlayVideo(_watchingPeerID, true, mMy_video, 0, 0, 1, 1, 0, false, 1, 0);
@@ -651,7 +651,7 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onResponse(Call<CallToToyRes> call, Response<CallToToyRes> response) {
                 String s1 = response.body().toString();
-                Log.i("55555", "onResponse: stopcallserver" + s1);
+                LogUtil.i("55555", "onResponse: stopcallserver" + s1);
             }
 
             @Override

@@ -19,7 +19,8 @@ package com.tongyuan.android.zhiquleyuan.zxing.camera;
 import android.hardware.Camera;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
+
+import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 
 final class AutoFocusCallback implements Camera.AutoFocusCallback
 {
@@ -44,13 +45,13 @@ final class AutoFocusCallback implements Camera.AutoFocusCallback
 			Message message = autoFocusHandler.obtainMessage(autoFocusMessage, success);
 			// Simulate continuous autofocus by sending a focus request every
 			// AUTOFOCUS_INTERVAL_MS milliseconds.
-			// Log.d(TAG, "Got auto-focus callback; requesting another");
+			// LogUtil.d(TAG, "Got auto-focus callback; requesting another");
 			autoFocusHandler.sendMessageDelayed(message, AUTOFOCUS_INTERVAL_MS);
 			autoFocusHandler = null;
 		}
 		else
 		{
-			Log.d(TAG, "Got auto-focus callback, but no handler for it");
+			LogUtil.d(TAG, "Got auto-focus callback, but no handler for it");
 		}
 	}
 

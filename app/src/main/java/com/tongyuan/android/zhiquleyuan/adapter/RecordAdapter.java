@@ -3,7 +3,6 @@ package com.tongyuan.android.zhiquleyuan.adapter;
 import android.content.Context;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +14,7 @@ import com.daimajia.swipe.adapters.BaseSwipeAdapter;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.bean.RecordingItem;
 import com.tongyuan.android.zhiquleyuan.db.DBHelper;
+import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -86,7 +86,7 @@ public class RecordAdapter extends BaseSwipeAdapter {
         swipeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("click", "click");
+                LogUtil.i("click", "click");
             }
         });
 

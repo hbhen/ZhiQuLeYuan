@@ -68,6 +68,7 @@ public class BaseFragment extends Fragment {
 
     public void showFragment(String name) {
 
+
         if (getActivity() instanceof MainActivity) {
             ((MainActivity) getActivity()).showFragment(name);
 

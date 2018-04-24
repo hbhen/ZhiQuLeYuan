@@ -15,7 +15,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -68,6 +67,7 @@ import com.tongyuan.android.zhiquleyuan.request.RequestManager;
 import com.tongyuan.android.zhiquleyuan.request.base.BaseRequest;
 import com.tongyuan.android.zhiquleyuan.request.base.SuperModel;
 import com.tongyuan.android.zhiquleyuan.service.MusicPlayerService;
+import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtil;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
@@ -191,6 +191,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
     private String mMinString = "00";
     private String mSecString = "00";
     private int currentPage = 1;
+    private String NC = "-1";
     private RecordingListAdapter mRecordingListAdapter;
     private View footerView;
 
@@ -222,8 +223,8 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
             savedInstanceState) {
         View recordingRoot = initView(inflater);
         mDbHelper = new DBHelper(getActivity());
-        Log.i(TAG, "onCreateView: went");
-        Log.i("circlelife", "recordingfragment:onCreateView: went");
+        LogUtil.i(TAG, "onCreateView: went");
+        LogUtil.i("circlelife", "recordingfragment:onCreateView: went");
         return recordingRoot;
 
     }
@@ -305,7 +306,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
 //            @Override
 //            public void handleMessage(Message msg) {
 //                super.handleMessage(msg);
-//                Log.i("555555", "scan file over...");
+//                LogUtil.i("555555", "scan file over...");
 //                showFile(recordList);
 //            }
 //        };
@@ -317,12 +318,13 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
         footerView = LayoutInflater.from(getContext()).inflate(R.layout.discovery_sub_item_foot, null);
         footerView.setVisibility(View.GONE);
         mSwipelistview.addFooterView(footerView);
-//        mSwipelistview.setAdapter(mRecordingListAdapter);
+        mSwipelistview.setAdapter(mRecordingListAdapter);
         sprefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 
             @Override
             public void onRefresh() {
                 currentPage = 1;
+                NC = "-1";
                 queryRecordingList(false);
                 sprefresh.setRefreshing(false);
             }
@@ -372,14 +374,14 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Log.i(TAG, "onActivityCreated: went");
+        LogUtil.i(TAG, "onActivityCreated: went");
         mShareListener = new CustomShareListener(getActivity());
         mShareAction = new ShareAction(getActivity());
 
         initData();
         initListener();
 
-        Log.i("circlelife", "recordingfragment:onActivityCreated: went");
+        LogUtil.i("circlelife", "recordingfragment:onActivityCreated: went");
         //TODO 展示本地的recording,没有就去网络获取
 
     }
@@ -444,7 +446,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
             case R.id.iv_fragent_recording_toy:
                 //判断当前的布局是不是播放的布局,如果是播放的布局才能推送给玩具
 
-//                Log.i(TAG, "itemClick:recordingfragment mToyId"+toyid);
+//                LogUtil.i(TAG, "itemClick:recordingfragment mToyId"+toyid);
 
                 if (ToySelectorFragment.mToyId == null) {
                     ToastUtil.showToast(getContext(), "当前没有选中玩具");
@@ -464,7 +466,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
                 //当前没有选中item的时候,告知用户,当前没有选择item,让用户选择以后再进行编辑的操作.
                 //点击dialog的确定以后,底下的播放界面的名字,和listview上的名字都改变,并且上传到服务器,然后刷新列表
                 //TODO 编辑的功能,逻辑混乱,捋一捋
-                Log.i("xuanzhong", "是否选中" + mSwipelistview.isSelected());
+                LogUtil.i("xuanzhong", "是否选中" + mSwipelistview.isSelected());
                 if (selectedPosition == -1) {
                     ToastUtil.showToast(getActivity(), "您没有选择要编辑的录音,请选择后再进行编辑");
                     return;
@@ -489,7 +491,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
 //                    mMediaPlayer = new MediaPlayer();
 //                }
 
-                Log.i("555555", "isplaying2: ");
+                LogUtil.i("555555", "isplaying2: ");
 //                    isRecordingPlaying = true;
                 mTryListener.setVisibility(View.INVISIBLE);
                 startPlayRecord();
@@ -506,7 +508,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
                 break;
             case R.id.iv_recoding_tool_trylistener_stop:
                 stopPlayRecord();
-                Log.i("555555", "isplaying1: ");
+                LogUtil.i("555555", "isplaying1: ");
 //                    isRecordingPlaying = false;
 
                 ToastUtil.showToast(getContext(), "结束试听");
@@ -702,7 +704,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
             public void onResponse(Call<ChangeRecordingNameResBean> call, Response<ChangeRecordingNameResBean>
                     response) {
 
-                Log.i("555555", "recordingfragment+(changerecordingnamebean)onResponse: " + response.body().getBODY()
+                LogUtil.i("555555", "recordingfragment+(changerecordingnamebean)onResponse: " + response.body().getBODY()
                         .toString());
                 //改变完了以后去访问网络,刷新listview
                 queryRecordingList(false);
@@ -711,7 +713,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
             @Override
             public void onFailure(Call<ChangeRecordingNameResBean> call, Throwable t) {
 
-                Log.i("555555", "recordingfragment+(changerecordingnamebean)onFailure: " + t.toString());
+                LogUtil.i("555555", "recordingfragment+(changerecordingnamebean)onFailure: " + t.toString());
 
             }
         });
@@ -724,152 +726,153 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
     }
 
     private void queryRecordingList(final boolean isLoadMore) {
-        int page = currentPage;
-        if (isLoadMore) {
-            page++;
-        }
-        mToken = SPUtils.getString(getContext(), "token", "");
-        mPhoneNum = SPUtils.getString(getContext(), "phoneNum", "");
-        Date date = new Date();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-        mTime = simpleDateFormat.format(date);
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constant.baseurl)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        AllInterface allInterface = retrofit.create(AllInterface.class);
-        QueryRecordingReqBean.BODYBean bodyBean = new QueryRecordingReqBean.BODYBean("", "10", String.valueOf(page));
-        QueryRecordingReqBean queryRecordingReqBean = new QueryRecordingReqBean("REQ", "MYREC", mPhoneNum, mTime,
-                bodyBean, "", mToken, "1");
+        if (!NC.equals("0")) {
+            int page = currentPage;
+            if (isLoadMore) {
+                page++;
+            }
+            mToken = SPUtils.getString(getContext(), "token", "");
+            mPhoneNum = SPUtils.getString(getContext(), "phoneNum", "");
+            Date date = new Date();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+            mTime = simpleDateFormat.format(date);
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(Constant.baseurl)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+            AllInterface allInterface = retrofit.create(AllInterface.class);
+            QueryRecordingReqBean.BODYBean bodyBean = new QueryRecordingReqBean.BODYBean("", "10", String.valueOf(page));
+            QueryRecordingReqBean queryRecordingReqBean = new QueryRecordingReqBean("REQ", "MYREC", mPhoneNum, mTime,
+                    bodyBean, "", mToken, "1");
 
-        Gson gson = new Gson();
-        String babyListJson = gson.toJson(queryRecordingReqBean);
-        Call<QueryRecordingResBean> babyListResult = allInterface.QUERY_RECORDING_RES_BEAN_CALL(babyListJson);
-        babyListResult.enqueue(new Callback<QueryRecordingResBean>() {
+            Gson gson = new Gson();
+            String babyListJson = gson.toJson(queryRecordingReqBean);
+            Call<QueryRecordingResBean> babyListResult = allInterface.QUERY_RECORDING_RES_BEAN_CALL(babyListJson);
+            babyListResult.enqueue(new Callback<QueryRecordingResBean>() {
 
 
-            @Override
-            public void onResponse(Call<QueryRecordingResBean> call, final Response<QueryRecordingResBean> response) {
-                if (response.body() != null && response.body().getCODE().equals("0")) {
-                    mLst = response.body().getBODY().getLST();//这里拿的是所有的录音的列表
-                    Log.i(TAG, "onResponse: mlist" + mLst.toString());
-                    if (isLoadMore) {
-                        currentPage++;
-                    } else {
-                        recordingResList.clear();
-                        currentPage = 1;
-                    }
-                    recordingResList.addAll(mLst);
-                    if ("0".equals(response.body().getBODY().getNC())) {
-                        footerView.setVisibility(View.GONE);
-                    } else {
-                        footerView.setVisibility(View.VISIBLE);
-                    }
-                    mSwipelistview.setAdapter(mRecordingListAdapter);
+                @Override
+                public void onResponse(Call<QueryRecordingResBean> call, final Response<QueryRecordingResBean> response) {
+                    if (response.body() != null && response.body().getCODE().equals("0")) {
+                        NC = response.body().getBODY().getNC();
+                        mLst = response.body().getBODY().getLST();//这里拿的是所有的录音的列表
+                        LogUtil.i(TAG, "onResponse: mlist" + mLst.toString());
+                        if (isLoadMore) {
+                            currentPage++;
+                        } else {
+                            recordingResList.clear();
+                            currentPage = 1;
+                        }
+                        recordingResList.addAll(mLst);
+                        if ("0".equals(response.body().getBODY().getNC())) {
+                            footerView.setVisibility(View.GONE);
+                        } else {
+                            footerView.setVisibility(View.VISIBLE);
+                        }
 
-                    mRecordingListAdapter.notifyDataSetChanged();
-                    Log.i("1111111", "queryRecordingList:response" + response.body().getBODY().toString());
-                    for (QueryRecordingResBean.BODYBean.LSTBean bean : recordingResList) {
-                        DiscoveryListResultBean.BODYBean.LSTBean listBean = new DiscoveryListResultBean.BODYBean.LSTBean();
-                        listBean.setID(bean.getID());
-                        listBean.setIMG(bean.getIMG());
-                        listBean.setNAME(bean.getNAME());
-                        list.add(listBean);
-                    }
+                        mRecordingListAdapter.notifyDataSetChanged();
+                        LogUtil.i("1111111", "queryRecordingList:response" + response.body().getBODY().toString());
+                        for (QueryRecordingResBean.BODYBean.LSTBean bean : recordingResList) {
+                            DiscoveryListResultBean.BODYBean.LSTBean listBean = new DiscoveryListResultBean.BODYBean.LSTBean();
+                            listBean.setID(bean.getID());
+                            listBean.setIMG(bean.getIMG());
+                            listBean.setNAME(bean.getNAME());
+                            list.add(listBean);
+                        }
 
-                    final List<String> idList = new ArrayList<String>();
-                    for (int i = 0; i < recordingResList.size(); i++) {
-                        String id = recordingResList.get(i).getID();
-                        idList.add(id);
-                    }
-                    Log.i("555555", "onResponse:+list的长度: " + recordingResList.size() + "recordingResList的内容:");
+                        final List<String> idList = new ArrayList<String>();
+                        for (int i = 0; i < recordingResList.size(); i++) {
+                            String id = recordingResList.get(i).getID();
+                            idList.add(id);
+                        }
+                        LogUtil.i("555555", "onResponse:+list的长度: " + recordingResList.size() + "recordingResList的内容:");
 
-                    mSwipelistview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            /**1,点击item,显示录音播放界面
-                             //2,拿到item的信息(name,duration),展示到播放界面上
-                             //3,点击播放,开始播放,seekbar的begintime开始走 ,seekbar的进度也跟着走,同时播放按钮变成暂停按钮
-                             //4,点击暂停,录音播放暂停,seekbar停止进度,记住当前的播放位置,并停留在当前的显示位置
-                             //5,点击上一首,去recordingResList列表获取上一首的信息,如果是第一首就仍然是第一首,点击上一首,直接开始播放
-                             //6,点击下一首,去recordingResList列表获取下一首的信息,如果是最后一首就仍然是最后一首,点击下一首,直接开始播放
-                             //7,播放结束的监听,当音乐播放完,进度条停止,暂停按钮变成播放按钮
-                             //8,点击音量控制,去设置初始化音量界面,设置音量并上传到服务器
-                             **/
-                            //定义一个选中状态
-                            mSwipelistview.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
-                            mSwipelistview.setItemChecked(position, true);
-                            //展示的时候同时保存当前的选中的录音文件的播放地址.
-                            SPUtils.putString(getContext(), "address", response.body().getBODY().getLST().get
-                                    (position).getID());
-                            //1,点击item,显示录音播放界面
+                        mSwipelistview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                /**1,点击item,显示录音播放界面
+                                 //2,拿到item的信息(name,duration),展示到播放界面上
+                                 //3,点击播放,开始播放,seekbar的begintime开始走 ,seekbar的进度也跟着走,同时播放按钮变成暂停按钮
+                                 //4,点击暂停,录音播放暂停,seekbar停止进度,记住当前的播放位置,并停留在当前的显示位置
+                                 //5,点击上一首,去recordingResList列表获取上一首的信息,如果是第一首就仍然是第一首,点击上一首,直接开始播放
+                                 //6,点击下一首,去recordingResList列表获取下一首的信息,如果是最后一首就仍然是最后一首,点击下一首,直接开始播放
+                                 //7,播放结束的监听,当音乐播放完,进度条停止,暂停按钮变成播放按钮
+                                 //8,点击音量控制,去设置初始化音量界面,设置音量并上传到服务器
+                                 **/
+                                //定义一个选中状态
+                                mSwipelistview.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
+                                mSwipelistview.setItemChecked(position, true);
+                                //展示的时候同时保存当前的选中的录音文件的播放地址.
+                                SPUtils.putString(getContext(), "address", response.body().getBODY().getLST().get
+                                        (position).getID());
+                                //1,点击item,显示录音播放界面
 //                            isShowRecordingControl = false;
-                            //保存position
-                            selectedPosition = position;
-                            showRecordingPlayView(true);
-                            //拿到item的信息(name,duration),展示到播放界面上
-                            //播放的id
-//                            Log.i(TAG, "onItemClick: recordingResList"+recordingResList.toString());
-                            mRecordingId = idList.get(selectedPosition);
-                            Log.i(TAG, "onItemClick: mrecoding" + mRecordingId);
-                            //2,拿到item的信息(name,duration),展示到播放界面上
-                            mPlayName = recordingResList.get(position).getNAME();
-                            mDur = recordingResList.get(position).getDUR();
-                            mPlayRecordingDesc.setText(mPlayName);
-                            mPlayendTime.setText(mDur);
+                                //保存position
+                                selectedPosition = position;
+                                showRecordingPlayView(true);
+                                //拿到item的信息(name,duration),展示到播放界面上
+                                //播放的id
+//                            LogUtil.i(TAG, "onItemClick: recordingResList"+recordingResList.toString());
+                                mRecordingId = idList.get(selectedPosition);
+                                LogUtil.i(TAG, "onItemClick: mrecoding" + mRecordingId);
+                                //2,拿到item的信息(name,duration),展示到播放界面上
+                                mPlayName = recordingResList.get(position).getNAME();
+                                mDur = recordingResList.get(position).getDUR();
+                                mPlayRecordingDesc.setText(mPlayName);
+                                mPlayendTime.setText(mDur);
 //                            //带着id 去服务器申请本地播放
-                            getLocalPlayApply(mToken, mPhoneNum, mRecordingId, mTime);
+                                getLocalPlayApply(mToken, mPhoneNum, mRecordingId, mTime);
 
 //                            ToastUtil.showToast(getContext(), "点击的是:" + selectedPosition);
 
-                        }
-                    });
-                    SwipeMenuCreator mCreator = new SwipeMenuCreator() {
-                        @Override
-                        public void create(SwipeMenu menu) {
-                            SwipeMenuItem deleteItem = new SwipeMenuItem(getContext());
-                            deleteItem.setTitle("删除");
-                            deleteItem.setBackground(R.color.redFont);
-                            deleteItem.setWidth(dp2px(70));
-                            deleteItem.setTitleSize(16);
+                            }
+                        });
+                        SwipeMenuCreator mCreator = new SwipeMenuCreator() {
+                            @Override
+                            public void create(SwipeMenu menu) {
+                                SwipeMenuItem deleteItem = new SwipeMenuItem(getContext());
+                                deleteItem.setTitle("删除");
+                                deleteItem.setBackground(R.color.redFont);
+                                deleteItem.setWidth(dp2px(70));
+                                deleteItem.setTitleSize(16);
 
-                            deleteItem.setTitleColor(R.color.white);
-                            menu.addMenuItem(deleteItem);
+                                deleteItem.setTitleColor(R.color.white);
+                                menu.addMenuItem(deleteItem);
 
-                        }
-                    };
+                            }
+                        };
 
-                    mSwipelistview.setMenuCreator(mCreator);
-                    mSwipelistview.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
-                            deleteRecording(mTime, position, recordingResList);
-                            recordingResList.remove(position);
-                            mRecordingListAdapter.notifyDataSetChanged();
+                        mSwipelistview.setMenuCreator(mCreator);
+                        mSwipelistview.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
+                            @Override
+                            public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
+                                deleteRecording(mTime, position, recordingResList);
+                                recordingResList.remove(position);
+                                mRecordingListAdapter.notifyDataSetChanged();
 //                            ToastUtil.showToast(getContext(), "点击删除");
-                            return false;
-                        }
-                    });
+                                return false;
+                            }
+                        });
 
-                    mSwipelistview.setSmoothScrollbarEnabled(true);
-                    mSwipelistview.setSwipeDirection(SwipeMenuListView.DIRECTION_LEFT);
-                    mSwipelistview.setOpenInterpolator(new AccelerateInterpolator());
-                    mSwipelistview.setCloseInterpolator(new AccelerateInterpolator());
+                        mSwipelistview.setSmoothScrollbarEnabled(true);
+                        mSwipelistview.setSwipeDirection(SwipeMenuListView.DIRECTION_LEFT);
+                        mSwipelistview.setOpenInterpolator(new AccelerateInterpolator());
+                        mSwipelistview.setCloseInterpolator(new AccelerateInterpolator());
 
-                } else {
-                    ToastUtil.showToast(getActivity(), response.body().getMSG());
-                    footerView.setVisibility(View.GONE);
+                    } else {
+                        ToastUtil.showToast(getActivity(), response.body().getMSG());
+                        footerView.setVisibility(View.GONE);
+                    }
+                    isLoading = false;
                 }
-                isLoading = false;
-            }
 
-            @Override
-            public void onFailure(Call<QueryRecordingResBean> call, Throwable t) {
-                isLoading = false;
-                Log.d(TAG, "onFailure<QueryRecordingResBean>: " + t.toString());
-            }
-        });
-
+                @Override
+                public void onFailure(Call<QueryRecordingResBean> call, Throwable t) {
+                    isLoading = false;
+                    LogUtil.d(TAG, "onFailure<QueryRecordingResBean>: " + t.toString());
+                }
+            });
+        }
     }
 
     private void getLocalPlayApply(String token, String phoneNum, String recordingId, String time) {
@@ -887,7 +890,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
                     return;
                 } else if (response.body().CODE.equals("0")) {
                     mUrl = response.body().BODY.getURL();
-                    Log.i(TAG, "onResponse: murl" + mUrl.toString());
+                    LogUtil.i(TAG, "onResponse: murl" + mUrl.toString());
 
 
                 }
@@ -895,7 +898,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
 
             @Override
             public void onFailure(Call<SuperModel<LocalPlayApplyResBean>> call, Throwable t) {
-                Log.i(TAG, "onFailure: " + t);
+                LogUtil.i(TAG, "onFailure: " + t);
             }
         });
 
@@ -937,13 +940,13 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
 
             @Override
             public void onResponse(Call<DeleteRecordingResBean> call, Response<DeleteRecordingResBean> response) {
-                Log.i("555555", "recordingfragment+(deleteRecording)onResponse: " + response.body().getBODY()
+                LogUtil.i("555555", "recordingfragment+(deleteRecording)onResponse: " + response.body().getBODY()
                         .toString());
             }
 
             @Override
             public void onFailure(Call<DeleteRecordingResBean> call, Throwable t) {
-                Log.i("555555", "recordingfragment+(deleteRecording)onFailure: " + t.toString());
+                LogUtil.i("555555", "recordingfragment+(deleteRecording)onFailure: " + t.toString());
             }
         });
     }
@@ -959,7 +962,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
 //        ObjectAnimator objectAnimator = new ObjectAnimator();
 //        int w = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
 //        int h = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
-//        Log.i("55555", "moveToBottom: +"+mControl);
+//        LogUtil.i("55555", "moveToBottom: +"+mControl);
 //        mControl.measure(w, h);
 //        float measuredHeight = mControl.getMeasuredHeight();
 //        float heightPixels = getResources().getDisplayMetrics().heightPixels;
@@ -1036,9 +1039,9 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
             @Override
             public void onResponse(Call<AddRecordingResBean> call, Response<AddRecordingResBean> response) {
 
-                Log.i("upload", "body=" + response.message() + " " + response.body().getMSG());
+                LogUtil.i("upload", "body=" + response.message() + " " + response.body().getMSG());
 //                String code = response.body().getCODE();
-                Log.i("recodingFragment:upLoad", response.body().toString());
+                LogUtil.i("recodingFragment:upLoad", response.body().toString());
 //                if (code.equals("0")) {
 //                    finish();
 //                    setResult(BabyInfoListActivity.SuccessCode);
@@ -1047,7 +1050,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
 
             @Override
             public void onFailure(Call<AddRecordingResBean> call, Throwable t) {
-                Log.i("upload", "onFailure...");
+                LogUtil.i("upload", "onFailure...");
             }
         });
     }
@@ -1159,7 +1162,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
                 mMediaRecorder.prepare();
                 mMediaRecorder.start();
 //                long l2 = System.currentTimeMillis();
-//                Log.i("55555", "startRecoding: " + (l2 - l1));
+//                LogUtil.i("55555", "startRecoding: " + (l2 - l1));
                 startTimer();//时间计时
 
                 isNotRecording = !isNotRecording;
@@ -1170,7 +1173,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
         } else {
 //            long end = System.currentTimeMillis();
 //            long durat = end - l;
-//            Log.i("555555", "haha: " + durat);
+//            LogUtil.i("555555", "haha: " + durat);
             //没有录音状态
             mRecordingButton.setImageResource(R.drawable.recording_pressed_240);
 //            mMediaRecorder.stop();
@@ -1194,7 +1197,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
                 mSecString = second + "";
             }
             mRecordingDuration.setText(mMinString + ":" + mSecString);
-            Log.i(TAG, "startRecoding: " + mMinString + ":" + mSecString);
+            LogUtil.i(TAG, "startRecoding: " + mMinString + ":" + mSecString);
 //            long length = mFile.length();
 //            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm:ss");
 //            Date date = new Date(durat);
@@ -1297,7 +1300,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
     }
 
     private void showFile(List<File> recordList) {
-        Log.i("555555", "recordList.size=" + recordList.size());
+        LogUtil.i("555555", "recordList.size=" + recordList.size());
         RecordAdapter recodAdapter = new RecordAdapter(getActivity(), recordList);
         mLv_recoding.setAdapter(recodAdapter);
         mLv_recoding.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -1329,7 +1332,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
     @Override
     public void onResume() {
         super.onResume();
-        Log.i(TAG, "onResume: went");
+        LogUtil.i(TAG, "onResume: went");
         showBottomPanel();
         String dir = Environment.getExternalStorageDirectory().getPath() + "/AAmart";
         final File file = new File(dir);
@@ -1345,7 +1348,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
 //                mhalder.sendEmptyMessage(1);
             }
         }).start();
-        Log.i("circlelife", "recordingfragment:onResume: went");
+        LogUtil.i("circlelife", "recordingfragment:onResume: went");
 
         if (MusicPlayer.isPlaying() && MusicPlayerService.isPlayUrl(mRecordingId)) {
             showStartView();
@@ -1356,7 +1359,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
     @Override
     public void onPause() {
         super.onPause();
-        Log.i(TAG, "onPause: went");
+        LogUtil.i(TAG, "onPause: went");
         showPauseView();
 
     }
@@ -1426,14 +1429,14 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
     @Override
     public void onStop() {
         super.onStop();
-        Log.i(TAG, "onStop: went");
-        Log.i("circlelife", "recordingfragment:onStop: went");
+        LogUtil.i(TAG, "onStop: went");
+        LogUtil.i("circlelife", "recordingfragment:onStop: went");
     }
 
     private void updatePlayProgressShow() {
 
         int currentPosition = MusicPlayer.getCurrentPosition();
-        Log.i("handler", "position=" + currentPosition);
+        LogUtil.i("handler", "position=" + currentPosition);
         mPlayBeginTime.setText(Util.formatMillis(currentPosition));
         mPlaySeekBar.setProgress(currentPosition);
         mHandler.removeMessages(UPDATE_PLAY_PROGRESS_SHOW);
@@ -1455,7 +1458,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
 
         @Override
         public void onResult(SHARE_MEDIA platform) {
-            Log.e(TAG, "onresult:+recoding+1 ");
+            LogUtil.e(TAG, "onresult:+recoding+1 ");
 //            ToastUtil.showToast(getActivity(), platform + " 分享成功");
             if (platform != SHARE_MEDIA.WEIXIN && platform != SHARE_MEDIA.SMS) {
 //                ToastUtil.showToast(getActivity(), platform + " 分享成功啦");
@@ -1465,7 +1468,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
 
         @Override
         public void onError(SHARE_MEDIA platform, Throwable throwable) {
-            Log.e(TAG, "onError:+recoding ", throwable);
+            LogUtil.e(TAG, "onError:+recoding (Throwable):" + throwable);
             if (platform != SHARE_MEDIA.WEIXIN && platform != SHARE_MEDIA.SMS) {
                 ToastUtil.showToast(mWeakReference.get(), "分享失败");
             }
@@ -1473,7 +1476,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
 
         @Override
         public void onCancel(SHARE_MEDIA platform) {
-            Log.e(TAG, "oncancel:+recoding +1");
+            LogUtil.e(TAG, "oncancel:+recoding +1");
             ToastUtil.showToast(mWeakReference.get(), platform + "分享取消了");
         }
     }
@@ -1489,7 +1492,7 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        Log.i(TAG, "onAttach: went");
+        LogUtil.i(TAG, "onAttach: went");
         ShareAction shareAction = new ShareAction(getActivity());
 
     }
@@ -1504,13 +1507,13 @@ public class RecodingFragment extends BaseRecordingFragment implements View.OnCl
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.i(TAG, "onDestroy: went");
+        LogUtil.i(TAG, "onDestroy: went");
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        Log.i(TAG, "onDetach: went");
+        LogUtil.i(TAG, "onDetach: went");
     }
 
     private int totalItemCount;

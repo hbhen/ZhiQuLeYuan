@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,6 +19,8 @@ import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoRESBean;
 import com.tongyuan.android.zhiquleyuan.fragment.ToyManagerFragment;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.interf.Constant;
+import com.tongyuan.android.zhiquleyuan.utils.CommonUtil;
+import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
@@ -77,12 +78,12 @@ public class AddMemberToGroupActivity extends AppCompatActivity implements View.
         mToken = SPUtils.getString(this, "token", "");
 
         Intent intent = getIntent();
-        Log.d(TAG, "initDate: +" + intent.toString());
+        LogUtil.d(TAG, "initDate: +" + intent.toString());
         int flag = intent.getIntExtra("flag", 0);
         //传过来的参数是1,就是从玩具群的邀请成员传过来的.
         if (flag == 1) {
             Bundle bundle = intent.getExtras();
-            Log.d(TAG, "initDate: " + bundle.toString());
+            LogUtil.d(TAG, "initDate: " + bundle.toString());
             SingleToyInfoRESBean.BODYBean toyinfo = bundle.getParcelable("toyinfo");
 
             mToyinfoID = toyinfo.getID();
@@ -93,8 +94,8 @@ public class AddMemberToGroupActivity extends AppCompatActivity implements View.
 //                    .getSimpleName());
 //            SingleToyInfoRESBean.BODYBean response = toymanagerfragment.mResponse;
 //            String string = response.toString();
-            Log.d(TAG, "initDate: string(addmembertogroupactivity)" + "");
-            Log.d(TAG, "initDate: BabyInfoListActivity的BabyInfoListAdapter传过来的");
+            LogUtil.d(TAG, "initDate: string(addmembertogroupactivity)" + "");
+            LogUtil.d(TAG, "initDate: BabyInfoListActivity的BabyInfoListAdapter传过来的");
         }
 
 
@@ -105,14 +106,22 @@ public class AddMemberToGroupActivity extends AppCompatActivity implements View.
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.et_addmembertogroup:
-                //TODO 判断是不是手机号的逻辑
                 break;
             case R.id.bt_addmembertogroup:
                 mPhone = mEt_addmembertogroup.getText().toString().trim();
-//                ToastUtil.showToast(this, "phone" + mPhone);
-                Log.d(TAG, "onClick: phone+" + mPhone);
-                QuerySingleUserInfo(mPhone);
-                break;
+                if (mPhone.equals("")) {
+                    ToastUtil.showToast(this, "请输入手机号");
+                    return;
+                }
+                if (CommonUtil.isPhoneNum(mPhone)) {
+                    LogUtil.d(TAG, "onClick: phone+" + mPhone);
+                    ToastUtil.showToast(this, "phone" + mPhone);
+                    QuerySingleUserInfo(mPhone);
+                } else {
+                    ToastUtil.showToast(this, "请检查输入的手机号");
+                    return;
+                }
+
             default:
                 break;
         }
@@ -132,7 +141,7 @@ public class AddMemberToGroupActivity extends AppCompatActivity implements View.
         Gson gson = new Gson();
         String s = gson.toJson(querySingleUserInfoReQBean);
         Call<QuerySingleUserInfoReSBean> querySingleUserInfoResult = allInterface.getQuerySingleUserInfoResult(s);
-        Log.d(TAG, "QuerySingleUserInfo: ssss+"+s);
+        LogUtil.d(TAG, "QuerySingleUserInfo: ssss+" + s);
         querySingleUserInfoResult.enqueue(new Callback<QuerySingleUserInfoReSBean>() {
             @Override
             public void onResponse(Call<QuerySingleUserInfoReSBean> call, Response<QuerySingleUserInfoReSBean> response) {
@@ -142,6 +151,7 @@ public class AddMemberToGroupActivity extends AppCompatActivity implements View.
                     mIntent.putExtra("phone", phone);
                     startActivity(mIntent);
                 } else if (!response.body().toString().isEmpty() && response.body().getCODE().equals("0")) {
+
                     //返回的是正确的值,用户存在,把用户的id获取并返回
 //                    Bundle bundle = new Bundle();
 //                    bundle.putParcelable("singleuserinfo", response.body());
@@ -191,13 +201,13 @@ public class AddMemberToGroupActivity extends AppCompatActivity implements View.
 //                FragmentTransaction transaction = supportFragmentManager.beginTransaction();
 //                transaction.add(R.id.fl_fragmentcontainer, new ToyManagerFragment());
 //                transaction.commit();
-                Log.d(TAG, "onResponse: (完成逻辑)+ " + response.body().toString());
+                LogUtil.d(TAG, "onResponse: (完成逻辑)+ " + response.body().toString());
                 finish();
             }
 
             @Override
             public void onFailure(Call<AddMemberToGroupReSBean> call, Throwable t) {
-                Log.d(TAG, "onFailure: " + t);
+                LogUtil.d(TAG, "onFailure: " + t);
 
             }
         });

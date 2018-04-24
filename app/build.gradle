@@ -6,7 +6,7 @@ android {
         release {
             keyAlias 'zqly'
             keyPassword 'zqly1210'
-            storeFile file('C:/Users/Android/Desktop/finalkey.jks')
+//            storeFile file('C:/Users/Android/Desktop/finalkey.jks')
             storePassword 'zqly1210'
         }
 
@@ -17,6 +17,11 @@ android {
         exclude 'META-INF/NOTICE.txt'
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/LICENSE.txt'
+    }
+//TODO 这样设置成false,会不会有问题
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
     }
     compileSdkVersion 25
     buildToolsVersion '25.0.2'

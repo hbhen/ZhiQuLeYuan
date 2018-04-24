@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +30,7 @@ import com.tongyuan.android.zhiquleyuan.event.AddToyMessageEvent;
 import com.tongyuan.android.zhiquleyuan.event.MessageEventToy;
 import com.tongyuan.android.zhiquleyuan.request.RequestManager;
 import com.tongyuan.android.zhiquleyuan.request.base.SuperModel;
+import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 import com.zhy.magicviewpager.transformer.ScaleInTransformer;
@@ -141,9 +141,9 @@ public class ToySelectorFragment extends BaseFragment {
 //            showFragment(ToyAddFragment.class.getSimpleName());
             return;
         }
-        //        Log.i(TAG, "displayBabyHead: toylist"+toyList.size()+"&&"+toyList.get(position).toString());
+        //        LogUtil.i(TAG, "displayBabyHead: toylist"+toyList.size()+"&&"+toyList.get(position).toString());
         String s = toyList.get(position).getBABYIMG();//获得宝宝的头像  -1
-        Log.i(TAG, "displayBabyHead:s=" + s);
+        LogUtil.i(TAG, "displayBabyHead:s=" + s);
         /*if (s == null) {
             Glide.with(getContext()).load(R.drawable.ic_launcher).asBitmap().into(new BitmapImageViewTarget(mHeadImageView) {
                 @Override
@@ -157,7 +157,7 @@ public class ToySelectorFragment extends BaseFragment {
         }*/
 //        .placeholder(R.drawable.player_cover_default)
         if (s.equals("")) {
-            Log.i(TAG, "displayBabyHead 1 : s为空");
+            LogUtil.i(TAG, "displayBabyHead 1 : s为空");
             Glide.with(mContext).load(R.drawable.player_cover_default).asBitmap().into(new BitmapImageViewTarget(mHeadImageView) {
                 @Override
                 protected void setResource(Bitmap resource) {
@@ -167,7 +167,7 @@ public class ToySelectorFragment extends BaseFragment {
                 }
             });
         } else {
-            Log.i(TAG, "displayBabyHead: 不为空 " + s);
+            LogUtil.i(TAG, "displayBabyHead: 不为空 " + s);
             Glide.with(mContext).load(s).asBitmap().placeholder(R.drawable.player_cover_default).into(new BitmapImageViewTarget(mHeadImageView) {
                 @Override
                 protected void setResource(Bitmap resource) {
@@ -197,6 +197,7 @@ public class ToySelectorFragment extends BaseFragment {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_add:
+                ToastUtil.showToast(mContext,"+");
                 showFragment(ToyAddFragment.class.getSimpleName());
                 break;
             case R.id.iv_delete:
@@ -266,7 +267,7 @@ public class ToySelectorFragment extends BaseFragment {
                     mCurrentPosition--;
                     toyList.remove(currentPosition);
                     refreshPagerAdapter();
-                    //Log.i(TAG, "onResponse: respnose12" + response.body().toString());
+                    //LogUtil.i(TAG, "onResponse: respnose12" + response.body().toString());
                     //ToastUtil.showToast(getContext(), "确实已经删除了222");
                 } else {
                     ToastUtil.showToast(getContext(), response.body().MSG);
@@ -297,7 +298,7 @@ public class ToySelectorFragment extends BaseFragment {
                         showFragment(ToyAddFragment.class.getSimpleName());
                         mPagerAdapter.notifyDataSetChanged();
                     }
-                    //Log.i(TAG, "onResponse: respnose12" + response.body().toString());
+                    //LogUtil.i(TAG, "onResponse: respnose12" + response.body().toString());
                     //ToastUtil.showToast(getContext(), "确实已经删除了111");
                 } else {
                     ToastUtil.showToast(getContext(), response.body().MSG);
@@ -324,7 +325,7 @@ public class ToySelectorFragment extends BaseFragment {
             public void onResponse(Call<SuperModel<SingleToyInfoRESBean.BODYBean>> call, Response<SuperModel<SingleToyInfoRESBean.BODYBean>>
                     response) {
                 if (response.body().CODE.equals("0")) {
-                    Log.i(TAG, "onResponse: +toyinfo" + response.body().BODY.toString());
+                    LogUtil.i(TAG, "onResponse: +toyinfo" + response.body().BODY.toString());
                     String toyCode = response.body().BODY.getCODE();
                     MainActivity mainActivity = (MainActivity) getActivity();
                     mainActivity.getToyDetailsFragment().setData(response.body().BODY, toyList.get(mCurrentPosition).getBABYIMG());
@@ -357,12 +358,12 @@ public class ToySelectorFragment extends BaseFragment {
     public void onToyMessage(MessageEventToy messageEventToy) {
         toyList.clear();
         toyList.addAll(messageEventToy.mQueryToyListResults);
-        //Log.i("gengen", "onToyMessage "+toyList.size());
+        //LogUtil.i("gengen", "onToyMessage "+toyList.size());
         if (mPagerAdapter != null) {
             refreshPagerAdapter();
             //mPagerAdapter.notifyDataSetChanged();
         }
-        //Log.i(TAG, "onToyMessage: adapter" + mPagerAdapter);
+        //LogUtil.i(TAG, "onToyMessage: adapter" + mPagerAdapter);
     }
 
     //获取从ToyAddFragment传过来的response数据.
@@ -389,7 +390,7 @@ public class ToySelectorFragment extends BaseFragment {
             bean.setOWNERID(ownerId);
             bean.setBABYIMG("");
             toyList.add(bean);
-            //Log.i("gengen", "onGetToyAddMessage notifyDataSetChangeed...");
+            //LogUtil.i("gengen", "onGetToyAddMessage notifyDataSetChangeed...");
             if (mPagerAdapter != null) {
                 refreshPagerAdapter();
                 //mPagerAdapter.notifyDataSetChanged();
@@ -416,11 +417,11 @@ public class ToySelectorFragment extends BaseFragment {
                     mToyId = toyList.get(position).getID();
                     mViewPageToy.setCurrentItem(position);
 
-                    Log.i(TAG, "itemClick:toyselectorfragment mToyId" + mToyId);
-                    //Log.i(TAG, "onClick:toyid " + mToyId);
+                    LogUtil.i(TAG, "itemClick:toyselectorfragment mToyId" + mToyId);
+                    //LogUtil.i(TAG, "onClick:toyid " + mToyId);
                     SPUtils.putString(getActivity(), "toyidtopush", mToyId);
                     String toycode = toyList.get(position).getCODE();
-                    //Log.i(TAG, "onClick:toycode " + toycode);
+                    //LogUtil.i(TAG, "onClick:toycode " + toycode);
                     QuerySingleToyInfo(mToyId, toycode, position);
                 }
             });

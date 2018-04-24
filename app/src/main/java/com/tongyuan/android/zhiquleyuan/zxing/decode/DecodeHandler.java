@@ -20,7 +20,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.DecodeHintType;
@@ -29,6 +28,7 @@ import com.google.zxing.ReaderException;
 import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
 import com.tongyuan.android.zhiquleyuan.R;
+import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 import com.tongyuan.android.zhiquleyuan.zxing.app.CaptureActivity;
 import com.tongyuan.android.zhiquleyuan.zxing.camera.CameraManager;
 
@@ -54,7 +54,7 @@ final class DecodeHandler extends Handler
 	{
 		if (message.what == R.id.decode)
 		{
-			// Log.d(TAG, "Got decode message");
+			// LogUtil.d(TAG, "Got decode message");
 			decode((byte[]) message.obj, message.arg1, message.arg2);
 		}
 		else if (message.what == R.id.quit)
@@ -105,12 +105,12 @@ final class DecodeHandler extends Handler
 		if (rawResult != null)
 		{
 			long end = System.currentTimeMillis();
-			Log.d(TAG, "Found barcode (" + (end - start) + " ms):\n" + rawResult.toString());
+			LogUtil.d(TAG, "Found barcode (" + (end - start) + " ms):\n" + rawResult.toString());
 			Message message = Message.obtain(activity.getHandler(), R.id.decode_succeeded, rawResult);
 			Bundle bundle = new Bundle();
 			bundle.putParcelable(DecodeThread.BARCODE_BITMAP, source.renderCroppedGreyscaleBitmap());
 			message.setData(bundle);
-			// Log.d(TAG, "Sending decode succeeded message...");
+			// LogUtil.d(TAG, "Sending decode succeeded message...");
 			message.sendToTarget();
 		}
 		else

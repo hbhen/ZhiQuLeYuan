@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,6 +27,7 @@ import com.tongyuan.android.zhiquleyuan.bean.RegistAndLoginResBean;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.utils.CountDownTimersUtils;
+import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 import com.tongyuan.android.zhiquleyuan.utils.SDCardUtils;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
@@ -116,16 +116,16 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
 
                     mBt_userAgreement.setChecked(false);
                     isRbChecked = false;
-                    Log.i(TAG, "onCheckedChanged: isChecked1" + isRbChecked);
+                    LogUtil.i(TAG, "onCheckedChanged: isChecked1" + isRbChecked);
                     bt_login.setClickable(false);
-                    Log.i(TAG, "onClick1: " + bt_login.isClickable());
+                    LogUtil.i(TAG, "onClick1: " + bt_login.isClickable());
                 } else {
 
                     mBt_userAgreement.setChecked(true);
                     isRbChecked = true;
-                    Log.i(TAG, "onCheckedChanged: isChecked2" + isRbChecked);
+                    LogUtil.i(TAG, "onCheckedChanged: isChecked2" + isRbChecked);
                     bt_login.setClickable(true);
-                    Log.i(TAG, "onClick2: " + bt_login.isClickable());
+                    LogUtil.i(TAG, "onClick2: " + bt_login.isClickable());
 
 
                 }
@@ -154,7 +154,7 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
                     ToastUtil.showToast(this, "空,请输入手机号,");
 
                 } else {
-                    Log.d(TAG, "getSmsCode: " + isPhoneNum(mPhoneNum));
+                    LogUtil.d(TAG, "getSmsCode: " + isPhoneNum(mPhoneNum));
                     if (!isPhoneNum(mPhoneNum)) {
                         ToastUtil.showToast(this, "当前输入的手机号有误,请重新输入..");
                     } else {
@@ -172,9 +172,9 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
             case R.id.bt_login://确认登录
                 String smsCode = et_login_smscode.getText().toString();
                 String phone = et_login_phone.getText().toString();
-                Log.i(TAG, "onClick: 验证码.........." + smsCode);
+                LogUtil.i(TAG, "onClick: 验证码.........." + smsCode);
                 String token = SPUtils.getString(this, "token", "");
-                Log.i("110011", "onClick: --!!" + token);
+                LogUtil.i("110011", "onClick: --!!" + token);
                 if (!isRbChecked) {
                     ToastUtil.showToast(this, "请阅读并同意<<童缘科技服务协议>>");
                     return;
@@ -217,7 +217,7 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
             public void onResponse(retrofit2.Call<GetSmsCodeResBean> call, Response<GetSmsCodeResBean> response) {
                 String tmp = response.body().getBODY().getTmp();
                 getSmsCodeValue(phoneNum, tmp);
-                Log.i(TAG, "response-------" + response);
+                LogUtil.i(TAG, "response-------" + response);
             }
 
             @Override
@@ -230,7 +230,7 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
     }
 
     private void getSmsCodeValue(final String phoneNum, String tmp) {
-        Log.i(TAG, "tmp------" + tmp);
+        LogUtil.i(TAG, "tmp------" + tmp);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constant.baseurl)
@@ -248,8 +248,8 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
         getSmsCodeValueResBeanCall.enqueue(new Callback<GetSmsCodeValueResBean>() {
             @Override
             public void onResponse(retrofit2.Call<GetSmsCodeValueResBean> call, Response<GetSmsCodeValueResBean> response) {
-                Log.i(TAG, "onResponse: _________" + response);
-                Log.i(TAG, "onResponse: ----" + response.body());
+                LogUtil.i(TAG, "onResponse: _________" + response);
+                LogUtil.i(TAG, "onResponse: ----" + response.body());
                 mIdx = response.body().getBODY().getIDX();
                 mSmsCode = response.body().getBODY().getSmscode();
                 /*
@@ -267,7 +267,7 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
 
             @Override
             public void onFailure(retrofit2.Call<GetSmsCodeValueResBean> call, Throwable t) {
-                Log.i(TAG, "onFailure: " + t);
+                LogUtil.i(TAG, "onFailure: " + t);
             }
         });
 
@@ -289,16 +289,16 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
         registAndLoginResBeanCall.enqueue(new Callback<RegistAndLoginResBean>() {
             @Override
             public void onResponse(retrofit2.Call<RegistAndLoginResBean> call, Response<RegistAndLoginResBean> response) {
-                Log.i(TAG, "onResponse: ------" + response);
-                Log.i("444444", "response" + response);
+                LogUtil.i(TAG, "onResponse: ------" + response);
+                LogUtil.i("444444", "response" + response);
                 String token = response.body().getTOKEN();
                 String id = response.body().getBODY().getID();
                 String phone = response.body().getBODY().getPHONE();
                 mPhoneNum = phone;
-                Log.i(TAG, "userID" + id);
-                Log.i(TAG, "token: " + token);
-                Log.i(TAG, "phone: " + phone);
-                Log.i(TAG, "phoneNum: " + mPhoneNum);
+                LogUtil.i(TAG, "userID" + id);
+                LogUtil.i(TAG, "token: " + token);
+                LogUtil.i(TAG, "phone: " + phone);
+                LogUtil.i(TAG, "phoneNum: " + mPhoneNum);
 
                 saveToken(token, phone, id);
 
@@ -306,7 +306,8 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
 
             @Override
             public void onFailure(Call<RegistAndLoginResBean> call, Throwable t) {
-                Log.i(TAG, "onFailure: " + t);
+                LogUtil.d(TAG,"onFailure"+t);
+//                LogUtil.i(TAG, "onFailure: " + t);
             }
         });
     }
@@ -323,13 +324,13 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
             SPUtils.putString(this, "userID", id);
         } else {
             ToastUtil.showToast(this, "sd卡不可用,请检查后重试");
-            Log.i(TAG, "sdcard状态:" + SDCardUtils.isSDCardEnable());
+            LogUtil.i(TAG, "sdcard状态:" + SDCardUtils.isSDCardEnable());
         }
         mPhoneNumSave = SPUtils.getString(this, "phoneNum", "");
         mTokenSave = SPUtils.getString(this, "token", "");
 
-        Log.i(TAG, "phoneNumSave: " + mPhoneNumSave);
-        Log.i(TAG, "tokenSave: " + mTokenSave);
+        LogUtil.i(TAG, "phoneNumSave: " + mPhoneNumSave);
+        LogUtil.i(TAG, "tokenSave: " + mTokenSave);
 
         Intent intent = new Intent();
         Bundle bundle = new Bundle();
@@ -349,7 +350,7 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
     private void confirmLogin() {
         String phoneNum = SPUtils.getString(this, "phoneNum", "");
         if (!mTokenSave.equals("")) {
-            Log.i(TAG, "confirmLogin: 登录成功");
+            LogUtil.i(TAG, "confirmLogin: 登录成功");
             ToastUtil.showToast(this, "登录成功");
             QueryUserInfo(phoneNum, mTokenSave);
         } else {
@@ -396,7 +397,7 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
                     String userBirthday = SPUtils.getString(getApplicationContext(), "userbirthday", birthday);
                     String userSex = SPUtils.getString(getApplicationContext(), "usersex", sex);
 
-                    Log.i(TAG, "onResponse: " + "username:-" + username + "userimg:-" + userimg + "userID:-" + userID + "userbirthday:-" +
+                    LogUtil.i(TAG, "onResponse: " + "username:-" + username + "userimg:-" + userimg + "userID:-" + userID + "userbirthday:-" +
                             userBirthday +
                             "usersex:-" + userSex);
 

@@ -10,7 +10,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +36,7 @@ import com.tongyuan.android.zhiquleyuan.fragment.ToySelectorFragment;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.utils.GetTimeUtil;
+import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 import com.tongyuan.android.zhiquleyuan.view.wheelview.OnWheelChangedListener;
@@ -144,8 +144,8 @@ public class NoDisturbActivity extends AppCompatActivity implements View.OnClick
             @Override
             public void onResponse(Call<NodisturbTimeResBean> call, Response<NodisturbTimeResBean> response) {
                 mLst = response.body().getBODY().getLST();
-                Log.i("1212321", "onResponse: " + mLst.toString());
-                Log.i("1212321", "onResponse: " + response.body().getTOKEN().toString());
+                LogUtil.i("1212321", "onResponse: " + mLst.toString());
+                LogUtil.i("1212321", "onResponse: " + response.body().getTOKEN().toString());
                 mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 //                NoDisturbAdapter adapter = new NoDisturbAdapter(getApplicationContext(), lst);
                 mAdapter = new NewAdapter(getApplicationContext(), R.layout.disturb_recycler_troggle, mLst);
@@ -483,7 +483,7 @@ public class NoDisturbActivity extends AppCompatActivity implements View.OnClick
                         mAdapter.notifyDataSetChanged();
                         popupWindow.dismiss();
                     } else {
-                        Log.i("1212321", "onResponse: " + mStart_hour + "_" + mStart_min + "_" + mEnd_hour + "_" + mEnd_min + ":");
+                        LogUtil.i("1212321", "onResponse: " + mStart_hour + "_" + mStart_min + "_" + mEnd_hour + "_" + mEnd_min + ":");
                         baseViewHolder.setText(R.id.tv_nodisturb_start, mStart_hour + ":" + mStart_min + "-");
                         baseViewHolder.setText(R.id.tv_nodisturb_end, mEnd_hour + ":" + mEnd_min);
 //                        ToastUtil.showToast(getApplicationContext(), "ok");

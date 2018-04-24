@@ -6,7 +6,6 @@ import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
@@ -35,6 +34,7 @@ import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.interf.QueryToyInterface;
 import com.tongyuan.android.zhiquleyuan.service.CheckTokenService;
+import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.StatusBarUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
@@ -125,7 +125,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         rb_toy.setOnClickListener(this);
         rb_history.setOnClickListener(this);
         rb_mine.setOnClickListener(this);
-        Log.i(TAG1, "mainactivity : onCreate went");
+        LogUtil.i(TAG1, "mainactivity : onCreate went");
 
     }
 
@@ -163,7 +163,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         Intent intent = new Intent();
         intent.setClass(this, CheckTokenService.class);
         startService(intent);
-        Log.i(TAG, "checkToken: startservice +走了");
+        LogUtil.i(TAG, "checkToken: startservice +走了");
 //        String token = SPUtils.getString(this, "token", "");
 //        getServiceToken(token);
 //        if (token == null) {
@@ -199,7 +199,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
             @Override
             public void onFailure(Call<PhoneHeartResBean> call, Throwable t) {
-                Log.i(TAG, "onFailure: " + t.toString());
+                LogUtil.i(TAG, "onFailure: " + t.toString());
             }
         });
 
@@ -256,7 +256,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
         }*/
 
-        Log.d("false", "transaction!" + transaction + "----fragment" + f);
+        LogUtil.d("false", "transaction!" + transaction + "----fragment" + f);
 
         transaction.replace(R.id.fl_fragmentcontainer, f);
 
@@ -532,7 +532,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 token, "1");
         Gson mainGson = new Gson();
         String queryToyjson = mainGson.toJson(queryToyRequestBean);
-        Log.i(TAG, "chargeHasToy: " + queryToyjson);
+        LogUtil.i(TAG, "chargeHasToy: " + queryToyjson);
         Call<QueryToyResultBean> toyResult = queryToyInterface.getToyResult(queryToyjson);
         toyResult.enqueue(new Callback<QueryToyResultBean>() {
             @Override
@@ -540,7 +540,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 //只有list有想要的数据,所以只传list就行
                 if ("0".equals(response.body().getCODE())) {
                     mList = response.body().getBODY().getLST();
-                    Log.i(TAG, "MainActivity+onResponse:list1" + mList.toString());
+                    LogUtil.i(TAG, "MainActivity+onResponse:list1" + mList.toString());
                     if (mList != null) {
                         showDifferentToyFragment(mList);
                     }
@@ -593,7 +593,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 //        } else {
 //            for (Object s : ActivityManager.queryActivity()) {
 //                Activity activity = (Activity) s;
-//                Log.d("uiu", "onBackPressed: activity" + activity.toString());
+//                LogUtil.d("uiu", "onBackPressed: activity" + activity.toString());
 //            }
 //
 //            ActivityManager.finishAll();
@@ -615,7 +615,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             mTimer.schedule(timerTask, 2000);
         } else {
 
-            Log.d(TAG, "onBackPressed: " + ActivityManager.queryActivity().size());
+            LogUtil.d(TAG, "onBackPressed: " + ActivityManager.queryActivity().size());
             ActivityManager.finishAll();
             finish();
             System.exit(0);

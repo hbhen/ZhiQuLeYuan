@@ -38,7 +38,7 @@ public class CallManager {
             @Override
             public void onResponse(Call<CallToToyRes> call, Response<CallToToyRes> response) {
 
-                Log.i("555555", "onResponse:+response " + response.body().toString());
+                LogUtil.i("555555", "onResponse:+response " + response.body().toString());
                 String roomId = response.body().getRoomid();
                 if (roomId == null) {
                     ToastUtil.showToast(context, "房间号不存在");
@@ -65,7 +65,7 @@ public class CallManager {
 
             @Override
             public void onFailure(Call<CallToToyRes> call, Throwable t) {
-                Log.i("111111", t.toString());
+                LogUtil.i("111111", t.toString());
                 ToastUtil.showToast(context,"当前网络异常");
             }
         });

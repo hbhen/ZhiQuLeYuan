@@ -15,6 +15,18 @@ public class MusicPlayerBean implements Parcelable {
     public String IMG;
     public boolean isPlaying = false;
 
+    public static final Creator<MusicPlayerBean> CREATOR = new Creator<MusicPlayerBean>() {
+        @Override
+        public MusicPlayerBean createFromParcel(Parcel in) {
+            return new MusicPlayerBean(in);
+        }
+
+        @Override
+        public MusicPlayerBean[] newArray(int size) {
+            return new MusicPlayerBean[size];
+        }
+    };
+
     public String getID() {
         return ID;
     }

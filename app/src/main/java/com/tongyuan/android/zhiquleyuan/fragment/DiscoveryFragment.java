@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tongyuan.android.zhiquleyuan.R;
+import com.tongyuan.android.zhiquleyuan.activity.MyPlayActivity;
 import com.tongyuan.android.zhiquleyuan.activity.SearchActivity;
 import com.tongyuan.android.zhiquleyuan.adapter.DiscoveryRecyclerAdapter;
 import com.tongyuan.android.zhiquleyuan.base.BaseFragment;
@@ -21,6 +22,8 @@ import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridItemBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridRequestBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListRequsetBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListResultBean;
+import com.tongyuan.android.zhiquleyuan.bean.MusicPlayerBean;
+import com.tongyuan.android.zhiquleyuan.player.MusicPlayer;
 import com.tongyuan.android.zhiquleyuan.request.CallbackFilter;
 import com.tongyuan.android.zhiquleyuan.request.RequestManager;
 import com.tongyuan.android.zhiquleyuan.request.base.BaseRequest;
@@ -53,7 +56,7 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
     private SpacesItemDecoration spacesItemDecoration;
     private boolean isLoading = true;
     private int currPage = 1;
-    private String NC = "0"; // 0代表没有更多推荐数据
+    private String NC = "-1"; // 0代表没有更多推荐数据
     private TextView mSearchTitle;
     private ImageView mListeningTitle;
 
@@ -74,11 +77,14 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
     }
 
     private void initView() {
+//        当前是否有音乐正在播放
+
         mSwiperefresh = (SwipeRefreshLayout) mDiscoveryRoot.findViewById(R.id.swiperefresh_discovery);
 
         mSearchTitle = (TextView) mDiscoveryRoot.findViewById(R.id.et_home_title);
         mListeningTitle = (ImageView) mDiscoveryRoot.findViewById(R.id.iv_home_title);
 
+        showMusicPlayOrStopState();
         mSwiperefresh.setOnRefreshListener(this);
         mRecyclerView = (RecyclerView) mDiscoveryRoot.findViewById(R.id.recyclerView_discovery);
 
@@ -102,7 +108,7 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
-                //Log.i("gengen", "lastVisibleItemPosition + 1==" +(lastVisibleItemPosition+1) + " count="+mAdapter
+                //LogUtil.i("gengen", "lastVisibleItemPosition + 1==" +(lastVisibleItemPosition+1) + " count="+mAdapter
                 // .getItemCount());
                 if (lastVisibleItemPosition + 1 == mAdapter.getItemCount()) {
                     /*boolean isRefreshing = mSwiperefresh.isRefreshing();
@@ -124,6 +130,14 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
                 }
             }
         });
+    }
+
+    private void showMusicPlayOrStopState() {
+        if (MusicPlayer.isPlaying()) {
+            mListeningTitle.setImageResource(R.drawable.voice_ico_light1_3x);
+        } else {
+            mListeningTitle.setImageResource(R.drawable.voice_ico_dark_3x);
+        }
     }
 
 
@@ -158,14 +172,15 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
 
     //拿到list的数据
     private void getListRaw(final boolean isLoadMore) {
-        int page = currPage;
-        if (isLoadMore) {
-            ++page;
-        }
-        DiscoveryListRequsetBean.BODYBean request = new DiscoveryListRequsetBean.BODYBean("10", String.valueOf(page));
-        Call<SuperModel<DiscoveryListResultBean.BODYBean>> discoveryListResult = RequestManager.getInstance()
-                .getDiscoveryListResult(getContext(),
-                        request);
+        if (!NC.equals("0")) {
+            int page = currPage;
+            if (isLoadMore) {
+                ++page;
+            }
+            DiscoveryListRequsetBean.BODYBean request = new DiscoveryListRequsetBean.BODYBean("10", String.valueOf(page));
+            Call<SuperModel<DiscoveryListResultBean.BODYBean>> discoveryListResult = RequestManager.getInstance()
+                    .getDiscoveryListResult(getContext(),
+                            request);
         /*discoveryListResult.enqueue(new Callback<SuperModel<DiscoveryListResultBean.BODYBean>>() {
             @Override
             public void onResponse(Call<SuperModel<DiscoveryListResultBean.BODYBean>> call,
@@ -179,7 +194,7 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
                         discoveryListViewList.clear();
                         currPage = 1;
                     }
-                    //Log.i(TAG, "onResponse: "+response.body().toString());
+                    //LogUtil.i(TAG, "onResponse: "+response.body().toString());
                     discoveryListViewList.addAll(response.body().BODY.getLST());
                     mAdapter.notifyDataSetChanged();
                 } else {
@@ -198,37 +213,37 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
             }
         });*/
 
-        discoveryListResult.enqueue(new CallbackFilter<SuperModel<DiscoveryListResultBean.BODYBean>>() {
-            @Override
-            public void onFailure(Call<SuperModel<DiscoveryListResultBean.BODYBean>> call, Throwable t) {
-                ToastUtil.showToast(getActivity(), "网络请求失败");
-                mSwiperefresh.setRefreshing(false);
-                isLoading = false;
-            }
-
-            @Override
-            public void onResponseFilter(Call<SuperModel<DiscoveryListResultBean.BODYBean>> call,
-                                         Response<SuperModel<DiscoveryListResultBean.BODYBean>> response) {
-                NC = response.body().BODY.getNC();
-                if ("0".equals(response.body().CODE)) {
-                    if (isLoadMore) {
-                        ++currPage;
-                    } else {
-                        discoveryListViewList.clear();
-                        currPage = 1;
-                    }
-                    //Log.i(TAG, "onResponse: "+response.body().toString());
-                    discoveryListViewList.addAll(response.body().BODY.getLST());
-                    mAdapter.notifyDataSetChanged();
-                } else {
-                    ToastUtil.showToast(getActivity(), response.body().MSG);
+            discoveryListResult.enqueue(new CallbackFilter<SuperModel<DiscoveryListResultBean.BODYBean>>() {
+                @Override
+                public void onFailure(Call<SuperModel<DiscoveryListResultBean.BODYBean>> call, Throwable t) {
+                    ToastUtil.showToast(getActivity(), "网络请求失败");
+                    mSwiperefresh.setRefreshing(false);
+                    isLoading = false;
                 }
-                mSwiperefresh.setRefreshing(false);
-                isLoading = false;
-                mAdapter.isLoadMore(false);
-            }
 
-        });
+                @Override
+                public void onResponseFilter(Call<SuperModel<DiscoveryListResultBean.BODYBean>> call,
+                                             Response<SuperModel<DiscoveryListResultBean.BODYBean>> response) {
+                    if ("0".equals(response.body().CODE)) {
+                        NC = response.body().BODY.getNC();
+                        if (isLoadMore) {
+                            ++currPage;
+                        } else {
+                            discoveryListViewList.clear();
+                            currPage = 1;
+                        }
+                        //LogUtil.i(TAG, "onResponse: "+response.body().toString());
+                        discoveryListViewList.addAll(response.body().BODY.getLST());
+                        mAdapter.notifyDataSetChanged();
+                    } else {
+                        ToastUtil.showToast(getActivity(), response.body().MSG);
+                    }
+                    mSwiperefresh.setRefreshing(false);
+                    isLoading = false;
+                    mAdapter.isLoadMore(false);
+                }
+            });
+        }
     }
 
     //gridview的数据
@@ -245,7 +260,7 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
                         discoveryGridViewList.clear();
                         discoveryGridViewList.addAll(response.body().BODY.LST);
                         mAdapter.notifyDataSetChanged();
-                        //Log.i(TAG, "onResponse: grid" + discoveryGridViewList);
+                        //LogUtil.i(TAG, "onResponse: grid" + discoveryGridViewList);
                         getListRaw(false);
                     }
                 } else {
@@ -265,13 +280,22 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
 
     @Override
     public void onClick(View v) {
+        Intent intent = new Intent();
         switch (v.getId()) {
             case R.id.et_home_title:
-                Intent intent = new Intent();
                 intent.setClass(getContext(), SearchActivity.class);
                 startActivity(intent);
                 break;
             case R.id.iv_home_title:
+//                if (!SPUtils.getString(mContext, "token", "").equals("")) {
+//
+//                } else {
+//                    return;
+//                }
+                if (MusicPlayer.isPlaying()) {
+                    ArrayList<MusicPlayerBean> playList = MyPlayActivity.getPlayList();
+                    MyPlayActivity.launch(mContext, playList, MusicPlayer.getCurrentPosition());
+                }
                 break;
             default:
                 break;
@@ -280,6 +304,8 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
 
     @Override
     public void onRefresh() {
+        currPage = 1;
+        NC = "-1";
         getIdCol();
     }
 

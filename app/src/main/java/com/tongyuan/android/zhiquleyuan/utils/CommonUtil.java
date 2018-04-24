@@ -22,4 +22,12 @@ public class CommonUtil {
 	public static int getDimens(int resId){
 		return ZQLYApp.context.getResources().getDimensionPixelSize(resId);
 	}
+	/*
+	* 检查手机号的格式
+	*
+	* */
+	public static boolean isPhoneNum(String phoneNum) {
+		String telRegex = "[1][3578]\\d{9}";
+		return phoneNum.matches(telRegex);
+	}
 }

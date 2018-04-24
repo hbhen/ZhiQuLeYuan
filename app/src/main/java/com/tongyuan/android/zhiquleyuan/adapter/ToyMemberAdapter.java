@@ -9,7 +9,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +33,7 @@ import com.tongyuan.android.zhiquleyuan.fragment.ToySelectorFragment;
 import com.tongyuan.android.zhiquleyuan.holder.MemberHolder;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.interf.Constant;
+import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
@@ -101,7 +101,7 @@ public class ToyMemberAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        Log.i("adapter", "getCount=" + (mLSTBeanlist.size() + 2));
+        LogUtil.i("adapter", "getCount=" + (mLSTBeanlist.size() + 2));
         if (mLSTBeanlist.size() == 0)
             return 0;
         return mLSTBeanlist.size() + 2;
@@ -109,7 +109,7 @@ public class ToyMemberAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        Log.i("adapter", "getItem " + position);
+        LogUtil.i("adapter", "getItem " + position);
         if (position >= mLSTBeanlist.size()) {
             return null;
         }
@@ -119,7 +119,7 @@ public class ToyMemberAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        Log.i("adapter", "getItemId=" + position);
+        LogUtil.i("adapter", "getItemId=" + position);
         return position;
     }
 
@@ -161,18 +161,18 @@ public class ToyMemberAdapter extends BaseAdapter {
         if (position == getCount() - 2) {
             memberHolder.icon.setImageResource(R.drawable.toymanage_addmember_3x);
             memberHolder.del.setVisibility(View.GONE);
-            Log.i("adapter", position + "=+=" + (getCount() - 2));
+            LogUtil.i("adapter", position + "=+=" + (getCount() - 2));
         } else if (position == getCount() - 1) {
             //减号部分 包括点击事件
             memberHolder.icon.setImageResource(R.drawable.toymanage_removemember_3x);
             memberHolder.del.setVisibility(View.GONE);
-            Log.i("adapter", position + "=-=" + (getCount() - 1));
+            LogUtil.i("adapter", position + "=-=" + (getCount() - 1));
         } else {
 
             //正常的头像展示部分
             //管理员头像的显示
 
-            Log.i("adapter", position + "==else ");
+            LogUtil.i("adapter", position + "==else ");
             loadImage(memberHolder.icon, position);
             if (mMode == Constant.Mode.NORMAL) {
                 memberHolder.del.setVisibility(View.GONE);
@@ -187,7 +187,7 @@ public class ToyMemberAdapter extends BaseAdapter {
 
     private void loadImage(final ImageView imgView, final int position) {
 
-        Log.i("adapter", "loadImage " + position);
+        LogUtil.i("adapter", "loadImage " + position);
         String userImg = mLSTBeanlist.get(position).getIMG();
 //        Glide.with(mContext).load(userImg).asBitmap().placeholder(R.drawable.default_cover).into(imgView);
 
@@ -199,7 +199,7 @@ public class ToyMemberAdapter extends BaseAdapter {
                 RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(mContext.getResources(), resource);
                 roundedBitmapDrawable.setCircular(true);
                 imgView.setImageDrawable(roundedBitmapDrawable);
-                Log.i("adapter", "setResource " + position);
+                LogUtil.i("adapter", "setResource " + position);
             }
         });
     }
@@ -286,13 +286,13 @@ public class ToyMemberAdapter extends BaseAdapter {
                     animateView = imageView;
                     animateView.setVisibility(View.VISIBLE);
                 } else {
-                    Log.i("toymember", "onResponse: " + response.body().getMSG());
+                    LogUtil.i("toymember", "onResponse: " + response.body().getMSG());
                 }
             }
 
             @Override
             public void onFailure(Call<TransferPermissionsResBean> call, Throwable t) {
-                Log.i(TAG, "onFailure: " + t);
+                LogUtil.i(TAG, "onFailure: " + t);
             }
         });
 
@@ -306,7 +306,7 @@ public class ToyMemberAdapter extends BaseAdapter {
             ToastUtil.showToast(mContext, "点击的是:" + position);
 
             if (position == getCount() - 2) {
-                Log.d(TAG,"will jump to add member");
+                LogUtil.d(TAG,"will jump to add member");
                 ToastUtil.showToast(mContext, "点击了加号,开始执行加号的逻辑");
                 Intent intent = new Intent();
                 Bundle bundle = new Bundle();
@@ -321,7 +321,7 @@ public class ToyMemberAdapter extends BaseAdapter {
                 } else {
                     mMode = Constant.Mode.NORMAL;
                 }
-                Log.d(TAG,"switch mode , mMode=>" + mMode);
+                LogUtil.d(TAG,"switch mode , mMode=>" + mMode);
                 refreshUI();
             } else {
 
@@ -352,7 +352,7 @@ public class ToyMemberAdapter extends BaseAdapter {
         delMembFromGroupReSBeanCall.enqueue(new Callback<DelMembFromGroupReSBean>() {
             @Override
             public void onResponse(Call<DelMembFromGroupReSBean> call, Response<DelMembFromGroupReSBean> response) {
-                Log.i("111", "onResponse++deletemember:" + response.body().toString());
+                LogUtil.i("111", "onResponse++deletemember:" + response.body().toString());
                 if (!response.body().toString().isEmpty() && response.body().getCODE().equals("0")) {
                     ToastUtil.showToast(mContext, "删除成功");
                     mLSTBeanlist.remove(position);

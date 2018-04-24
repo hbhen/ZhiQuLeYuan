@@ -2,7 +2,6 @@ package com.tongyuan.android.zhiquleyuan.adapter;
 
 import android.content.Context;
 import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,6 @@ import com.bumptech.glide.Glide;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridItemBean;
 import com.tongyuan.android.zhiquleyuan.holder.DiscoveryGridHolder;
-import com.tongyuan.android.zhiquleyuan.utils.ScreenUtils;
 
 import java.util.ArrayList;
 import java.util.List;

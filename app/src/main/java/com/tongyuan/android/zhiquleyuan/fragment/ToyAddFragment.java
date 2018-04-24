@@ -3,11 +3,11 @@ package com.tongyuan.android.zhiquleyuan.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -20,6 +20,7 @@ import com.tongyuan.android.zhiquleyuan.bean.AddToyResultBean;
 import com.tongyuan.android.zhiquleyuan.event.AddToyMessageEvent;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.interf.Constant;
+import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 import com.tongyuan.android.zhiquleyuan.zxing.app.CaptureActivity;
@@ -53,7 +54,7 @@ public class ToyAddFragment extends BaseFragment implements View.OnClickListener
 
     private static final String TAG = "taf";
     String code;
-    private ImageView mIv_back;
+    private LinearLayout mIv_back;
     private TextView babyName;
     private ImageView mBabyImg;
 
@@ -70,7 +71,7 @@ public class ToyAddFragment extends BaseFragment implements View.OnClickListener
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         tv_toy_add_blodtext = toyRoot.findViewById(R.id.tv_toy_add_boldtext);
-        mIv_back = (ImageView) toyRoot.findViewById(R.id.iv_fragment_toy_add_back);
+        mIv_back = (LinearLayout) toyRoot.findViewById(R.id.iv_fragment_toy_add_back);
         mBabyImg = (ImageView) toyRoot.findViewById(R.id.iv_fragment_toy_add_babyimg);
         babyName = (TextView) toyRoot.findViewById(R.id.tv_fragment_toy_add_babyname);
         rl_toy_add_goshopping = (RelativeLayout) toyRoot.findViewById(R.id.rl_toy_add_goshopping);
@@ -88,7 +89,7 @@ public class ToyAddFragment extends BaseFragment implements View.OnClickListener
         mPhoneNum = SPUtils.getString(getActivity(), "phoneNum", "");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         mToken = SPUtils.getString(getActivity(), "token", "");
-        Log.i(TAG, "mToken: " + mToken);
+        LogUtil.i(TAG, "mToken: " + mToken);
         mTime = simpleDateFormat.format(new Date());
     }
 
@@ -130,7 +131,7 @@ public class ToyAddFragment extends BaseFragment implements View.OnClickListener
                     code = data.getStringExtra("SCAN_RESULT");
                     //对二维码数据的解析
 //                    SPUtils.putString(getActivity(), "toycode", code);
-                    Log.i(TAG, "code: " + code);
+                    LogUtil.i(TAG, "code: " + code);
                     ToastUtil.showToast(getActivity(), "code---" + code);
                     //3.4.11 添加修改玩具属性
                     ToastUtil.showToast(getContext(),"code++++");
@@ -174,15 +175,15 @@ public class ToyAddFragment extends BaseFragment implements View.OnClickListener
 //                    toyId = toyIdGet;
 //                    toyImg = toyImgGet;
 //
-//                    Log.i(TAG, "onResponse:toyaddfragment 222----++" + response.body().toString());
-//                    Log.i(TAG, "toyImg +toyaddfragment" + toyImg);
-//                    Log.i(TAG, "toyImgGet+toyaddfragment" + toyImgGet);//拿到数据了,怎么传到ToySeleFragment?
+//                    LogUtil.i(TAG, "onResponse:toyaddfragment 222----++" + response.body().toString());
+//                    LogUtil.i(TAG, "toyImg +toyaddfragment" + toyImg);
+//                    LogUtil.i(TAG, "toyImgGet+toyaddfragment" + toyImgGet);//拿到数据了,怎么传到ToySeleFragment?
 //                    List<AddToyResultBean> list=new ArrayList<AddToyResultBean>();
 //                    FragmentManager fragmentManager = getFragmentManager();
 //                    FragmentTransaction transaction = fragmentManager.beginTransaction();
 //                    transaction.replace(R.id.fl_fragmentcontainer, mToySelectorFragment);
 //                    transaction.commit();
-                    Log.i("55555", "(3.4.11) addtoyresultbean response:" + response.body().toString());
+                    LogUtil.i("55555", "(3.4.11) addtoyresultbean response:" + response.body().toString());
 
                     //这里添加玩具成功,需要去绑定宝宝的信息,所以跳转到宝宝绑定的页面
 //                    Intent intent = new Intent();

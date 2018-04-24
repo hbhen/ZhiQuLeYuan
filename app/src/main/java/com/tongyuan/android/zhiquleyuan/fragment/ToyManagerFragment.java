@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +32,7 @@ import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoRESBean;
 import com.tongyuan.android.zhiquleyuan.holder.MemberHolder;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.interf.Constant;
+import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 import com.tongyuan.android.zhiquleyuan.view.MyGridView;
@@ -129,7 +129,7 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
 
         initData();
         initListener();
-        Log.i("manager", "onCreateView");
+        LogUtil.i("manager", "onCreateView");
         refreshView();
         return fragment_manageToy;
 
@@ -145,7 +145,7 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
         //获取成员信息,需要传什么参数,去访问哪个接口  3.4.48接口
         //getToyMember(mTime, mToken, mPhoneNum, mToyId, mToyCode);
 
-        Log.i(TAG, "initData:toyimg ");
+        LogUtil.i(TAG, "initData:toyimg ");
 
     }
 
@@ -166,10 +166,10 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
                 if (response != null) {
 //                    ToastUtil.showToast(getActivity(), "response" + response);
                     //玩具群成员
-                    Log.i(TAG, "onResponse:toymem ++" + response.body().toString());
+                    LogUtil.i(TAG, "onResponse:toymem ++" + response.body().toString());
                     lst.clear();
                     lst.addAll(response.body().getBODY().getLST());
-                    Log.i("111111", "onResponse: " + lst.size());
+                    LogUtil.i("111111", "onResponse: " + lst.size());
                     if (toyMemberAdapter != null) {
                         toyMemberAdapter.refreshData();
                     }
@@ -179,7 +179,7 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
 
                 } else {
 
-                    Log.i(TAG, "onResponse: ++response为空");
+                    LogUtil.i(TAG, "onResponse: ++response为空");
 
                 }
             }
@@ -213,7 +213,7 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
             case R.id.bt_fragment_managetoy_nodisturb:
                 Intent intent = new Intent(getActivity(), NoDisturbActivity.class);
                 startActivity(intent);
-                ToastUtil.showToast(getContext(), "还未开通该功能");
+//                ToastUtil.showToast(getContext(), "还未开通该功能");
                 break;
             case R.id.bt_fragment_managetoy_setupwlan:
                 Intent intent1 = new Intent(getActivity(), SetupWlanActivity.class);
@@ -235,7 +235,7 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
                         toyMemberAdapter.StopFlick(king);
                     }
 
-                    Log.i("1122222222", "onClick: " + iconPosition);
+                    LogUtil.i("1122222222", "onClick: " + iconPosition);
                     ToastUtil.showToast(getActivity(), "设置管理员");
                     ToastUtil.showToast(getActivity(), "iconPosition" + iconPosition);
                 } else {
@@ -264,7 +264,7 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
         this.mBabyimg = babyimg;
         mLst = lst;
         mOwnerId = ownerId;
-        Log.i("manager", "setData");
+        LogUtil.i("manager", "setData");
         mToken = SPUtils.getString(getActivity(), "token", "");
         this.formatTime = formatTime;
         mPhoneNum = SPUtils.getString(getActivity(), "phoneNum", "");
@@ -363,7 +363,7 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
             @Override
             public void onFailure(Call<GetInstantStateInfoRes> call, Throwable t) {
                 ToastUtil.showToast(getActivity(), "拉取信息失败");
-                Log.i(TAG, "onFailure: " + t.toString());
+                LogUtil.i(TAG, "onFailure: " + t.toString());
             }
         });
     }

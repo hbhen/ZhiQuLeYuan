@@ -18,7 +18,7 @@ public class VersionCodeAndVersionNameUtils {
                     .getPackageManager()
                     .getPackageInfo(ctx.getPackageName(), 0);
             localVersion = packageInfo.versionCode;
-            Log.d(TAG, "本软件的版本号。。" + localVersion);
+            LogUtil.d(TAG, "本软件的版本号。。" + localVersion);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
@@ -32,7 +32,7 @@ public class VersionCodeAndVersionNameUtils {
                     .getPackageManager()
                     .getPackageInfo(ctx.getPackageName(), 0);
             localVersion = packageInfo.versionName;
-            Log.d(TAG, "本软件的版本号。。" + localVersion);
+            LogUtil.d(TAG, "本软件的版本号。。" + localVersion);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }

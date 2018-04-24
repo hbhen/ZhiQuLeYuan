@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,6 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tongyuan.android.zhiquleyuan.R;
+import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
@@ -65,7 +65,7 @@ public class SetupWlanActivity extends AppCompatActivity {
             case R.id.bt_confirm:
                 String wlanName = mEtSetwlanname.getText().toString().trim();
                 String wlanSecret = mEtSetwlan.getText().toString().trim();
-                Log.d(TAG, "onViewClicked: +wlanName:" + wlanName + "+wlanSecret:" + wlanSecret);
+                LogUtil.d(TAG, "onViewClicked: +wlanName:" + wlanName + "+wlanSecret:" + wlanSecret);
                 if (wlanName.equals("") || wlanSecret.equals("")) {
                     ToastUtil.showToast(this, "无线名称和无线密码不能为空");
                     return;

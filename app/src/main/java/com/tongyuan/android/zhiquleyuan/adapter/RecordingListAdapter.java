@@ -1,7 +1,6 @@
 package com.tongyuan.android.zhiquleyuan.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -9,6 +8,7 @@ import android.widget.TextView;
 
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.bean.QueryRecordingResBean;
+import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -59,8 +59,8 @@ public class RecordingListAdapter extends BaseAdapter {
             parse1 = simpleDateFormat1.parse(substring);
             formattime = simpleDateFormat.format(parse1);
 
-            Log.i("1111", "onCreate: " + substring);
-            Log.i("1111", "onCreate: " + formattime);
+            LogUtil.i("1111", "onCreate: " + substring);
+            LogUtil.i("1111", "onCreate: " + formattime);
         } catch (ParseException e) {
             e.printStackTrace();
         }

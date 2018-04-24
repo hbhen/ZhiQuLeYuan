@@ -66,13 +66,13 @@ public class InactivityTimer {
             activity.unregisterReceiver(powerStatusReceiver);
             registered = false;
         } else {
-            Log.w(TAG, "PowerStatusReceiver was never registered?");
+            LogUtil.d(TAG, "PowerStatusReceiver was never registered?");
         }
     }
 
     public synchronized void onResume() {
         if (registered) {
-            Log.w(TAG, "PowerStatusReceiver was already registered?");
+            LogUtil.d(TAG, "PowerStatusReceiver was already registered?");
         } else {
             activity.registerReceiver(powerStatusReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
             registered = true;
@@ -112,7 +112,7 @@ public class InactivityTimer {
         protected Object doInBackground(Object... objects) {
             try {
                 Thread.sleep(INACTIVITY_DELAY_MS);
-                Log.i(TAG, "Finishing activity due to inactivity");
+                LogUtil.i(TAG, "Finishing activity due to inactivity");
                 activity.finish();
             } catch (InterruptedException e) {
                 // continue without killing

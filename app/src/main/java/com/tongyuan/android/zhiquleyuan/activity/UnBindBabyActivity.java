@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
@@ -23,6 +22,7 @@ import com.tongyuan.android.zhiquleyuan.bean.UnbindBabyToToyReqBean;
 import com.tongyuan.android.zhiquleyuan.bean.UnbindBabyToToyResBean;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.interf.Constant;
+import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
@@ -132,7 +132,7 @@ public class UnBindBabyActivity extends AppCompatActivity implements View.OnClic
                         mListview_unbindbaby.setItemChecked(position, true);
                         checkPosition = position;
                         mBabyId = response.body().getBODY().getLST().get(checkPosition).getID().toString();
-                        Log.i("555555", "onItemClick: +mBabyId" + mBabyId);
+                        LogUtil.i("555555", "onItemClick: +mBabyId" + mBabyId);
                         ToastUtil.showToast(getApplicationContext(), "item" + position);
                     }
                 });
@@ -164,7 +164,7 @@ public class UnBindBabyActivity extends AppCompatActivity implements View.OnClic
         unBindBabyToToyResCall.enqueue(new Callback<UnbindBabyToToyResBean>() {
             @Override
             public void onResponse(Call<UnbindBabyToToyResBean> call, Response<UnbindBabyToToyResBean> response) {
-                Log.i("555555", "(3.4.19) onResponse: " + response.body().toString());
+                LogUtil.i("555555", "(3.4.19) onResponse: " + response.body().toString());
                 ToastUtil.showToast(getApplicationContext(), "解绑成功,跳转到toyselector页面");
 
                 finish();

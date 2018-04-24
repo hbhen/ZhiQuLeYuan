@@ -2,13 +2,13 @@ package com.tongyuan.android.zhiquleyuan.view;
 
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.tongyuan.android.zhiquleyuan.R;
+import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 import com.tongyuan.android.zhiquleyuan.view.wheelview.OnWheelChangedListener;
 import com.tongyuan.android.zhiquleyuan.view.wheelview.OnWheelScrollListener;
 import com.tongyuan.android.zhiquleyuan.view.wheelview.WheelView;
@@ -125,11 +125,11 @@ public class ChangeDatePopwindow extends PopupWindow implements View.OnClickList
                 // TODO Auto-generated method stub
                 String currentText = (String) mYearAdapter.getItemText(wheel.getCurrentItem());
                 selectYear = currentText;
-                Log.i("111", "currentText:----------------- " + currentText);
+                LogUtil.i("111", "currentText:----------------- " + currentText);
 
                 setTextviewSize(currentText, mYearAdapter);
                 currentYear = currentText.substring(0, currentText.length() - 1).toString();
-                Log.i("111", "currentYear========" + currentYear);
+                LogUtil.i("111", "currentYear========" + currentYear);
                 setYear(currentYear);
                 initMonths(Integer.parseInt(month));
                 mMonthAdapter = new CalendarTextAdapter(mContext, arry_months, 0, maxTextSize, minTextSize);
@@ -162,7 +162,7 @@ public class ChangeDatePopwindow extends PopupWindow implements View.OnClickList
                 // TODO Auto-generated method stub
                 String currentText = (String) mMonthAdapter.getItemText(wheel.getCurrentItem());
                 selectMonth = currentText;
-                Log.i("111", "selectMonth: " + selectMonth);
+                LogUtil.i("111", "selectMonth: " + selectMonth);
                 setTextviewSize(currentText, mMonthAdapter);
                 setMonth(currentText.substring(0, 1));
                 initDays(Integer.parseInt(day));
@@ -199,7 +199,7 @@ public class ChangeDatePopwindow extends PopupWindow implements View.OnClickList
                 String currentText = (String) mDaydapter.getItemText(wheel.getCurrentItem());
                 setTextviewSize(currentText, mDaydapter);
                 selectDay = currentText;
-                Log.i("111", "selectDay: " + selectDay);
+                LogUtil.i("111", "selectDay: " + selectDay);
             }
         });
         mMWvBirthDay.addScrollingListener(new OnWheelScrollListener() {
@@ -305,7 +305,7 @@ public class ChangeDatePopwindow extends PopupWindow implements View.OnClickList
         if (view == mBtnMyinfoSure) {
             if (onBirthListener != null) {
                 onBirthListener.onClick(selectYear, selectMonth, selectDay);
-                Log.i("111", "" + selectYear + "" + selectMonth + "" + selectDay);
+                LogUtil.i("111", "" + selectYear + "" + selectMonth + "" + selectDay);
             }
         } else if (view == mBtnMyinfoSure) {
 
@@ -318,7 +318,7 @@ public class ChangeDatePopwindow extends PopupWindow implements View.OnClickList
     private String getYear() {
         Calendar c = Calendar.getInstance();
         c.get(Calendar.YEAR);
-        Log.i("year", "getYear: " + c);
+        LogUtil.i("year", "getYear: " + c);
         return c.get(Calendar.YEAR) + "";
 
     }

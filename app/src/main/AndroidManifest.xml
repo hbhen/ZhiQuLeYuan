@@ -168,7 +168,14 @@
 
         <service android:name=".service.CheckTokenService">
         </service>
+
         <receiver android:name=".receiver.UpdateAppReceiver"></receiver>
+        <receiver android:name=".receiver.DownloadedReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.DOWNLOAD_COMPLETE"/>
+            </intent-filter>
+        </receiver>
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"

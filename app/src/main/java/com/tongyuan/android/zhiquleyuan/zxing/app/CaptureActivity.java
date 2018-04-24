@@ -30,7 +30,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -53,6 +52,7 @@ import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeReader;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.tongyuan.android.zhiquleyuan.R;
+import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 import com.tongyuan.android.zhiquleyuan.zxing.camera.CameraManager;
 import com.tongyuan.android.zhiquleyuan.zxing.decode.BeepManager;
@@ -195,11 +195,11 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
             mRoomid = bundle.getString("roomid");
             mToken = bundle.getString("token");
             mToyId = bundle.getString("toyId");
-            Log.i("captureactivity", "onClick111: --"+mBabyimgString+"--");
-            Log.i("captureactivity", "onClick111: --"+mBabynameString+"--");
-            Log.i("captureactivity", "onClick111: --"+mRoomid+"--");
-            Log.i("captureactivity", "onClick111: --"+mToken+"--");
-            Log.i("captureactivity", "onClick111: --"+mToyId+"--");
+            LogUtil.i("captureactivity", "onClick111: --"+mBabyimgString+"--");
+            LogUtil.i("captureactivity", "onClick111: --"+mBabynameString+"--");
+            LogUtil.i("captureactivity", "onClick111: --"+mRoomid+"--");
+            LogUtil.i("captureactivity", "onClick111: --"+mToken+"--");
+            LogUtil.i("captureactivity", "onClick111: --"+mToyId+"--");
 
         }
         Util.currentActivity = this;
@@ -249,7 +249,7 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
         } else {
             // Install the callback and wait for surfaceCreated() to init the
             // camera.
-            Log.e("CaptureActivity", "onResume");
+            LogUtil.e("CaptureActivity", "onResume");
         }
 
         Intent intent = getIntent();
@@ -482,8 +482,8 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
             intent.putExtra(Intents.Scan.RESULT_FORMAT, rawResult.getBarcodeFormat().toString());
             Message message = Message.obtain(handler, R.id.return_scan_result);
             message.obj = intent;
-            Log.i("handler", "handleDecodeExternally: " + message.obj.toString());
-            Log.i("handler", "handleDecodeExternally: " + rawResult.toString());
+            LogUtil.i("handler", "handleDecodeExternally: " + message.obj.toString());
+            LogUtil.i("handler", "handleDecodeExternally: " + rawResult.toString());
             handler.sendMessageDelayed(message, INTENT_RESULT_DURATION);
 
         } else if (source == Source.PRODUCT_SEARCH_LINK) {
@@ -516,23 +516,23 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
              */
             CameraManager.get().openDriver(surfaceHolder);
         } catch (IOException ioe) {
-            Log.w(TAG, ioe);
+            LogUtil.d(TAG, ""+ioe);
             displayFrameworkBugMessageAndExit();
             return;
         } catch (RuntimeException e) {
             // Barcode Scanner has seen crashes in the wild of this variety:
             // java.?lang.?RuntimeException: Fail to connect to camera service
-            Log.e(TAG, "Unexpected error initializating camera", e);
+            LogUtil.e(TAG, "Unexpected error initializating camera(Exception):"+ e);
             displayFrameworkBugMessageAndExit();
             return;
         }
         if (handler == null) {
             if (mFlag == 2) {
-                Log.i("captureactivity", "onClick11: --"+mBabyimgString+"--");
-                Log.i("captureactivity", "onClick11: --"+mBabynameString+"--");
-                Log.i("captureactivity", "onClick11: --"+mRoomid+"--");
-                Log.i("captureactivity", "onClick11: --"+mToken+"--");
-                Log.i("captureactivity", "onClick11: --"+mToyId+"--");
+                LogUtil.i("captureactivity", "onClick11: --"+mBabyimgString+"--");
+                LogUtil.i("captureactivity", "onClick11: --"+mBabynameString+"--");
+                LogUtil.i("captureactivity", "onClick11: --"+mRoomid+"--");
+                LogUtil.i("captureactivity", "onClick11: --"+mToken+"--");
+                LogUtil.i("captureactivity", "onClick11: --"+mToyId+"--");
                 handler = new CaptureActivityHandler(this, decodeFormats, characterSet, mFlag,mBabyimgString,mBabynameString,mRoomid,mToken,mToyId);
             }else{
                 handler = new CaptureActivityHandler(this, decodeFormats, characterSet, mFlag);
@@ -563,7 +563,7 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
     protected void onActivityResult(final int requestCode, int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        Log.d("hahahaha", "onActivityResult: __++__++__++__++" + data.toString());
+        LogUtil.d("hahahaha", "onActivityResult: __++__++__++__++" + data.toString());
         //返回选择的需要扫描二维码的图片
         if (resultCode == Activity.RESULT_OK) {
             //被选择的二维码图片的uri
@@ -580,7 +580,7 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
                         ToastUtil.showToast(getApplicationContext(), "result结果:" + result.toString());
                         String recode1 = result.toString();
                         Toast.makeText(getApplicationContext(), "recode1" + recode1, Toast.LENGTH_LONG).show();
-                        Log.i("1111111111", "recode: " + recode1);
+                        LogUtil.i("1111111111", "recode: " + recode1);
                     } else {
                         String recodeFromAdd = result.toString();
                         Toast.makeText(getApplicationContext(), "recode2" + recodeFromAdd, Toast.LENGTH_LONG).show();
@@ -588,14 +588,14 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
                         data1.putExtra("SCAN_RESULT", recodeFromAdd);
                         String text = result.getText();
                         setResult(90,data1);
-                        Log.i("1111111111", "text: " + text);
+                        LogUtil.i("1111111111", "text: " + text);
                         ToastUtil.showToast(getApplicationContext(), "recode3" + recodeFromAdd);
-                        Log.i("1111111111", "recode4: " + recodeFromAdd);
+                        LogUtil.i("1111111111", "recode4: " + recodeFromAdd);
 
 //                        switch (requestCode) {
 //                            case 300: //toyadd过来的requestcode
 //                                // 数据返回，在这里去处理扫码结果
-//                                Log.i("scan_result______11", "run: " + data.getStringExtra("SCAN_RESULT"));
+//                                LogUtil.i("scan_result______11", "run: " + data.getStringExtra("SCAN_RESULT"));
 //                                String scan_result = data1.getStringExtra("SCAN_RESULT");
 //                                ToastUtil.showToast(getApplicationContext(),"scan"+scan_result);
 //                                setResult(Activity.RESULT_OK, data);
@@ -606,12 +606,12 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
 //                                finish();
 //                                break;
 //                            case 301:
-//                                Log.i("scan_result______22", "run: " + data.getStringExtra("SCAN_RESULT"));
+//                                LogUtil.i("scan_result______22", "run: " + data.getStringExtra("SCAN_RESULT"));
 //                                setResult(RESULT_OK, data);
 //                                finish();
 //                                break;
 //                            case 3003:
-//                                Log.i("scan_result______33", "run: " + data.getStringExtra("SCAN_RESULT"));
+//                                LogUtil.i("scan_result______33", "run: " + data.getStringExtra("SCAN_RESULT"));
 //                                setResult(RESULT_OK, data);
 //                                finish();
 //                                break;

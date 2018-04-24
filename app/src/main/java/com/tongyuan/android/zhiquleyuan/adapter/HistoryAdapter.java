@@ -7,7 +7,6 @@ import android.text.Spanned;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +17,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.bean.CallHistoryResultBean;
+import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 
 import java.util.ArrayList;
 
@@ -84,10 +84,10 @@ public class HistoryAdapter extends BaseAdapter {
         spannableString.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);  //粗体
         historyHolder.callDate.setText(spannableString);
 
-        Log.i("444444", "getView:substringDate " + substringDate + ";");
-        Log.i("444444", "getView:month " + month + ";");
-        Log.i("444444", "getView:day " + day + ";");
-        Log.i("444444", "getView:newDate " + newDate + ";");
+        LogUtil.i("444444", "getView:substringDate " + substringDate + ";");
+        LogUtil.i("444444", "getView:month " + month + ";");
+        LogUtil.i("444444", "getView:day " + day + ";");
+        LogUtil.i("444444", "getView:newDate " + newDate + ";");
 
 //        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HHmm");
 //        SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("HH:mm");

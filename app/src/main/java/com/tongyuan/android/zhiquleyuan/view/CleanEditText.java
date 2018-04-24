@@ -1,5 +1,6 @@
 package com.tongyuan.android.zhiquleyuan.view;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -18,6 +19,7 @@ import android.widget.EditText;
  * @author wwj_748
  * @date 2015年6月11日 上午11:57:36
  */
+@SuppressLint("AppCompatCustomView")
 public class CleanEditText extends EditText {
 	
 	private final String TAG = "editText";

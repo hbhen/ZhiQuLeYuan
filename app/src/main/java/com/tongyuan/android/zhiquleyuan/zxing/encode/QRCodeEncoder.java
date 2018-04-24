@@ -24,7 +24,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Contacts;
 import android.telephony.PhoneNumberUtils;
-import android.util.Log;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -36,6 +35,7 @@ import com.google.zxing.client.result.ParsedResult;
 import com.google.zxing.client.result.ResultParser;
 import com.google.zxing.common.BitMatrix;
 import com.tongyuan.android.zhiquleyuan.R;
+import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 import com.tongyuan.android.zhiquleyuan.zxing.decode.Contents;
 import com.tongyuan.android.zhiquleyuan.zxing.decode.Intents;
 
@@ -143,35 +143,35 @@ final class QRCodeEncoder {
                     uri);
             int length = stream.available();
             if (length <= 0) {
-                Log.w(TAG, "Content stream is empty");
+                LogUtil.w(TAG, "Content stream is empty");
                 return false;
             }
             byte[] vcard = new byte[length];
             int bytesRead = stream.read(vcard, 0, length);
             if (bytesRead < length) {
-                Log.w(TAG,
+                LogUtil.w(TAG,
                         "Unable to fully read available bytes from content stream");
                 return false;
             }
             String vcardString = new String(vcard, 0, bytesRead, "UTF-8");
-            Log.d(TAG, "Encoding share intent content:");
-            Log.d(TAG, vcardString);
+            LogUtil.d(TAG, "Encoding share intent content:");
+            LogUtil.d(TAG, vcardString);
             Result result = new Result(vcardString, vcard, null,
                     BarcodeFormat.QR_CODE);
             ParsedResult parsedResult = ResultParser.parseResult(result);
             if (!(parsedResult instanceof AddressBookParsedResult)) {
-                Log.d(TAG, "Result was not an address");
+                LogUtil.d(TAG, "Result was not an address");
                 return false;
             }
             if (!encodeQRCodeContents((AddressBookParsedResult) parsedResult)) {
-                Log.d(TAG, "Unable to encode contents");
+                LogUtil.d(TAG, "Unable to encode contents");
                 return false;
             }
         } catch (IOException e) {
-            Log.w(TAG, e);
+            LogUtil.w(TAG, e.toString());
             return false;
         } catch (NullPointerException e) {
-            Log.w(TAG, e);
+            LogUtil.w(TAG, e.toString());
             // In case the uri was not found in the Intent.
             return false;
         }

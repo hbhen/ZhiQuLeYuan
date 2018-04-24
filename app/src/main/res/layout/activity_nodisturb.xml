@@ -12,6 +12,7 @@
         android:layout_height="@dimen/dp_44">
 
         <LinearLayout
+
             android:id="@+id/iv_activity_nodisturb_back"
             android:layout_width="30dp"
             android:layout_height="match_parent"
@@ -42,22 +43,30 @@
             android:layout_marginLeft="@dimen/dp_10"
             android:layout_marginRight="@dimen/dp_10"
             android:text="完成"
+
             android:textColor="@color/redFont"
             android:textSize="@dimen/sp_18"/>
+
     </RelativeLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/iv_add_nodisturbtime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="11dp"
-        android:clickable="true"
-        android:src="@drawable/toy_add_pressed_160"/>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <ImageView
+            android:id="@+id/iv_add_nodisturbtime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="10dp"
+            android:clickable="true"
+            android:src="@drawable/toy_add_pressed_160"/>
+    </android.support.design.widget.CoordinatorLayout>
+
 
 </LinearLayout>

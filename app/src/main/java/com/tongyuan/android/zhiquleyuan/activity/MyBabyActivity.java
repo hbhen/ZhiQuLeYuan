@@ -10,7 +10,6 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -28,6 +27,7 @@ import com.tongyuan.android.zhiquleyuan.bean.BabyInfoRequestBean;
 import com.tongyuan.android.zhiquleyuan.bean.BabyInfoResultBean;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.interf.Constant;
+import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 import com.tongyuan.android.zhiquleyuan.utils.Utils;
@@ -221,7 +221,7 @@ public class MyBabyActivity extends AppCompatActivity {
 //        Date date1=new Date(mDatetime);
 //        SimpleDateFormat si=new SimpleDateFormat("yyyyMMddHHmmssSSS");
 //        String formatdate = si.format(date1);
-//        Log.i("111", "confirmInfo: "+formatdate);
+//        LogUtil.i("111", "confirmInfo: "+formatdate);
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constant.baseurl)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -237,9 +237,9 @@ public class MyBabyActivity extends AppCompatActivity {
         babyInfoResultBeanCall.enqueue(new Callback<BabyInfoResultBean>() {
             @Override
             public void onResponse(Call<BabyInfoResultBean> call, Response<BabyInfoResultBean> response) {
-                Log.i("111", "token====" + token);
-                Log.i("111", "onResponse: ======================" + response.body().toString());
-                Log.i("1111", "onResponse: " + response.body().toString());
+                LogUtil.i("111", "token====" + token);
+                LogUtil.i("111", "onResponse: ======================" + response.body().toString());
+                LogUtil.i("1111", "onResponse: " + response.body().toString());
 //                Intent intent =new Intent();
 //                intent.setClass(getApplicationContext(),BabyInfoListActivity.class);
 
@@ -254,9 +254,9 @@ public class MyBabyActivity extends AppCompatActivity {
 //        babyInfoResult.enqueue(new Callback<BabyInfoResultBean>() {
 //            @Override
 //            public void onResponse(Call<BabyInfoResultBean> call, Response<BabyInfoResultBean> response) {
-//                Log.i("111", "token====" + token);
-//                Log.i("111", "onResponse: ======================" + response.body().toString());
-//                Log.i("1111", "onResponse: " + response.body().toString());
+//                LogUtil.i("111", "token====" + token);
+//                LogUtil.i("111", "onResponse: ======================" + response.body().toString());
+//                LogUtil.i("1111", "onResponse: " + response.body().toString());
 //
 //            }
 //
@@ -284,16 +284,16 @@ public class MyBabyActivity extends AppCompatActivity {
                         1));
                 str[0] = year + "" + month + "" + day;
                 mDatetime = year + month + day;
-                Log.i("111", "sb=========: " + sb);
-                Log.i("111", "mDatetime=========: " + mDatetime);
-                Log.i("111", "str[0]=========: " + str[0]);
+                LogUtil.i("111", "sb=========: " + sb);
+                LogUtil.i("111", "mDatetime=========: " + mDatetime);
+                LogUtil.i("111", "str[0]=========: " + str[0]);
 
                 str[1] = sb.toString();
-                Log.i("111", "str[1]=========: " + str[1]);
+                LogUtil.i("111", "str[1]=========: " + str[1]);
                 //对mDatetime去进行筛选,剔除里面的年月日,拼接成日期,然后在integer.parse
                 mTvActivityAddbabyinfoDate.setText(year + " " + month + " " + day);
                 mTimedate = sb + "0000000";
-                Log.i("111", "timedate: " + mTimedate);
+                LogUtil.i("111", "timedate: " + mTimedate);
             }
         });
         return str;
@@ -349,7 +349,7 @@ public class MyBabyActivity extends AppCompatActivity {
     //裁剪图片方法实现,这里用的是系统自带的裁剪,可以用circleimageview来裁剪.
     private void startPhotoZoom(Uri tempUri) {
         if (tempUri == null) {
-            Log.i("tag", "uri 不存在");
+            LogUtil.i("tag", "uri 不存在");
         }
         //不为空就把uri赋值给mTempUri
         mTempUri = tempUri;
@@ -419,7 +419,7 @@ public class MyBabyActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<BabyInfoResultBean> call, Throwable t) {
-                Log.i("upload", "onFailure...");
+                LogUtil.i("upload", "onFailure...");
             }
         });
 

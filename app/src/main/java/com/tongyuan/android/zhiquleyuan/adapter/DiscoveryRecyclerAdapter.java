@@ -76,7 +76,7 @@ public class DiscoveryRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
                 View view = inflate.inflate(R.layout.discovery_sub_item_foot, parent, false);
                 return new FootViewHolde(view);
             default:
-                //Log.d("error", "viewholder is null");
+                //LogUtil.d("error", "viewholder is null");
                 return null;
         }
 

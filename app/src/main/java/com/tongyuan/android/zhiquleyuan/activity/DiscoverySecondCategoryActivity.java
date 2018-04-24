@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
@@ -21,6 +20,7 @@ import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoverySubReqBean;
 import com.tongyuan.android.zhiquleyuan.request.RequestManager;
 import com.tongyuan.android.zhiquleyuan.request.base.SuperModel;
+import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.StatusBarUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
@@ -55,6 +55,7 @@ public class DiscoverySecondCategoryActivity extends AppCompatActivity implement
     private String colid;
     private List<DiscoveryListResultBean.BODYBean.LSTBean> list = new ArrayList<>();
     private int currPage = 1;
+    String NC = "-1";
     private static final String TAG
             = "tag";
 
@@ -91,6 +92,7 @@ public class DiscoverySecondCategoryActivity extends AppCompatActivity implement
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                NC = "-1";
                 currPage = 1;
                 getIdColSecondaryInfo(colid, false);
                 swipeRefresh.setRefreshing(false);
@@ -115,51 +117,62 @@ public class DiscoverySecondCategoryActivity extends AppCompatActivity implement
         getIdColSecondaryInfo(colid, false);
     }
 
+
     private void getIdColSecondaryInfo(String colid, final boolean isLoadMore) {
         int page = currPage;
         if (isLoadMore) {
             page++;
         }
-
-        DiscoverySubReqBean bodyBean = new DiscoverySubReqBean(colid, "10", String.valueOf(page));
-        Call<SuperModel<DiscoveryGridSecondaryResultBean>> result = RequestManager.getInstance().
-                getDiscoverySubList(this, bodyBean);
-        result.enqueue(new Callback<SuperModel<DiscoveryGridSecondaryResultBean>>() {
-            @Override
-            public void onResponse(Call<SuperModel<DiscoveryGridSecondaryResultBean>> call, Response<SuperModel<DiscoveryGridSecondaryResultBean>>
-                    response) {
-                Log.d(TAG, "onResponse:(discoverysubreqbean) " + response.body().toString() + "__________" + response.body().BODY.toString());
-                if ("0".equals(response.body().CODE)) {
-                    if (isLoadMore) {
-                        currPage++;
+        if (!NC.equals("0")) {
+            DiscoverySubReqBean bodyBean = new DiscoverySubReqBean(colid, "10", String.valueOf(page));
+            Call<SuperModel<DiscoveryGridSecondaryResultBean>> result = RequestManager.getInstance().
+                    getDiscoverySubList(this, bodyBean);
+            result.enqueue(new Callback<SuperModel<DiscoveryGridSecondaryResultBean>>() {
+                @Override
+                public void onResponse(Call<SuperModel<DiscoveryGridSecondaryResultBean>> call, Response<SuperModel<DiscoveryGridSecondaryResultBean>>
+                        response) {
+                    LogUtil.d(TAG, "onResponse:(discoverysubreqbean) " + response.body().toString() + "__________" + response.body().BODY.toString());
+                    if ("0".equals(response.body().CODE)) {
+                        if (isLoadMore) {
+                            currPage++;
+                        } else {
+                            list.clear();
+                            currPage = 1;
+                        }
+                        NC = response.body().BODY.NC;
+                        list.addAll(response.body().BODY.LST);
+//                    LogUtil.i(TAG, "all list() : " + response.body().BODY.LST.toString());
+//                    LogUtil.i(TAG, "LST.size():" + response.body().BODY.LST.size());
+//                    LogUtil.i(TAG, "list.addall():" + list.toString());
+//                    LogUtil.i(TAG, "list.size():" + list.size());
+                        LogUtil.i(TAG, "response():" + response.body().toString());
+                        LogUtil.i(TAG, "response():" + response.body().BODY.toString());
+                        LogUtil.i(TAG, "response.body.nc():" + response.body().BODY.NC);
+                        LogUtil.i(TAG, "response.body.PN():" + response.body().BODY.PN);
+                        LogUtil.i(TAG, "response.body.PS():" + response.body().BODY.PS);
+                        if ("0".equals(response.body().BODY.NC)) {
+                            footerView.setVisibility(View.GONE);
+                        } else {
+                            footerView.setVisibility(View.VISIBLE);
+                        }
+                        adapter.notifyDataSetChanged();
+                        ToastUtil.showToast(ZQLYApp.context, "成功");
                     } else {
-                        list.clear();
-                        currPage = 1;
-                    }
-
-                    list.addAll(response.body().BODY.LST);
-                    if ("0".equals(response.body().BODY.NC)) {
-                        footerView.setVisibility(View.GONE);
-                    } else {
-                        footerView.setVisibility(View.VISIBLE);
-                    }
-                    adapter.notifyDataSetChanged();
-                    ToastUtil.showToast(ZQLYApp.context, "成功");
-                } else {
-                    ToastUtil.showToast(ZQLYApp.context, "没成功");
+                        ToastUtil.showToast(ZQLYApp.context, "没成功");
 //                    ToastUtil.showToast(getApplicationContext(), response.body().MSG);
-                    footerView.setVisibility(View.GONE);
+                        footerView.setVisibility(View.GONE);
+                    }
+                    isLoading = false;
+
                 }
-                isLoading = false;
-            }
 
-            @Override
-            public void onFailure(Call<SuperModel<DiscoveryGridSecondaryResultBean>> call, Throwable t) {
-                ToastUtil.showToast(getApplicationContext(), "联网失败");
-                isLoading = false;
-            }
-        });
-
+                @Override
+                public void onFailure(Call<SuperModel<DiscoveryGridSecondaryResultBean>> call, Throwable t) {
+                    ToastUtil.showToast(getApplicationContext(), "联网失败");
+                    isLoading = false;
+                }
+            });
+        }
     }
 
     @OnClick({R.id.sub_discovery_back})

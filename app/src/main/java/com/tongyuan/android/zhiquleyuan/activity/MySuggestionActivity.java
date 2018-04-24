@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,6 +16,7 @@ import com.tongyuan.android.zhiquleyuan.bean.CommitSuggestionReqBean;
 import com.tongyuan.android.zhiquleyuan.bean.CommitSuggestionResBean;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.interf.Constant;
+import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
@@ -102,7 +102,7 @@ public class MySuggestionActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<CommitSuggestionResBean> call, Throwable t) {
-                Log.e(TAG, "onFailure: ", t);
+                LogUtil.e(TAG, "onFailure:(Throwable) " + t);
             }
         });
 

@@ -205,12 +205,12 @@
 //                break;
 //            case R.id.surfaceView6:
 //                if (!change) {
-//                    Log.d("surfaceview", "surfaceview: +change1");
+//                    LogUtil.d("surfaceview", "surfaceview: +change1");
 //                    Session.getInstance().PlayVideo(0, true, mOther_video, 0, 0, 1, 1, 0, false, 1, 0);
 //                    Session.getInstance().PlayVideo(_watchingPeerID, true, mMy_video, 0, 0, 1, 1, 65, false, 1, 0);
 //                    change = true;
 //                } else {
-//                    Log.d("surfaceview", "surfaceview: +change2");
+//                    LogUtil.d("surfaceview", "surfaceview: +change2");
 //                    Session.getInstance().PlayVideo(0, true, mMy_video, 0, 0, 1, 1, 0, false, 1, 0);
 //                    Session.getInstance().PlayVideo(_watchingPeerID, true, mOther_video, 0, 0, 1, 1, 65, false, 1, 0);
 //                    change = false;
@@ -221,7 +221,7 @@
 //    }
 //
 //    private void seeMe() {
-//        Log.d("surfaceview", "surfaceview3 ");
+//        LogUtil.d("surfaceview", "surfaceview3 ");
 //
 //        if (_myPeerID == 0)
 //            return;
@@ -238,14 +238,14 @@
 //    }
 //
 //    private void seeYou() {
-//        Log.d("surfaceview", "surfaceview4 ");
+//        LogUtil.d("surfaceview", "surfaceview4 ");
 //        if (_userList.size() == 0)
 //            return;
 //
 //        if (_watchingPeerID == 0) {
 //            int peerID = _userList.get(0);
 //            Session.getInstance().PlayVideo(peerID, true, mOther_video, 0, 0, 1, 1, 1, false, 0, 0);
-//            Log.d("surfaceview", "surfaceview5 ");
+//            LogUtil.d("surfaceview", "surfaceview5 ");
 //            _watchingPeerID = peerID;
 //        } else {
 //            Session.getInstance().PlayVideo(_watchingPeerID, false, mOther_video, 0, 0, 1, 1, 1, false, 1, 0);
@@ -450,7 +450,7 @@
 //            @Override
 //            public void onResponse(Call<CallToToyRes> call, Response<CallToToyRes> response) {
 //                String s1 = response.body().toString();
-//                Log.i("55555", "onResponse: stopcallserver" + s1);
+//                LogUtil.i("55555", "onResponse: stopcallserver" + s1);
 //            }
 //
 //            @Override

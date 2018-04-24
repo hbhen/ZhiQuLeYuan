@@ -29,6 +29,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
+import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 import com.tongyuan.android.zhiquleyuan.zxing.app.PreferencesActivity;
 import com.tongyuan.android.zhiquleyuan.zxing.decode.PlanarYUVLuminanceSource;
 
@@ -233,7 +234,7 @@ public final class CameraManager {
 	public void requestAutoFocus(Handler handler, int message) {
 		if (camera != null && previewing) {
 			autoFocusCallback.setHandler(handler, message);
-			// Log.d(TAG, "Requesting auto-focus callback");
+			// LogUtil.d(TAG, "Requesting auto-focus callback");
 			camera.autoFocus(autoFocusCallback);
 		}
 	}
@@ -268,7 +269,7 @@ public final class CameraManager {
 			int topOffset = (screenResolution.y - height) / 2;
 			framingRect = new Rect(leftOffset, topOffset, leftOffset + width,
 					topOffset + height);
-			Log.d(TAG, "Calculated framing rect: " + framingRect);
+			LogUtil.d(TAG, "Calculated framing rect: " + framingRect);
 		}
 		return framingRect;
 	}
@@ -379,8 +380,8 @@ public final class CameraManager {
 			return;
 		}
 		String flashMode = parameters.getFlashMode();
-		Log.i(TAG, "Flash mode: " + flashMode);
-		Log.i(TAG, "Flash modes: " + flashModes);
+		LogUtil.i(TAG, "Flash mode: " + flashMode);
+		LogUtil.i(TAG, "Flash modes: " + flashModes);
 		// 闪光灯关闭状态
 		if (!Parameters.FLASH_MODE_TORCH.equals(flashMode)) {
 			// Turn on the flash
@@ -419,7 +420,7 @@ public final class CameraManager {
 				parameters.setFlashMode(Parameters.FLASH_MODE_OFF);
 				camera.setParameters(parameters);
 			} else {
-				Log.e(TAG, "FLASH_MODE_OFF not supported");
+				LogUtil.e(TAG, "FLASH_MODE_OFF not supported");
 			}
 		}
 	}

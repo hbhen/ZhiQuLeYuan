@@ -49,6 +49,7 @@ import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.request.RequestManager;
 import com.tongyuan.android.zhiquleyuan.request.base.SuperModel;
+import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 import com.tongyuan.android.zhiquleyuan.zxing.app.CaptureActivity;
@@ -86,8 +87,9 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     private TextView mTv_fragment_toy_details_babyName;
     private TextView mTv_fragment_toy_details_toytype;
     private Bundle mArguments;
-    public static final String TAG = "555555";
+    public final String TAG = this.getClass().getSimpleName();
     private ListView mListviewRecommand;
+    private DiscoveryListViewAdapter mLAdapter;
     private String mToycode;
     private String mBabyimg;
     private String mFormatTime;
@@ -113,7 +115,6 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     private TextView mUnbindToy;
     private TextView mBindToy;
     private SingleToyInfoRESBean.BODYBean singleresponse;
-    private DiscoveryListViewAdapter mLAdapter;
     private View mListviewtitle;
     private String mUserId;
     private String mBabyid;
@@ -132,13 +133,19 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     private SwipeRefreshLayout mRefresh;
     private View footerView;
     int currentPage = 1;
+    public String NC = "-1";
     private boolean isToyPlaying = false;
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle
             savedInstanceState) {
+        LogUtil.i(TAG, "onCreateView went");
         mToyDetails = inflater.inflate(R.layout.fragment_toy_details, null);
 
         mRefresh = (SwipeRefreshLayout) mToyDetails.findViewById(R.id.swipe_toydetails);
@@ -151,12 +158,13 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         mIv_toyPlayControl_seekbar = (SeekBar) mToyPlayControl.findViewById(R.id.seekbar);
 
         mListviewtitle = inflater.inflate(R.layout.discovery_recyclerview_listview_title, null);
-        Log.i("timedate", "onCreateView");
+        LogUtil.i("timedate", "onCreateView");
         //TODO 动态设置布局的位置:mIsPlaying 显示,mListviewRecommand在它下面; 不显示,mListviewRecommand在Relativlayout的下面.
 //        FrameLayout framelayoutControl =  (FrameLayout) mToyDetails.findViewById(R.id
 // .fl_fragment_toy_details_playcontrol);
         mUpdate = (TextView) mToyDetails.findViewById(R.id.tv_updatetoy);
         mListviewRecommand = (ListView) mToyDetails.findViewById(R.id.lv_fragment_toy_details_recommand);
+        LogUtil.i(TAG, "mLIstviewRecommand():" + mListviewRecommand.toString());
         mCall = (ImageView) mToyDetails.findViewById(iv_toy_details_call);
         mToyManager = (TextView) mToyDetails.findViewById(R.id.tv_toy_details_manager);
         mIv_fragment_toy_details_babyImg = (ImageView) mToyDetails.findViewById(R.id.iv_fragment_toy_details_babyImg);
@@ -177,6 +185,8 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         } else {
             mToyIsPlaying.setText("当前玩具未播放");
         }
+        mLAdapter = new DiscoveryListViewAdapter(getContext(), list);
+        mListviewRecommand.setAdapter(mLAdapter);
         footerView = LayoutInflater.from(getContext()).inflate(R.layout.discovery_sub_item_foot, null);
         footerView.setVisibility(View.GONE);
         mListviewRecommand.addFooterView(footerView);
@@ -189,58 +199,70 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         mIv_toyPlayControl_play.setOnClickListener(this);
         mIv_toyPlayControl_seekbar.setOnSeekBarChangeListener(this);
         mListviewRecommand.setOnScrollListener(this);
+
         mRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 currentPage = 1;
+                NC = "-1";
                 getListRaw(false);
+                Log.i(TAG, "(onRefresh) getlistraw: went");
                 mRefresh.setRefreshing(false);
             }
         });
+
         mToyManagerFragment = new ToyManagerFragment();
 
         mListviewRecommand.addHeaderView(mListviewtitle);
         mListviewRecommand.setHeaderDividersEnabled(false);
         mListviewtitle.setClickable(false);
+        LogUtil.i(TAG, "onCreateView return 之前");
 
-//        initView();
-        getListRaw(false);
+        initView();
+
         return mToyDetails;
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        LogUtil.i(TAG, "onActivityCreated went");
+        getListRaw(false);
+        LogUtil.i(TAG, "(onActivityCreated) getlistraw went");
+
+    }
 
     private void getListRaw(final boolean isLoadMore) {
-        int page = currentPage;
-        if (isLoadMore) {
-            page++;
-        }
-
-
-        final DiscoveryListRequsetBean.BODYBean request = new DiscoveryListRequsetBean.BODYBean("10", String.valueOf(page));
-        Call<SuperModel<DiscoveryListResultBean.BODYBean>> discoveryListResult = RequestManager.getInstance()
-                .getDiscoveryListResult(getContext(),
-                        request);
-        discoveryListResult.enqueue(new Callback<SuperModel<DiscoveryListResultBean.BODYBean>>() {
-            @Override
-            public void onResponse(Call<SuperModel<DiscoveryListResultBean.BODYBean>> call,
-                                   Response<SuperModel<DiscoveryListResultBean.BODYBean>>
-                                           response) {
-                if ("0".equals(response.body().CODE)) {
-                    if (isLoadMore) {
-                        currentPage++;
-                    } else {
-                        list.clear();
-                        currentPage = 1;
-                    }
-                    if ("0".equals(response.body().BODY.getNC())) {
-                        list = response.body().BODY.getLST();
-                        footerView.setVisibility(View.GONE);
-                    } else {
+        LogUtil.i(TAG, Thread.currentThread().toString());
+        if (!NC.equals("0")) {
+            int page = currentPage;
+            if (isLoadMore) {
+                page++;
+            }
+            final DiscoveryListRequsetBean.BODYBean request = new DiscoveryListRequsetBean.BODYBean("10", String.valueOf(page));
+            Call<SuperModel<DiscoveryListResultBean.BODYBean>> discoveryListResult = RequestManager.getInstance()
+                    .getDiscoveryListResult(getContext(),
+                            request);
+            discoveryListResult.enqueue(new Callback<SuperModel<DiscoveryListResultBean.BODYBean>>() {
+                @Override
+                public void onResponse(Call<SuperModel<DiscoveryListResultBean.BODYBean>> call, Response<SuperModel<DiscoveryListResultBean.BODYBean>>
+                        response) {
+                    if ("0".equals(response.body().CODE)) {
+                        NC = response.body().BODY.getNC();
+                        if (isLoadMore) {
+                            currentPage++;
+                        } else {
+                            list.clear();
+                            currentPage = 1;
+                        }
                         list.addAll(response.body().BODY.getLST());
-                        footerView.setVisibility(View.VISIBLE);
-                    }
-                    mLAdapter = new DiscoveryListViewAdapter(getContext(), list);
-                    mListviewRecommand.setAdapter(mLAdapter);
+//                        if ("0".equals(response.body().BODY.getNC())) {
+//                            list = response.body().BODY.getLST();
+//                            footerView.setVisibility(View.GONE);
+//                        } else {
+//                            footerView.setVisibility(View.VISIBLE);
+//                        }
+
 //                    if ("0".equals(response.body().BODY.getNC())) {
 //
 //                    } else {
@@ -248,9 +270,11 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
 //                    }
 //                    mLAdapter.notifyDataSetChanged();
 
-                    //返回的list是一个空list
-                    Log.i(TAG, "onResponse: " + response.body().BODY);
-                    Log.d(TAG, "onResponse: " + SPUtils.getString(getActivity(), "token", ""));
+                        //返回的list是一个空list
+                        mListviewRecommand.setAdapter(mLAdapter);
+                        mLAdapter.notifyDataSetChanged();
+                        LogUtil.i(TAG, "onResponse: " + response.body().BODY);
+                        LogUtil.d(TAG, "onResponse: " + SPUtils.getString(getActivity(), "token", ""));
 
 
 //                    mLAdapter = new DiscoveryListViewAdapter(getContext(), response.body().BODY.getLST());
@@ -258,38 +282,38 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
 //                    mListviewtitle.setClickable(false);
 //                    mListviewRecommand.setAdapter(mLAdapter);
 //                    mListviewRecommand.setHeaderDividersEnabled(false);
-                    mListviewRecommand.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            int positionWithoutTitle = position - 1;
-                            if (position == 0) {
-                                return;
+                        mListviewRecommand.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                int positionWithoutTitle = position - 1;
+                                if (position == 0) {
+                                    return;
+                                }
+                                MyPlayActivity.launch(getActivity(), mLAdapter.getList(), positionWithoutTitle);
                             }
-                            MyPlayActivity.launch(getActivity(), mLAdapter.getList(), positionWithoutTitle);
-                        }
-                    });
-                } else {
-                    ToastUtil.showToast(getActivity(), response.body().MSG);
-                    footerView.setVisibility(View.GONE);
+                        });
+                    } else {
+                        ToastUtil.showToast(getActivity(), response.body().MSG);
+                        footerView.setVisibility(View.GONE);
+                    }
+                    isLoading = false;
                 }
-                isLoading = false;
-            }
 
-            @Override
-            public void onFailure(Call<SuperModel<DiscoveryListResultBean.BODYBean>> call, Throwable t) {
-                ToastUtil.showToast(getActivity(), "获取数据失败");
-                Log.d(TAG, "onFailure: (toydetailsfragment)" + t.toString());
-                isLoading = false;
-            }
-        });
+                @Override
+                public void onFailure(Call<SuperModel<DiscoveryListResultBean.BODYBean>> call, Throwable t) {
+                    ToastUtil.showToast(getActivity(), "获取数据失败");
+                    LogUtil.d(TAG, "onFailure: (toydetailsfragment)" + t.toString());
+                    isLoading = false;
+                }
+            });
+        }
+
     }
 
     public void setData(SingleToyInfoRESBean.BODYBean response, String image) {
-
-
-        Log.i("timedate", "setData: went");
+        LogUtil.i("timedate", "setData: went");
         mUserId = SPUtils.getString(getContext(), "ID", "");
-        Log.i(TAG, "setData: went");
+        LogUtil.i(TAG, "setData: went");
         this.mResponse = response;
         this.mBabyimg = image;
         //要传给videoactivity的宝宝头像
@@ -305,12 +329,12 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
             Date parse = simpleDateFormat.parse(acttime);
             String formatTime = simpleDateFormat1.format(parse);
             mFormatTime = formatTime;
-            Log.i(TAG, "toydetails toydetailsfragment1:" + formatTime);
+            LogUtil.i(TAG, "toydetails toydetailsfragment1:" + formatTime);
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        Log.i(TAG, "toydetails toydetailsfragment2:" + mFormatTime);
-        Log.i(TAG, "toydetails toydetailsfragment3:" + acttime);
+        LogUtil.i(TAG, "toydetails toydetailsfragment2:" + mFormatTime);
+        LogUtil.i(TAG, "toydetails toydetailsfragment3:" + acttime);
         //保不齐以后要用这些参数,先取出来
         mImg = response.getIMG();
         mCode = response.getCODE();
@@ -318,13 +342,17 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         mName = response.getNAME();
         mOwnerid = response.getOWNERID();
         mOwnername = response.getOWNERNAME();
-        Log.i(TAG, "mbabyimg: " + mBabyimg.toString());
+        LogUtil.i(TAG, "mbabyimg: " + mBabyimg.toString());
         //请求一次网络,查询当前玩具的宝宝信息: 3.4.24
+        LogUtil.i(TAG, "setData() went");
         queryToyHasBindBaby();
 
+        getListRaw(false);
+        LogUtil.i(TAG, "(setData) getlistraw : went");
     }
 
     private void queryToyHasBindBaby() {
+        LogUtil.i(TAG, Thread.currentThread().toString());
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddmmssSSS");
         String currentTime = simpleDateFormat.format(new Date());
         Retrofit retrofit = new Retrofit.Builder()
@@ -375,8 +403,10 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     }
 
     private void initView() {
+        mLAdapter = new DiscoveryListViewAdapter(getContext(), list);
+        mListviewRecommand.setAdapter(mLAdapter);
         checkStateInfo();
-        Log.i("timedate", "initView: went");
+        LogUtil.i("timedate", "initView: went");
         if (mListviewRecommand == null)
             return;
         mTv_fragment_toy_details_acttime.setText(mFormatTime);
@@ -461,13 +491,13 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                                     bundle.getString("roomid");
                                     bundle.getString("token");
                                     bundle.getString("toyId");
-                                    Log.i("captureactivity", "onClick00: --" + bundle.getString("babyimgString") +
+                                    LogUtil.i("captureactivity", "onClick00: --" + bundle.getString("babyimgString") +
                                             "--");
-                                    Log.i("captureactivity", "onClick00: --" + bundle.getString("babynameString") +
+                                    LogUtil.i("captureactivity", "onClick00: --" + bundle.getString("babynameString") +
                                             "--");
-                                    Log.i("captureactivity", "onClick00: --" + bundle.getString("roomid") + "--");
-                                    Log.i("captureactivity", "onClick00: --" + bundle.getString("token") + "--");
-                                    Log.i("captureactivity", "onClick00: --" + bundle.getString("toyId") + "--");
+                                    LogUtil.i("captureactivity", "onClick00: --" + bundle.getString("roomid") + "--");
+                                    LogUtil.i("captureactivity", "onClick00: --" + bundle.getString("token") + "--");
+                                    LogUtil.i("captureactivity", "onClick00: --" + bundle.getString("toyId") + "--");
                                     it.putExtras(bundle);
                                     startActivity(it);
 
@@ -488,7 +518,6 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
 //                    ToastUtil.showToast(getActivity(), "您当前不是管理员,不能管理玩具");
 //                }
                 break;
-
             case R.id.tv_fragment_toy_details_unbind:
                 //判断当前的userid是不是ownerid
                 if (!mUserId.equals(mOwnerid)) {
@@ -553,12 +582,12 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
             @Override
             public void onResponse(Call<UpdateToyVersionResBean> call, Response<UpdateToyVersionResBean> response) {
                 ToastUtil.showToast(getContext(), "发送玩具更新请求成功");
-                Log.i(TAG, "(updatetoy)onResponse: " + response.body().toString());
+                LogUtil.i(TAG, "(updatetoy)onResponse: " + response.body().toString());
             }
 
             @Override
             public void onFailure(Call<UpdateToyVersionResBean> call, Throwable t) {
-                Log.i(TAG, "(updatetoy)onFailure: " + t);
+                LogUtil.i(TAG, "(updatetoy)onFailure: " + t);
             }
         });
     }
@@ -598,8 +627,8 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         callToToyResCall.enqueue(new Callback<CallToToyRes>() {
             @Override
             public void onResponse(Call<CallToToyRes> call, Response<CallToToyRes> response) {
-                Log.i(TAG, "onResponse: RESPONSE" + response.message());
-                Log.i(TAG, "onResponse:+response " + response.body().toString());
+                LogUtil.i(TAG, "onResponse: RESPONSE" + response.message());
+                LogUtil.i(TAG, "onResponse:+response " + response.body().toString());
                 mRoomid = response.body().getRoomid();
                 if (mRoomid == null) {
                     ToastUtil.showToast(getActivity(), "房间号不存在");
@@ -625,7 +654,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
 //
 //                startActivity(new Intent(getActivity(), VideoActivity.class).putExtras(bundle));
                 ToastUtil.showToast(getActivity(), "roomid" + mRoomid);
-                Log.i("555555", "onResponse:+mRoomid " + mRoomid);
+                LogUtil.i("555555", "onResponse:+mRoomid " + mRoomid);
 
                 //TODO 跳转到新的页面
 //                CallWaitingConnectFragment callWaitingConnectFragment = new CallWaitingConnectFragment();
@@ -638,7 +667,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
 
             @Override
             public void onFailure(Call<CallToToyRes> call, Throwable t) {
-                Log.i("111111", t.toString());
+                LogUtil.i("111111", t.toString());
             }
         });
     }
@@ -646,6 +675,8 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     @Override
     public void onStart() {
         super.onStart();
+        LogUtil.i(TAG, "onStart went ");
+
         //TODO 查询当前玩具是否正在播放音乐 3.4.43  暂时先不查询了,因为玩具端不知道怎么上传当前播放的状态给服务器
 //        queryPlayingMusic();
     }
@@ -666,7 +697,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         queryPlayingMusicResBeanCall.enqueue(new Callback<QueryPlayingMusicResBean>() {
             @Override
             public void onResponse(Call<QueryPlayingMusicResBean> call, Response<QueryPlayingMusicResBean> response) {
-                Log.i("55555", response.body().toString());
+                LogUtil.i("55555", response.body().toString());
 
                 if (response.body().getBODY().getID().equals("")) {
                     ToastUtil.showToast(getContext(), "当前玩具没有正在播放的歌曲");
@@ -702,7 +733,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     @Override
     public void onPause() {
         super.onPause();
-
+        LogUtil.i(TAG, "onPause went ");
     }
 
     @Override
@@ -710,15 +741,23 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         super.onResume();
 //        checkStateInfo();
         initView();
+        LogUtil.i(TAG, "onResume went ");
 
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        LogUtil.i(TAG, "onDestroy went ");
+
     }
 
-//    @Override
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        LogUtil.i(TAG, "onHiddenChanged went");
+    }
+    //    @Override
 //    public void onHiddenChanged(boolean hidden) {
 //        super.onHiddenChanged(hidden);
 //        queryToyHasBindBaby();
@@ -771,16 +810,16 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
 
                     }
 
-                    Log.i(TAG, "onResponse:camera" + camera);
-                    Log.i(TAG, "onResponse:elec" + elec);
-                    Log.i(TAG, "onResponse:mic" + mic);
-                    Log.i(TAG, "onResponse:online" + online);
-                    Log.i(TAG, "onResponse:vol" + vol);
-                    Log.i(TAG, "onResponse:wifi" + wifi);
+                    LogUtil.i(TAG, "onResponse:camera" + camera);
+                    LogUtil.i(TAG, "onResponse:elec" + elec);
+                    LogUtil.i(TAG, "onResponse:mic" + mic);
+                    LogUtil.i(TAG, "onResponse:online" + online);
+                    LogUtil.i(TAG, "onResponse:vol" + vol);
+                    LogUtil.i(TAG, "onResponse:wifi" + wifi);
 
-                    Log.i(TAG, "onResponse: wifiValue" + wifiValue);
-                    Log.i(TAG, "onResponse: elecValue" + elecValue);
-                    Log.i(TAG, "onResponse: volValue" + volValue);
+                    LogUtil.i(TAG, "onResponse: wifiValue" + wifiValue);
+                    LogUtil.i(TAG, "onResponse: elecValue" + elecValue);
+                    LogUtil.i(TAG, "onResponse: volValue" + volValue);
                     //设置状态的图片
 
                     if (online.equals("0")) {
@@ -831,7 +870,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
             @Override
             public void onFailure(Call<GetInstantStateInfoRes> call, Throwable t) {
                 ToastUtil.showToast(getActivity(), "拉取信息失败");
-                Log.i(TAG, "onFailure: " + t.toString());
+                LogUtil.i(TAG, "onFailure: " + t.toString());
             }
         });
     }
@@ -849,7 +888,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
 //        } else if (requestCode == THREE_CALL_PLAY && resultCode == RESULT_OK) {
 //            String scan_result = data.getStringExtra("SCAN_RESULT");
 //            System.out.println("scan_result------" + scan_result);
-//            Log.i("scan_result", "onActivityResult: +scan_result" + scan_result);
+//            LogUtil.i("scan_result", "onActivityResult: +scan_result" + scan_result);
 //        }
     }
 
@@ -878,6 +917,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
             //显示加载更多
             isLoading = true;
             getListRaw(true);
+            Log.i(TAG, "(onScrollStateChanged) getlistraw: went");
         }
     }
 

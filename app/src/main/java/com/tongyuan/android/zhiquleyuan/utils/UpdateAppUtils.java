@@ -7,7 +7,6 @@ import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.tongyuan.android.zhiquleyuan.interf.Callback;
 
@@ -112,7 +111,7 @@ public class UpdateAppUtils {
                 if (serverVersionCode > localVersionCode) {
                     toUpdate();
                 } else {
-                    Log.i(TAG, "当前版本是最新版本" + serverVersionCode + "/" + serverVersionName);
+                    LogUtil.i(TAG, "当前版本是最新版本" + serverVersionCode + "/" + serverVersionName);
                 }
                 break;
 
@@ -120,7 +119,7 @@ public class UpdateAppUtils {
                 if (!serverVersionName.equals(localVersionName)) {
                     toUpdate();
                 } else {
-                    Log.i(TAG, "当前版本是最新版本" + serverVersionCode + "/" + serverVersionName);
+                    LogUtil.i(TAG, "当前版本是最新版本" + serverVersionCode + "/" + serverVersionName);
                 }
                 break;
             case NONE:
@@ -137,13 +136,12 @@ public class UpdateAppUtils {
     }
 
     private void realUpdate() {
-        ConfirmDialog dialog = new ConfirmDialog(activity, new Callback() {
+        final ConfirmDialog dialog = new ConfirmDialog(activity, new Callback() {
             @Override
             public void callback(int position) {
                 switch (position) {
                     case 0:  //cancle
-                        if (isForce)
-                            System.exit(0);
+                        System.exit(0);
                         break;
 
                     case 1:  //sure
@@ -173,6 +171,7 @@ public class UpdateAppUtils {
                 }
             }
         });
+
 
         String content = "发现新版本:" + serverVersionName + "\n是否下载更新?";
         if (!TextUtils.isEmpty(updateInfo)) {

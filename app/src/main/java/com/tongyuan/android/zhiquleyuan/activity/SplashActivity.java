@@ -15,11 +15,11 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.base.ActivityManager;
+import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
@@ -52,9 +52,9 @@ public class SplashActivity extends AppCompatActivity {
 //                public void run() {
             requestStoragePermission();
             Intent intent = new Intent(SplashActivity.this, MainActivity.class);
-            Log.i(TAG, "run: start 始");
+            LogUtil.i(TAG, "run: start 始");
             startActivity(intent);
-            Log.i(TAG, "run: start 完");
+            LogUtil.i(TAG, "run: start 完");
 //            SPUtils.putBoolean(SplashActivity.this, "isFirst", false);
 //                }
 //            }).start();
@@ -63,7 +63,7 @@ public class SplashActivity extends AppCompatActivity {
 //            ToastUtil.showToast(this, "Second time start");
         }
 
-//        Log.e(TAG, "wakeup 完");
+//        LogUtil.e(TAG, "wakeup 完");
 //        requestStoragePermission();
     }
 

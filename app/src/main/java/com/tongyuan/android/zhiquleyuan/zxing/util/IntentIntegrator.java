@@ -26,7 +26,8 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
+
+import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -391,7 +392,7 @@ public class IntentIntegrator {
           }
         } catch (ActivityNotFoundException anfe) {
           // Hmm, market is not installed
-          Log.w(TAG, "Google Play is not installed; cannot install " + packageName);
+          LogUtil.w(TAG, "Google Play is not installed; cannot install " + packageName);
         }
       }
     });

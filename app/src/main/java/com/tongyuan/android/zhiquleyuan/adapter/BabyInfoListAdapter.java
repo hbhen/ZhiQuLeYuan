@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +27,7 @@ import com.tongyuan.android.zhiquleyuan.bean.DeleteBabyInfoReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListResult;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.interf.Constant;
+import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
 import java.text.SimpleDateFormat;
@@ -148,7 +148,7 @@ public class BabyInfoListAdapter extends BaseSwipeAdapter {
             Date parse = simpleDateFormat.parse(birthday);
             String formatTime = simpleDateFormat1.format(parse);
             mTv_item_babyinfolist_birthday.setText(formatTime);
-            Log.i(TAG, "babyinfolistadapter:" + formatTime);
+            LogUtil.i(TAG, "babyinfolistadapter:" + formatTime);
         } catch (Exception e) {
             e.printStackTrace();
         }

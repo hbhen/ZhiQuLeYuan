@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +24,7 @@ import com.tongyuan.android.zhiquleyuan.swipe.refreshlib.AbListView;
 import com.tongyuan.android.zhiquleyuan.swipe.refreshlib.library.PullToRefreshBase;
 import com.tongyuan.android.zhiquleyuan.swipe.refreshlib.library.PullToRefreshScrollView;
 import com.tongyuan.android.zhiquleyuan.utils.CallManager;
+import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
@@ -65,6 +65,8 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
     private SwipeRefreshLayout mSwipeRefresh;
     private String mToken;
     private ImageView mHistory_call;
+    private int currentPage = 1;
+    private String NC = "-1";
 
     @Nullable
     @Override
@@ -83,6 +85,8 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
         mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                currentPage = 1;
+                NC = "-1";
                 getData(mPhoneNum, mTime, mToken);
                 mSwipeRefresh.setRefreshing(false);
             }
@@ -117,33 +121,34 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
 
 
     private void getData(String phoneNum, String time, final String token) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constant.baseurl)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        AllInterface allInterface = retrofit.create(AllInterface.class);
+        if (!NC.equals("0")) {
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(Constant.baseurl)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+            AllInterface allInterface = retrofit.create(AllInterface.class);
 
-        CallHistoryRequestBean.BODYBean callHistoryBody = new CallHistoryRequestBean.BODYBean("", "4", "1");
+            CallHistoryRequestBean.BODYBean callHistoryBody = new CallHistoryRequestBean.BODYBean("", "4", "1");
 
-        CallHistoryRequestBean callHistoryRequestBean = new CallHistoryRequestBean("REQ", "MTALK", phoneNum, time,
-                callHistoryBody, "", token, "1");
-        Gson gson = new Gson();
-        String s = gson.toJson(callHistoryRequestBean);
-        Call<CallHistoryResultBean> callHistoryResult = allInterface.getCallHistoryResult(s);
-        callHistoryResult.enqueue(new Callback<CallHistoryResultBean>() {
-            @Override
-            public void onResponse(final Call<CallHistoryResultBean> call, Response<CallHistoryResultBean> response) {
-                if (response.body().getCODE().equals("-10006")) {
-                    Log.i(TAG, "onResponse: message" + response.body().getCODE().equals("-10006"));
-                } else {
+            CallHistoryRequestBean callHistoryRequestBean = new CallHistoryRequestBean("REQ", "MTALK", phoneNum, time,
+                    callHistoryBody, "", token, "1");
+            Gson gson = new Gson();
+            String s = gson.toJson(callHistoryRequestBean);
+            Call<CallHistoryResultBean> callHistoryResult = allInterface.getCallHistoryResult(s);
+            callHistoryResult.enqueue(new Callback<CallHistoryResultBean>() {
+                @Override
+                public void onResponse(final Call<CallHistoryResultBean> call, Response<CallHistoryResultBean> response) {
+                    if (response.body().getCODE().equals("-10006")) {
+                        LogUtil.i(TAG, "onResponse: message" + response.body().getCODE().equals("-10006"));
+                    } else {
+                        NC = response.body().getBODY().getNC();
+                        //给recyclerview设置adapter数据,展示list
+                        mResponseCallHist = response;
+                        LogUtil.i(TAG, "HistoryFragment:onResponse+response: " + response.body().toString() + ":");
+                        mLst = (ArrayList<CallHistoryResultBean.BODYBean.LSTBean>) response.body()
+                                .getBODY().getLST();
 
-                    //给recyclerview设置adapter数据,展示list
-                    mResponseCallHist = response;
-                    Log.i(TAG, "HistoryFragment:onResponse+response: " + response.body().toString() + ":");
-                    mLst = (ArrayList<CallHistoryResultBean.BODYBean.LSTBean>) response.body()
-                            .getBODY().getLST();
-
-                    //展示数据
+                        //展示数据
                     /*
                     * 这个adapter不用,换成不带删除功能的adapter
 
@@ -157,39 +162,40 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
                     });
                     * */
 
-                    HistoryAdapter historyAdapter = new HistoryAdapter(getContext(), mLst);
-                    lv_fragment_history.setAdapter(historyAdapter);
+                        HistoryAdapter historyAdapter = new HistoryAdapter(getContext(), mLst);
+                        lv_fragment_history.setAdapter(historyAdapter);
 //                    lv_fragment_history.addHeaderView(mItem_history_header);
-                    lv_fragment_history.setDivider(null);
-                    lv_fragment_history.setFooterDividersEnabled(false);
-                    lv_fragment_history.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        lv_fragment_history.setDivider(null);
+                        lv_fragment_history.setFooterDividersEnabled(false);
+                        lv_fragment_history.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                            String toyid = mResponseCallHist.body().getBODY().getLST().get(position).getTOYID();
-                            CallManager.CallToToy(toyid, getActivity());
+                                String toyid = mResponseCallHist.body().getBODY().getLST().get(position).getTOYID();
+                                CallManager.CallToToy(toyid, getActivity());
 
-                        }
-                    });
+                            }
+                        });
 
-                    //删除 不带侧滑的listview 模块
+                        //删除 不带侧滑的listview 模块
 
-                }
+                    }
 //                else{
-//                    Log.d("ddd", "response: 为空");
+//                    LogUtil.d("ddd", "response: 为空");
 //                    return;
 //                }
 
 
-                Log.i("hhhhhh", "onResponse:+response " + response.body().toString());
+                    LogUtil.i("hhhhhh", "onResponse:+response " + response.body().toString());
 
-            }
+                }
 
-            @Override
-            public void onFailure(Call<CallHistoryResultBean> call, Throwable t) {
-                ToastUtil.showToast(getActivity(), "失败了不能联网");
-            }
-        });
+                @Override
+                public void onFailure(Call<CallHistoryResultBean> call, Throwable t) {
+                    ToastUtil.showToast(getActivity(), "失败了不能联网");
+                }
+            });
+        }
     }
 
     private void showData1() {
@@ -197,7 +203,7 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
         for (int i = 0; i < lst.size() - 1; i++) {
             CallHistoryResultBean.BODYBean.LSTBean lstBean = lst.get(i);
             String toyid = lstBean.getTOYID();
-            Log.i("hhhhhh", "showData: ++++" + toyid);
+            LogUtil.i("hhhhhh", "showData: ++++" + toyid);
         }
 
 
@@ -219,4 +225,5 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
                 break;
         }
     }
+
 }

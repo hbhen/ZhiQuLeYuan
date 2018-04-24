@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -20,6 +19,7 @@ import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListRequest;
 import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListResult;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.interf.Constant;
+import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
@@ -55,7 +55,7 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
         initView();
         initData();
         initListener();
-        Log.i(TAG, "babyinfolistactivity : onCreatea went");
+        LogUtil.i(TAG, "babyinfolistactivity : onCreatea went");
     }
 
     private void initView() {
@@ -104,7 +104,7 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
             @Override
             public void onResponse(Call<QueryBabyListResult> call, Response<QueryBabyListResult> response) {
                 String listResponse = response.body().toString();
-                Log.i("111", "listResponse: " + listResponse);
+                LogUtil.i("111", "listResponse: " + listResponse);
                 List<QueryBabyListResult.BODYBean.LSTBean> lst = response.body().getBODY().getLST();
                 QueryBabyListResult.BODYBean.LSTBean lstBean = null;
                 if (mToken.equals("")) {
@@ -179,30 +179,30 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
     protected void onResume() {
         super.onResume();
         initData();
-        Log.i(TAG, "babyinfolistactivity : onResume went");
+        LogUtil.i(TAG, "babyinfolistactivity : onResume went");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Log.i(TAG, "babyinfolistactivity : onStop went");
+        LogUtil.i(TAG, "babyinfolistactivity : onStop went");
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        Log.i(TAG, "babyinfolistactivity : onStart went");
+        LogUtil.i(TAG, "babyinfolistactivity : onStart went");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Log.i(TAG, "babyinfolistactivity : onPause went");
+        LogUtil.i(TAG, "babyinfolistactivity : onPause went");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.i(TAG, "babyinfolistactivity : onDestroy went");
+        LogUtil.i(TAG, "babyinfolistactivity : onDestroy went");
     }
 }

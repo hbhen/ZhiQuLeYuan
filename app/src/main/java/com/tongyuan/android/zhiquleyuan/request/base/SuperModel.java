@@ -34,4 +34,5 @@ public class SuperModel<T> {
                 ", MSG='" + MSG + '\'' +
                 '}';
     }
+
 }

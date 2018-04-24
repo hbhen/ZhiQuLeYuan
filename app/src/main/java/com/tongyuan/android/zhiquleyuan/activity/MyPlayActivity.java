@@ -81,6 +81,7 @@ public class MyPlayActivity extends BaseActivity {
     private final static int single = 1;
     private final static int circle = 2;
     private final static int random = 3;
+
     private int playState = single;
 
     //更新播放进度的显示
@@ -99,7 +100,7 @@ public class MyPlayActivity extends BaseActivity {
         }
     };
 
-    private ArrayList<MusicPlayerBean> list;
+    public static ArrayList<MusicPlayerBean> list;
     private int playPosition;
 
     /**
@@ -115,7 +116,10 @@ public class MyPlayActivity extends BaseActivity {
         it.putExtra("position", playPosition);
         it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(it);
+    }
 
+    public static ArrayList<MusicPlayerBean> getPlayList() {
+        return list;
     }
 
     @Override
@@ -126,7 +130,7 @@ public class MyPlayActivity extends BaseActivity {
         StatusBarUtils.setStatusBarLightMode(this, getResources().getColor(R.color.main_top_bg));
         list = getIntent().getParcelableArrayListExtra("list");
         playPosition = getIntent().getIntExtra("position", 0);
-        playMusic(true);
+//        playMusic(true);
         mRotateObjectAnimator = ObjectAnimator.ofFloat(mImageView, "rotation", 0, 360);
         mRotateObjectAnimator.setDuration(20000);
         mRotateObjectAnimator.setInterpolator(new LinearInterpolator());
@@ -194,6 +198,9 @@ public class MyPlayActivity extends BaseActivity {
                 } else {
                     MusicPlayer.setLooping(false);
                 }
+                if (playState==single){
+
+                }
                 break;
             case R.id.player_pre:
                 if (playPosition == 0) {
@@ -230,7 +237,7 @@ public class MyPlayActivity extends BaseActivity {
         addInCollectionResBeanCall.enqueue(new Callback<AddInCollectionResBean>() {
             @Override
             public void onResponse(Call<AddInCollectionResBean> call, Response<AddInCollectionResBean> response) {
-                if (response != null&&response.body().getCODE().equals("0")) {
+                if (response != null && response.body().getCODE().equals("0")) {
                     ToastUtil.showToast(getApplicationContext(), "收藏成功");
                 }
             }
@@ -341,7 +348,7 @@ public class MyPlayActivity extends BaseActivity {
         //和服务绑定成功后才能操作MediaPlayer
         /*String mMusicId = list.get(playPosition).getID();
         if(mMusicId != null) {
-            Log.i("gengen", "open...");
+            LogUtil.i("gengen", "open...");
             MusicPlayer.open(mMusicId);
         }*/
         openAndStart();

@@ -81,7 +81,8 @@ public interface IXRequest {
 	 * =======================================================================
 	 */
 
-	public <T> Request<?> sendGet(Object tag, String url, String cacheKey, RequestParams params, RequestCacheConfig cacheConfig, OnRequestListener<T> onRequestListener);
+	public <T> Request<?> sendGet(Object tag, String url, String cacheKey, RequestParams params, RequestCacheConfig cacheConfig,
+                                  OnRequestListener<T> onRequestListener);
 
 	public <T> Request<?> sendGet(Object tag, String url, RequestParams params, RequestCacheConfig cacheConfig, OnRequestListener<T> onRequestListener);
 	

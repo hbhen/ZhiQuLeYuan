@@ -19,8 +19,8 @@ package com.tongyuan.android.zhiquleyuan.zxing.camera;
 import android.graphics.Point;
 import android.hardware.Camera;
 import android.os.Build;
-import android.util.Log;
 
+import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 import com.tongyuan.android.zhiquleyuan.zxing.util.Util;
 
 import java.lang.reflect.InvocationTargetException;
@@ -50,11 +50,11 @@ final class CameraConfigurationManager {
         Camera.Parameters parameters = camera.getParameters();
         previewFormat = parameters.getPreviewFormat();
         previewFormatString = parameters.get("preview-format");
-        Log.d(TAG, "Default preview format: " + previewFormat + '/'
+        LogUtil.d(TAG, "Default preview format: " + previewFormat + '/'
                 + previewFormatString);
         screenResolution = new Point(Util.getWindowWidthPix(),
                 Util.getWindowHeightPix());
-        Log.d(TAG, "Screen resolution: " + screenResolution);
+        LogUtil.d(TAG, "Screen resolution: " + screenResolution);
         // 为竖屏添加
         Point screenResolutionForCamera = new Point();
         screenResolutionForCamera.x = screenResolution.x;
@@ -67,7 +67,7 @@ final class CameraConfigurationManager {
         cameraResolution = getCameraResolution(parameters,
                 screenResolutionForCamera);
         cameraResolution = getCameraResolution(parameters, screenResolution);
-        Log.d(TAG, "Camera resolution: " + cameraResolution);
+        LogUtil.d(TAG, "Camera resolution: " + cameraResolution);
     }
 
     /**
@@ -79,7 +79,7 @@ final class CameraConfigurationManager {
      */
     void setDesiredCameraParameters(Camera camera) {
         Camera.Parameters parameters = camera.getParameters();
-        Log.d(TAG, "Setting preview size: " + cameraResolution);
+        LogUtil.d(TAG, "Setting preview size: " + cameraResolution);
         parameters.setPreviewSize(cameraResolution.x, cameraResolution.y);
         setFlash(parameters);
         setZoom(parameters);
@@ -118,7 +118,7 @@ final class CameraConfigurationManager {
         Point cameraResolution = null;
 
         if (previewSizeValueString != null) {
-            Log.d(TAG, "preview-size-values parameter: "
+            LogUtil.d(TAG, "preview-size-values parameter: "
                     + previewSizeValueString);
             cameraResolution = findBestPreviewSizeValue(previewSizeValueString,
                     screenResolution);
@@ -144,7 +144,7 @@ final class CameraConfigurationManager {
             previewSize = previewSize.trim();
             int dimPosition = previewSize.indexOf('x');
             if (dimPosition < 0) {
-                Log.w(TAG, "Bad preview-size: " + previewSize);
+                LogUtil.d(TAG, "Bad preview-size: " + previewSize);
                 continue;
             }
 
@@ -154,7 +154,7 @@ final class CameraConfigurationManager {
                 newX = Integer.parseInt(previewSize.substring(0, dimPosition));
                 newY = Integer.parseInt(previewSize.substring(dimPosition + 1));
             } catch (NumberFormatException nfe) {
-                Log.w(TAG, "Bad preview-size: " + previewSize);
+                LogUtil.d(TAG, "Bad preview-size: " + previewSize);
                 continue;
             }
 //如果有图片变形的问题,试试 float newDiff = Math.abs(screenResolution.x * 1.0f / newY - screenResolution.y * 1.0f / newX);
@@ -237,7 +237,7 @@ final class CameraConfigurationManager {
                     tenDesiredZoom = tenMaxZoom;
                 }
             } catch (NumberFormatException nfe) {
-                Log.w(TAG, "Bad max-zoom: " + maxZoomString);
+                LogUtil.d(TAG, "Bad max-zoom: " + maxZoomString);
             }
         }
 
@@ -250,7 +250,7 @@ final class CameraConfigurationManager {
                     tenDesiredZoom = tenMaxZoom;
                 }
             } catch (NumberFormatException nfe) {
-                Log.w(TAG, "Bad taking-picture-zoom-max: "
+                LogUtil.d(TAG, "Bad taking-picture-zoom-max: "
                         + takingPictureZoomMaxString);
             }
         }

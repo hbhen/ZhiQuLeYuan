@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -16,6 +15,7 @@ import android.widget.Toast;
 import com.libra.sinvoice.LogHelper;
 import com.libra.sinvoice.SinVoicePlayer;
 import com.tongyuan.android.zhiquleyuan.R;
+import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 
 import java.io.UnsupportedEncodingException;
@@ -91,7 +91,7 @@ public class SetUpWlanActivityStepTwo extends AppCompatActivity implements SinVo
                     String encode = wlanName + "|" + wlanSecret;
                     String returnStr = returnStr(encode);
                     mSinVoicePlayer.play(returnStr);
-                    Log.i(TAG, "onViewClicked: returnStr" + returnStr);
+                    LogUtil.i(TAG, "onViewClicked: returnStr" + returnStr);
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
@@ -106,7 +106,7 @@ public class SetUpWlanActivityStepTwo extends AppCompatActivity implements SinVo
 
     @Override
     public void onPlayStart() {
-        LogHelper.d(TAG, "start play");
+        LogUtil.d(TAG, "start play");
     }
 
     @Override

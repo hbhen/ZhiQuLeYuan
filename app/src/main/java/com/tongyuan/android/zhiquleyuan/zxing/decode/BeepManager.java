@@ -24,9 +24,9 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import com.tongyuan.android.zhiquleyuan.R;
+import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 
 import java.io.IOException;
 
@@ -103,7 +103,7 @@ public final class BeepManager {
             mediaPlayer.setVolume(BEEP_VOLUME, BEEP_VOLUME);
             mediaPlayer.prepare();
         } catch (IOException ioe) {
-            Log.w(TAG, ioe);
+            LogUtil.w(TAG, ioe.toString());
             mediaPlayer = null;
         }
         return mediaPlayer;

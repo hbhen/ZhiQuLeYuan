@@ -3,7 +3,6 @@ package com.tongyuan.android.zhiquleyuan.activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -14,6 +13,7 @@ import com.tongyuan.android.zhiquleyuan.bean.UpdateToyVersionResBean;
 import com.tongyuan.android.zhiquleyuan.fragment.ToySelectorFragment;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.interf.Constant;
+import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 
 import retrofit2.Call;
@@ -74,12 +74,12 @@ public class ToyUpdateActivity extends AppCompatActivity implements View.OnClick
         updateToyVersionResBeanCall.enqueue(new Callback<UpdateToyVersionResBean>() {
             @Override
             public void onResponse(Call<UpdateToyVersionResBean> call, Response<UpdateToyVersionResBean> response) {
-                Log.i(TAG, "(updatetoy)onResponse: " + response.body().toString());
+                LogUtil.i(TAG, "(updatetoy)onResponse: " + response.body().toString());
             }
 
             @Override
             public void onFailure(Call<UpdateToyVersionResBean> call, Throwable t) {
-                Log.i(TAG, "(updatetoy)onFailure: " + t);
+                LogUtil.i(TAG, "(updatetoy)onFailure: " + t);
             }
         });
     }

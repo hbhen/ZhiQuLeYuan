@@ -1,5 +1,6 @@
 package com.tongyuan.android.zhiquleyuan.view;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.CheckBox;
@@ -8,6 +9,7 @@ import android.widget.CheckBox;
  * Created by Android on 2017/6/29.
  */
 
+@SuppressLint("AppCompatCustomView")
 public class CheckButton extends CheckBox {
     public CheckButton(Context context) {
         super(context);
