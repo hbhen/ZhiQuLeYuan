@@ -36,13 +36,13 @@
             android:background="#ffffff"
             android:text="录音列表"/>
 
-        <android.support.v4.widget.SwipeRefreshLayout
+        <com.tongyuan.android.zhiquleyuan.view.SwipeMenuListView.MySwipeRefreshLayout
             android:id="@+id/sprefresh"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_recordinglist_title">
 
-            <com.baoyz.swipemenulistview.SwipeMenuListView
+            <com.tongyuan.android.zhiquleyuan.view.SwipeMenuListView.SwipeMenuListView
                 android:id="@+id/lv_recoding"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -50,7 +50,7 @@
                 android:background="#ffffff"
                 android:footerDividersEnabled="false"
                 android:listSelector="@color/transparent"/>
-        </android.support.v4.widget.SwipeRefreshLayout>
+        </com.tongyuan.android.zhiquleyuan.view.SwipeMenuListView.MySwipeRefreshLayout>
 
 
     </RelativeLayout>

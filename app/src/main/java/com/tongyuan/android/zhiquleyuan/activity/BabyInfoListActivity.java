@@ -22,6 +22,7 @@ import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
+import com.tongyuan.android.zhiquleyuan.view.SwipeMenuListView.MySwipeRefreshLayout;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -44,7 +45,7 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
     private String mToken;
     private RelativeLayout mIv_babayinfolist_addbabyinfo;
     private ImageView mIv_babyinfolist_backa;
-    private SwipeRefreshLayout sp;
+    private MySwipeRefreshLayout sp;
     private static final String TAG = "88888";
     private LinearLayout iv_back;
 
@@ -61,7 +62,7 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
     private void initView() {
         mListview = (com.tongyuan.android.zhiquleyuan.swipe.refreshlib.AbListView) findViewById(R.id.lv_babyinfolist);
         iv_back = (LinearLayout) findViewById(R.id.iv_babyinfolist_backa);
-        sp = (SwipeRefreshLayout) findViewById(R.id.sp);
+        sp = (MySwipeRefreshLayout) findViewById(R.id.sp);
         mIv_babayinfolist_addbabyinfo = (RelativeLayout) findViewById(R.id.iv_babayinfolist_addbabyinfo);
 //        mIv_babyinfolist_backa = (ImageView) findViewById(R.id.iv_babyinfolist_backa);
         iv_back.setOnClickListener(new View.OnClickListener() {

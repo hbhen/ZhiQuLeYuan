@@ -52,7 +52,7 @@
     </RelativeLayout>
 
 
-    <android.support.v4.widget.SwipeRefreshLayout
+    <com.tongyuan.android.zhiquleyuan.view.SwipeMenuListView.MySwipeRefreshLayout
         android:id="@+id/sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -67,7 +67,7 @@
             android:clickable="true"
             android:listSelector="@color/transparent">
         </com.tongyuan.android.zhiquleyuan.swipe.refreshlib.AbListView>
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </com.tongyuan.android.zhiquleyuan.view.SwipeMenuListView.MySwipeRefreshLayout>
 
 
 </RelativeLayout>

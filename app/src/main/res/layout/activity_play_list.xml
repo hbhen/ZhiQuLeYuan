@@ -43,14 +43,14 @@
             />
     </RelativeLayout>
 
-    <android.support.v4.widget.SwipeRefreshLayout
+    <com.tongyuan.android.zhiquleyuan.view.SwipeMenuListView.MySwipeRefreshLayout
         android:id="@+id/sprefresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/tb_activity_play_list"
         >
 
-        <com.baoyz.swipemenulistview.SwipeMenuListView
+        <com.tongyuan.android.zhiquleyuan.view.SwipeMenuListView.SwipeMenuListView
             android:id="@+id/sp_activity_play_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -58,5 +58,5 @@
             android:footerDividersEnabled="false"
             />
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </com.tongyuan.android.zhiquleyuan.view.SwipeMenuListView.MySwipeRefreshLayout>
 </RelativeLayout>

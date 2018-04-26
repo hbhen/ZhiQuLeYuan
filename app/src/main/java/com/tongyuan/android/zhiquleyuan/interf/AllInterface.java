@@ -297,8 +297,9 @@ public interface AllInterface {
     //3.4.4 用户注册登录
     @GET("register")
     Call<RegistAndLoginResBean> REGIST_AND_LOGIN_RES_BEAN_CALL(@Query("params") String params);
+
     //3.4.53  控制玩具更新程序
     @GET("jpush")
-    Call<UpdateToyVersionResBean> UPDATE_TOY_VERSION_RES_BEAN_CALL (@Query("params") String params);
+    Call<UpdateToyVersionResBean> UPDATE_TOY_VERSION_RES_BEAN_CALL(@Query("params") String params);
 
 }

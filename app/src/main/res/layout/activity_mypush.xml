@@ -118,14 +118,14 @@
     <!--android:background="#ffffff" >-->
     <!--</android.support.v7.widget.RecyclerView>-->
 
-    <android.support.v4.widget.SwipeRefreshLayout
+    <com.tongyuan.android.zhiquleyuan.view.SwipeMenuListView.MySwipeRefreshLayout
         android:id="@+id/sprefresh"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/rl_mypush_header">
 
 
-        <com.baoyz.swipemenulistview.SwipeMenuListView
+        <com.tongyuan.android.zhiquleyuan.view.SwipeMenuListView.SwipeMenuListView
             android:id="@+id/rv_mypush"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -135,7 +135,7 @@
             android:listSelector="@color/transparent"/>
 
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </com.tongyuan.android.zhiquleyuan.view.SwipeMenuListView.MySwipeRefreshLayout>
 
 
 </RelativeLayout>

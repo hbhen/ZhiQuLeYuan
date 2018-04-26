@@ -4,7 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- *
  * Created by zgg on 2017/7/27.
  */
 
@@ -16,6 +15,7 @@ public class MusicPlayerBean implements Parcelable {
     public boolean isPlaying = false;
 
     public static final Creator<MusicPlayerBean> CREATOR = new Creator<MusicPlayerBean>() {
+
         @Override
         public MusicPlayerBean createFromParcel(Parcel in) {
             return new MusicPlayerBean(in);
@@ -39,7 +39,7 @@ public class MusicPlayerBean implements Parcelable {
         return IMG;
     }
 
-    public MusicPlayerBean(){
+    public MusicPlayerBean() {
 
     }
 

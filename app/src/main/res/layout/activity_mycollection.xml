@@ -59,13 +59,13 @@
     </LinearLayout>
 
 
-    <android.support.v4.widget.SwipeRefreshLayout
+    <com.tongyuan.android.zhiquleyuan.view.SwipeMenuListView.MySwipeRefreshLayout
         android:id="@+id/sprefresh"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/et_mycollection_search">
 
-        <com.baoyz.swipemenulistview.SwipeMenuListView
+        <com.tongyuan.android.zhiquleyuan.view.SwipeMenuListView.SwipeMenuListView
             android:id="@+id/lv_mycollection"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -73,7 +73,7 @@
             android:background="#ffffff"
             android:divider="@null"/>
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </com.tongyuan.android.zhiquleyuan.view.SwipeMenuListView.MySwipeRefreshLayout>
 
 
 </RelativeLayout>

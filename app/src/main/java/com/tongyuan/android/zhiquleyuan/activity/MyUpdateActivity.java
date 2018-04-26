@@ -151,7 +151,7 @@ public class MyUpdateActivity extends AppCompatActivity {
                 .serverVersionCode(mVersionCode)
                 .serverVersionName(mVersionName)
                 .apkPath(apkPath)
-                .updateInfo("1.修复若干bug\n2.美化部分页面\n3.增加微信支付方式")
+                .updateInfo("1.修复若干bug\n2.美化部分页面")
                 .showNotification(true)
                 .needFitAndroidN(true)
                 .update();

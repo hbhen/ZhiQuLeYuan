@@ -1,5 +1,6 @@
 package com.tongyuan.android.zhiquleyuan.activity;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -16,10 +17,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
-import com.baoyz.swipemenulistview.SwipeMenu;
-import com.baoyz.swipemenulistview.SwipeMenuCreator;
-import com.baoyz.swipemenulistview.SwipeMenuItem;
-import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.adapter.MyCollectionAdapter;
@@ -33,6 +30,10 @@ import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
+import com.tongyuan.android.zhiquleyuan.view.SwipeMenuListView.SwipeMenu;
+import com.tongyuan.android.zhiquleyuan.view.SwipeMenuListView.SwipeMenuCreator;
+import com.tongyuan.android.zhiquleyuan.view.SwipeMenuListView.SwipeMenuItem;
+import com.tongyuan.android.zhiquleyuan.view.SwipeMenuListView.SwipeMenuListView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -164,7 +165,6 @@ public class MyCollectionActivity extends AppCompatActivity implements View.OnCl
                         } else {
                             collectionList.clear();
                             currentPage = 1;
-
                         }
                         collectionList.addAll(lst);
                         if ("0".equals(response.body().getBODY().getNC())) {
@@ -206,7 +206,7 @@ public class MyCollectionActivity extends AppCompatActivity implements View.OnCl
                             }
                         });
 
-                        SwipeMenuCreator mCreator = new SwipeMenuCreator() {
+                        SwipeMenuCreator  mCreator = new SwipeMenuCreator() {
 
                             @Override
                             public void create(SwipeMenu menu) {
@@ -214,8 +214,8 @@ public class MyCollectionActivity extends AppCompatActivity implements View.OnCl
                                 deleteItem.setTitle("删除");
                                 deleteItem.setBackground(R.color.redFont);
                                 deleteItem.setWidth(dp2px(70));
-                                deleteItem.setTitleSize(18);
-                                deleteItem.setTitleColor(R.color.white);
+                                deleteItem.setTitleSize(16);
+                                deleteItem.setTitleColor(Color.WHITE);
                                 menu.addMenuItem(deleteItem);
                             }
                         };

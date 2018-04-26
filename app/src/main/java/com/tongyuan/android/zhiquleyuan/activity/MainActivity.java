@@ -25,7 +25,7 @@ import com.tongyuan.android.zhiquleyuan.fragment.CallWaitingConnectFragment;
 import com.tongyuan.android.zhiquleyuan.fragment.DiscoveryFragment;
 import com.tongyuan.android.zhiquleyuan.fragment.HistoryFragment;
 import com.tongyuan.android.zhiquleyuan.fragment.MineFragment;
-import com.tongyuan.android.zhiquleyuan.fragment.RecodingFragment;
+import com.tongyuan.android.zhiquleyuan.fragment.RecordingFragment;
 import com.tongyuan.android.zhiquleyuan.fragment.ToyAddFragment;
 import com.tongyuan.android.zhiquleyuan.fragment.ToyDetailsFragment;
 import com.tongyuan.android.zhiquleyuan.fragment.ToyManagerFragment;
@@ -70,7 +70,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private LinearLayout rb_history;
     private LinearLayout rb_mine;
     private DiscoveryFragment discoveryFragment;
-    private RecodingFragment recodingFragment;
+    private RecordingFragment recordingFragment;
     private ToySelectorFragment mToySelectorFragment;
     private HistoryFragment historyFragment;
     private MineFragment mineFragment;
@@ -131,32 +131,32 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     protected void onPrepared() {
-        if (recodingFragment != null)
-            recodingFragment.onPrepared();
+        if (recordingFragment != null)
+            recordingFragment.onPrepared();
     }
 
     @Override
     protected void onError() {
-        if (recodingFragment != null)
-            recodingFragment.onError();
+        if (recordingFragment != null)
+            recordingFragment.onError();
     }
 
     @Override
     protected void onCompleted() {
-        if (recodingFragment != null)
-            recodingFragment.onCompleted();
+        if (recordingFragment != null)
+            recordingFragment.onCompleted();
     }
 
     @Override
     protected void bindSuccess() {
-        if (recodingFragment != null)
-            recodingFragment.bindSuccess();
+        if (recordingFragment != null)
+            recordingFragment.bindSuccess();
     }
 
     @Override
     protected void isSimplePlayUrl() {
-        if (recodingFragment != null)
-            recodingFragment.isSimplePlayUrl();
+        if (recordingFragment != null)
+            recordingFragment.isSimplePlayUrl();
     }
 
     private void checkToken() {
@@ -289,12 +289,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             }
             showFragment(discoveryFragment, name);
             currentFragment = discoveryFragment;
-        } else if (name.equals(RecodingFragment.class.getSimpleName())) {
-            if (recodingFragment == null) {
-                recodingFragment = new RecodingFragment();
+        } else if (name.equals(RecordingFragment.class.getSimpleName())) {
+            if (recordingFragment == null) {
+                recordingFragment = new RecordingFragment();
             }
-            showFragment(recodingFragment, name);
-            currentFragment = recodingFragment;
+            showFragment(recordingFragment, name);
+            currentFragment = recordingFragment;
         } else if (name.equals(ToyAddFragment.class.getSimpleName())) {
             if (toyAddFragment == null) {
                 toyAddFragment = new ToyAddFragment();
@@ -375,7 +375,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private void initFragment() {
         //添加五个Fragment对象添加进来
 //        discoveryFragment = new DiscoveryFragment();
-//        recodingFragment = new RecodingFragment();
+//        recordingFragment = new RecordingFragment();
 //        mToySelectorFragment = new ToySelectorFragment();
 //        toyAddFragment = new ToyAddFragment();
 //        historyFragment = new HistoryFragment();
@@ -418,11 +418,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 rb_history.setSelected(false);
                 rb_mine.setSelected(false);
                 rb_toy.setSelected(false);
-                if (recodingFragment == null) {
-                    recodingFragment = new RecodingFragment();
+                if (recordingFragment == null) {
+                    recordingFragment = new RecordingFragment();
                 }
 
-                showFragment(recodingFragment, RecodingFragment.class.getSimpleName());
+                showFragment(recordingFragment, RecordingFragment.class.getSimpleName());
 
                 break;
 

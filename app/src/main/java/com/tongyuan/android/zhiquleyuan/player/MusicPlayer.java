@@ -15,7 +15,6 @@ import com.tongyuan.android.zhiquleyuan.service.MusicPlayerService;
 import java.util.WeakHashMap;
 
 /**
- *
  * Created by zgg on 2017/6/6.
  */
 
@@ -26,6 +25,7 @@ public class MusicPlayer {
 
     public static final class ServiceToken {
         private ContextWrapper mWrappedContext;
+
         ServiceToken(final ContextWrapper context) {
             mWrappedContext = context;
         }
@@ -42,7 +42,6 @@ public class MusicPlayer {
         }
         final ContextWrapper contextWrapper = new ContextWrapper(realActivity);
         contextWrapper.startService(new Intent(contextWrapper, MusicPlayerService.class));
-
         final ServiceBinder binder = new ServiceBinder(connection);
         if (contextWrapper.bindService(
                 new Intent().setClass(contextWrapper, MusicPlayerService.class), binder, Context.BIND_AUTO_CREATE)) {
@@ -69,7 +68,7 @@ public class MusicPlayer {
     }
 
     public static void open(String path) {
-        if(mService == null)
+        if (mService == null)
             return;
         try {
             mService.open(path);
@@ -79,7 +78,7 @@ public class MusicPlayer {
     }
 
     public static void openAndStart(String id) {
-        if(mService == null)
+        if (mService == null)
             return;
         try {
             mService.openAndStart(id);
@@ -89,7 +88,7 @@ public class MusicPlayer {
     }
 
     public static boolean isPrepared() {
-        if(mService == null)
+        if (mService == null)
             return false;
         try {
             return mService.isPrepared();
@@ -100,7 +99,7 @@ public class MusicPlayer {
     }
 
     public static void start() {
-        if(mService == null)
+        if (mService == null)
             return;
         try {
             mService.start();
@@ -110,7 +109,7 @@ public class MusicPlayer {
     }
 
     public static void pause() {
-        if(mService == null)
+        if (mService == null)
             return;
         try {
             mService.pause();
@@ -120,7 +119,7 @@ public class MusicPlayer {
     }
 
     public static void stop() {
-        if(mService == null)
+        if (mService == null)
             return;
         try {
             mService.stop();
@@ -130,7 +129,7 @@ public class MusicPlayer {
     }
 
     public static boolean isPlaying() {
-        if(mService == null)
+        if (mService == null)
             return false;
         try {
             return mService.isPlaying();
@@ -141,7 +140,7 @@ public class MusicPlayer {
     }
 
     public static int getCurrentPosition() {
-        if(mService == null)
+        if (mService == null)
             return 0;
         try {
             return mService.getCurrentPosition();
@@ -152,7 +151,7 @@ public class MusicPlayer {
     }
 
     public static int getDuration() {
-        if(mService == null)
+        if (mService == null)
             return 0;
         try {
             return mService.getDuration();
@@ -163,8 +162,8 @@ public class MusicPlayer {
     }
 
     public static void setLooping(boolean looping) {
-        if(mService == null)
-            return ;
+        if (mService == null)
+            return;
         try {
             mService.setLooping(looping);
         } catch (RemoteException e) {
@@ -185,6 +184,7 @@ public class MusicPlayer {
     private static class ServiceBinder implements ServiceConnection {
 
         private ServiceConnection callback;
+
         ServiceBinder(ServiceConnection callback) {
             this.callback = callback;
         }
@@ -209,6 +209,7 @@ public class MusicPlayer {
 
     /**
      * 手机锁屏时显示在锁屏画面
+     *
      * @param enabled 是否显示
      */
     private static void setShowAlbumArtOnLockScreen(boolean enabled) {
@@ -220,6 +221,5 @@ public class MusicPlayer {
             e.printStackTrace();
         }
     }
-
 
 }

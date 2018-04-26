@@ -32,6 +32,7 @@ import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.player.MusicPlayer;
 import com.tongyuan.android.zhiquleyuan.request.RequestManager;
+import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.StatusBarUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
@@ -55,6 +56,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /**
  * Created by android on 2016/12/23.
  */
+
 public class MyPlayActivity extends BaseActivity {
 
     @BindView(R.id.player_phone)
@@ -77,13 +79,15 @@ public class MyPlayActivity extends BaseActivity {
     ImageView mImageView;
     @BindView(R.id.player_loop)
     ImageView loopView;
+    @BindView(R.id.iv_myplayactivity_playlist)
+    ImageView mPlayList;
 
     private final static int single = 1;
     private final static int circle = 2;
     private final static int random = 3;
 
     private int playState = single;
-
+    private final String TAG = getClass().getSimpleName();
     //更新播放进度的显示
     private static final int UPDATE_PLAY_PROGRESS_SHOW = 1;
     private ObjectAnimator mRotateObjectAnimator;
@@ -100,8 +104,8 @@ public class MyPlayActivity extends BaseActivity {
         }
     };
 
-    public static ArrayList<MusicPlayerBean> list;
-    private int playPosition;
+    public static ArrayList<? extends MusicPlayerBean> list;
+    public static int playPosition;
 
     /**
      * 激活音乐播放页
@@ -110,6 +114,7 @@ public class MyPlayActivity extends BaseActivity {
      * @param list         播放列表
      * @param playPosition 播放列表中哪一项
      */
+
     public static void launch(Context context, ArrayList<? extends MusicPlayerBean> list, int playPosition) {
         Intent it = new Intent(context, MyPlayActivity.class);
         it.putParcelableArrayListExtra("list", list);
@@ -118,8 +123,16 @@ public class MyPlayActivity extends BaseActivity {
         context.startActivity(it);
     }
 
-    public static ArrayList<MusicPlayerBean> getPlayList() {
+    public static ArrayList<? extends MusicPlayerBean> getPlayList() {
         return list;
+    }
+
+    public static int getCurrentPosition() {
+        return playPosition;
+    }
+
+    public static String getCurrentId() {
+        return list.get(playPosition).getID();
     }
 
     @Override
@@ -129,15 +142,23 @@ public class MyPlayActivity extends BaseActivity {
         ButterKnife.bind(this);
         StatusBarUtils.setStatusBarLightMode(this, getResources().getColor(R.color.main_top_bg));
         list = getIntent().getParcelableArrayListExtra("list");
+        LogUtil.i(TAG, "list.size();" + list.size());
+        LogUtil.i(TAG, "list.size();" + list.get(0));
         playPosition = getIntent().getIntExtra("position", 0);
+        String img = list.get(playPosition).getIMG();
+        showAlumImg(img);
+        titleTextView.setText(list.get(playPosition).getNAME());
 //        playMusic(true);
+        initAnimator();
+        phoneView.setSelected(true);
+
+    }
+
+    private void initAnimator() {
         mRotateObjectAnimator = ObjectAnimator.ofFloat(mImageView, "rotation", 0, 360);
         mRotateObjectAnimator.setDuration(20000);
         mRotateObjectAnimator.setInterpolator(new LinearInterpolator());
         mRotateObjectAnimator.setRepeatCount(ValueAnimator.INFINITE);
-        phoneView.setSelected(true);
-
-
     }
 
     @Override
@@ -154,10 +175,28 @@ public class MyPlayActivity extends BaseActivity {
         showPauseView();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+    }
+
     @OnClick({R.id.player_back, R.id.player_phone, R.id.player_toy, R.id.player_collection,
-            R.id.player_play_btn, R.id.player_loop, R.id.player_pre, R.id.player_next})
+            R.id.player_play_btn, R.id.player_loop, R.id.player_pre, R.id.player_next, R.id.iv_myplayactivity_playlist})
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.iv_myplayactivity_playlist:
+                Intent intent = new Intent();
+                Bundle bundle = new Bundle();
+                bundle.putParcelableArrayList("playlist", list);
+                intent.putExtra("playlistbundle", bundle);
+                intent.putExtra("entry", "myplayactivity");
+                intent.setClass(this, PlayingListActivity.class);
+//                intent.putExtra("playlist", list);
+//                ArrayList<String> strings = new ArrayList<>();
+//                intent.putExtra("playlist", strings);
+                startActivity(intent);
+                break;
             case R.id.player_back:
                 finish();
                 break;
@@ -194,12 +233,16 @@ public class MyPlayActivity extends BaseActivity {
                 }
 
                 if (playState == circle) {
-                    MusicPlayer.setLooping(true);
+                    MusicPlayer.setLooping(true);// 列表循环的功能
                 } else {
                     MusicPlayer.setLooping(false);
                 }
-                if (playState==single){
+                if (playState == single) {
 
+//                    添加一个功能,单曲循环的功能
+                }
+                if (playState == random) {
+//                    添加一个功能 随机播放的功能
                 }
                 break;
             case R.id.player_pre:
@@ -207,6 +250,7 @@ public class MyPlayActivity extends BaseActivity {
                     return;
                 }
                 --playPosition;
+                restartRotateObjectAnimator();
                 playMusic(false);
                 break;
             case R.id.player_next:
@@ -214,7 +258,9 @@ public class MyPlayActivity extends BaseActivity {
                     return;
                 }
                 ++playPosition;
+                restartRotateObjectAnimator();
                 playMusic(false);
+
                 break;
         }
     }
@@ -250,21 +296,36 @@ public class MyPlayActivity extends BaseActivity {
 
     private void playMusic(boolean isFromCreate) {
         MusicPlayerBean bean = list.get(playPosition);
-        Glide.with(this).load(bean.getIMG()).asBitmap().placeholder(R.drawable.player_cover_default).centerCrop().into(new BitmapImageViewTarget
-                (mImageView) {
-
-            @Override
-            protected void setResource(Bitmap resource) {
-                RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getApplicationContext().getResources(),
-                        resource);
-                roundedBitmapDrawable.setCircular(true);
-                mImageView.setImageDrawable(roundedBitmapDrawable);
-            }
-        });
-
+        LogUtil.i(TAG, "bean . getIMG():" + bean.getIMG());
+        showAlumImg(bean.getIMG());
+        LogUtil.i(TAG, "bean . getName():" + bean.getNAME());
         titleTextView.setText(bean.getNAME());
         if (!isFromCreate) {
             openAndStart();
+        }
+    }
+
+    private void showAlumImg(String img) {
+        if (img.equals("") || img == null) {
+            Glide.with(this).load(R.drawable.player_cover_default).asBitmap().centerCrop().into(new BitmapImageViewTarget(mImageView) {
+                @Override
+                protected void setResource(Bitmap resource) {
+                    RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getApplicationContext().getResources(),
+                            resource);
+                    roundedBitmapDrawable.setCircular(true);
+                    mImageView.setImageDrawable(roundedBitmapDrawable);
+                }
+            });
+        } else {
+            Glide.with(this).load(img).asBitmap().into(new BitmapImageViewTarget(mImageView) {
+                @Override
+                protected void setResource(Bitmap resource) {
+                    RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getApplicationContext().getResources(),
+                            resource);
+                    roundedBitmapDrawable.setCircular(true);
+                    mImageView.setImageDrawable(roundedBitmapDrawable);
+                }
+            });
         }
     }
 
@@ -295,6 +356,14 @@ public class MyPlayActivity extends BaseActivity {
         mRotateObjectAnimator.cancel();
         mPlayBtn.setImageResource(R.drawable.play_pressed_240);
         mHandler.removeMessages(UPDATE_PLAY_PROGRESS_SHOW);
+    }
+
+    private void restartRotateObjectAnimator() {
+        if (mRotateObjectAnimator.isRunning()) {
+            mRotateObjectAnimator.cancel();
+            mRotateObjectAnimator.start();
+        }
+
     }
 
     /**
@@ -328,6 +397,7 @@ public class MyPlayActivity extends BaseActivity {
     @Override
     protected void onError() {
 
+
     }
 
     @Override
@@ -340,6 +410,8 @@ public class MyPlayActivity extends BaseActivity {
             Random random = new Random(47);
             int index = random.nextInt(list.size());
             MusicPlayer.openAndStart(list.get(index).getID());
+        } else if (playState == circle) {
+
         }
     }
 

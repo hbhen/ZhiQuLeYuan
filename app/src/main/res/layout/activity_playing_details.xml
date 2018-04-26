@@ -121,8 +121,8 @@
         android:background="@drawable/player_cover_bg"
         android:padding="10dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/player_cover_default"/>
-
+        />
+    <!--android:src="@drawable/player_cover_default"-->
     <ImageView
         android:id="@+id/player_lighting"
         android:layout_width="wrap_content"
@@ -208,6 +208,7 @@
             android:src="@drawable/play_recording_next_3x"/>
 
         <ImageView
+            android:id="@+id/iv_myplayactivity_playlist"
             android:layout_width="17dp"
             android:layout_height="17dp"
             android:layout_weight="1"

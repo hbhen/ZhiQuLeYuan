@@ -16,15 +16,20 @@ public class ZQLYApp extends MultiDexApplication {
 
     public static Context context;
 
+
     @Override
     public void onCreate() {
         super.onCreate();
         context = this;
 
-        //开启debug模式，方便定位错误，具体错误检查方式可以查看http://dev.umeng.com/social/android/quick-integration的报错必看，正式发布，请关闭该模式
-        Config.DEBUG = true;
+//        开启debug模式，方便定位错误，具体错误检查方式可以查看http://dev.umeng.com/social/android/quick-integration的报错必看，正式发布，请关闭该模式
+        Config.DEBUG = false;
+//        开启Log日志的开关
+        LogUtil.DEBUG = true;
+
         QueuedWork.isUseThreadPool = false;
         UMShareAPI.get(this);
+
 
     }
 

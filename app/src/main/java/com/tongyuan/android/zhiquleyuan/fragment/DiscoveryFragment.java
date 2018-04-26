@@ -1,5 +1,6 @@
 package com.tongyuan.android.zhiquleyuan.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -28,6 +29,7 @@ import com.tongyuan.android.zhiquleyuan.request.CallbackFilter;
 import com.tongyuan.android.zhiquleyuan.request.RequestManager;
 import com.tongyuan.android.zhiquleyuan.request.base.BaseRequest;
 import com.tongyuan.android.zhiquleyuan.request.base.SuperModel;
+import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 import com.tongyuan.android.zhiquleyuan.utils.SpacesItemDecoration;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
@@ -45,6 +47,7 @@ import retrofit2.Response;
  */
 public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener, View
         .OnClickListener {
+    private final String TAG = DiscoveryFragment.class.getSimpleName();
     //public static final int REQUEST_CODE_LOGIN = 1001;
     //public static final String TAG = "discovery";
     private View mDiscoveryRoot;
@@ -65,6 +68,7 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle
             savedInstanceState) {
+        LogUtil.i(TAG, "(" + this.getClass().getSimpleName() + ")" + "onCreateView went");
         mDiscoveryRoot = inflater.inflate(R.layout.fragment_discovery_recycleview, null);
         initView();
         initListener();
@@ -84,7 +88,7 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
         mSearchTitle = (TextView) mDiscoveryRoot.findViewById(R.id.et_home_title);
         mListeningTitle = (ImageView) mDiscoveryRoot.findViewById(R.id.iv_home_title);
 
-        showMusicPlayOrStopState();
+
         mSwiperefresh.setOnRefreshListener(this);
         mRecyclerView = (RecyclerView) mDiscoveryRoot.findViewById(R.id.recyclerView_discovery);
 
@@ -132,18 +136,10 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
         });
     }
 
-    private void showMusicPlayOrStopState() {
-        if (MusicPlayer.isPlaying()) {
-            mListeningTitle.setImageResource(R.drawable.voice_ico_light1_3x);
-        } else {
-            mListeningTitle.setImageResource(R.drawable.voice_ico_dark_3x);
-        }
-    }
-
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        LogUtil.i(TAG, "(" + this.getClass().getSimpleName() + ")" + "onActivityCreated went");
         //拿grid的数据
         getIdCol();
     }
@@ -151,12 +147,14 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
     @Override
     public void onResume() {
         super.onResume();
+        LogUtil.i(TAG, "(" + this.getClass().getSimpleName() + ")" + "onResume went");
         checkLoginState();
     }
 
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
+        LogUtil.i(TAG, "(" + this.getClass().getSimpleName() + ")" + "onHiddenChanged went");
         if (hidden)
             return;
         checkLoginState();
@@ -277,6 +275,73 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
         });
     }
 
+    @Override
+    public void onRefresh() {
+        currPage = 1;
+        NC = "-1";
+        getIdCol();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    private void showMusicPlayOrStopState() {
+        if (MusicPlayer.isPlaying()) {
+            mListeningTitle.setImageResource(R.drawable.voice_ico_light1_3x);
+        } else {
+            mListeningTitle.setImageResource(R.drawable.voice_ico_dark_3x);
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        showMusicPlayOrStopState();
+        LogUtil.i(TAG, "(" + this.getClass().getSimpleName() + ")" + "onStart went");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        LogUtil.i(TAG, "(" + this.getClass().getSimpleName() + ")" + "onPause went");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        LogUtil.i(TAG, "(" + this.getClass().getSimpleName() + ")" + "onStop went");
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        LogUtil.i(TAG, "(" + this.getClass().getSimpleName() + ")" + "onDestroyView went");
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        LogUtil.i(TAG, "(" + this.getClass().getSimpleName() + ")" + "onDetach went");
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        LogUtil.i(TAG, "(" + this.getClass().getSimpleName() + ")" + "onViewCreated went");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        LogUtil.i(TAG, "(" + this.getClass().getSimpleName() + ")" + "onDestroy went");
+    }
 
     @Override
     public void onClick(View v) {
@@ -293,20 +358,16 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
 //                    return;
 //                }
                 if (MusicPlayer.isPlaying()) {
-                    ArrayList<MusicPlayerBean> playList = MyPlayActivity.getPlayList();
-                    MyPlayActivity.launch(mContext, playList, MusicPlayer.getCurrentPosition());
+                    ArrayList<MusicPlayerBean> playList = (ArrayList<MusicPlayerBean>) MyPlayActivity.getPlayList();
+                    LogUtil.i(TAG, "(" + this.getClass().getSimpleName() + ") : " + playList.toString());
+                    LogUtil.i(TAG, "(" + this.getClass().getSimpleName() + ") : " + MyPlayActivity.getCurrentPosition());
+                    MyPlayActivity.launch(mContext, playList, MyPlayActivity.getCurrentPosition());
                 }
+
                 break;
             default:
                 break;
         }
-    }
-
-    @Override
-    public void onRefresh() {
-        currPage = 1;
-        NC = "-1";
-        getIdCol();
     }
 
 }

@@ -1,5 +1,6 @@
 package com.tongyuan.android.zhiquleyuan.activity;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -11,10 +12,6 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 
-import com.baoyz.swipemenulistview.SwipeMenu;
-import com.baoyz.swipemenulistview.SwipeMenuCreator;
-import com.baoyz.swipemenulistview.SwipeMenuItem;
-import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.adapter.PlayListAdapter;
@@ -28,6 +25,10 @@ import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
+import com.tongyuan.android.zhiquleyuan.view.SwipeMenuListView.SwipeMenu;
+import com.tongyuan.android.zhiquleyuan.view.SwipeMenuListView.SwipeMenuCreator;
+import com.tongyuan.android.zhiquleyuan.view.SwipeMenuListView.SwipeMenuItem;
+import com.tongyuan.android.zhiquleyuan.view.SwipeMenuListView.SwipeMenuListView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+
 public class PlayListActivity extends AppCompatActivity implements View.OnClickListener, AbsListView.OnScrollListener {
     private static final String TAG = "responsetag";
     private SwipeMenuListView mSwipelistview;
@@ -50,7 +52,7 @@ public class PlayListActivity extends AppCompatActivity implements View.OnClickL
     private int currentPage = 1;
     private String NC = "-1";
     private View footerView;
-    private ArrayList<QueryMyPlayResBean.BODYBean.LSTBean> mLst;
+
     private PlayListAdapter mPlayListAdapter;
 
     @Override
@@ -93,24 +95,23 @@ public class PlayListActivity extends AppCompatActivity implements View.OnClickL
             Date date = new Date();
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
             final String time = simpleDateFormat.format(date);
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl(Constant.baseurl)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
+            Retrofit retrofit = new Retrofit.Builder().baseUrl(Constant.baseurl).addConverterFactory(GsonConverterFactory.create()).build();
             AllInterface allInterface = retrofit.create(AllInterface.class);
             QueryMyPlayReqBean.BODYBean bodyBean = new QueryMyPlayReqBean.BODYBean("", "10", String.valueOf(page));
-            QueryMyPlayReqBean queryMyCollectionReqBean = new QueryMyPlayReqBean("REQ", "MYPLAY", phoneNum, time, bodyBean, "", token, "1");
+            QueryMyPlayReqBean queryMyPlayReqBean = new QueryMyPlayReqBean("REQ", "MYPLAY", phoneNum, time, bodyBean, "", token, "1");
             Gson gson = new Gson();
-            String babyListJson = gson.toJson(queryMyCollectionReqBean);
-            Call<QueryMyPlayResBean> babyListResult = allInterface.QUERY_MYPLAY_RES_BEAN_CALL(babyListJson);
+            String s = gson.toJson(queryMyPlayReqBean);
+            Call<QueryMyPlayResBean> babyListResult = allInterface.QUERY_MYPLAY_RES_BEAN_CALL(s);
 
             babyListResult.enqueue(new Callback<QueryMyPlayResBean>() {
+                private List<QueryMyPlayResBean.BODYBean.LSTBean> mLst;
 
                 @Override
                 public void onResponse(Call<QueryMyPlayResBean> call, Response<QueryMyPlayResBean> response) {
                     int size = response.body().getBODY().getLST().size();
                     LogUtil.i(TAG, "onResponse: size" + size);
                     if (response.body() != null && response.body().getCODE().equals("0")) {
+
                         NC = response.body().getBODY().getNC();
                         LogUtil.d(TAG, "onResponse: <QueryMyPlayResBean>" + response.body().getBODY().toString());
                         LogUtil.i("555555", "queryRecordingList:response" + response.body().getBODY().toString());
@@ -153,8 +154,8 @@ public class PlayListActivity extends AppCompatActivity implements View.OnClickL
                                 deleteItem.setTitle("删除");
                                 deleteItem.setBackground(R.color.redFont);
                                 deleteItem.setWidth(dp2px(70));
-                                deleteItem.setTitleSize(18);
-                                deleteItem.setTitleColor(R.color.white);
+                                deleteItem.setTitleSize(16);
+                                deleteItem.setTitleColor(Color.WHITE);
                                 menu.addMenuItem(deleteItem);
                             }
                         };

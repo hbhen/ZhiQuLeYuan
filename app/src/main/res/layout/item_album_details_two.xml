@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="10dp">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp">
 
     <ImageView
         android:id="@+id/iv_album_details_two"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="@dimen/dp_60"
+        android:layout_height="@dimen/dp_60"
         android:background="@drawable/player_cover_default"
-        android:scaleType="centerCrop" />
+        android:scaleType="centerCrop"/>
 
     <TextView
         android:id="@+id/tv_album_details_two_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="@dimen/dp_10"
         android:layout_toRightOf="@id/iv_album_details_two"
         android:text="小精豆童谣说唱"
         android:textColor="#000000"
-        android:textSize="16sp" />
+        android:textSize="@dimen/sp_16"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_album_details_two_title"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="14dp"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_14"
         android:layout_toRightOf="@id/iv_album_details_two"
         android:orientation="horizontal">
 
@@ -35,21 +35,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/round"
-            android:drawablePadding="5dp"
+            android:drawablePadding="@dimen/dp_5"
             android:text="0-6岁"
             android:textColor="#8f8f8f"
-            android:textSize="12sp" />
+            android:textSize="@dimen/sp_12"/>
 
         <TextView
             android:id="@+id/tv_itemt_album_details_two_like"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="@dimen/dp_10"
             android:drawableLeft="@drawable/collect_list_ico"
-            android:drawablePadding="5dp"
+            android:drawablePadding="@dimen/dp_5"
             android:text="581"
             android:textColor="#8f8f8f"
-            android:textSize="12sp" />
+            android:textSize="@dimen/sp_12"/>
     </LinearLayout>
 
     <LinearLayout
@@ -57,7 +57,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="30px"
         android:orientation="horizontal">
 
         <TextView
@@ -65,21 +64,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/audition_list_gray_ico"
-            android:drawablePadding="5dp"
+            android:drawablePadding="@dimen/dp_5"
             android:text="试听"
             android:textColor="@color/grayFont"
-            android:textSize="12sp" />
+            android:textSize="@dimen/sp_12"/>
 
         <TextView
             android:id="@+id/dis_sub_item_favorite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="@dimen/dp_10"
             android:drawableLeft="@drawable/secondary_favorite_gray_3x"
-            android:drawablePadding="5dp"
+            android:drawablePadding="@dimen/dp_5"
             android:text="收藏"
             android:textColor="@color/grayFont"
-            android:textSize="12sp" />
+            android:textSize="@dimen/sp_12"/>
 
     </LinearLayout>
 </RelativeLayout>

@@ -12,17 +12,17 @@ import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.bean.QueryMyPlayResBean;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by Android on 2017/6/13.
  */
 public class PlayListAdapter extends BaseAdapter implements View.OnClickListener {
     private Context mContext;
-    private List<QueryMyPlayResBean.BODYBean.LSTBean> mLSTBeen;
+    private ArrayList<QueryMyPlayResBean.BODYBean.LSTBean> mLSTBeen;
 
 
-    public PlayListAdapter(Context context, List<QueryMyPlayResBean.BODYBean.LSTBean> lst) {
+    public PlayListAdapter(Context context, ArrayList<QueryMyPlayResBean.BODYBean.LSTBean> lst) {
         this.mContext = context;
         this.mLSTBeen = lst;
     }

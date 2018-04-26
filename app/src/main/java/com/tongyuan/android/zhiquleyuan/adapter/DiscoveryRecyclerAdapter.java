@@ -79,7 +79,6 @@ public class DiscoveryRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
                 //LogUtil.d("error", "viewholder is null");
                 return null;
         }
-
     }
 
     @Override
@@ -190,7 +189,6 @@ public class DiscoveryRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         }
         return count;
     }
-
 
     private class HolderNineGridTitle extends RecyclerView.ViewHolder implements View.OnClickListener {
         HolderNineGridTitle(View itemView) {

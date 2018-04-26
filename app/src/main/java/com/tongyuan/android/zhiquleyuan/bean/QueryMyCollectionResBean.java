@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by Android on 2017/6/14.
  */
-public class QueryMyCollectionResBean implements Parcelable {
+public class QueryMyCollectionResBean implements Parcelable{
 
     /**
      * TYPE : RES
