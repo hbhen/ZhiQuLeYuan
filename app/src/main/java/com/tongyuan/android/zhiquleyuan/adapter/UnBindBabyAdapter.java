@@ -1,24 +1,26 @@
 package com.tongyuan.android.zhiquleyuan.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageButton;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListFromToyIdRes;
-import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
+import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
+import com.tongyuan.android.zhiquleyuan.view.GlideCircleTransform;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import retrofit2.Response;
+
+import static com.nostra13.universalimageloader.core.ImageLoader.TAG;
 
 /**
  * Created by Android on 2017/6/30.
@@ -26,6 +28,7 @@ import retrofit2.Response;
 public class UnBindBabyAdapter extends BaseAdapter {
     private Response<QueryBabyListFromToyIdRes> mResponse;
     private Context mContext;
+
     public UnBindBabyAdapter(Context context, Response<QueryBabyListFromToyIdRes> response) {
         this.mResponse = response;
         this.mContext = context;
@@ -47,6 +50,7 @@ public class UnBindBabyAdapter extends BaseAdapter {
     }
 
     UnBindBabyHolder mUnBindBabyHolder = null;
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -60,7 +64,7 @@ public class UnBindBabyAdapter extends BaseAdapter {
             mUnBindBabyHolder.mTextViewSex = (TextView) convertView.findViewById(R.id.tv_item_unbindbaby_sex);
             mUnBindBabyHolder.mImageViewBirthday = (ImageView) convertView.findViewById(R.id.iv_item_unbindbaby_birthday);
             mUnBindBabyHolder.mTextViewBirthday = (TextView) convertView.findViewById(R.id.tv_item_unbindbaby_birthday);
-            mUnBindBabyHolder.mCheckImageButton = (ImageButton) convertView.findViewById(R.id.iv_item_unbindbaby_checked);
+            mUnBindBabyHolder.mCheckImageButton = (CheckBox) convertView.findViewById(R.id.iv_item_unbindbaby_checked);
 
             convertView.setTag(mUnBindBabyHolder);
 
@@ -72,30 +76,34 @@ public class UnBindBabyAdapter extends BaseAdapter {
         String sex = mResponse.body().getBODY().getLST().get(position).getSEX();
         String birthday = mResponse.body().getBODY().getLST().get(position).getBIRTHDAY();
 
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddmmssSSS");
+        SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("yyyy/MM/dd");
+        try {
+            Date parse = simpleDateFormat.parse(birthday);
+            String formatTime = simpleDateFormat1.format(parse);
+            mUnBindBabyHolder.mTextViewBirthday.setText(formatTime);
+            LogUtil.i(TAG, "babyinfolistadapter:" + formatTime);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        Glide.with(mContext).load(babyImgUrl).asBitmap().into(new BitmapImageViewTarget(mUnBindBabyHolder.mImageViewBabyImg) {
-            @Override
-            protected void setResource(Bitmap resource) {
-                RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(mContext.getResources(), resource);
-                roundedBitmapDrawable.setCircular(true);
-                mUnBindBabyHolder.mImageViewBabyImg.setImageDrawable(roundedBitmapDrawable);
-            }
-        });
+        Glide.with(mContext).load(babyImgUrl).asBitmap().centerCrop().transform(new GlideCircleTransform(mContext)).into
+                (mUnBindBabyHolder.mImageViewBabyImg);
         mUnBindBabyHolder.mTextViewBabyName.setText(babyName);
         mUnBindBabyHolder.mTextViewSex.setText(sex);
-        mUnBindBabyHolder.mTextViewBirthday.setText(birthday);
         if (sex.equals("m")) {
             mUnBindBabyHolder.mImageViewSex.setImageResource(R.drawable.signs_man);
+        } else {
+            mUnBindBabyHolder.mImageViewSex.setImageResource(R.drawable.signs_woman);
         }
-        mUnBindBabyHolder.mImageViewSex.setImageResource(R.drawable.signs_woman);
 
-        mUnBindBabyHolder.mCheckImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mUnBindBabyHolder.mCheckImageButton.setSelected(true);
-                ToastUtil.showToast(mContext, "碰到了111");
-            }
-        });
+//        mUnBindBabyHolder.mCheckImageButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                mUnBindBabyHolder.mCheckImageButton.setSelected(true);
+//                ToastUtil.showToast(mContext, "碰到了111");
+//            }
+//        });
         return convertView;
     }
 
@@ -107,6 +115,6 @@ public class UnBindBabyAdapter extends BaseAdapter {
         private TextView mTextViewBirthday;
         private ImageView mImageViewBabyImg;
         private TextView mTextViewBabyName;
-        private ImageButton mCheckImageButton;
+        private CheckBox mCheckImageButton;
     }
 }

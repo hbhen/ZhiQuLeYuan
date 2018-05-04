@@ -15,6 +15,7 @@
             android:layout_height="60dp">
 
             <ImageView
+                android:scaleType="centerCrop"
                 android:id="@+id/iv_manager_gridview_item"
                 android:layout_width="60dp"
                 android:layout_height="60dp"

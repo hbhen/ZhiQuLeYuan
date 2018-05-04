@@ -72,7 +72,7 @@ public class MySuggestionActivity extends AppCompatActivity {
                     commitSuggestion();
 
                 } else {
-                    ToastUtil.showToast(this, "无意见");
+                    ToastUtil.showToast(this, "没有意见");
                 }
                 break;
             default:

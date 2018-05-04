@@ -1,11 +1,8 @@
 package com.tongyuan.android.zhiquleyuan.fragment;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +12,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.activity.MainActivity;
@@ -35,6 +31,7 @@ import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
+import com.tongyuan.android.zhiquleyuan.view.GlideCircleTransform;
 import com.tongyuan.android.zhiquleyuan.view.MyGridView;
 
 import java.text.SimpleDateFormat;
@@ -140,7 +137,7 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
         mPhoneNum = SPUtils.getString(getActivity(), "phoneNum", "");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         mTime = simpleDateFormat.format(new Date());
-        mCurrentUserId = SPUtils.getString(getContext(), "ID", "");
+        mCurrentUserId = SPUtils.getString(getContext(), "userID", "");
 
         //获取成员信息,需要传什么参数,去访问哪个接口  3.4.48接口
         //getToyMember(mTime, mToken, mPhoneNum, mToyId, mToyCode);
@@ -163,7 +160,7 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
         queryToyMemberResult.enqueue(new Callback<QueryToyMemberReSBean>() {
             @Override
             public void onResponse(Call<QueryToyMemberReSBean> call, Response<QueryToyMemberReSBean> response) {
-                if (response != null) {
+                if (response.body() != null && response.body().getCODE().equals("0")) {
 //                    ToastUtil.showToast(getActivity(), "response" + response);
                     //玩具群成员
                     LogUtil.i(TAG, "onResponse:toymem ++" + response.body().toString());
@@ -177,16 +174,18 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
 //                    toyMemberAdapter = new ToyMemberAdapter(getActivity(), lst, mResponse);
 //                    mMygrid.setAdapter(toyMemberAdapter);
 
+                } else if (response.body().getCODE().equals("-10006")) {
+                    SPUtils.putString(getContext(), "token", "");
+                    ToastUtil.showToast(getActivity(), response.body().getMSG());
                 } else {
-
-                    LogUtil.i(TAG, "onResponse: ++response为空");
-
+                    LogUtil.i(TAG, response.body().getMSG());
                 }
             }
 
             @Override
             public void onFailure(Call<QueryToyMemberReSBean> call, Throwable t) {
-                ToastUtil.showToast(getActivity(), "toymanagerfragment的网络链接异常");
+                ToastUtil.showToast(getActivity(), R.string.network_error);
+                LogUtil.i(TAG, t.toString());
             }
         });
     }
@@ -212,6 +211,7 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
         switch (v.getId()) {
             case R.id.bt_fragment_managetoy_nodisturb:
                 Intent intent = new Intent(getActivity(), NoDisturbActivity.class);
+//                Intent intent = new Intent(getActivity(), NoDisturbActivity.class);
                 startActivity(intent);
 //                ToastUtil.showToast(getContext(), "还未开通该功能");
                 break;
@@ -237,7 +237,7 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
 
                     LogUtil.i("1122222222", "onClick: " + iconPosition);
                     ToastUtil.showToast(getActivity(), "设置管理员");
-                    ToastUtil.showToast(getActivity(), "iconPosition" + iconPosition);
+//                    ToastUtil.showToast(getActivity(), "iconPosition" + iconPosition);
                 } else {
                     ToastUtil.showToast(getActivity(), "您不是该玩具的持有者,不能设置管理员");
                 }
@@ -307,26 +307,20 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
         Glide.with(getActivity()).load(img).asBitmap().into(mIv_fragmenft_managetoy_toyimg);
         //baby头像
         if (mBabyimg.equals("") || mLst.size() == 0) {
-            Glide.with(getActivity()).load(R.mipmap.default_babyimage).asBitmap().centerCrop().into(new BitmapImageViewTarget(mBabyImg) {
-                @Override
-                protected void setResource(Bitmap resource) {
+            Glide.with(getActivity()).load(R.mipmap.default_babyimage).asBitmap().centerCrop().transform(new GlideCircleTransform(getActivity())).into(mBabyImg);
 
-                    RoundedBitmapDrawable mRoundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
-                    mRoundedBitmapDrawable.setCircular(true);
-                    mBabyImg.setImageDrawable(mRoundedBitmapDrawable);
-                }
-            });
         } else {
-            Glide.with(getActivity()).load(mBabyimg).asBitmap().centerCrop().into(new BitmapImageViewTarget(mBabyImg) {
-                @Override
-                protected void setResource(Bitmap resource) {
-
-                    RoundedBitmapDrawable mRoundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
-                    mRoundedBitmapDrawable.setCircular(true);
-                    mBabyImg.setImageDrawable(mRoundedBitmapDrawable);
-                }
-            });
-
+            Glide.with(getActivity()).load(mBabyimg).asBitmap().centerCrop().transform(new GlideCircleTransform(getActivity())).into(mBabyImg);
+//            Glide.with(getActivity()).load(mBabyimg).asBitmap().centerCrop().into(new BitmapImageViewTarget(mBabyImg)
+//            {
+//                @Override
+//                protected void setResource(Bitmap resource) {
+//
+//                    RoundedBitmapDrawable mRoundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
+//                    mRoundedBitmapDrawable.setCircular(true);
+//                    mBabyImg.setImageDrawable(mRoundedBitmapDrawable);
+//                }
+//            });
         }
         if (mLst.size() == 0) {
             mBabyNameView.setText(mOwnerName);
@@ -354,7 +348,10 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
             public void onResponse(Call<GetInstantStateInfoRes> call, Response<GetInstantStateInfoRes> response) {
 
                 if (!response.body().getCODE().equals("0")) {
-                    ToastUtil.showToast(getActivity(), "拉取玩具即时状态返回的response为空");
+                    ToastUtil.showToast(getActivity(), response.body().getMSG());
+                } else if (response.body().getCODE().equals("-10006")) {
+                    SPUtils.putString(getActivity(), "token", "");
+                    ToastUtil.showToast(getActivity(), response.body().getMSG());
                 } else {
                     showToyStateInfo(response);
                 }
@@ -362,7 +359,7 @@ public class ToyManagerFragment extends BaseFragment implements View.OnClickList
 
             @Override
             public void onFailure(Call<GetInstantStateInfoRes> call, Throwable t) {
-                ToastUtil.showToast(getActivity(), "拉取信息失败");
+                ToastUtil.showToast(getActivity(), R.string.network_error);
                 LogUtil.i(TAG, "onFailure: " + t.toString());
             }
         });

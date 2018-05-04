@@ -10,7 +10,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.bean.QueryMyPlayResBean;
-import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
 import java.util.ArrayList;
 
@@ -60,7 +59,7 @@ public class PlayListAdapter extends BaseAdapter implements View.OnClickListener
 
     @Override
     public void onClick(View v) {
-        ToastUtil.showToast(mContext,"DDDD");
+//        ToastUtil.showToast(mContext,"DDDD");
     }
 
     class ViewHolder {

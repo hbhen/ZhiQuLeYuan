@@ -24,7 +24,6 @@ import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.StatusBarUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
-import com.tongyuan.android.zhiquleyuan.utils.ZQLYApp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -156,9 +155,12 @@ public class DiscoverySecondCategoryActivity extends AppCompatActivity implement
                             footerView.setVisibility(View.VISIBLE);
                         }
                         adapter.notifyDataSetChanged();
-                        ToastUtil.showToast(ZQLYApp.context, "成功");
+//                        ToastUtil.showToast(ZQLYApp.context, "成功");
+                    } else if (response.body().CODE.equals("-10006")) {
+                        SPUtils.putString(getApplicationContext(), "token", "");
+                        ToastUtil.showToast(getApplicationContext(), response.body().MSG);
                     } else {
-                        ToastUtil.showToast(ZQLYApp.context, "没成功");
+//                        ToastUtil.showToast(ZQLYApp.context, "没成功");
 //                    ToastUtil.showToast(getApplicationContext(), response.body().MSG);
                         footerView.setVisibility(View.GONE);
                     }
@@ -168,7 +170,7 @@ public class DiscoverySecondCategoryActivity extends AppCompatActivity implement
 
                 @Override
                 public void onFailure(Call<SuperModel<DiscoveryGridSecondaryResultBean>> call, Throwable t) {
-                    ToastUtil.showToast(getApplicationContext(), "联网失败");
+                    ToastUtil.showToast(getApplicationContext(), "网络异常,请检查网络");
                     isLoading = false;
                 }
             });

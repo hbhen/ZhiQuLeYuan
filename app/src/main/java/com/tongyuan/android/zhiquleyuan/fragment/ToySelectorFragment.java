@@ -2,11 +2,8 @@ package com.tongyuan.android.zhiquleyuan.fragment;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.activity.MainActivity;
 import com.tongyuan.android.zhiquleyuan.adapter.ToySelectPagerAdapter;
@@ -33,6 +29,7 @@ import com.tongyuan.android.zhiquleyuan.request.base.SuperModel;
 import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
+import com.tongyuan.android.zhiquleyuan.view.GlideCircleTransform;
 import com.zhy.magicviewpager.transformer.ScaleInTransformer;
 
 import org.greenrobot.eventbus.EventBus;
@@ -73,8 +70,13 @@ public class ToySelectorFragment extends BaseFragment {
     private int mCurrentPosition;
 //    private ViewGroup mContainer;
 
+    public void setBabyImage(String babyImage) {
+        if (toyList == null || toyList.size() - 1 < mCurrentPosition)
+            return;
+        toyList.get(mCurrentPosition).setBABYIMG(babyImage);
+        displayBabyHead(mCurrentPosition);
+    }
 
-    @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (!EventBus.getDefault().isRegistered(this)) {
@@ -144,38 +146,14 @@ public class ToySelectorFragment extends BaseFragment {
         //        LogUtil.i(TAG, "displayBabyHead: toylist"+toyList.size()+"&&"+toyList.get(position).toString());
         String s = toyList.get(position).getBABYIMG();//获得宝宝的头像  -1
         LogUtil.i(TAG, "displayBabyHead:s=" + s);
-        /*if (s == null) {
-            Glide.with(getContext()).load(R.drawable.ic_launcher).asBitmap().into(new BitmapImageViewTarget(mHeadImageView) {
-                @Override
-                protected void setResource(Bitmap resource) {
-                    RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
-                    roundedBitmapDrawable.setCircular(true);
-                    mHeadImageView.setImageDrawable(roundedBitmapDrawable);
-                }
-            });
-            return;
-        }*/
-//        .placeholder(R.drawable.player_cover_default)
+
         if (s.equals("")) {
             LogUtil.i(TAG, "displayBabyHead 1 : s为空");
-            Glide.with(mContext).load(R.drawable.player_cover_default).asBitmap().into(new BitmapImageViewTarget(mHeadImageView) {
-                @Override
-                protected void setResource(Bitmap resource) {
-                    RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
-                    roundedBitmapDrawable.setCircular(true);
-                    mHeadImageView.setImageDrawable(roundedBitmapDrawable);
-                }
-            });
+            Glide.with(mContext).load(R.drawable.player_cover_default).asBitmap().transform(new GlideCircleTransform(mContext)).into(mHeadImageView);
+
         } else {
             LogUtil.i(TAG, "displayBabyHead: 不为空 " + s);
-            Glide.with(mContext).load(s).asBitmap().placeholder(R.drawable.player_cover_default).into(new BitmapImageViewTarget(mHeadImageView) {
-                @Override
-                protected void setResource(Bitmap resource) {
-                    RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(mContext.getResources(), resource);
-                    roundedBitmapDrawable.setCircular(true);
-                    mHeadImageView.setImageDrawable(roundedBitmapDrawable);
-                }
-            });
+            Glide.with(mContext).load(s).asBitmap().transform(new GlideCircleTransform(mContext)).into(mHeadImageView);
         }
     }
 
@@ -197,7 +175,7 @@ public class ToySelectorFragment extends BaseFragment {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_add:
-                ToastUtil.showToast(mContext,"+");
+//                ToastUtil.showToast(mContext,"+");
                 showFragment(ToyAddFragment.class.getSimpleName());
                 break;
             case R.id.iv_delete:
@@ -269,6 +247,9 @@ public class ToySelectorFragment extends BaseFragment {
                     refreshPagerAdapter();
                     //LogUtil.i(TAG, "onResponse: respnose12" + response.body().toString());
                     //ToastUtil.showToast(getContext(), "确实已经删除了222");
+                } else if (response.body().CODE.equals("-10006")) {
+                    SPUtils.putString(getContext(), "token", "");
+                    ToastUtil.showToast(getContext(), response.body().MSG);
                 } else {
                     ToastUtil.showToast(getContext(), response.body().MSG);
                 }
@@ -276,6 +257,7 @@ public class ToySelectorFragment extends BaseFragment {
 
             @Override
             public void onFailure(Call<SuperModel<DeleteToyFromPowerUserResBean.BODYBean>> call, Throwable t) {
+                LogUtil.i(TAG, t.toString());
                 ToastUtil.showToast(getContext(), R.string.network_error);
             }
         });
@@ -337,7 +319,7 @@ public class ToySelectorFragment extends BaseFragment {
 
             @Override
             public void onFailure(Call<SuperModel<SingleToyInfoRESBean.BODYBean>> call, Throwable t) {
-                ToastUtil.showToast(getActivity(), "Response为空,请检查网络");
+                ToastUtil.showToast(getActivity(), R.string.network_error);
             }
         });
     }

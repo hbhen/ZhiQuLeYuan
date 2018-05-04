@@ -11,7 +11,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tongyuan.android.zhiquleyuan.R;
-import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,7 +46,7 @@ public class SetUpWlanActivityStepFour extends AppCompatActivity {
                 finish();
                 break;
             case R.id.tv_netconfig_again:
-                ToastUtil.showToast(this,"返回inputinfo页面");
+//                ToastUtil.showToast(this,"返回inputinfo页面");
                 Intent it = new Intent(this, SetupWlanActivity.class);
                 startActivity(it);
                 break;

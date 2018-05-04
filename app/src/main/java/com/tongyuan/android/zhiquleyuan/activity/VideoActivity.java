@@ -2,12 +2,9 @@ package com.tongyuan.android.zhiquleyuan.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
@@ -18,7 +15,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.bean.CallToToyReq;
@@ -28,7 +24,9 @@ import com.tongyuan.android.zhiquleyuan.bean.ControlToyVolumeRes;
 import com.tongyuan.android.zhiquleyuan.interf.AllInterface;
 import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
+import com.tongyuan.android.zhiquleyuan.utils.SPUtil;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
+import com.tongyuan.android.zhiquleyuan.view.GlideCircleTransform;
 import com.weiyicloud.whitepad.ControlMode;
 import com.weiyicloud.whitepad.SharePadMgr;
 
@@ -38,7 +36,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import info.emm.meeting.MeetingUser;
-import info.emm.meeting.MeetingUserMgr;
 import info.emm.meeting.Session;
 import info.emm.meeting.SessionInterface;
 import info.emm.sdk.VideoView;
@@ -50,7 +47,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class VideoActivity extends AppCompatActivity implements View.OnClickListener, SessionInterface {
-
+    private final String TAG = VideoActivity.class.getSimpleName();
     static public int WEIYI_VIDEO_OUT_SLOW = 1;       //视频发送速度慢
     static public int WEIYI_VIDEO_OUT_DISCONNECT = 2; //视频发送连接断开重连
     static public int WEIYI_VIDEO_IN_SLOW = 3;        //视频接收速度慢
@@ -110,7 +107,10 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
         it.putExtra("toyId", toyId);
         it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(it);
+    }
 
+    public void setBabyImage(String babyImage) {
+        mBabyimgString = babyImage;
     }
 
     @Override
@@ -119,9 +119,9 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_videocall);
-        MeetingUserMgr meetingUserMgr = new MeetingUserMgr();
 
-        //TODO  进来的时候还要获取一个玩具的初始音量 现在不加了
+        int toyvolume = SPUtil.getInstance().getInt("toyvolume", 0);
+        LogUtil.i("newbi  :" + String.valueOf(toyvolume));
 
         mMy_video = (VideoView) findViewById(R.id.surfaceView5);
 // 其他的视频不显示了
@@ -150,15 +150,7 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
         //宝宝的名字
         mBabyName = (TextView) findViewById(R.id.tv_activity_videocall_babyname);
 
-//        Intent intent = getIntent();
-//        Bundle extras = intent.getExtras();
-//        mRoomid = extras.getString("roomid");
-//        mToken = extras.getString("token");
-//        mToyid = extras.getString("toyid");
-//        mBabyimgString = extras.getString("babyimg");
-//        mBabynameString = extras.getString("babyname");
         Intent intent = getIntent();
-
         mBabyimgString = intent.getStringExtra("babyimgString");
         mBabynameString = intent.getStringExtra("babynameString");
         mRoomid = intent.getStringExtra("roomid");
@@ -169,27 +161,9 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
             return;
         }
         if (mBabyimgString.equals("")) {
-            Glide.with(this).load(R.mipmap.default_babyimage).asBitmap().centerCrop().into(new BitmapImageViewTarget(mBabyImg) {
-                @Override
-                protected void setResource(Bitmap resource) {
-
-                    RoundedBitmapDrawable mRoundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getApplicationContext().getResources(),
-                            resource);
-                    mRoundedBitmapDrawable.setCircular(true);
-                    mBabyImg.setImageDrawable(mRoundedBitmapDrawable);
-                }
-            });
+            Glide.with(this).load(R.mipmap.default_babyimage).asBitmap().centerCrop().transform(new GlideCircleTransform(this)).into(mBabyImg);
         } else {
-            Glide.with(this).load(mBabyimgString).asBitmap().centerCrop().into(new BitmapImageViewTarget(mBabyImg) {
-                @Override
-                protected void setResource(Bitmap resource) {
-
-                    RoundedBitmapDrawable mRoundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getApplicationContext().getResources(),
-                            resource);
-                    mRoundedBitmapDrawable.setCircular(true);
-                    mBabyImg.setImageDrawable(mRoundedBitmapDrawable);
-                }
-            });
+            Glide.with(this).load(mBabyimgString).asBitmap().centerCrop().transform(new GlideCircleTransform(this)).into(mBabyImg);
         }
         mBabyName.setText(mBabynameString);
 
@@ -199,6 +173,8 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
         EnterMeeting();
 
 //        seekBar.setOnClickListener(this);
+        mSeekBar.setProgress(toyvolume);
+        mVolume_text.setText(String.valueOf(toyvolume));
         mSeekBar.setMax(100);
         //TODO 给textview设置一个当前的音量值,这个值是从网络获取的 ,如果没有获取到就默认给50,这个值需不需要传给玩具再说!
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -214,7 +190,8 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
+                int progress = seekBar.getProgress();
+                LogUtil.i("videovolume", "volume" + progress);
             }
 
             @Override
@@ -305,6 +282,8 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
                 if (isShowVideo) {
                     isShowVideo = !isShowVideo;
                     ToastUtil.showToast(this, "不看视频");
+//                    TODO 添加不看视频的图片变换 mNoVideo.setImageResource(R.drawable.);
+
                     mMy_video.setBackgroundResource(R.drawable.videobackground_3x);
                 } else {
                     isShowVideo = !isShowVideo;
@@ -394,7 +373,7 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onResponse(Call<ControlToyVolumeRes> call, Response<ControlToyVolumeRes> response) {
                 if (response.body().getCode().equals("0")) {
-                    ToastUtil.showToast(getApplicationContext(), "成功");
+                    ToastUtil.showToast(getApplicationContext(), "推送成功");
                 } else if (response.body().getCode().equals("-10009")) {
                     ToastUtil.showToast(getApplicationContext(), "玩具未登录,为获取到玩具DEVCODE");
                 } else if (response.body().getCode().equals("-10006")) {
@@ -404,7 +383,8 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
 
             @Override
             public void onFailure(Call<ControlToyVolumeRes> call, Throwable t) {
-                ToastUtil.showToast(getApplicationContext(), "网络异常");
+                ToastUtil.showToast(getApplicationContext(), R.string.network_error);
+                LogUtil.i(TAG, t.toString());
 
 
             }

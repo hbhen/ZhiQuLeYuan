@@ -80,24 +80,27 @@
 
         </RelativeLayout>
 
-        <!--<CheckBox-->
-        <!--android:visibility="invisible"-->
-        <!--android:id="@+id/cb_item_bindbaby_checkbox"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignParentRight="true"-->
-        <!--android:layout_centerVertical="true"/>-->
+        <CheckBox
 
-        <ImageButton
+            android:clickable="false"
+            android:id="@+id/iv_item_bindbaby_checked"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/checkbox_selector"
+            android:button="@null"
+            android:layout_centerVertical="true"/>
+
+        <!--<ImageButton
             android:id="@+id/iv_item_bindbaby_checked"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
-            android:background="@drawable/bindbaby_checkbox_selector"
+            android:background="@drawable/bindbaby_unchecked_3x"
             android:clickable="true"
-            android:focusable="false"/>
+            android:focusable="false"/>-->
 
         <View
             android:layout_width="match_parent"

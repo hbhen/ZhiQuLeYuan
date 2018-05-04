@@ -102,7 +102,7 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
             initData();
             initListener();
         } else {
-            ToastUtil.showToast(getContext(), "未登录,请登录");
+            ToastUtil.showToast(getContext(), "用户未登录");
             return;
         }
     }
@@ -128,7 +128,7 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
                     .build();
             AllInterface allInterface = retrofit.create(AllInterface.class);
 
-            CallHistoryRequestBean.BODYBean callHistoryBody = new CallHistoryRequestBean.BODYBean("", "4", "1");
+            CallHistoryRequestBean.BODYBean callHistoryBody = new CallHistoryRequestBean.BODYBean("", "10", "1");
 
             CallHistoryRequestBean callHistoryRequestBean = new CallHistoryRequestBean("REQ", "MTALK", phoneNum, time,
                     callHistoryBody, "", token, "1");
@@ -139,8 +139,10 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
                 @Override
                 public void onResponse(final Call<CallHistoryResultBean> call, Response<CallHistoryResultBean> response) {
                     if (response.body().getCODE().equals("-10006")) {
+                        SPUtils.putString(mContext, "token", "");
+                        ToastUtil.showToast(mContext,response.body().getMSG());
                         LogUtil.i(TAG, "onResponse: message" + response.body().getCODE().equals("-10006"));
-                    } else {
+                    } else if (response.body().getCODE().equals("0")) {
                         NC = response.body().getBODY().getNC();
                         //给recyclerview设置adapter数据,展示list
                         mResponseCallHist = response;
@@ -192,7 +194,7 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
 
                 @Override
                 public void onFailure(Call<CallHistoryResultBean> call, Throwable t) {
-                    ToastUtil.showToast(getActivity(), "失败了不能联网");
+                    ToastUtil.showToast(getActivity(), "网络连接异常,请检查网络");
                 }
             });
         }

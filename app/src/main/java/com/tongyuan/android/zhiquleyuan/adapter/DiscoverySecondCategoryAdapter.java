@@ -209,7 +209,7 @@ public class DiscoverySecondCategoryAdapter extends BaseAdapter {
             public void onResponse(Call<DeleteMyCollectionResBean> call, Response<DeleteMyCollectionResBean> response) {
                 if (response != null && response.body().getCODE().equals("0")) {
                     notifyDataSetChanged();
-                    ToastUtil.showToast(mContext, "删除收藏成功");
+//                    ToastUtil.showToast(mContext, "删除收藏成功");
                 }
             }
 

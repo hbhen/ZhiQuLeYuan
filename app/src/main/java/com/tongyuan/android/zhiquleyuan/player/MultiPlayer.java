@@ -108,7 +108,7 @@ class MultiPlayer implements MediaPlayer.OnErrorListener,
 
             @Override
             public void onFailure(Call<SuperModel<LocalPlayApplyResBean>> call, Throwable t) {
-                ToastUtil.showToast(context, "请求播放地址失败！！！");
+                ToastUtil.showToast(context, "请求播放地址失败");
             }
         });
     }

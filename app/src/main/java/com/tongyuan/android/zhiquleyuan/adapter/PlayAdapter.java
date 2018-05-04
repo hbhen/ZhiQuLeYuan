@@ -50,23 +50,27 @@ public class PlayAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        ViewHolder holder;
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.item_playinglist, null);
-            new ViewHolder(convertView);
+            holder = new ViewHolder(convertView);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
         }
-        ViewHolder holder = (ViewHolder) convertView.getTag();
+
         Glide.with(mContext).load(mStringArrayList.get(position).getIMG()).asBitmap().placeholder(R.drawable.player_cover_default).into(holder
                 .mAlumbImg);
         for (int i = 0; i < mStringArrayList.size(); i++) {
             String id = mStringArrayList.get(position).getID();
             if (id.equals(MyPlayActivity.getCurrentId())) {
                 holder.mAlumbName.setTextColor(Color.RED);
+            } else{
+                holder.mAlumbName.setTextColor(mContext.getResources().getColor(R.color.grayFont));
             }
         }
         holder.mAlumbName.setText(mStringArrayList.get(position).getNAME());
         return convertView;
     }
-
 
 
     class ViewHolder {

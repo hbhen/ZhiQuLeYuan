@@ -195,6 +195,7 @@ public class RecordingFragment extends BaseRecordingFragment implements View.OnC
     private String NC = "-1";
     private RecordingListAdapter mRecordingListAdapter;
     private View footerView;
+    private List<String> mIdList;
 
     public RecordingFragment() {
 
@@ -222,7 +223,7 @@ public class RecordingFragment extends BaseRecordingFragment implements View.OnC
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle
             savedInstanceState) {
-        initData();
+//        initData();
 
         View recordingRoot = initView(inflater);
 
@@ -322,6 +323,7 @@ public class RecordingFragment extends BaseRecordingFragment implements View.OnC
         footerView.setVisibility(View.GONE);
         mSwipelistview.addFooterView(footerView);
         mSwipelistview.setAdapter(mRecordingListAdapter);
+        initSwipeMenuListViewContent();
         sprefresh.setOnRefreshListener(new MySwipeRefreshLayout.OnRefreshListener() {
 
             @Override
@@ -337,6 +339,31 @@ public class RecordingFragment extends BaseRecordingFragment implements View.OnC
         showBottomPanel();
 
         return recordingRoot;
+    }
+
+    private void initSwipeMenuListViewContent() {
+        SwipeMenuCreator mCreator = new SwipeMenuCreator() {
+
+            @Override
+            public void create(SwipeMenu menu) {
+                SwipeMenuItem deleteItem = new SwipeMenuItem(getContext());
+                deleteItem.setTitle("删除");
+                deleteItem.setBackground(R.color.redFont);
+                deleteItem.setWidth(dp2px(70));
+                deleteItem.setTitleSize(16);
+                deleteItem.setTitleColor(Color.WHITE);
+                LogUtil.i(TAG, "title(): " + deleteItem.getTitle() + "; color(): " + deleteItem.getTitleColor() + "; size() :" + deleteItem
+                        .getTitleSize());
+                menu.addMenuItem(deleteItem);
+                mSwipelistview.setSmoothScrollbarEnabled(true);
+                mSwipelistview.setSwipeDirection(SwipeMenuListView.DIRECTION_LEFT);
+                mSwipelistview.setOpenInterpolator(new AccelerateInterpolator());
+                mSwipelistview.setCloseInterpolator(new AccelerateInterpolator());
+            }
+
+        };
+
+        mSwipelistview.setMenuCreator(mCreator);
     }
 
     private void showBottomPanel() {
@@ -381,7 +408,7 @@ public class RecordingFragment extends BaseRecordingFragment implements View.OnC
         mShareListener = new CustomShareListener(getActivity());
         mShareAction = new ShareAction(getActivity());
 
-//        initData();
+        initData();
         initListener();
 
         LogUtil.i("circlelife", "recordingfragment:onActivityCreated: went");
@@ -416,6 +443,61 @@ public class RecordingFragment extends BaseRecordingFragment implements View.OnC
         mPlayNext.setOnClickListener(this);
         mStop.setOnClickListener(this);
         mSetVolume.setOnClickListener(this);
+
+        mSwipelistview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                /**1,点击item,显示录音播放界面
+                 //2,拿到item的信息(name,duration),展示到播放界面上
+                 //3,点击播放,开始播放,seekbar的begintime开始走 ,seekbar的进度也跟着走,同时播放按钮变成暂停按钮
+                 //4,点击暂停,录音播放暂停,seekbar停止进度,记住当前的播放位置,并停留在当前的显示位置
+                 //5,点击上一首,去recordingResList列表获取上一首的信息,如果是第一首就仍然是第一首,点击上一首,直接开始播放
+                 //6,点击下一首,去recordingResList列表获取下一首的信息,如果是最后一首就仍然是最后一首,点击下一首,直接开始播放
+                 //7,播放结束的监听,当音乐播放完,进度条停止,暂停按钮变成播放按钮
+                 //8,点击音量控制,去设置初始化音量界面,设置音量并上传到服务器
+                 **/
+                //定义一个选中状态
+                mSwipelistview.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
+                mSwipelistview.setItemChecked(position, true);
+                //展示的时候同时保存当前的选中的录音文件的播放地址.
+//                                SPUtils.getString(getContext(),"address")
+//                                SPUtils.putString(getContext(), "address", response.body().getBODY().getLST().get(position).getID());
+                //1,点击item,显示录音播放界面
+//                            isShowRecordingControl = false;
+                //保存position
+                selectedPosition = position;
+                showRecordingPlayView(true);
+                //拿到item的信息(name,duration),展示到播放界面上
+                //播放的id
+//                            LogUtil.i(TAG, "onItemClick: recordingResList"+recordingResList.toString());
+                if (mIdList == null || selectedPosition >= mIdList.size() || selectedPosition == -1)
+                    return;
+                mRecordingId = mIdList.get(selectedPosition);
+                LogUtil.i(TAG, "onItemClick: mrecoding" + mRecordingId);
+                //2,拿到item的信息(name,duration),展示到播放界面上
+                mPlayName = recordingResList.get(position).getNAME();
+                mDur = recordingResList.get(position).getDUR();
+                mPlayRecordingDesc.setText(mPlayName);
+                mPlayendTime.setText(mDur);
+//                            //带着id 去服务器申请本地播放
+                getLocalPlayApply(mToken, mPhoneNum, mRecordingId, mTime);
+
+//                            ToastUtil.showToast(getContext(), "点击的是:" + selectedPosition);
+
+            }
+        });
+
+        mSwipelistview.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
+                deleteRecording(mTime, position, recordingResList);
+                recordingResList.remove(position);
+                mRecordingListAdapter.notifyDataSetChanged();
+//                            ToastUtil.showToast(getContext(), "点击删除");
+                return false;
+            }
+
+        });
     }
 
     @Override
@@ -450,10 +532,10 @@ public class RecordingFragment extends BaseRecordingFragment implements View.OnC
 //                LogUtil.i(TAG, "itemClick:recordingfragment mToyId"+toyid);
 
                 if (ToySelectorFragment.mToyId == null) {
-                    ToastUtil.showToast(getContext(), "当前没有选中玩具");
+                    ToastUtil.showToast(getContext(), "请选择要推送的玩具");
                     return;
                 } else if (selectedPosition == -1) {
-                    ToastUtil.showToast(getContext(), "当前没有选中的item,请选择item之后再推送给玩具");
+                    ToastUtil.showToast(getContext(), "当前没有选中录音,请选择录音后再推送给玩具");
                     return;
                 }
                 sendRecordingToToy(ToySelectorFragment.mToyId);
@@ -469,7 +551,7 @@ public class RecordingFragment extends BaseRecordingFragment implements View.OnC
                 //TODO 编辑的功能,逻辑混乱,捋一捋
                 LogUtil.i("xuanzhong", "是否选中" + mSwipelistview.isSelected());
                 if (selectedPosition == -1) {
-                    ToastUtil.showToast(getActivity(), "您没有选择要编辑的录音,请选择后再进行编辑");
+                    ToastUtil.showToast(getActivity(), "请选择要编辑的录音");
                     return;
                 }
                 showEditDialog();
@@ -512,7 +594,7 @@ public class RecordingFragment extends BaseRecordingFragment implements View.OnC
                 LogUtil.i("555555", "isplaying1: ");
 //                    isRecordingPlaying = false;
 
-                ToastUtil.showToast(getContext(), "结束试听");
+//                ToastUtil.showToast(getContext(), "结束试听");
                 break;
             //重录
             case R.id.iv_recoding_tool_reRecording:
@@ -539,7 +621,7 @@ public class RecordingFragment extends BaseRecordingFragment implements View.OnC
                     return;
                 }
                 playOrPause(true);
-                ToastUtil.showToast(getContext(), "点击播放");
+//                ToastUtil.showToast(getContext(), "点击播放");
                 break;
             case R.id.iv_recoding_stop:
                 playOrPause(false);
@@ -736,7 +818,7 @@ public class RecordingFragment extends BaseRecordingFragment implements View.OnC
             Date date = new Date();
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
             mTime = simpleDateFormat.format(date);
-            Retrofit retrofit = new Retrofit.Builder()
+            final Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(Constant.baseurl)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
@@ -785,88 +867,16 @@ public class RecordingFragment extends BaseRecordingFragment implements View.OnC
                             list.add(listBean);
                         }
 
-                        final List<String> idList = new ArrayList<String>();
+                        mIdList = new ArrayList<String>();
                         for (int i = 0; i < recordingResList.size(); i++) {
                             String id = recordingResList.get(i).getID();
-                            idList.add(id);
+                            mIdList.add(id);
                         }
                         LogUtil.i("555555", "onResponse:+list的长度: " + recordingResList.size() + "recordingResList的内容:");
 
-                        mSwipelistview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                /**1,点击item,显示录音播放界面
-                                 //2,拿到item的信息(name,duration),展示到播放界面上
-                                 //3,点击播放,开始播放,seekbar的begintime开始走 ,seekbar的进度也跟着走,同时播放按钮变成暂停按钮
-                                 //4,点击暂停,录音播放暂停,seekbar停止进度,记住当前的播放位置,并停留在当前的显示位置
-                                 //5,点击上一首,去recordingResList列表获取上一首的信息,如果是第一首就仍然是第一首,点击上一首,直接开始播放
-                                 //6,点击下一首,去recordingResList列表获取下一首的信息,如果是最后一首就仍然是最后一首,点击下一首,直接开始播放
-                                 //7,播放结束的监听,当音乐播放完,进度条停止,暂停按钮变成播放按钮
-                                 //8,点击音量控制,去设置初始化音量界面,设置音量并上传到服务器
-                                 **/
-                                //定义一个选中状态
-                                mSwipelistview.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
-                                mSwipelistview.setItemChecked(position, true);
-                                //展示的时候同时保存当前的选中的录音文件的播放地址.
-                                SPUtils.putString(getContext(), "address", response.body().getBODY().getLST().get(position).getID());
-                                //1,点击item,显示录音播放界面
-//                            isShowRecordingControl = false;
-                                //保存position
-                                selectedPosition = position;
-                                showRecordingPlayView(true);
-                                //拿到item的信息(name,duration),展示到播放界面上
-                                //播放的id
-//                            LogUtil.i(TAG, "onItemClick: recordingResList"+recordingResList.toString());
-                                mRecordingId = idList.get(selectedPosition);
-                                LogUtil.i(TAG, "onItemClick: mrecoding" + mRecordingId);
-                                //2,拿到item的信息(name,duration),展示到播放界面上
-                                mPlayName = recordingResList.get(position).getNAME();
-                                mDur = recordingResList.get(position).getDUR();
-                                mPlayRecordingDesc.setText(mPlayName);
-                                mPlayendTime.setText(mDur);
-//                            //带着id 去服务器申请本地播放
-                                getLocalPlayApply(mToken, mPhoneNum, mRecordingId, mTime);
 
-//                            ToastUtil.showToast(getContext(), "点击的是:" + selectedPosition);
-
-                            }
-                        });
-                        SwipeMenuCreator mCreator = new SwipeMenuCreator() {
-
-                            @Override
-                            public void create(SwipeMenu menu) {
-                                SwipeMenuItem deleteItem = new SwipeMenuItem(getContext());
-                                deleteItem.setTitle("删除");
-                                deleteItem.setBackground(R.color.redFont);
-                                deleteItem.setWidth(dp2px(70));
-                                deleteItem.setTitleSize(16);
-                                deleteItem.setTitleColor(Color.WHITE);
-                                LogUtil.i(TAG,"title(): "+deleteItem.getTitle()+"; color(): "+deleteItem.getTitleColor()+"; size() :"+deleteItem.getTitleSize());
-
-                                menu.addMenuItem(deleteItem);
-                            }
-
-                        };
-
-                        mSwipelistview.setMenuCreator(mCreator);
-                        mSwipelistview.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
-                            @Override
-                            public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
-                                deleteRecording(mTime, position, recordingResList);
-                                recordingResList.remove(position);
-                                mRecordingListAdapter.notifyDataSetChanged();
-//                            ToastUtil.showToast(getContext(), "点击删除");
-                                return false;
-                            }
-
-                        });
-
-                        mSwipelistview.setSmoothScrollbarEnabled(true);
-                        mSwipelistview.setSwipeDirection(SwipeMenuListView.DIRECTION_LEFT);
-                        mSwipelistview.setOpenInterpolator(new AccelerateInterpolator());
-                        mSwipelistview.setCloseInterpolator(new AccelerateInterpolator());
-
-                    } else {
+                    } else if (response.body().getCODE().equals("-10006")) {
+                        SPUtils.putString(getContext(),"token","");
                         ToastUtil.showToast(getActivity(), response.body().getMSG());
                         footerView.setVisibility(View.GONE);
                     }
@@ -1151,8 +1161,8 @@ public class RecordingFragment extends BaseRecordingFragment implements View.OnC
                 mTextview_startrecording.setText("点击开始录音");
                 mMediaRecorder = new MediaRecorder();
                 mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-                mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_WB);
-                mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_WB);
+                mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.AAC_ADTS);
+                mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
 
                 String dir = Environment.getExternalStorageDirectory().getPath() + "/AAmart";
                 File file = new File(dir);
@@ -1171,7 +1181,7 @@ public class RecordingFragment extends BaseRecordingFragment implements View.OnC
                 startTimer();//时间计时
 
                 isNotRecording = !isNotRecording;
-                ToastUtil.showToast(getActivity(), "开始录音");
+//                ToastUtil.showToast(getActivity(), "开始录音");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -1339,6 +1349,16 @@ public class RecordingFragment extends BaseRecordingFragment implements View.OnC
         super.onResume();
         LogUtil.i(TAG, "onResume: went");
         showBottomPanel();
+        if (mIdList == null || selectedPosition >= mIdList.size() || selectedPosition == -1)
+            return;
+        mRecordingId = mIdList.get(selectedPosition);
+        LogUtil.i(TAG, "onItemClick: mrecoding" + mRecordingId);
+        //2,拿到item的信息(name,duration),展示到播放界面上
+        mPlayName = recordingResList.get(selectedPosition).getNAME();
+        mDur = recordingResList.get(selectedPosition).getDUR();
+        mPlayRecordingDesc.setText(mPlayName);
+        mPlayendTime.setText(mDur);
+
         String dir = Environment.getExternalStorageDirectory().getPath() + "/AAmart";
         final File file = new File(dir);
         if (!file.exists()) {
@@ -1366,7 +1386,10 @@ public class RecordingFragment extends BaseRecordingFragment implements View.OnC
         super.onPause();
         LogUtil.i(TAG, "onPause: went");
         showPauseView();
-
+        if (MusicPlayer.isPlaying()) {
+            MusicPlayer.pause();
+            MusicPlayer.stop();
+        }
     }
 
     @Override
@@ -1384,7 +1407,6 @@ public class RecordingFragment extends BaseRecordingFragment implements View.OnC
 
     @Override
     public void onError() {
-
     }
 
     @Override
@@ -1458,7 +1480,6 @@ public class RecordingFragment extends BaseRecordingFragment implements View.OnC
         @Override
         public void onStart(SHARE_MEDIA share_media) {
 //            ToastUtil.showToast(getContext(), "fragment");
-
         }
 
         @Override
@@ -1482,7 +1503,7 @@ public class RecordingFragment extends BaseRecordingFragment implements View.OnC
         @Override
         public void onCancel(SHARE_MEDIA platform) {
             LogUtil.e(TAG, "oncancel:+recoding +1");
-            ToastUtil.showToast(mWeakReference.get(), platform + "分享取消了");
+            ToastUtil.showToast(mWeakReference.get(), platform + "分享取消");
         }
     }
 

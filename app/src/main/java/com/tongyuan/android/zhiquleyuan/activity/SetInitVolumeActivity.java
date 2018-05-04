@@ -48,6 +48,7 @@ public class SetInitVolumeActivity extends AppCompatActivity implements View.OnC
 
     public static void launch(Context context, String babyid) {
         Intent it = new Intent(context, SetInitVolumeActivity.class);
+        it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         it.putExtra("babyid", babyid);
         context.startActivity(it);
     }
@@ -122,8 +123,8 @@ public class SetInitVolumeActivity extends AppCompatActivity implements View.OnC
     }
 
     private void initListener() {
-        mVolumeReduce.setOnClickListener(this);
-        mVolumeAdd.setOnClickListener(this);
+//        mVolumeReduce.setOnClickListener(this);
+//        mVolumeAdd.setOnClickListener(this);
 
         mPlayReduce.setOnClickListener(this);
         mPlay.setOnClickListener(this);
@@ -222,19 +223,20 @@ public class SetInitVolumeActivity extends AppCompatActivity implements View.OnC
             @Override
             public void onResponse(Call<ControlToyVolumeRes> call, Response<ControlToyVolumeRes> response) {
                 if (response.body().getCode().equals("0")) {
-                    ToastUtil.showToast(getApplicationContext(), "成功");
+//                    ToastUtil.showToast(getApplicationContext(), "成功");
                     finish();
                 } else if (response.body().getCode().equals("-10009")) {
                     ToastUtil.showToast(getApplicationContext(), "玩具未登录,为获取到玩具DEVCODE");
                 } else if (response.body().getCode().equals("-10006")) {
-                    ToastUtil.showToast(getApplicationContext(), "用户未登录");
+                    SPUtils.putString(getApplicationContext(), "token", "");
+                    ToastUtil.showToast(getApplicationContext(), response.body().getMsg());
 
                 }
             }
 
             @Override
             public void onFailure(Call<ControlToyVolumeRes> call, Throwable t) {
-                ToastUtil.showToast(getApplicationContext(), "网络异常");
+                ToastUtil.showToast(getApplicationContext(), R.string.network_error);
 
 
             }

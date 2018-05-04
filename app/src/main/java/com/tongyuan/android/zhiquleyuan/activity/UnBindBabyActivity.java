@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ImageButton;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
@@ -45,7 +45,7 @@ public class UnBindBabyActivity extends AppCompatActivity implements View.OnClic
     private ListView mListview_unbindbaby;
     private Button mButton_confirm;
     private LinearLayout mBack_unbindbaby;
-    private ImageButton mCheck;
+    private CheckBox mCheck;
     private String mToyCode;
     private String mToyId;
     private String mPhoneNum;
@@ -71,7 +71,7 @@ public class UnBindBabyActivity extends AppCompatActivity implements View.OnClic
         mButton_confirm = (Button) findViewById(R.id.bt_unbindbaby);
         mBack_unbindbaby = (LinearLayout) findViewById(R.id.iv_unbindbaby_backa);
         View inflate = LayoutInflater.from(this).inflate(R.layout.item_unbindbaby, null);
-        mCheck = (ImageButton) inflate.findViewById(R.id.iv_item_unbindbaby_checked);
+        mCheck = (CheckBox) inflate.findViewById(R.id.iv_item_unbindbaby_checked);
 
     }
 
@@ -126,14 +126,17 @@ public class UnBindBabyActivity extends AppCompatActivity implements View.OnClic
                 UnBindBabyAdapter unBindBabyAdapter = new UnBindBabyAdapter(getApplicationContext(), response);
                 mListview_unbindbaby.setAdapter(unBindBabyAdapter);
                 mListview_unbindbaby.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
+
                 mListview_unbindbaby.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        CheckBox checkebox_state = (CheckBox) view.findViewById(R.id.iv_item_unbindbaby_checked);
+                        checkebox_state.setChecked(true);
                         mListview_unbindbaby.setItemChecked(position, true);
                         checkPosition = position;
                         mBabyId = response.body().getBODY().getLST().get(checkPosition).getID().toString();
                         LogUtil.i("555555", "onItemClick: +mBabyId" + mBabyId);
-                        ToastUtil.showToast(getApplicationContext(), "item" + position);
+//                        ToastUtil.showToast(getApplicationContext(), "item" + position);
                     }
                 });
             }
@@ -165,8 +168,13 @@ public class UnBindBabyActivity extends AppCompatActivity implements View.OnClic
             @Override
             public void onResponse(Call<UnbindBabyToToyResBean> call, Response<UnbindBabyToToyResBean> response) {
                 LogUtil.i("555555", "(3.4.19) onResponse: " + response.body().toString());
-                ToastUtil.showToast(getApplicationContext(), "解绑成功,跳转到toyselector页面");
-
+//                ToastUtil.showToast(getApplicationContext(), "解绑成功,跳转到toyselector页面");
+                Intent intent = new Intent();
+                Bundle bundle = new Bundle();
+                bundle.putString("babyid", mBabyId);
+                bundle.putString("babyimage", "");
+                intent.putExtra("bindbabybundle", bundle);
+                setResult(100, intent);
                 finish();
             }
 
@@ -192,8 +200,7 @@ public class UnBindBabyActivity extends AppCompatActivity implements View.OnClic
                 }
 
                 break;
-            case R.id.iv_item_unbindbaby_checked:
-                ToastUtil.showToast(this, "碰到了");
+
             default:
                 break;
         }

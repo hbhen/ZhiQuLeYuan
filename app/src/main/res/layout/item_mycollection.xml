@@ -5,8 +5,8 @@
 
     <ImageView
         android:id="@+id/iv_item_mycollection"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="@dimen/dp_60"
+        android:layout_height="@dimen/dp_60"
         android:layout_marginLeft="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_10"
         android:scaleType="centerCrop"
@@ -14,7 +14,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="81dp"
+        android:layout_height="@dimen/dp_80"
         android:layout_toRightOf="@id/iv_item_mycollection"
         android:paddingTop="@dimen/dp_10">
 
@@ -31,8 +31,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/tv_item_mycollection"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="14dp">
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_14">
 
             <TextView
                 android:id="@+id/tv_item_mycollection_times"
@@ -40,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:text="播放次数"
                 android:textColor="@color/grayFont"
-                android:textSize="12sp"/>
+                android:textSize="@dimen/sp_12"/>
 
             <TextView
                 android:id="@+id/tv_item_mycollection_detailstimes"
@@ -66,10 +66,10 @@
                 android:id="@+id/tv_item_mycollection_detailscategory"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
+                android:layout_marginLeft="@dimen/dp_2"
                 android:layout_toRightOf="@id/tv_item_mycollection_category"
                 android:text="童谣"
-                android:textColor="#ff4511"
+                android:textColor="@color/redFont"
                 android:textSize="12sp"/>
         </RelativeLayout>
 

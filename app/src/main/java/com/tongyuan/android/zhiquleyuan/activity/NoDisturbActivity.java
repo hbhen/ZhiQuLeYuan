@@ -1,31 +1,29 @@
 package com.tongyuan.android.zhiquleyuan.activity;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AccelerateInterpolator;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.BaseViewHolder;
 import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
-import com.tongyuan.android.zhiquleyuan.adapter.NewAdapter;
+import com.tongyuan.android.zhiquleyuan.adapter.NoDisturbAdapter;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteNodisturbTimeReqBean;
 import com.tongyuan.android.zhiquleyuan.bean.DeleteNodisturbTimeResBean;
 import com.tongyuan.android.zhiquleyuan.bean.NodisturbTimeReqBean;
@@ -39,6 +37,11 @@ import com.tongyuan.android.zhiquleyuan.utils.GetTimeUtil;
 import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
+import com.tongyuan.android.zhiquleyuan.view.SwipeMenuListView.MySwipeRefreshLayout;
+import com.tongyuan.android.zhiquleyuan.view.SwipeMenuListView.SwipeMenu;
+import com.tongyuan.android.zhiquleyuan.view.SwipeMenuListView.SwipeMenuCreator;
+import com.tongyuan.android.zhiquleyuan.view.SwipeMenuListView.SwipeMenuItem;
+import com.tongyuan.android.zhiquleyuan.view.SwipeMenuListView.SwipeMenuListView;
 import com.tongyuan.android.zhiquleyuan.view.wheelview.OnWheelChangedListener;
 import com.tongyuan.android.zhiquleyuan.view.wheelview.WheelView;
 import com.tongyuan.android.zhiquleyuan.view.wheelview.adapter.NumericWheelAdapter;
@@ -58,14 +61,18 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static com.tongyuan.android.zhiquleyuan.fragment.ToySelectorFragment.mToyId;
+
 
 /**
  * Created by android on 2017/3/12.
  */
 public class NoDisturbActivity extends AppCompatActivity implements View.OnClickListener {
-
-    @BindView(R.id.recyclerView)
-    RecyclerView mRecyclerView;
+    private final String TAG = NoDisturbActivity.class.getSimpleName();
+    @BindView(R.id.sp_nodisturb)
+    MySwipeRefreshLayout mMySwipeRefreshLayout;
+    @BindView(R.id.swipelistview_nodisturb)
+    SwipeMenuListView mSwipeMenuListView;
     @BindView(R.id.iv_add_nodisturbtime)
     ImageView mAddNodisturb;
     @BindView(R.id.ll_parent)
@@ -85,6 +92,8 @@ public class NoDisturbActivity extends AppCompatActivity implements View.OnClick
     private String mStart_min;
     private String mStart_hour;
     public static String pstate = "0";
+    private static int CLICK_ACTION = 1;
+    private int selectPosition = -2;
 
     String[] week_str =
             {"周日", "周一", "周二", "周三", "周四", "周五", "周六"};
@@ -98,20 +107,86 @@ public class NoDisturbActivity extends AppCompatActivity implements View.OnClick
                     "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54",
                     "55", "56", "57", "58", "59"};
     String lastweek = "周一";
-    private NewAdapter mAdapter;
+    private NoDisturbAdapter mAdapter;
     private TextView mOk;
     private TextView mCancle;
     private String mToken;
+    private String NC = "-1";
+    private int currentPage = 1;
+    private View footerView;
+    private List<NodisturbTimeResBean.BODYBean.LSTBean> nodisturblist = new ArrayList<>();
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nodisturb);
-        initData();
         ButterKnife.bind(this);
-        getNoDisturbTime();
+        initView();
+        initData();
+        initListener();
+
     }
 
+    private void initView() {
+//        footerView = LayoutInflater.from(this).inflate(R.layout.discovery_sub_item_foot, null);
+//        footerView.setVisibility(View.GONE);
+//        mSwipeMenuListView.addFooterView(footerView);
+
+        inSwipeMenuListViewContent();
+    }
+
+    private void inSwipeMenuListViewContent() {
+        SwipeMenuCreator mCreator = new SwipeMenuCreator() {
+            @Override
+            public void create(SwipeMenu menu) {
+                SwipeMenuItem deleteItem = new SwipeMenuItem(NoDisturbActivity.this);
+                deleteItem.setTitle("删除");
+                deleteItem.setBackground(R.color.redFont);
+                deleteItem.setWidth(dp2px(70));
+                deleteItem.setTitleSize(16);
+                deleteItem.setTitleColor(Color.WHITE);
+                menu.addMenuItem(deleteItem);
+            }
+        };
+        mSwipeMenuListView.setMenuCreator(mCreator);
+        mSwipeMenuListView.setSmoothScrollbarEnabled(true);
+        mSwipeMenuListView.setSwipeDirection(SwipeMenuListView.DIRECTION_LEFT);
+        mSwipeMenuListView.setOpenInterpolator(new AccelerateInterpolator());
+        mSwipeMenuListView.setCloseInterpolator(new AccelerateInterpolator());
+    }
+
+    private void initListener() {
+
+        mMySwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                currentPage = 1;
+//                NC = "-1";
+                getNoDisturbTime(false);
+                mMySwipeRefreshLayout.setRefreshing(false);
+            }
+        });
+        mSwipeMenuListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                CLICK_ACTION = 2;
+                selectPosition = position;
+                showPop();
+            }
+        });
+        mSwipeMenuListView.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
+                deleteNodisturbTime(nodisturblist, position);
+                nodisturblist.remove(position);
+                mAdapter.notifyDataSetChanged();
+//                ToastUtil.showToast(getApplicationContext(), "点击删除");
+                return false;
+            }
+        });
+//        mSwipeMenuListView.setOnScrollListener(this);
+    }
 
     private void initData() {
         mToken = SPUtils.getString(this, "token", "");
@@ -123,74 +198,76 @@ public class NoDisturbActivity extends AppCompatActivity implements View.OnClick
             ymdData[i] = GetTimeUtil.getYMDTime(time);
         }
 
+        getNoDisturbTime(false);
     }
 
-    private void getNoDisturbTime() {
+    private void getNoDisturbTime(final boolean isLoadMore) {
+//        int page = currentPage;
+//        if (isLoadMore) {
+//            page++;
+//        }
+//        if (!NC.equals("0")) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constant.baseurl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
+
         AllInterface allInterface = retrofit.create(AllInterface.class);
-        NodisturbTimeReqBean.BODYBean bodyBean = new NodisturbTimeReqBean.BODYBean(ToySelectorFragment.mToyId, "10", "1");
+//            NodisturbTimeReqBean.BODYBean bodyBean = new NodisturbTimeReqBean.BODYBean(mToyId, "10", String.valueOf(page));
+        NodisturbTimeReqBean.BODYBean bodyBean = new NodisturbTimeReqBean.BODYBean(mToyId, "", "");
         NodisturbTimeReqBean nodisturbTimeReqBean = new NodisturbTimeReqBean("REQ", "QTOYSP", SPUtils.getString(this, "phoneNum", ""), new
                 SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()), bodyBean, "", SPUtils.getString(this, "token", ""), "1");
         Gson gson = new Gson();
         String s = gson.toJson(nodisturbTimeReqBean);
         Call<NodisturbTimeResBean> nodisturbTimeResBeanCall = allInterface.NODISTURB_TIME_RES_BEAN_CALL(s);
         nodisturbTimeResBeanCall.enqueue(new Callback<NodisturbTimeResBean>() {
-
-            private List<NodisturbTimeResBean.BODYBean.LSTBean> mLst;
-
             @Override
             public void onResponse(Call<NodisturbTimeResBean> call, Response<NodisturbTimeResBean> response) {
-                mLst = response.body().getBODY().getLST();
-                LogUtil.i("1212321", "onResponse: " + mLst.toString());
-                LogUtil.i("1212321", "onResponse: " + response.body().getTOKEN().toString());
-                mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-//                NoDisturbAdapter adapter = new NoDisturbAdapter(getApplicationContext(), lst);
-                mAdapter = new NewAdapter(getApplicationContext(), R.layout.disturb_recycler_troggle, mLst);
-                mRecyclerView.setAdapter(mAdapter);
-                mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                        showPop();
-                        ToastUtil.showToast(getApplication(), "点击了" + position);
+                if (response.body() != null && response.body().getCODE().equals("0")) {
+                    mAdapter = new NoDisturbAdapter(NoDisturbActivity.this, nodisturblist);
+                    mSwipeMenuListView.setAdapter(mAdapter);
+                    NC = response.body().getBODY().getNC();
+                    List<NodisturbTimeResBean.BODYBean.LSTBean> lst = response.body().getBODY().getLST();
+                    LogUtil.i("1212321", "onResponse: " + lst.toString());
+                    LogUtil.i("1212321", "onResponse: " + response.body().getTOKEN().toString());
+                    if (isLoadMore) {
+                        currentPage++;
+                    } else {
+                        nodisturblist.clear();
+                        currentPage = 1;
                     }
-                });
-
-                mAdapter.setOnItemLongClickListener(new BaseQuickAdapter.OnItemLongClickListener() {
-                    @Override
-                    public boolean onItemLongClick(BaseQuickAdapter adapter, View view, final int position) {
-                        ToastUtil.showToast(getApplicationContext(), "长按了" + position);
-
-                        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(NoDisturbActivity.this);
-                        alertDialog.setTitle("删除免打扰时间");
-                        alertDialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        });
-                        alertDialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                deleteNodisturbTime(mLst, position);
-
-                            }
-                        });
-                        alertDialog.setMessage("是否删除当前的免打扰时间");
-                        alertDialog.show();
-                        return true;
-                    }
-                });
+                    nodisturblist.addAll(lst);
+//                        if (NC.equals("0")) {
+//                            footerView.setVisibility(View.GONE);
+//                        } else {
+//                            footerView.setVisibility(View.VISIBLE);
+//                        }
+                    //mSwipeMenuListView.setAdapter(mAdapter);
+                    mAdapter.notifyDataSetChanged();
+                    //mSwipeMenuListView.scrollBy(1,1);
+                    LogUtil.d("isLoading", "notifyData...");
+                } else if (response.body().getCODE().equals("-10006")) {
+                    SPUtils.putString(getApplicationContext(), "token", "");
+                    ToastUtil.showToast(getApplicationContext(), response.body().getMSG());
+                } else {
+                    ToastUtil.showToast(getApplicationContext(), response.body().getMSG());
+//                        footerView.setVisibility(View.GONE);
+                }
+//                    isLoading = false;
+//                    LogUtil.d("isLoading", "isLoading = false...");
 
             }
 
             @Override
             public void onFailure(Call<NodisturbTimeResBean> call, Throwable t) {
-                ToastUtil.showToast(getApplicationContext(), t.toString());
+//                    isLoading = false;
+                LogUtil.i(TAG, "querynodisturbList:failure" + t.toString());
+                ToastUtil.showToast(getApplicationContext(), R.string.network_error);
             }
         });
+
+//        }
+
     }
 
     private void deleteNodisturbTime(List<NodisturbTimeResBean.BODYBean.LSTBean> lst, final int position) {
@@ -213,7 +290,6 @@ public class NoDisturbActivity extends AppCompatActivity implements View.OnClick
             @Override
             public void onResponse(Call<DeleteNodisturbTimeResBean> call, Response<DeleteNodisturbTimeResBean> response) {
                 if (response.body().getCODE().equals("0")) {
-                    mAdapter.remove(position);
                     mAdapter.notifyDataSetChanged();
                 }
             }
@@ -229,8 +305,8 @@ public class NoDisturbActivity extends AppCompatActivity implements View.OnClick
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.iv_add_nodisturbtime:
+                CLICK_ACTION = 1;
                 showPop();
-//                ToastUtil.showToast(this, "56");
                 break;
             case R.id.iv_activity_nodisturb_back:
                 finish();
@@ -265,7 +341,6 @@ public class NoDisturbActivity extends AppCompatActivity implements View.OnClick
     private NumericWheelAdapter endMinuteAdapter;
 
     private void initWheelView(final View popupWindowView) {
-
         Calendar c = Calendar.getInstance();
         mOk = (TextView) popupWindowView.findViewById(R.id.tv_ok);
         mCancle = (TextView) popupWindowView.findViewById(R.id.tv_cancle);
@@ -393,7 +468,6 @@ public class NoDisturbActivity extends AppCompatActivity implements View.OnClick
         wl_min.setViewAdapter(endMinuteAdapter);
         wl_min.setCurrentItem(currMinute);
         wl_min.setCyclic(true);// 可循环滚动
-
         mOk.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -423,6 +497,7 @@ public class NoDisturbActivity extends AppCompatActivity implements View.OnClick
 
                 String beginTime = mStart_hour + mStart_min;
                 String endTime = mEnd_hour + mEnd_min;
+
                 sendTimeToServer(beginTime, endTime);
 
             }
@@ -432,25 +507,12 @@ public class NoDisturbActivity extends AppCompatActivity implements View.OnClick
             @Override
             public void onClick(View v) {
                 popupWindow.dismiss();
-                ToastUtil.showToast(getApplicationContext(), "cancle");
+//                ToastUtil.showToast(getApplicationContext(), "cancle");
             }
         });
 
-//        String currenthh = new SimpleDateFormat("HH").format(c.getTime());
-//        List<String> asList = Arrays.asList(xiaoshi_start);
-//        int hour_index = asList.indexOf(currenthh);
-//        wl_hour.setCurrentItem(hour_index);
-//        baseViewHolder.setText(R.id.tv_nodisturb_start, currenthh);
-//
-//
-//        String currentmm = new SimpleDateFormat("mm").format(c.getTime());
-//        List<String> asList2 = Arrays.asList(fenzhong_start);
-//        int min_index = asList2.indexOf(currentmm);
-//        wl_min.setCurrentItem(min_index);
-//        baseViewHolder.setText(R.id.tv_nodisturb_end, currentmm);
 
     }
-
 
     private void sendTimeToServer(String beginTime, String endTime) {
         Retrofit retrofit = new Retrofit.Builder()
@@ -458,10 +520,16 @@ public class NoDisturbActivity extends AppCompatActivity implements View.OnClick
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
-        final SetNodisturbTimeReqBean.BODYBean.LSTBean lstBean = new SetNodisturbTimeReqBean.BODYBean.LSTBean("", ToySelectorFragment.mToyId,
-                ToySelectorFragment.mToyId, beginTime + "00", endTime + "00", "1");
-        final List list = new ArrayList();
-        list.add(lstBean);
+        List list = new ArrayList();
+        if (CLICK_ACTION == 1) {
+            SetNodisturbTimeReqBean.BODYBean.LSTBean lstBean = new SetNodisturbTimeReqBean.BODYBean.LSTBean("", ToySelectorFragment.mToyId,
+                    ToySelectorFragment.mToyId, beginTime + "00", endTime + "00", "1");
+            list.add(lstBean);
+        } else {
+            SetNodisturbTimeReqBean.BODYBean.LSTBean lstBean = new SetNodisturbTimeReqBean.BODYBean.LSTBean(nodisturblist.get(selectPosition).getID
+                    (), mToyId, mToyId, beginTime + "00", endTime + "00", "1");
+            list.add(lstBean);
+        }
         SetNodisturbTimeReqBean.BODYBean bodyBean = new SetNodisturbTimeReqBean.BODYBean(list);
         SetNodisturbTimeReqBean setNodisturbTimeReqBean = new SetNodisturbTimeReqBean("REQ", "TOYSP", "", new SimpleDateFormat("yyyyMMddHHmmssSSS")
                 .format(new Date()), bodyBean, "", mToken, "1");
@@ -472,26 +540,8 @@ public class NoDisturbActivity extends AppCompatActivity implements View.OnClick
             @Override
             public void onResponse(Call<SetNodisturbTimeResBean> call, Response<SetNodisturbTimeResBean> response) {
                 if (response.body().getCODE().equals("0")) {
-                    BaseViewHolder baseViewHolder = mAdapter.returnView();
-                    if (baseViewHolder == null) {
-                        View inflate = LayoutInflater.from(NoDisturbActivity.this).inflate(R.layout.disturb_recycler_troggle, null);
-                        TextView start = (TextView) inflate.findViewById(R.id.tv_nodisturb_start);
-                        TextView end = (TextView) inflate.findViewById(R.id.tv_nodisturb_end);
-                        start.setText(mStart_hour + ":" + mStart_min + "-");
-                        end.setText(mEnd_hour + ":" + mEnd_min);
-                        getNoDisturbTime();
-                        mAdapter.notifyDataSetChanged();
-                        popupWindow.dismiss();
-                    } else {
-                        LogUtil.i("1212321", "onResponse: " + mStart_hour + "_" + mStart_min + "_" + mEnd_hour + "_" + mEnd_min + ":");
-                        baseViewHolder.setText(R.id.tv_nodisturb_start, mStart_hour + ":" + mStart_min + "-");
-                        baseViewHolder.setText(R.id.tv_nodisturb_end, mEnd_hour + ":" + mEnd_min);
-//                        ToastUtil.showToast(getApplicationContext(), "ok");
-                        getNoDisturbTime();
-                        mAdapter.notifyDataSetChanged();
-                        popupWindow.dismiss();
-                    }
-
+                    getNoDisturbTime(false);
+                    popupWindow.dismiss();
                 }
             }
 
@@ -526,4 +576,28 @@ public class NoDisturbActivity extends AppCompatActivity implements View.OnClick
 
     }
 
+    private int dp2px(int dp) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
+                getResources().getDisplayMetrics());
+    }
+
+//    private int totalItemCount;
+//    private int lastItem;
+//    private boolean isLoading = false;
+//
+//    @Override
+//    public void onScrollStateChanged(AbsListView view, int scrollState) {
+//        LogUtil.d("isLoading", "onScrollStateChanged isLoading= "+isLoading + " lastItem == totalItemCount " + (lastItem == totalItemCount) + " " +scrollState);
+//        if (!isLoading && lastItem == totalItemCount && scrollState == SCROLL_STATE_IDLE) {
+//            //显示加载更多
+//            isLoading = true;
+//            getNoDisturbTime(true);
+//        }
+//    }
+//
+//    @Override
+//    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+//        lastItem = firstVisibleItem + visibleItemCount;//可见的item的数量,
+//        this.totalItemCount = totalItemCount;
+//    }
 }

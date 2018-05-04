@@ -76,7 +76,7 @@ public class CheckTokenService extends IntentService {
             }
         };
         Timer timer = new Timer();
-        timer.schedule(timerTask, 1000, 10000);
+        timer.schedule(timerTask, 1000, 1500000);
     }
 
     private void checkToken() {

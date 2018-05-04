@@ -115,7 +115,7 @@ public class AddMemberToGroupActivity extends AppCompatActivity implements View.
                 }
                 if (CommonUtil.isPhoneNum(mPhone)) {
                     LogUtil.d(TAG, "onClick: phone+" + mPhone);
-                    ToastUtil.showToast(this, "phone" + mPhone);
+//                    ToastUtil.showToast(this, "phone" + mPhone);
                     QuerySingleUserInfo(mPhone);
                 } else {
                     ToastUtil.showToast(this, "请检查输入的手机号");
@@ -168,16 +168,18 @@ public class AddMemberToGroupActivity extends AppCompatActivity implements View.
 
                     addMemberToGroup(userId);
 
+                } else if (response.body().getCODE().equals("-10006")) {
+                    SPUtils.putString(getApplicationContext(), "token", "");
+                    ToastUtil.showToast(getApplicationContext(), response.body().getMSG());
                 } else {
-
-                    ToastUtil.showToast(getApplicationContext(), "response为空");
-
+                    ToastUtil.showToast(getApplicationContext(), response.body().getMSG());
                 }
             }
 
             @Override
             public void onFailure(Call<QuerySingleUserInfoReSBean> call, Throwable t) {
-                ToastUtil.showToast(getApplicationContext(), "网络异常");
+                ToastUtil.showToast(getApplicationContext(), "网络异常,请检查网络");
+                LogUtil.i(TAG, t.toString());
             }
         });
 

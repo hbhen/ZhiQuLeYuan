@@ -141,7 +141,8 @@ public class UpdateAppUtils {
             public void callback(int position) {
                 switch (position) {
                     case 0:  //cancle
-                        System.exit(0);
+//                        System.exit(0);
+                        activity.finish();
                         break;
 
                     case 1:  //sure

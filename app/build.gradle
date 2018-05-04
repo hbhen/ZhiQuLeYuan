@@ -107,4 +107,6 @@ dependencies {
     //下载的框架 liulishuo
     compile 'com.liulishuo.filedownloader:library:1.6.8'
     compile 'com.android.support:design:25.0.0'
+
+    compile 'com.kyleduo.switchbutton:library:2.0.0'
 }

@@ -42,15 +42,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MyUpdateActivity extends AppCompatActivity {
     private static final String TAG = "tag";
     private int code = 0;
-    String apkPath = Constant.apkDownload;
-    //    String apkPath = "http://sj.qq.com/myapp/detail.htm?apkName=com.tongyuan.android.zhiquleyuan";
+//    String apkPath = Constant.apkDownload;
+        String apkPath = "http://sj.qq.com/myapp/detail.htm?apkName=com.tongyuan.android.zhiquleyuan";
     public static final int NORMAL_DOWNLOAD = 1;
     public static final int WEB_DOWNLOAD = 2;
     public static final int FORCE_DOWNLOAD = 3;
     public static final int CHECK_DOWNLOAD = 4;
-    private int mVersionCode = 5;
+//    private int mVersionCode = 5;
     private String mVersion;
-    private String mVersionName = "1.5";
+//    private String mVersionName = "1.5";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -98,7 +98,7 @@ public class MyUpdateActivity extends AppCompatActivity {
 //                        checkAndUpdate(FORCE_DOWNLOAD);
 //                    }
                 } else {
-                    ToastUtil.showToast(MyUpdateActivity.this, "当前版本是最新版本");
+                    ToastUtil.showToast(MyUpdateActivity.this, "当前已经是最新版本");
                 }
             }
 
@@ -148,8 +148,8 @@ public class MyUpdateActivity extends AppCompatActivity {
     //基本更新
     private void updat1() {
         UpdateAppUtils.from(this)
-                .serverVersionCode(mVersionCode)
-                .serverVersionName(mVersionName)
+//                .serverVersionCode(mVersionCode)
+                .serverVersionName(mVersion)
                 .apkPath(apkPath)
                 .updateInfo("1.修复若干bug\n2.美化部分页面")
                 .showNotification(true)
@@ -160,8 +160,8 @@ public class MyUpdateActivity extends AppCompatActivity {
     //通过浏览器下载
     private void update2() {
         UpdateAppUtils.from(this)
-                .serverVersionCode(mVersionCode)
-                .serverVersionName(mVersionName)
+//                .serverVersionCode(mVersionCode)
+                .serverVersionName(mVersion)
                 .apkPath(apkPath)
                 .downloadBy(UpdateAppUtils.DOWNLOAD_BY_BROWSER)
                 .update();
@@ -171,8 +171,8 @@ public class MyUpdateActivity extends AppCompatActivity {
     private void update3() {
         UpdateAppUtils.from(this)
                 .checkBy(UpdateAppUtils.CHECK_BY_VERSION_NAME)
-                .serverVersionCode(mVersionCode)
-                .serverVersionName(mVersionName)
+//                .serverVersionCode(mVersionCode)
+                .serverVersionName(mVersion)
                 .apkPath(apkPath)
                 .isForce(true)
                 .downloadBy(UpdateAppUtils.DOWNLOAD_BY_BROWSER)
@@ -183,8 +183,8 @@ public class MyUpdateActivity extends AppCompatActivity {
     private void update4() {
         UpdateAppUtils.from(this)
                 .checkBy(UpdateAppUtils.CHECK_BY_VERSION_NAME)
-                .serverVersionName(mVersionName)
-                .serverVersionCode(mVersionCode)
+                .serverVersionName(mVersion)
+//                .serverVersionCode(mVersionCode)
                 .apkPath(apkPath)
                 .downloadBy(UpdateAppUtils.DOWNLOAD_BY_BROWSER)
                 .isForce(false)

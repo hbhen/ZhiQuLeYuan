@@ -3,11 +3,8 @@ package com.tongyuan.android.zhiquleyuan.adapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +16,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.activity.AddMemberToGroupActivity;
@@ -36,6 +32,7 @@ import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
+import com.tongyuan.android.zhiquleyuan.view.GlideCircleTransform;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -189,19 +186,9 @@ public class ToyMemberAdapter extends BaseAdapter {
 
         LogUtil.i("adapter", "loadImage " + position);
         String userImg = mLSTBeanlist.get(position).getIMG();
-//        Glide.with(mContext).load(userImg).asBitmap().placeholder(R.drawable.default_cover).into(imgView);
+        Glide.with(mContext).load(userImg).asBitmap().centerCrop().placeholder(R.mipmap.default_babyimage).transform(new GlideCircleTransform(mContext)).into
+                (imgView);
 
-        Glide.with(mContext).load(userImg).asBitmap().centerCrop().placeholder(R.drawable.player_cover_default).into(new BitmapImageViewTarget
-                (imgView) {
-
-            @Override
-            protected void setResource(Bitmap resource) {
-                RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(mContext.getResources(), resource);
-                roundedBitmapDrawable.setCircular(true);
-                imgView.setImageDrawable(roundedBitmapDrawable);
-                LogUtil.i("adapter", "setResource " + position);
-            }
-        });
     }
 
     private View.OnLongClickListener mOnLongClickListener = new View.OnLongClickListener() {
@@ -233,7 +220,7 @@ public class ToyMemberAdapter extends BaseAdapter {
                 public void onClick(DialogInterface dialog, int which) {
                     String userId = mLSTBeanlist.get(longPosition).getID();
                     changeManager(longPosition, v, userId);
-                    ToastUtil.showToast(mContext, "sure");
+//                    ToastUtil.showToast(mContext, "sure");
                 }
             });
             builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -303,11 +290,11 @@ public class ToyMemberAdapter extends BaseAdapter {
         @Override
         public void onClick(View v) {
             int position = (int) v.getTag();
-            ToastUtil.showToast(mContext, "点击的是:" + position);
+//            ToastUtil.showToast(mContext, "点击的是:" + position);
 
             if (position == getCount() - 2) {
                 LogUtil.d(TAG,"will jump to add member");
-                ToastUtil.showToast(mContext, "点击了加号,开始执行加号的逻辑");
+//                ToastUtil.showToast(mContext, "点击了加号,开始执行加号的逻辑");
                 Intent intent = new Intent();
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("toyinfo", mResponse);
@@ -363,7 +350,7 @@ public class ToyMemberAdapter extends BaseAdapter {
             @Override
             public void onFailure(Call<DelMembFromGroupReSBean> call, Throwable t) {
 
-                ToastUtil.showToast(mContext, "shibai");
+                ToastUtil.showToast(mContext, R.string.network_error);
 
             }
         });

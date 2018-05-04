@@ -30,6 +30,7 @@ import com.tongyuan.android.zhiquleyuan.request.RequestManager;
 import com.tongyuan.android.zhiquleyuan.request.base.BaseRequest;
 import com.tongyuan.android.zhiquleyuan.request.base.SuperModel;
 import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
+import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.SpacesItemDecoration;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
@@ -175,7 +176,7 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
             if (isLoadMore) {
                 ++page;
             }
-            DiscoveryListRequsetBean.BODYBean request = new DiscoveryListRequsetBean.BODYBean("10", String.valueOf(page));
+            final DiscoveryListRequsetBean.BODYBean request = new DiscoveryListRequsetBean.BODYBean("10", String.valueOf(page));
             Call<SuperModel<DiscoveryListResultBean.BODYBean>> discoveryListResult = RequestManager.getInstance()
                     .getDiscoveryListResult(getContext(),
                             request);
@@ -214,7 +215,8 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
             discoveryListResult.enqueue(new CallbackFilter<SuperModel<DiscoveryListResultBean.BODYBean>>() {
                 @Override
                 public void onFailure(Call<SuperModel<DiscoveryListResultBean.BODYBean>> call, Throwable t) {
-                    ToastUtil.showToast(getActivity(), "网络请求失败");
+                    ToastUtil.showToast(getActivity(), R.string.network_error);
+                    LogUtil.i(TAG,t.toString());
                     mSwiperefresh.setRefreshing(false);
                     isLoading = false;
                 }
@@ -233,7 +235,10 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
                         //LogUtil.i(TAG, "onResponse: "+response.body().toString());
                         discoveryListViewList.addAll(response.body().BODY.getLST());
                         mAdapter.notifyDataSetChanged();
-                    } else {
+                    } else if (response.body().CODE.equals("-10006")){
+                        SPUtils.putString(getActivity(),"token","");
+                        ToastUtil.showToast(getActivity(), response.body().MSG);
+                    }else{
                         ToastUtil.showToast(getActivity(), response.body().MSG);
                     }
                     mSwiperefresh.setRefreshing(false);
@@ -269,7 +274,7 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
 
             @Override
             public void onFailure(Call<SuperModel<DiscoveryGridItemBean>> call, Throwable t) {
-                ToastUtil.showToast(getActivity(), "网络请求失败");
+                ToastUtil.showToast(getActivity(), R.string.network_error);
                 mSwiperefresh.setRefreshing(false);
             }
         });

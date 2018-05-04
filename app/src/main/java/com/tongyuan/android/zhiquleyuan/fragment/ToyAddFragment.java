@@ -101,7 +101,7 @@ public class ToyAddFragment extends BaseFragment implements View.OnClickListener
 
                 //跳转到扫描二维码的界面,进行二维码扫描
                 Intent intent = new Intent();
-                intent.putExtra("flag",1);
+                intent.putExtra("flag", 1);
                 intent.setClass(getActivity(), CaptureActivity.class);
 //                startActivity(intent);
                 startActivityForResult(intent, 300);//拿到玩具的唯一id code
@@ -114,7 +114,7 @@ public class ToyAddFragment extends BaseFragment implements View.OnClickListener
                 //添加返回栈
                 MainActivity mainActivity = (MainActivity) getActivity();
                 mainActivity.backToTop();
-                ToastUtil.showToast(mContext, "back");
+//                ToastUtil.showToast(mContext, "back");
                 break;
             default:
                 break;
@@ -127,17 +127,17 @@ public class ToyAddFragment extends BaseFragment implements View.OnClickListener
 //        switch (requestCode) {
 //            //返回的二维码解析数据
 //            case 300:
-                if (resultCode == 90) {
-                    code = data.getStringExtra("SCAN_RESULT");
-                    //对二维码数据的解析
+        if (resultCode == 90) {
+            code = data.getStringExtra("SCAN_RESULT");
+            //对二维码数据的解析
 //                    SPUtils.putString(getActivity(), "toycode", code);
-                    LogUtil.i(TAG, "code: " + code);
-                    ToastUtil.showToast(getActivity(), "code---" + code);
-                    //3.4.11 添加修改玩具属性
-                    ToastUtil.showToast(getContext(),"code++++");
-                    showFragment(ToySelectorFragment.class.getSimpleName());
-                    addToy(code);
-                }
+            LogUtil.i(TAG, "code: " + code);
+//                    ToastUtil.showToast(getActivity(), "code---" + code);
+            //3.4.11 添加修改玩具属性
+//                    ToastUtil.showToast(getContext(),"code++++");
+            showFragment(ToySelectorFragment.class.getSimpleName());
+            addToy(code);
+        }
 //                break;
 //        }
     }
@@ -197,14 +197,18 @@ public class ToyAddFragment extends BaseFragment implements View.OnClickListener
 //                    //用eventbus发送给toyselectfragment,让它获取数据
                     EventBus.getDefault().post(new AddToyMessageEvent(response));
 
+                } else if (response.body().getCODE().equals("-10006")) {
+                    SPUtils.putString(getContext(), "token", "");
+                    ToastUtil.showToast(getActivity(), response.body().getMSG());
                 } else {
-                    ToastUtil.showToast(getActivity(), "response为空,获取不到数据,网络异常");
+                    ToastUtil.showToast(getActivity(), response.body().getMSG());
                 }
             }
 
             @Override
             public void onFailure(Call<AddToyResultBean> call, Throwable t) {
-                ToastUtil.showToast(getActivity(), "失败联网");
+                ToastUtil.showToast(getActivity(), R.string.network_error);
+                LogUtil.i(TAG, t.toString());
             }
         });
     }

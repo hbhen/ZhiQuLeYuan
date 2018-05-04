@@ -113,14 +113,12 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
             @Override
             public void onClick(View v) {
                 if (isRbChecked) {
-
                     mBt_userAgreement.setChecked(false);
                     isRbChecked = false;
                     LogUtil.i(TAG, "onCheckedChanged: isChecked1" + isRbChecked);
                     bt_login.setClickable(false);
                     LogUtil.i(TAG, "onClick1: " + bt_login.isClickable());
                 } else {
-
                     mBt_userAgreement.setChecked(true);
                     isRbChecked = true;
                     LogUtil.i(TAG, "onCheckedChanged: isChecked2" + isRbChecked);
@@ -151,12 +149,12 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
                 //1,对手机号进行判断
                 //1.1 手机号是否为空
                 if (TextUtils.isEmpty(mPhoneNum)) {
-                    ToastUtil.showToast(this, "空,请输入手机号,");
+                    ToastUtil.showToast(this, "请输入手机号");
 
                 } else {
                     LogUtil.d(TAG, "getSmsCode: " + isPhoneNum(mPhoneNum));
                     if (!isPhoneNum(mPhoneNum)) {
-                        ToastUtil.showToast(this, "当前输入的手机号有误,请重新输入..");
+                        ToastUtil.showToast(this, "当前输入的手机号有误,请重新输入");
                     } else {
                         //2获取短信验证申请码
                         mCountDownTimerUtils.start();
@@ -184,7 +182,7 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
                     return;
                 }
                 if (smsCode.equals("")) {
-                    ToastUtil.showToast(this, "验证码不能为空");
+                    ToastUtil.showToast(this, "验证码为空");
                     return;
                 }
                 getToken();
@@ -217,6 +215,8 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
             public void onResponse(retrofit2.Call<GetSmsCodeResBean> call, Response<GetSmsCodeResBean> response) {
                 String tmp = response.body().getBODY().getTmp();
                 getSmsCodeValue(phoneNum, tmp);
+//                String agreeno = response.body().getBODY().getAGREENO();
+//                getSmsCodeValue(phoneNum, agreeno);
                 LogUtil.i(TAG, "response-------" + response);
             }
 
@@ -229,8 +229,8 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
 
     }
 
-    private void getSmsCodeValue(final String phoneNum, String tmp) {
-        LogUtil.i(TAG, "tmp------" + tmp);
+    private void getSmsCodeValue(final String phoneNum, String agreeno) {
+        LogUtil.i(TAG, "tmp------" + agreeno);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constant.baseurl)
@@ -238,8 +238,8 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
         //test 为1时,是不发送信息给手机 正式环境不用1,用""代替
-//        GetSmsCodeValueReqBean.BODYBean bodyBean = new GetSmsCodeValueReqBean.BODYBean("REG", phoneNum, tmp, "");
-        GetSmsCodeValueReqBean.BODYBean bodyBean = new GetSmsCodeValueReqBean.BODYBean("REG", phoneNum, tmp, "1");
+//        GetSmsCodeValueReqBean.BODYBean bodyBean = new GetSmsCodeValueReqBean.BODYBean("REG", phoneNum, agreeno, "");
+        GetSmsCodeValueReqBean.BODYBean bodyBean = new GetSmsCodeValueReqBean.BODYBean("REG", phoneNum, agreeno, "1");
         GetSmsCodeValueReqBean getSmsCodeValueReqBean = new GetSmsCodeValueReqBean("REQ", "SMS", "", new SimpleDateFormat("yyyyMMddHHmmssSSS")
                 .format(new Date()), bodyBean, "", "", "1");
         Gson gson = new Gson();
@@ -259,7 +259,7 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
                 * 选第一个
                 * */
                 //TODO 别忘了删,正式上线的时候
-                et_login_smscode.setText(mSmsCode);
+//                et_login_smscode.setText(mSmsCode);
                 //点击了获取验证码以后,再删除验证码,点击"确认登录"仍然能登录的原因就错在这了 ,不应该在这里
 //                getToken(smsCode, idx, phoneNum);
 
@@ -306,7 +306,7 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
 
             @Override
             public void onFailure(Call<RegistAndLoginResBean> call, Throwable t) {
-                LogUtil.d(TAG,"onFailure"+t);
+                LogUtil.d(TAG, "onFailure" + t);
 //                LogUtil.i(TAG, "onFailure: " + t);
             }
         });
@@ -336,9 +336,7 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
         Bundle bundle = new Bundle();
         bundle.putString("logintoken", mTokenSave);
         intent.putExtras(bundle);
-
         setResult(LOGINOK, intent);
-
         confirmLogin();
     }
 
@@ -408,6 +406,10 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
                     data.putExtras(bundle);
                     setResult(RESULT_OK, data);
                     finish();
+                }
+                if (response.body().getCODE().equals("-10006")) {
+                    SPUtils.putString(getApplicationContext(), "token", "");
+                    ToastUtil.showToast(getApplicationContext(), response.body().getMSG());
                 } else {
                     ToastUtil.showToast(getApplicationContext(), response.body().getMSG());
                 }
@@ -415,6 +417,7 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
 
             @Override
             public void onFailure(retrofit2.Call<QuerySingleUserInfoReSBean> call, Throwable t) {
+                LogUtil.i(TAG, t.toString());
                 ToastUtil.showToast(getApplicationContext(), R.string.network_error);
             }
         });

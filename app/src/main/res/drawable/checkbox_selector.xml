@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-
-
-    <item android:drawable="@drawable/round_full_3x" android:state_checked="true"/>
-    <item android:drawable="@drawable/round" android:state_checked="false"/>
-    <item android:drawable="@drawable/round"/>
+    <item android:drawable="@drawable/bindbaby_checked_3x" android:state_checked="true"/>
+    <item android:drawable="@drawable/bindbaby_unchecked_3x" android:state_checked="false"/>
+    <item android:drawable="@drawable/bindbaby_unchecked_3x"/>
 </selector>

@@ -12,7 +12,6 @@ import com.tongyuan.android.zhiquleyuan.adapter.PlayAdapter;
 import com.tongyuan.android.zhiquleyuan.base.BaseActivity;
 import com.tongyuan.android.zhiquleyuan.bean.MusicPlayerBean;
 import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
-import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
 import java.util.ArrayList;
 
@@ -39,7 +38,7 @@ public class PlayingListActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 MyPlayActivity.launch(mContext, playlist, position);
-                ToastUtil.showToast(mContext, "点 : " + position);
+//                ToastUtil.showToast(mContext, "点 : " + position);
             }
         });
     }

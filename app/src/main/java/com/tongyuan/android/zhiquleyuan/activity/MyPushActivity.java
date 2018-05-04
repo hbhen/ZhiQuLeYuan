@@ -6,12 +6,12 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.TypedValue;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -62,7 +62,7 @@ import com.baoyz.swipemenulistview.SwipeMenuListView;*/
 
 public class MyPushActivity extends AppCompatActivity implements View.OnClickListener, AbsListView.OnScrollListener {
 
-
+    private final String TAG = MyPushActivity.class.getSimpleName();
     private SwipeMenuListView mLv_myPush;
     private LinearLayout mPush_back;
     private String mToyid;
@@ -113,7 +113,7 @@ public class MyPushActivity extends AppCompatActivity implements View.OnClickLis
         mPhoneNum = SPUtils.getString(this, "phoneNum", "");
         mMyPushAdapter = new MyPushAdapter(getApplicationContext(), myPushList);
         mLv_myPush.setAdapter(mMyPushAdapter);
-        getMyPushData(mToken, mPhoneNum, false);
+        getMyPushData("", mToken, mPhoneNum, false);
     }
 
     private void initListener() {
@@ -124,25 +124,22 @@ public class MyPushActivity extends AppCompatActivity implements View.OnClickLis
             public void onRefresh() {
                 currentPage = 1;
                 NC = "-1";
-                getMyPushData(mToken, mPhoneNum, false);
+                getMyPushData("", mToken, mPhoneNum, false);
                 mSpRefresh.setRefreshing(false);
             }
         });
-        mEditTextView.addTextChangedListener(new TextWatcher() {
+
+        mEditTextView.setOnKeyListener(new View.OnKeyListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
+                    ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(MyPushActivity.this.getCurrentFocus()
+                            .getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                    String text = mEditTextView.getText().toString().trim();
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                keyWord = s.toString();
-                getMyPushData(mToken, mPhoneNum, false);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
+                    getMyPushData(text, mToken, mPhoneNum, false);
+                }
+                return false;
             }
         });
         mLv_myPush.setOnScrollListener(this);
@@ -150,7 +147,7 @@ public class MyPushActivity extends AppCompatActivity implements View.OnClickLis
     }
 
 
-    private void getMyPushData(final String token, final String phoneNum, final boolean isLoadMore) {
+    private void getMyPushData(String keyWord, final String token, final String phoneNum, final boolean isLoadMore) {
         if (!NC.equals("0")) {
 
             int page = currentPage;
@@ -165,7 +162,7 @@ public class MyPushActivity extends AppCompatActivity implements View.OnClickLis
                     .build();
             AllInterface allInterface = retrofit.create(AllInterface.class);
             //TODO 我的页面下的推送是查看当前玩具的推送,还是该用户的所有推送???
-            QueryMyPushReqBean.BODYBean bodyBean = new QueryMyPushReqBean.BODYBean("", "10", String.valueOf(page), keyWord, mToyid);
+            QueryMyPushReqBean.BODYBean bodyBean = new QueryMyPushReqBean.BODYBean(keyWord, "10", String.valueOf(page), keyWord, mToyid);
             final QueryMyPushReqBean queryMyPushReqBean = new QueryMyPushReqBean("REQ", "MYPUSH", phoneNum, time, bodyBean, "", token, "1");
             Gson gson = new Gson();
             String s = gson.toJson(queryMyPushReqBean);
@@ -177,7 +174,7 @@ public class MyPushActivity extends AppCompatActivity implements View.OnClickLis
                 @Override
                 public void onResponse(Call<QueryMyPushResBean> call, final Response<QueryMyPushResBean> response) {
                     if (response.body().getCODE().equals("0")) {
-                        NC=response.body().getBODY().getNC();
+                        NC = response.body().getBODY().getNC();
                         if (isLoadMore) {
                             currentPage++;
                         } else {
@@ -236,7 +233,7 @@ public class MyPushActivity extends AppCompatActivity implements View.OnClickLis
                                 deletePush(phoneNum, new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()), position, myPushList, token);
                                 myPushList.remove(position);
                                 mMyPushAdapter.notifyDataSetChanged();
-                                ToastUtil.showToast(getApplicationContext(), "点击删除");
+//                                ToastUtil.showToast(getApplicationContext(), "点击删除");
                                 return false;
                             }
                         });
@@ -245,7 +242,8 @@ public class MyPushActivity extends AppCompatActivity implements View.OnClickLis
                         mLv_myPush.setSwipeDirection(SwipeMenuListView.DIRECTION_LEFT);
                         mLv_myPush.setOpenInterpolator(new AccelerateInterpolator());
                         mLv_myPush.setCloseInterpolator(new AccelerateInterpolator());
-                    } else {
+                    } else if (response.body().getCODE().equals("-10006")) {
+                        SPUtils.putString(getApplicationContext(), "token", "");
                         ToastUtil.showToast(getApplicationContext(), response.body().getMSG());
                     }
                     isLoading = false;
@@ -253,7 +251,9 @@ public class MyPushActivity extends AppCompatActivity implements View.OnClickLis
 
                 @Override
                 public void onFailure(Call<QueryMyPushResBean> call, Throwable t) {
+                    ToastUtil.showToast(MyPushActivity.this, "网络连接异常,请检查网络");
                     isLoading = false;
+                    LogUtil.i(TAG, t.toString());
                 }
             });
         }
@@ -282,7 +282,7 @@ public class MyPushActivity extends AppCompatActivity implements View.OnClickLis
             public void onResponse(Call<DeleteMyPushResBean> call, Response<DeleteMyPushResBean> response) {
                 footerView.setVisibility(View.GONE);
                 mMyPushAdapter.notifyDataSetChanged();
-                ToastUtil.showToast(getApplicationContext(), "走没走");
+//                ToastUtil.showToast(getApplicationContext(), "走没走");
                 LogUtil.i("555555", "recordingfragment+(deleteRecording)onResponse: " + response.body().getBODY().toString());
             }
 
@@ -309,7 +309,7 @@ public class MyPushActivity extends AppCompatActivity implements View.OnClickLis
                 if (ToySelectorFragment.mToyId != null) {
                     CallManager.CallToToy(ToySelectorFragment.mToyId, this);
                 } else {
-                    ToastUtil.showToast(this, "toyid为空,请选择玩具");
+                    ToastUtil.showToast(this, "请去玩具页面选择玩具");
                 }
                 break;
             default:
@@ -326,7 +326,7 @@ public class MyPushActivity extends AppCompatActivity implements View.OnClickLis
         if (!isLoading && lastItem == totalItemCount && scrollState == SCROLL_STATE_IDLE) {
             //显示加载更多
             isLoading = true;
-            getMyPushData(mToken, mPhoneNum, true);
+            getMyPushData("", mToken, mPhoneNum, true);
         }
     }
 

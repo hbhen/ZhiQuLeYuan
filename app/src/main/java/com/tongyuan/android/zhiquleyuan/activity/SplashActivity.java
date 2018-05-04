@@ -21,7 +21,6 @@ import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.base.ActivityManager;
 import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
-import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
 /**
  * Created by android on 2016/12/2.
@@ -92,7 +91,8 @@ public class SplashActivity extends AppCompatActivity {
                 showDialogTipUserRequestPermission();
             }
         } else {
-            ToastUtil.showToast(this, "权限已经获取");
+            LogUtil.i(TAG, "权限已经获取");
+//            ToastUtil.showToast(this, "权限已经获取");
         }
     }
 

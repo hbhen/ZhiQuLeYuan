@@ -3,11 +3,8 @@ package com.tongyuan.android.zhiquleyuan.fragment;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,7 +19,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.activity.BindBabyActivity;
@@ -50,8 +46,10 @@ import com.tongyuan.android.zhiquleyuan.interf.Constant;
 import com.tongyuan.android.zhiquleyuan.request.RequestManager;
 import com.tongyuan.android.zhiquleyuan.request.base.SuperModel;
 import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
+import com.tongyuan.android.zhiquleyuan.utils.SPUtil;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
+import com.tongyuan.android.zhiquleyuan.view.GlideCircleTransform;
 import com.tongyuan.android.zhiquleyuan.zxing.app.CaptureActivity;
 
 import java.text.ParseException;
@@ -136,9 +134,14 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     public String NC = "-1";
     private boolean isToyPlaying = false;
 
+    public void setBabyImage(String babyImage) {
+        this.mBabyimg = babyImage;
+
+    }
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-
+        LogUtil.i(TAG, "onViewCreated went");
     }
 
     @Nullable
@@ -147,16 +150,13 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
             savedInstanceState) {
         LogUtil.i(TAG, "onCreateView went");
         mToyDetails = inflater.inflate(R.layout.fragment_toy_details, null);
-
         mRefresh = (SwipeRefreshLayout) mToyDetails.findViewById(R.id.swipe_toydetails);
-
         mToyPlayControl = (RelativeLayout) mToyDetails.findViewById(R.id.rl_fragment_toy_playingcontrol);
         mTv_toyPlayControl_time = (TextView) mToyPlayControl.findViewById(R.id.tv_fragment_recoding_time);
         mIv_toyPlayControl_pre = (ImageView) mToyPlayControl.findViewById(R.id.iv_recoding_prev);
         mIv_toyPlayControl_next = (ImageView) mToyPlayControl.findViewById(R.id.iv_recoding_next);
         mIv_toyPlayControl_play = (ImageView) mToyPlayControl.findViewById(R.id.iv_recoding_play);
         mIv_toyPlayControl_seekbar = (SeekBar) mToyPlayControl.findViewById(R.id.seekbar);
-
         mListviewtitle = inflater.inflate(R.layout.discovery_recyclerview_listview_title, null);
         LogUtil.i("timedate", "onCreateView");
         //TODO 动态设置布局的位置:mIsPlaying 显示,mListviewRecommand在它下面; 不显示,mListviewRecommand在Relativlayout的下面.
@@ -199,7 +199,6 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         mIv_toyPlayControl_play.setOnClickListener(this);
         mIv_toyPlayControl_seekbar.setOnSeekBarChangeListener(this);
         mListviewRecommand.setOnScrollListener(this);
-
         mRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -210,9 +209,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                 mRefresh.setRefreshing(false);
             }
         });
-
         mToyManagerFragment = new ToyManagerFragment();
-
         mListviewRecommand.addHeaderView(mListviewtitle);
         mListviewRecommand.setHeaderDividersEnabled(false);
         mListviewtitle.setClickable(false);
@@ -228,7 +225,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         super.onActivityCreated(savedInstanceState);
         LogUtil.i(TAG, "onActivityCreated went");
         getListRaw(false);
-        LogUtil.i(TAG, "(onActivityCreated) getlistraw went");
+//        LogUtil.i(TAG, "(onActivityCreated) getlistraw went");
 
     }
 
@@ -282,16 +279,10 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
 //                    mListviewtitle.setClickable(false);
 //                    mListviewRecommand.setAdapter(mLAdapter);
 //                    mListviewRecommand.setHeaderDividersEnabled(false);
-                        mListviewRecommand.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                int positionWithoutTitle = position - 1;
-                                if (position == 0) {
-                                    return;
-                                }
-                                MyPlayActivity.launch(getActivity(), mLAdapter.getList(), positionWithoutTitle);
-                            }
-                        });
+
+                    } else if (response.body().CODE.equals("-10006")) {
+                        SPUtils.putString(getContext(), "token", "");
+                        ToastUtil.showToast(getActivity(), response.body().MSG);
                     } else {
                         ToastUtil.showToast(getActivity(), response.body().MSG);
                         footerView.setVisibility(View.GONE);
@@ -301,7 +292,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
 
                 @Override
                 public void onFailure(Call<SuperModel<DiscoveryListResultBean.BODYBean>> call, Throwable t) {
-                    ToastUtil.showToast(getActivity(), "获取数据失败");
+                    ToastUtil.showToast(getActivity(), R.string.network_error);
                     LogUtil.d(TAG, "onFailure: (toydetailsfragment)" + t.toString());
                     isLoading = false;
                 }
@@ -312,7 +303,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
 
     public void setData(SingleToyInfoRESBean.BODYBean response, String image) {
         LogUtil.i("timedate", "setData: went");
-        mUserId = SPUtils.getString(getContext(), "ID", "");
+        mUserId = SPUtils.getString(getContext(), "userID", "");
         LogUtil.i(TAG, "setData: went");
         this.mResponse = response;
         this.mBabyimg = image;
@@ -357,6 +348,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         String currentTime = simpleDateFormat.format(new Date());
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constant.baseurl)
+
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
@@ -376,22 +368,23 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                 if (response == null) {
                     return;
                 }
-                mLst = response.body().getBODY().getLST();
-                if (mLst.size() == 0) {
-                    mBindToy.setVisibility(View.VISIBLE);
-                    mUnbindToy.setVisibility(View.GONE);
-                    mTv_fragment_toy_details_babyName.setText(mBabyName);
-                    initView();
-                } else {
-                    for (int i = 0; i < mLst.size(); i++) {
-                        mBabyName = mLst.get(i).getNAME();
-                    }
-                    //要传给videoactivity的宝宝的名字
-                    SPUtils.putString(getContext(), "babyname", mBabyName);
-                    mBindToy.setVisibility(View.GONE);
-                    mUnbindToy.setVisibility(View.VISIBLE);
-                    initView();
+                if (response != null && response.body().getCODE().equals("0")) {
+                    mLst = response.body().getBODY().getLST();
 
+                    if (mLst.size() == 0) {
+                        mBindToy.setVisibility(View.VISIBLE);
+                        mUnbindToy.setVisibility(View.GONE);
+                        mTv_fragment_toy_details_babyName.setText(mBabyName);
+                    } else {
+                        for (int i = 0; i < mLst.size(); i++) {
+                            mBabyName = mLst.get(i).getNAME();
+                        }
+                        //要传给videoactivity的宝宝的名字
+                        SPUtils.putString(getContext(), "babyname", mBabyName);
+                        mBindToy.setVisibility(View.GONE);
+                        mUnbindToy.setVisibility(View.VISIBLE);
+                    }
+                    initView();
                 }
             }
 
@@ -426,24 +419,21 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         mUnbindToy.setOnClickListener(this);
         mBindToy.setOnClickListener(this);
 
+        mListviewRecommand.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                int positionWithoutTitle = position - 1;
+                if (position == 0) {
+                    return;
+                }
+                MyPlayActivity.launch(getActivity(), mLAdapter.getList(), positionWithoutTitle);
+            }
+        });
     }
 
     private void displayBabyInfo() {
-        Glide.with(mContext).load(mBabyimg).asBitmap().placeholder(R.mipmap.default_babyimage).into(new BitmapImageViewTarget
-                (mIv_fragment_toy_details_babyImg) {
-            @Override
-            protected void setResource(Bitmap resource) {
-                if (isDestroy)
-                    return;
-
-                RoundedBitmapDrawable mRoundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getActivity()
-                        .getResources(), resource);
-                mRoundedBitmapDrawable.setCircular(true);
-                if (mIv_fragment_toy_details_babyImg != null) {
-                    mIv_fragment_toy_details_babyImg.setImageDrawable(mRoundedBitmapDrawable);
-                }
-            }
-        });
+        Glide.with(mContext).load(mBabyimg).asBitmap().placeholder(R.mipmap.default_babyimage).centerCrop().transform(new GlideCircleTransform
+                (mContext)).into(mIv_fragment_toy_details_babyImg);
     }
 
     @Override
@@ -472,7 +462,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                             public void onClick(DialogInterface dialog, int which) {
                                 if (which == 0) {
                                     CallToToy();
-                                    ToastUtil.showToast(getActivity(), "跳转到通话界面");//是fragemnt界面
+//                                    ToastUtil.showToast(getActivity(), "跳转到通话界面");//是fragemnt界面
                                 } else {
                                     //去扫描二维码,获得电视端的唯一识别码,然后就直接从二维码那个页面去获取三方会议号,并申请三方会议通话
                                     Intent it = new Intent();
@@ -485,19 +475,19 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                                     bundle.putString("roomid", mRoomid);
                                     bundle.putString("token", mToken);
                                     bundle.putString("toyId", mToyId);
-
-                                    bundle.getString("babyimgString");
-                                    bundle.getString("babynameString");
-                                    bundle.getString("roomid");
-                                    bundle.getString("token");
-                                    bundle.getString("toyId");
-                                    LogUtil.i("captureactivity", "onClick00: --" + bundle.getString("babyimgString") +
-                                            "--");
-                                    LogUtil.i("captureactivity", "onClick00: --" + bundle.getString("babynameString") +
-                                            "--");
-                                    LogUtil.i("captureactivity", "onClick00: --" + bundle.getString("roomid") + "--");
-                                    LogUtil.i("captureactivity", "onClick00: --" + bundle.getString("token") + "--");
-                                    LogUtil.i("captureactivity", "onClick00: --" + bundle.getString("toyId") + "--");
+//
+//                                    bundle.getString("babyimgString");
+//                                    bundle.getString("babynameString");
+//                                    bundle.getString("roomid");
+//                                    bundle.getString("token");
+//                                    bundle.getString("toyId");
+//                                    LogUtil.i("captureactivity", "onClick00: --" + bundle.getString("babyimgString") +
+//                                            "--");
+//                                    LogUtil.i("captureactivity", "onClick00: --" + bundle.getString("babynameString") +
+//                                            "--");
+//                                    LogUtil.i("captureactivity", "onClick00: --" + bundle.getString("roomid") + "--");
+//                                    LogUtil.i("captureactivity", "onClick00: --" + bundle.getString("token") + "--");
+//                                    LogUtil.i("captureactivity", "onClick00: --" + bundle.getString("toyId") + "--");
                                     it.putExtras(bundle);
                                     startActivity(it);
 
@@ -509,7 +499,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                         .show();
                 break;
             case R.id.tv_toy_details_manager:
-                ToastUtil.showToast(getActivity(), "跳转到玩具管理界面");
+//                ToastUtil.showToast(getActivity(), "跳转到玩具管理界面");
 //                if (SPUtils.getString(getActivity(), "ID", "").equals(mOwnerid)) {
                 //TODO setdat
                 mToyManagerFragment.setData(mResponse, mFormatTime, mBabyimg, mBabyName, mOwnername, mLst, mOwnerid);
@@ -521,7 +511,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
             case R.id.tv_fragment_toy_details_unbind:
                 //判断当前的userid是不是ownerid
                 if (!mUserId.equals(mOwnerid)) {
-                    ToastUtil.showToast(mContext, "您不是该玩具的持有人,不能解绑玩具");
+                    ToastUtil.showToast(mContext, "您不是该玩具的持有人,不能解绑宝宝");
                     return;
                 } else {
 
@@ -539,12 +529,12 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
 
 
                 //TODO showDialog(); 需不需要给用户一个友好的提示,dialog?
-                ToastUtil.showToast(getActivity(), "details  unbind");
+//                ToastUtil.showToast(getActivity(), "details  unbind");
                 break;
 
             case R.id.tv_fragment_toy_details_bind:
                 if (!mUserId.equals(mOwnerid)) {
-                    ToastUtil.showToast(mContext, "您不是该玩具的持有人,不能解绑玩具");
+                    ToastUtil.showToast(mContext, "您不是该玩具的持有人,不能绑定宝宝");
                     return;
                 }
                 //TODO showDialog(); 需不需要给用户一个友好的提示,dialog?
@@ -556,12 +546,12 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                 intent.putExtras(bundle);
                 startActivityForResult(intent, BIND_BABYTO_TOY);
 //                startActivity(intent);
-                ToastUtil.showToast(mContext, "details  bind");
+//                ToastUtil.showToast(mContext, "details  bind");
                 break;
             case R.id.back_btn:
                 MainActivity mainActivity = (MainActivity) getActivity();
                 mainActivity.backToTop();
-                ToastUtil.showToast(mContext, "back");
+//                ToastUtil.showToast(mContext, "back");
                 break;
         }
 
@@ -631,7 +621,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                 LogUtil.i(TAG, "onResponse:+response " + response.body().toString());
                 mRoomid = response.body().getRoomid();
                 if (mRoomid == null) {
-                    ToastUtil.showToast(getActivity(), "房间号不存在");
+                    ToastUtil.showToast(getActivity(), "玩具正在休眠");
                     return;
                 }
                 if (response.body().getCode().equals("-10008")) {
@@ -653,7 +643,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
 //                bundle.putString("babyname",mBabyName);
 //
 //                startActivity(new Intent(getActivity(), VideoActivity.class).putExtras(bundle));
-                ToastUtil.showToast(getActivity(), "roomid" + mRoomid);
+//                ToastUtil.showToast(getActivity(), "roomid" + mRoomid);
                 LogUtil.i("555555", "onResponse:+mRoomid " + mRoomid);
 
                 //TODO 跳转到新的页面
@@ -668,6 +658,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
             @Override
             public void onFailure(Call<CallToToyRes> call, Throwable t) {
                 LogUtil.i("111111", t.toString());
+                ToastUtil.showToast(mContext, t.toString());
             }
         });
     }
@@ -739,10 +730,10 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     @Override
     public void onResume() {
         super.onResume();
-//        checkStateInfo();
-        initView();
+        Glide.with(mContext).load(mBabyimg).asBitmap().centerCrop().transform(new GlideCircleTransform(mContext)).into
+                (mIv_fragment_toy_details_babyImg);
         LogUtil.i(TAG, "onResume went ");
-
+        queryToyHasBindBaby();
     }
 
     @Override
@@ -752,17 +743,13 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
 
     }
 
-    @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        LogUtil.i(TAG, "onHiddenChanged went");
-    }
-    //    @Override
+//    @Override
 //    public void onHiddenChanged(boolean hidden) {
 //        super.onHiddenChanged(hidden);
+//        LogUtil.i(TAG, "onHiddenChanged went");
 //        queryToyHasBindBaby();
 ////        checkStateInfo();
-////        initView();
+//        initView();
 //
 //    }
 
@@ -782,9 +769,9 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         getInstantStateInfoResCall.enqueue(new Callback<GetInstantStateInfoRes>() {
             @Override
             public void onResponse(Call<GetInstantStateInfoRes> call, Response<GetInstantStateInfoRes> response) {
-                if (!response.body().getCODE().equals("0")) {
-                    ToastUtil.showToast(getActivity(), "拉取玩具即时状态返回的response为空");
-                } else {
+                if (response != null && response.body().getCODE().equals("0")) {
+////                    ToastUtil.showToast(getActivity(), "拉取玩具即时状态返回的response为空");
+//                } else {
                     GetInstantStateInfoRes body = response.body();
                     String camera = response.body().getBODY().getCAMERA();
                     String elec = response.body().getBODY().getELEC();
@@ -801,25 +788,26 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                         wifiValue = Integer.parseInt(wifi);
 
                     }
-//                    if (!vol.equals("")) {
-//                        volValue = Integer.parseInt(vol);
-//
-//                    }
+                    if (!vol.equals("")) {
+                        volValue = Integer.parseInt(vol);
+                        SPUtil.getInstance().put("toyvolume", volValue);
+
+                    }
                     if (!elec.equals("")) {
                         elecValue = Integer.parseInt(elec);
 
                     }
 
-                    LogUtil.i(TAG, "onResponse:camera" + camera);
-                    LogUtil.i(TAG, "onResponse:elec" + elec);
-                    LogUtil.i(TAG, "onResponse:mic" + mic);
-                    LogUtil.i(TAG, "onResponse:online" + online);
-                    LogUtil.i(TAG, "onResponse:vol" + vol);
-                    LogUtil.i(TAG, "onResponse:wifi" + wifi);
+//                    LogUtil.i(TAG, "onResponse:camera" + camera);
+//                    LogUtil.i(TAG, "onResponse:elec" + elec);
+//                    LogUtil.i(TAG, "onResponse:mic" + mic);
+//                    LogUtil.i(TAG, "onResponse:online" + online);
+//                    LogUtil.i(TAG, "onResponse:vol" + vol);
+//                    LogUtil.i(TAG, "onResponse:wifi" + wifi);
 
-                    LogUtil.i(TAG, "onResponse: wifiValue" + wifiValue);
-                    LogUtil.i(TAG, "onResponse: elecValue" + elecValue);
-                    LogUtil.i(TAG, "onResponse: volValue" + volValue);
+//                    LogUtil.i(TAG, "onResponse: wifiValue" + wifiValue);
+//                    LogUtil.i(TAG, "onResponse: elecValue" + elecValue);
+//                    LogUtil.i(TAG, "onResponse: volValue" + volValue);
                     //设置状态的图片
 
                     if (online.equals("0")) {
@@ -869,7 +857,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
 
             @Override
             public void onFailure(Call<GetInstantStateInfoRes> call, Throwable t) {
-                ToastUtil.showToast(getActivity(), "拉取信息失败");
+                ToastUtil.showToast(getActivity(), t.toString());
                 LogUtil.i(TAG, "onFailure: " + t.toString());
             }
         });
@@ -878,7 +866,9 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == 00) {
+        if (resultCode == 100 && data != null) {
+            Bundle bundle = data.getBundleExtra("bindbabybundle");
+            mImg = bundle.getString("babyimage");
             queryToyHasBindBaby();
         }
 //        if (requestCode == BIND_BABYTO_TOY && resultCode == 00) {

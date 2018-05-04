@@ -27,7 +27,6 @@ import java.util.ArrayList;
 public class HistoryAdapter extends BaseAdapter {
     private Context mContext;
     private ArrayList<CallHistoryResultBean.BODYBean.LSTBean> mList;
-    private String mFormattime;
 
 
     public HistoryAdapter(Context context, ArrayList<CallHistoryResultBean.BODYBean.LSTBean> lst) {
@@ -54,8 +53,8 @@ public class HistoryAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         HistoryHolder historyHolder = null;
         if (convertView == null) {
-            historyHolder = new HistoryHolder();
             convertView = LayoutInflater.from(mContext).inflate(R.layout.item_history, null);
+            historyHolder = new HistoryHolder();
             historyHolder.callDate = (TextView) convertView.findViewById(R.id.tv_item_history_time);
             historyHolder.toyPic = (ImageView) convertView.findViewById(R.id.iv_item_history_pic);
             historyHolder.toyId = (TextView) convertView.findViewById(R.id.tv_item_history_title);
@@ -67,13 +66,24 @@ public class HistoryAdapter extends BaseAdapter {
 
 
         Glide.with(mContext).load(mList.get(position).getTOYIMG().toString()).asBitmap().into(historyHolder.toyPic);
-
+//        historyHolder.callDuration.setText("dfa");
         historyHolder.toyId.setText(mList.get(position).getUSERNAME().toString());
         String begintime = mList.get(position).getBEGINTIME();
-        mFormattime = begintime;
+        LogUtil.i("history tag", "begintime +:+ " + begintime);
+        transformToMonth(begintime, historyHolder);
+        transformToTime(begintime, historyHolder);
+        return convertView;
+    }
 
+    private void transformToTime(String begintime, HistoryHolder historyHolder) {
+        String hour = begintime.substring(8, 10);
+        String minute = begintime.substring(10, 12);
+        historyHolder.callDuration.setText(hour + ":" + minute);
+    }
+
+    private void transformToMonth(String begintime, HistoryHolder historyHolder) {
         //先处理传过来的日期内容,把格式转换成日(大),月(小); 这个方法可以抽取成一个工具类
-        String substringDate = mFormattime.substring(4, 8);
+        String substringDate = begintime.substring(4, 8);
         String month = substringDate.substring(0, 2);
         String day = substringDate.substring(2, substringDate.length());
         String newDate = day + month;
@@ -88,18 +98,6 @@ public class HistoryAdapter extends BaseAdapter {
         LogUtil.i("444444", "getView:month " + month + ";");
         LogUtil.i("444444", "getView:day " + day + ";");
         LogUtil.i("444444", "getView:newDate " + newDate + ";");
-
-//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HHmm");
-//        SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("HH:mm");
-
-//        try {
-//            mFormattime = simpleDateFormat.format(simpleDateFormat1.parse(begintime));
-//            historyHolder.callDuration.setText(mFormattime);
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-
-        return convertView;
     }
 
     class HistoryHolder {

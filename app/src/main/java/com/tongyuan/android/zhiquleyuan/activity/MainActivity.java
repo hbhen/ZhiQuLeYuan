@@ -241,25 +241,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        /*List<Fragment> fragmentList = fragmentManager.getFragments();
-        if (fragmentList != null) {
-            for (Fragment fragment : fragmentManager.getFragments()) {
-                transaction.hide(fragment);
-            }
-        }
-        if (f.isAdded()) {
-
-            transaction.show(f);
-        } else {
-            transaction.add(R.id.fl_fragmentcontainer, f).show(f);
-        }
-
-        }*/
-
         LogUtil.d("false", "transaction!" + transaction + "----fragment" + f);
-
         transaction.replace(R.id.fl_fragmentcontainer, f);
-
         if (name != null) {
             if (name.equals(ToyDetailsFragment.class.getSimpleName())) {
                 //transaction.addToBackStack(null);
@@ -374,14 +357,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private void initFragment() {
         //添加五个Fragment对象添加进来
-//        discoveryFragment = new DiscoveryFragment();
-//        recordingFragment = new RecordingFragment();
-//        mToySelectorFragment = new ToySelectorFragment();
-//        toyAddFragment = new ToyAddFragment();
-//        historyFragment = new HistoryFragment();
-//        mineFragment = new MineFragment();
-//        toyDetailsFragment = new ToyDetailsFragment();
-//        mCallWaitingConnectFragment = new CallWaitingConnectFragment();
         showFragment(DiscoveryFragment.class.getSimpleName());
     }
 
@@ -406,18 +381,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
                 break;
             case R.id.rb_recoding:
-
+                rb_discovery.setSelected(false);
+                rb_recoding.setSelected(true);
+                rb_history.setSelected(false);
+                rb_mine.setSelected(false);
+                rb_toy.setSelected(false);
                 mMainToken = SPUtils.getString(this, "token", "");
                 if ("".equals(mMainToken)) {
                     startActivityForResult(new Intent(this, ActivityLogin.class), 78);
                     return;
 
                 }
-                rb_discovery.setSelected(false);
-                rb_recoding.setSelected(true);
-                rb_history.setSelected(false);
-                rb_mine.setSelected(false);
-                rb_toy.setSelected(false);
+
                 if (recordingFragment == null) {
                     recordingFragment = new RecordingFragment();
                 }
@@ -436,15 +411,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 break;
             case R.id.rb_mine:
                 mMainToken = SPUtils.getString(this, "token", "");
-                if ("".equals(mMainToken)) {
-                    startActivityForResult(new Intent(this, ActivityLogin.class), 78);
-                    return;
-                }
                 rb_mine.setSelected(true);
                 rb_discovery.setSelected(false);
                 rb_recoding.setSelected(false);
                 rb_history.setSelected(false);
                 rb_toy.setSelected(false);
+                if ("".equals(mMainToken)) {
+                    startActivityForResult(new Intent(this, ActivityLogin.class), 80);
+                    return;
+                }
+
                 if (mineFragment == null) {
                     mineFragment = new MineFragment();
                 }
@@ -544,6 +520,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     if (mList != null) {
                         showDifferentToyFragment(mList);
                     }
+                } else if (response.body().getCODE().equals("-10006")) {
+                    ToastUtil.showToast(mContext, response.body().getMSG());
                 } else {
                     ToastUtil.showToast(mContext, response.body().getMSG());
                 }
@@ -551,7 +529,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
             @Override
             public void onFailure(Call<QueryToyResultBean> call, Throwable t) {
-                ToastUtil.showToast(getApplicationContext(), "失败,网络异常");
+                ToastUtil.showToast(getApplicationContext(), "网络异常,请检查网络");
+                LogUtil.i(TAG, t.toString());
             }
         });
 
@@ -614,7 +593,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             };
             mTimer.schedule(timerTask, 2000);
         } else {
-
             LogUtil.d(TAG, "onBackPressed: " + ActivityManager.queryActivity().size());
             ActivityManager.finishAll();
             finish();
@@ -628,7 +606,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 //        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 77 && data != null && resultCode == 5011) {// toyFragment
+        if (requestCode == 77 && data != null) {// toyFragment  && resultCode == 5011
             showToyFragment();
             return;
         } else if (requestCode == 78 && data != null) {
@@ -641,6 +619,21 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             showFragment(DiscoveryFragment.class.getSimpleName());
         } else if (requestCode == 80) {
             showFragment(MineFragment.class.getSimpleName());
+        } else if (resultCode == 100) {
+            String mImg = "";
+            if (data != null) {
+                Bundle bundle = data.getBundleExtra("bindbabybundle");
+                mImg = bundle.getString("babyimage");
+            }
+
+            if (toyDetailsFragment != null) {
+                toyDetailsFragment.setBabyImage(mImg);
+                toyDetailsFragment.onActivityResult(requestCode, resultCode, data);
+            }
+
+            if (mToySelectorFragment != null) {
+                mToySelectorFragment.setBabyImage(mImg);
+            }
         }
         UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
     }

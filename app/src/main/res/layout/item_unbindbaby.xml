@@ -88,14 +88,15 @@
         <!--android:layout_alignParentRight="true"-->
         <!--android:layout_centerVertical="true"/>-->
 
-        <ImageButton
+        <CheckBox
             android:id="@+id/iv_item_unbindbaby_checked"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
-            android:background="@drawable/bindbaby_checkbox_selector"
+            android:button="@null"
+            android:background="@drawable/checkbox_selector"
             android:clickable="true"
             android:focusable="false"/>
 

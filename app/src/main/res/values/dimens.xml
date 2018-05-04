@@ -41,4 +41,5 @@
     <dimen name="dp_0.5" type="dimen" format="float">0.5dp</dimen>
     <dimen name="dp_2">2dp</dimen>
     <dimen name="d_8">8dp</dimen>
+    <dimen name="dimen_250">250dp</dimen>
 </resources>

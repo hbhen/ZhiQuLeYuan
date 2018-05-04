@@ -58,16 +58,17 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/tb_babyinfolist">
 
-        <com.tongyuan.android.zhiquleyuan.swipe.refreshlib.AbListView
+        <com.tongyuan.android.zhiquleyuan.view.SwipeMenuListView.SwipeMenuListView
             android:id="@+id/lv_babyinfolist"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="10dp"
             android:background="#ffffff"
-            android:clickable="true"
+            android:divider="@null"
             android:listSelector="@color/transparent">
-        </com.tongyuan.android.zhiquleyuan.swipe.refreshlib.AbListView>
+        </com.tongyuan.android.zhiquleyuan.view.SwipeMenuListView.SwipeMenuListView>
     </com.tongyuan.android.zhiquleyuan.view.SwipeMenuListView.MySwipeRefreshLayout>
+    <!--android:clickable="true"-->
 
 
 </RelativeLayout>

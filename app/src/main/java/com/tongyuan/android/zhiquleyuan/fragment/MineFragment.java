@@ -40,6 +40,7 @@ import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
 import com.tongyuan.android.zhiquleyuan.utils.SPUtils;
 import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 import com.tongyuan.android.zhiquleyuan.utils.ZQLYApp;
+import com.tongyuan.android.zhiquleyuan.view.GlideCircleTransform;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -182,7 +183,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
             public void onResponse(Call<QuerySingleUserInfoReSBean> call, Response<QuerySingleUserInfoReSBean>
                     response) {
                 if (response == null) {
-                    ToastUtil.showToast(mContext, "数据请求为空");
+//                    ToastUtil.showToast(mContext, "数据请求为空");
                     return;
                 } else {
                     String birthday = response.body().getBODY().getBIRTHDAY();
@@ -208,7 +209,8 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
 
             @Override
             public void onFailure(Call<QuerySingleUserInfoReSBean> call, Throwable t) {
-                ToastUtil.showToast(mContext, t.toString());
+                LogUtil.i(TAG, t.toString());
+                ToastUtil.showToast(mContext, R.string.network_error);
             }
         });
     }
@@ -239,7 +241,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                     //进入登录页面
                     mIntent.setClass(getActivity(), ActivityLogin.class);
                     getActivity().startActivityForResult(mIntent, MINELOGIN);
-                    ToastUtil.showToast(getActivity(), "进入登录信息页面");
+//                    ToastUtil.showToast(getActivity(), "进入登录信息页面");
                 } else {
                     /*
                     *  mToken = SPUtils.getString(getContext(), "token", "");
@@ -251,7 +253,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                     mIntent.setClass(getContext(), SetUserInfoActivity.class);
                     mIntent.putExtra("userbirthday", mBirthday);
                     startActivity(mIntent);
-                    ToastUtil.showToast(getActivity(), "进入设置用户信息页面");
+//                    ToastUtil.showToast(getActivity(), "进入设置用户信息页面");
                 }
                 break;
             case R.id.ll_fragment_mine_baby:
@@ -326,10 +328,11 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                         LogUtil.i(TAG, "onClick: mToken delelte" + mToken);
 //                        LogUtil.i(TAG, "onClick: token" + SPUtils.getString(getActivity(), "token", ""));
                         mMineTitle.setText("点击登录");
-                        Glide.with(getActivity()).load(R.drawable.player_cover_default).asBitmap().into(mPic);
+                        Glide.with(getActivity()).load(R.drawable.player_cover_default).asBitmap().centerCrop().transform(new GlideCircleTransform
+                                (getActivity())).into(mPic);
                         mTv_fragment_mine_desc.setText("登录后设置用户的信息");
                         mMyLogout.setVisibility(View.GONE);
-                        ToastUtil.showToast(getContext(), "sure");
+//                        ToastUtil.showToast(getContext(), "sure");
                     }
                 });
                 builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -418,7 +421,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
 //            LogUtil.i("444444", "minefragment:onActivityResult: " + mUsername);
 //            LogUtil.i("444444", "minefragment:onActivityResult: " + mUserimg);
             mMineTitle.setText(mUsername);
-            Glide.with(getContext()).load(mUserimg).asBitmap().into(mPic);
+            Glide.with(getContext()).load(mUserimg).asBitmap().centerCrop().transform(new GlideCircleTransform(getContext())).into(mPic);
         }
 
     }
@@ -452,12 +455,13 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                 mMineTitle.setText(mUsername);
             }
             mTv_fragment_mine_desc.setText(mPhoneNum);
-            Glide.with(ZQLYApp.context).load(mUserimg).placeholder(R.drawable.player_cover_default).into(mPic);
+            Glide.with(ZQLYApp.context).load(mUserimg).asBitmap().placeholder(R.drawable.player_cover_default).centerCrop().transform(new
+                    GlideCircleTransform(ZQLYApp.context)).into(mPic);
         } else {
             mMyLogout.setVisibility(View.GONE);
             mMineTitle.setText("点击登录");
             mTv_fragment_mine_desc.setText("登录后设置机主的基本信息");
-            Glide.with(ZQLYApp.context).load(R.drawable.player_cover_default).asBitmap().into(mPic);
+            Glide.with(ZQLYApp.context).load(R.drawable.player_cover_default).asBitmap().transform(new GlideCircleTransform(ZQLYApp.context)).into(mPic);
         }
     }
 

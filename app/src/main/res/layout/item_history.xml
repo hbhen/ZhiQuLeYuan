@@ -58,7 +58,7 @@
                 android:id="@+id/tv_itemt_history_duration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="通话时长"
+                android:text="通话时间"
                 android:textSize="@dimen/sp_12"/>
 
             <TextView

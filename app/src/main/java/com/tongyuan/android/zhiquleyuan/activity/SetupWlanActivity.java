@@ -67,7 +67,7 @@ public class SetupWlanActivity extends AppCompatActivity {
                 String wlanSecret = mEtSetwlan.getText().toString().trim();
                 LogUtil.d(TAG, "onViewClicked: +wlanName:" + wlanName + "+wlanSecret:" + wlanSecret);
                 if (wlanName.equals("") || wlanSecret.equals("")) {
-                    ToastUtil.showToast(this, "无线名称和无线密码不能为空");
+                    ToastUtil.showToast(this, "请填写无线名称和无线密码");
                     return;
                 }
                 SPUtils.putString(this, "wlanname", "" + wlanName);

@@ -92,6 +92,7 @@ public class MyPlayActivity extends BaseActivity {
     private static final int UPDATE_PLAY_PROGRESS_SHOW = 1;
     private ObjectAnimator mRotateObjectAnimator;
 
+
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -106,6 +107,7 @@ public class MyPlayActivity extends BaseActivity {
 
     public static ArrayList<? extends MusicPlayerBean> list;
     public static int playPosition;
+    int randomIndex = -1;
 
     /**
      * 激活音乐播放页
@@ -165,6 +167,7 @@ public class MyPlayActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         if (MusicPlayer.isPlaying()) {
+            MusicPlayer.setLooping(playState == single);
             showStartView();
         }
     }
@@ -232,11 +235,11 @@ public class MyPlayActivity extends BaseActivity {
                     loopView.setImageResource(R.drawable.play_loop_track_ico_20_3x);
                 }
 
-                if (playState == circle) {
-                    MusicPlayer.setLooping(true);// 列表循环的功能
-                } else {
-                    MusicPlayer.setLooping(false);
-                }
+                MusicPlayer.setLooping(playState == single);// 列表循环的功能
+//                if (playState == circle) {
+//                } else {
+//                    MusicPlayer.setLooping(false);
+//                }
                 if (playState == single) {
 
 //                    添加一个功能,单曲循环的功能
@@ -254,13 +257,7 @@ public class MyPlayActivity extends BaseActivity {
                 playMusic(false);
                 break;
             case R.id.player_next:
-                if (playPosition == list.size() - 1) {
-                    return;
-                }
-                ++playPosition;
-                restartRotateObjectAnimator();
-                playMusic(false);
-
+                playNext();
                 break;
         }
     }
@@ -387,6 +384,7 @@ public class MyPlayActivity extends BaseActivity {
     protected void onPrepared() {
         showStartView();
         int duration = MusicPlayer.getDuration();
+        MusicPlayer.setLooping(playState == single);
         if (duration != 0) {
             if (progressBar != null)
                 progressBar.setMax(MusicPlayer.getDuration());
@@ -408,11 +406,29 @@ public class MyPlayActivity extends BaseActivity {
             startTimeView.setText(Util.formatMillis(MusicPlayer.getDuration()));
         } else if (playState == random) {
             Random random = new Random(47);
-            int index = random.nextInt(list.size());
-            MusicPlayer.openAndStart(list.get(index).getID());
+            randomIndex = random.nextInt(list.size());
+            MusicPlayer.openAndStart(list.get(randomIndex).getID());
         } else if (playState == circle) {
-
+            playNext();
         }
+    }
+
+    private void playNext() {
+        if (randomIndex != -1) {
+            playPosition = randomIndex;
+        }
+        if (playPosition == list.size() - 1) {
+            if (playState == circle) {
+                playPosition = 0;
+                randomIndex = -1;
+                restartRotateObjectAnimator();
+                playMusic(false);
+            }
+            return;
+        }
+        ++playPosition;
+        restartRotateObjectAnimator();
+        playMusic(false);
     }
 
     @Override
@@ -455,7 +471,6 @@ public class MyPlayActivity extends BaseActivity {
                     MusicPlayer.stop();
                     Intent it = new Intent(MyPlayActivity.this, MainActivity.class);
                     startActivity(it);
-
                 } else {
                     ToastUtil.showToast(mContext, response.body().getMsg());
                 }

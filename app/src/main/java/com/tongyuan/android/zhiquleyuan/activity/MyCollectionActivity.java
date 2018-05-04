@@ -5,12 +5,12 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.TypedValue;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -86,13 +86,34 @@ public class MyCollectionActivity extends AppCompatActivity implements View.OnCl
         footerView = LayoutInflater.from(this).inflate(R.layout.discovery_sub_item_foot, null);
         footerView.setVisibility(View.GONE);
         mSwipeListview.addFooterView(footerView);
+        initSwipeMenuListViewContent();
+    }
+
+    private void initSwipeMenuListViewContent() {
+        SwipeMenuCreator mCreator = new SwipeMenuCreator() {
+            @Override
+            public void create(SwipeMenu menu) {
+                SwipeMenuItem deleteItem = new SwipeMenuItem(getApplicationContext());
+                deleteItem.setTitle("删除");
+                deleteItem.setBackground(R.color.redFont);
+                deleteItem.setWidth(dp2px(70));
+                deleteItem.setTitleSize(16);
+                deleteItem.setTitleColor(Color.WHITE);
+                menu.addMenuItem(deleteItem);
+            }
+        };
+        mSwipeListview.setMenuCreator(mCreator);
+        mSwipeListview.setSmoothScrollbarEnabled(true);
+        mSwipeListview.setSwipeDirection(SwipeMenuListView.DIRECTION_LEFT);
+        mSwipeListview.setOpenInterpolator(new AccelerateInterpolator());
+        mSwipeListview.setCloseInterpolator(new AccelerateInterpolator());
     }
 
     private void initData() {
 //        getMyCollection("");
         mMyCollectionAdapter = new MyCollectionAdapter(getApplicationContext(), collectionList);
         mSwipeListview.setAdapter(mMyCollectionAdapter);
-        getMyCollection(keyWord, false);
+        getMyCollection("", false);
     }
 
     private void initListener() {
@@ -105,30 +126,22 @@ public class MyCollectionActivity extends AppCompatActivity implements View.OnCl
                 NC = "-1";
 //                getMyCollection("");
                 keyWord = "";
-                getMyCollection(keyWord, false);
+                getMyCollection("", false);
                 mSpRefresh.setRefreshing(false);
             }
         });
-
-        mEditText.addTextChangedListener(new TextWatcher() {
+        mEditText.setOnKeyListener(new View.OnKeyListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-//                getMyCollection(s.toString());
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                keyWord = s.toString();
-                getMyCollection(keyWord, false);
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
+                    ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(MyCollectionActivity.this.getCurrentFocus()
+                            .getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                    String text = mEditText.getText().toString().trim();
+                    getMyCollection(keyWord, false);
+                }
+                return false;
             }
         });
-
     }
 
     private void getMyCollection(String keyWord, final boolean isLoadMore) {
@@ -147,7 +160,7 @@ public class MyCollectionActivity extends AppCompatActivity implements View.OnCl
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
             AllInterface allInterface = retrofit.create(AllInterface.class);
-            QueryMyCollectionReqBean.BODYBean bodyBean = new QueryMyCollectionReqBean.BODYBean("", "", "10", String.valueOf(page));
+            QueryMyCollectionReqBean.BODYBean bodyBean = new QueryMyCollectionReqBean.BODYBean(keyWord, "", "10", String.valueOf(page));
             QueryMyCollectionReqBean queryMyCollectionReqBean = new QueryMyCollectionReqBean("REQ", "MYFAV", phoneNum, time, bodyBean, "", token,
                     "1");
             Gson gson = new Gson();
@@ -182,44 +195,14 @@ public class MyCollectionActivity extends AppCompatActivity implements View.OnCl
                             listBean.setNAME(lstBean.getNAME());
                             mList.add(listBean);
                         }
-
-                        // 如果list为空怎么办??2017.6.14
                         mSwipeListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                                //TODO list取不到
-//                            Intent intent = new Intent();
-//                            intent.setClass(MyCollectionActivity.this,MyPlayActivity.class);
-//                            Bundle bundle = new Bundle();
-//                            bundle.putParcelable("play", response.body().getBODY());
-//                            intent.putExtras(bundle);
-//                            startActivity(intent);
-
-//                            ArrayList<QueryMyCollectionResBean.BODYBean.LSTBean> arrayList = new ArrayList
-//                                    <QueryMyCollectionResBean.BODYBean.LSTBean>();
-//                            for (int i = 0; i < lst.size(); i++) {
-//                                arrayList.add(i, response.body().getBODY().getLST().get(i));
-//                            }
                                 MyPlayActivity.launch(getApplicationContext(), mList, position);
-                                ToastUtil.showToast(getApplicationContext(), "点击的是:" + position);
+//                                ToastUtil.showToast(getApplicationContext(), "点击的是:" + position);
                             }
                         });
 
-                        SwipeMenuCreator  mCreator = new SwipeMenuCreator() {
-
-                            @Override
-                            public void create(SwipeMenu menu) {
-                                SwipeMenuItem deleteItem = new SwipeMenuItem(getApplicationContext());
-                                deleteItem.setTitle("删除");
-                                deleteItem.setBackground(R.color.redFont);
-                                deleteItem.setWidth(dp2px(70));
-                                deleteItem.setTitleSize(16);
-                                deleteItem.setTitleColor(Color.WHITE);
-                                menu.addMenuItem(deleteItem);
-                            }
-                        };
-                        mSwipeListview.setMenuCreator(mCreator);
                         mSwipeListview.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
                             @Override
                             public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
@@ -227,16 +210,14 @@ public class MyCollectionActivity extends AppCompatActivity implements View.OnCl
                                 deleteCollection(phoneNum, time, position, collectionList, token);
                                 collectionList.remove(position);
                                 mMyCollectionAdapter.notifyDataSetChanged();
-                                ToastUtil.showToast(getApplicationContext(), "点击删除");
+//                                ToastUtil.showToast(getApplicationContext(), "点击删除");
                                 return false;
-
                             }
                         });
 
-                        mSwipeListview.setSmoothScrollbarEnabled(true);
-                        mSwipeListview.setSwipeDirection(SwipeMenuListView.DIRECTION_LEFT);
-                        mSwipeListview.setOpenInterpolator(new AccelerateInterpolator());
-                        mSwipeListview.setCloseInterpolator(new AccelerateInterpolator());
+                    } else if (response.body().getCODE().equals("-10006")) {
+                        SPUtils.putString(getApplicationContext(), "token", "");
+                        ToastUtil.showToast(getApplicationContext(), response.body().getMSG());
                     } else {
                         ToastUtil.showToast(getApplicationContext(), response.body().getMSG());
                         footerView.setVisibility(View.GONE);
@@ -246,6 +227,7 @@ public class MyCollectionActivity extends AppCompatActivity implements View.OnCl
 
                 @Override
                 public void onFailure(Call<QueryMyCollectionResBean> call, Throwable t) {
+                    ToastUtil.showToast(getApplicationContext(), "网络异常,请检查网络");
                     isLoading = false;
                     LogUtil.i("555555", "querymycollection+List:failure" + t.toString());
 
@@ -312,7 +294,7 @@ public class MyCollectionActivity extends AppCompatActivity implements View.OnCl
         if (!isLoading && lastItem == totalItemCount && scrollState == SCROLL_STATE_IDLE) {
             //显示加载更多
             isLoading = true;
-            getMyCollection(keyWord, true);
+            getMyCollection("", true);
         }
     }
 

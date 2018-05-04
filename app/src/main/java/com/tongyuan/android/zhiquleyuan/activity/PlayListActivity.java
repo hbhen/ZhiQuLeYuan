@@ -108,10 +108,10 @@ public class PlayListActivity extends AppCompatActivity implements View.OnClickL
 
                 @Override
                 public void onResponse(Call<QueryMyPlayResBean> call, Response<QueryMyPlayResBean> response) {
-                    int size = response.body().getBODY().getLST().size();
-                    LogUtil.i(TAG, "onResponse: size" + size);
-                    if (response.body() != null && response.body().getCODE().equals("0")) {
 
+                    if (response.body() != null && response.body().getCODE().equals("0")) {
+                        int size = response.body().getBODY().getLST().size();
+                        LogUtil.i(TAG, "onResponse: size" + size);
                         NC = response.body().getBODY().getNC();
                         LogUtil.d(TAG, "onResponse: <QueryMyPlayResBean>" + response.body().getBODY().toString());
                         LogUtil.i("555555", "queryRecordingList:response" + response.body().getBODY().toString());
@@ -144,7 +144,7 @@ public class PlayListActivity extends AppCompatActivity implements View.OnClickL
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                 MyPlayActivity.launch(getApplicationContext(), mList, position);
-                                ToastUtil.showToast(getApplicationContext(), "点击的是:" + position);
+//                                ToastUtil.showToast(getApplicationContext(), "点击的是:" + position);
                             }
                         });
                         SwipeMenuCreator mCreator = new SwipeMenuCreator() {
@@ -166,7 +166,7 @@ public class PlayListActivity extends AppCompatActivity implements View.OnClickL
                                 queryMusicList.remove(position);
                                 deleteMyPlay(phoneNum, time, position, queryMusicList, token);
 //                            mPlayListAdapter.notifyDataSetChanged();
-                                ToastUtil.showToast(getApplicationContext(), "点击删除");
+//                                ToastUtil.showToast(getApplicationContext(), "点击删除");
                                 return false;
                             }
                         });
@@ -174,8 +174,9 @@ public class PlayListActivity extends AppCompatActivity implements View.OnClickL
                         mSwipelistview.setSwipeDirection(SwipeMenuListView.DIRECTION_LEFT);
                         mSwipelistview.setOpenInterpolator(new AccelerateInterpolator());
                         mSwipelistview.setCloseInterpolator(new AccelerateInterpolator());
-                    } else {
+                    } else if (response.body().getCODE().equals("-10006")) {
                         ToastUtil.showToast(getApplicationContext(), response.body().getMSG());
+                        SPUtils.putString(getApplicationContext(), "token", "");
                         footerView.setVisibility(View.GONE);
                     }
                     isLoading = false;
@@ -184,6 +185,7 @@ public class PlayListActivity extends AppCompatActivity implements View.OnClickL
 
                 @Override
                 public void onFailure(Call<QueryMyPlayResBean> call, Throwable t) {
+                    ToastUtil.showToast(getApplicationContext(), R.string.network_error);
                     isLoading = false;
                     LogUtil.i("555555", "querymycollection+List:failure" + t.toString());
                 }

@@ -1,35 +1,39 @@
 package com.tongyuan.android.zhiquleyuan.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageButton;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListResult;
+import com.tongyuan.android.zhiquleyuan.holder.BindBabyHolder;
+import com.tongyuan.android.zhiquleyuan.utils.LogUtil;
+import com.tongyuan.android.zhiquleyuan.view.GlideCircleTransform;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 import retrofit2.Response;
+
 
 /**
  * Created by Android on 2017/5/15.
  */
 public class BindBabyAdapter extends BaseAdapter {
-
+    private final String TAG = BindBabyAdapter.class.getSimpleName();
     private Response<QueryBabyListResult> mResponse;
     private Context mContext;
     HashMap<Integer, Boolean> isSelected;
     private final LayoutInflater mInflater;
+    private Map<Integer, Boolean> map = new HashMap<>();
 
 
     public BindBabyAdapter(Context context, Response<QueryBabyListResult> response) {
@@ -53,7 +57,9 @@ public class BindBabyAdapter extends BaseAdapter {
     public long getItemId(int position) {
         return position;
     }
+
     BindBabyHolder mBindBabyHolder = null;
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -67,54 +73,40 @@ public class BindBabyAdapter extends BaseAdapter {
             mBindBabyHolder.mTextViewSex = (TextView) convertView.findViewById(R.id.tv_item_bindbaby_sex);
             mBindBabyHolder.mImageViewBirthday = (ImageView) convertView.findViewById(R.id.iv_item_bindbaby_birthday);
             mBindBabyHolder.mTextViewBirthday = (TextView) convertView.findViewById(R.id.tv_item_bindbaby_birthday);
-            mBindBabyHolder.mCheckImageButton = (ImageButton) convertView.findViewById(R.id.iv_item_bindbaby_checked);
-
+            mBindBabyHolder.mCheckImageButton = (CheckBox) convertView.findViewById(R.id.iv_item_bindbaby_checked);
+            mBindBabyHolder.mCheckImageButton.setTag(position);
             convertView.setTag(mBindBabyHolder);
 
         } else {
             mBindBabyHolder = (BindBabyHolder) convertView.getTag();
         }
+
         String babyImgUrl = mResponse.body().getBODY().getLST().get(position).getIMG().toString();
         String babyName = mResponse.body().getBODY().getLST().get(position).getNAME();
         String sex = mResponse.body().getBODY().getLST().get(position).getSEX();
         String birthday = mResponse.body().getBODY().getLST().get(position).getBIRTHDAY();
 
-
-        Glide.with(mContext).load(babyImgUrl).asBitmap().into(new BitmapImageViewTarget(mBindBabyHolder.mImageViewBabyImg) {
-            @Override
-            protected void setResource(Bitmap resource) {
-                RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(mContext.getResources(), resource);
-                roundedBitmapDrawable.setCircular(true);
-                mBindBabyHolder.mImageViewBabyImg.setImageDrawable(roundedBitmapDrawable);
-            }
-        });
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddmmssSSS");
+        SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("yyyy/MM/dd");
+        try {
+            Date parse = simpleDateFormat.parse(birthday);
+            String formatTime = simpleDateFormat1.format(parse);
+            mBindBabyHolder.mTextViewBirthday.setText(formatTime);
+            LogUtil.i(TAG, "babyinfolistadapter:" + formatTime);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Glide.with(mContext).load(babyImgUrl).asBitmap().centerCrop().transform(new GlideCircleTransform(mContext)).into(mBindBabyHolder
+                .mImageViewBabyImg);
         mBindBabyHolder.mTextViewBabyName.setText(babyName);
         mBindBabyHolder.mTextViewSex.setText(sex);
-        mBindBabyHolder.mTextViewBirthday.setText(birthday);
         if (sex.equals("m")) {
             mBindBabyHolder.mImageViewSex.setImageResource(R.drawable.signs_man);
         }
         mBindBabyHolder.mImageViewSex.setImageResource(R.drawable.signs_woman);
-
-//        mBindBabyHolder.mCheckImageButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                mBindBabyHolder.mCheckImageButton.setSelected(true);
-//                ToastUtil.showToast(mContext, "碰到了111");
-//            }
-//        });
         return convertView;
     }
 
 
-    class BindBabyHolder {
-        private ImageView mImageViewSex;
-        private TextView mTextViewSex;
-        private ImageView mImageViewBirthday;
-        private TextView mTextViewBirthday;
-        private ImageView mImageViewBabyImg;
-        private TextView mTextViewBabyName;
-        private ImageButton mCheckImageButton;
-    }
 }
 

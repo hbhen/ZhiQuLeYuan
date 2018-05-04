@@ -13,7 +13,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tongyuan.android.zhiquleyuan.R;
-import com.tongyuan.android.zhiquleyuan.utils.ToastUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -77,10 +76,10 @@ public class MyToyFragment extends Fragment {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_toy_details_call:
-                ToastUtil.showToast(getActivity(), "1");
+//                ToastUtil.showToast(getActivity(), "1");
                 break;
             case R.id.tv_toy_details_manager:
-                ToastUtil.showToast(getActivity(), "2");
+//                ToastUtil.showToast(getActivity(), "2");
                 break;
         }
     }

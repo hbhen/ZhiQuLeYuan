@@ -419,7 +419,8 @@ public class MyBabyActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<BabyInfoResultBean> call, Throwable t) {
-                LogUtil.i("upload", "onFailure...");
+                ToastUtil.showToast(getApplicationContext(),"网络异常,请检查网络");
+                LogUtil.i("upload", "onFailure..."+t.toString());
             }
         });
 

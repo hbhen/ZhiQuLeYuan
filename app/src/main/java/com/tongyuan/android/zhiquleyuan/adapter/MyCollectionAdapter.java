@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.bean.QueryMyCollectionResBean;
 import com.tongyuan.android.zhiquleyuan.holder.MyCollectionHolder;
+import com.tongyuan.android.zhiquleyuan.view.GlideCircleTransform;
 
 import java.util.List;
 
@@ -70,7 +71,8 @@ public class MyCollectionAdapter extends BaseAdapter {
         //这里先写假数据,bean类里面没有定义textview的get也没有imageview的get,set方法;
 
 //        mMCHolder.imageView.setImageResource(R.mipmap.test);
-        Glide.with(mContext).load(img).placeholder(R.drawable.player_cover_default).into(mMCHolder.imageView);
+        Glide.with(mContext).load(img).asBitmap().placeholder(R.drawable.player_cover_default).transform(new GlideCircleTransform(mContext)).into
+                (mMCHolder.imageView);
 //        mMCHolder.textViewTitle.setText("铃儿响叮当");
         mMCHolder.textViewTitle.setText(name);
 //        mMCHolder.textViewTimes.setText("212");

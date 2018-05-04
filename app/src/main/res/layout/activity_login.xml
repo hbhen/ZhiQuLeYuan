@@ -76,16 +76,17 @@
 
 
         <EditText
+            android:textCursorDrawable="@drawable/style_cursor"
             android:id="@+id/et_login_phone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
+            android:layout_marginRight="@dimen/dp_5"
             android:layout_toRightOf="@id/view"
             android:background="@null"
-            android:cursorVisible="false"
+            android:cursorVisible="true"
             android:hint="请输入手机号"
             android:numeric="integer"
-            android:paddingLeft="5dp"
+            android:paddingLeft="@dimen/dp_5"
             android:textSize="@dimen/sp_16"
             />
 
@@ -152,7 +153,8 @@
             android:layout_marginRight="@dimen/dp_20"
             android:layout_toRightOf="@id/view_smscode"
             android:background="@null"
-            android:cursorVisible="false"
+            android:cursorVisible="true"
+            android:textCursorDrawable="@drawable/style_cursor"
             android:hint="请输入验证码"
             android:paddingLeft="5dp"
             android:textSize="@dimen/sp_16"
