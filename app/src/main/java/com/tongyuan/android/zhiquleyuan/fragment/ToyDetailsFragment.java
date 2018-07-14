@@ -30,6 +30,8 @@ import com.tongyuan.android.zhiquleyuan.adapter.DiscoveryListViewAdapter;
 import com.tongyuan.android.zhiquleyuan.base.BaseFragment;
 import com.tongyuan.android.zhiquleyuan.bean.CallToToyReq;
 import com.tongyuan.android.zhiquleyuan.bean.CallToToyRes;
+import com.tongyuan.android.zhiquleyuan.bean.ControlToyPlayMusicReqBean;
+import com.tongyuan.android.zhiquleyuan.bean.ControlToyPlayMusicResBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListRequsetBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.GetInstantStateInfoReq;
@@ -123,7 +125,6 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     private boolean isShow = false;
     private RelativeLayout mToyPlayControl;
     private TextView mUpdate;
-    private TextView mTv_toyPlayControl_time;
     private ImageView mIv_toyPlayControl_pre;
     private ImageView mIv_toyPlayControl_next;
     private ImageView mIv_toyPlayControl_play;
@@ -132,7 +133,9 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     private View footerView;
     int currentPage = 1;
     public String NC = "-1";
-    private boolean isToyPlaying = false;
+    private boolean isToyPlaying = false;//从网络获取正在播放的
+    private ImageView mSetToyVolume;
+    private ImageView mIv_toyPlayControl_pause;
 
     public void setBabyImage(String babyImage) {
         this.mBabyimg = babyImage;
@@ -151,11 +154,13 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         LogUtil.i(TAG, "onCreateView went");
         mToyDetails = inflater.inflate(R.layout.fragment_toy_details, null);
         mRefresh = (SwipeRefreshLayout) mToyDetails.findViewById(R.id.swipe_toydetails);
+//        玩具正在播放的控制面板
         mToyPlayControl = (RelativeLayout) mToyDetails.findViewById(R.id.rl_fragment_toy_playingcontrol);
-        mTv_toyPlayControl_time = (TextView) mToyPlayControl.findViewById(R.id.tv_fragment_recoding_time);
-        mIv_toyPlayControl_pre = (ImageView) mToyPlayControl.findViewById(R.id.iv_recoding_prev);
-        mIv_toyPlayControl_next = (ImageView) mToyPlayControl.findViewById(R.id.iv_recoding_next);
-        mIv_toyPlayControl_play = (ImageView) mToyPlayControl.findViewById(R.id.iv_recoding_play);
+        mSetToyVolume = (ImageView) mToyDetails.findViewById(R.id.iv_fragment_controltoy_setvolume);
+        mIv_toyPlayControl_pre = (ImageView) mToyPlayControl.findViewById(R.id.iv_controltoy_prev);
+        mIv_toyPlayControl_next = (ImageView) mToyPlayControl.findViewById(R.id.iv_controltoy_next);
+        mIv_toyPlayControl_play = (ImageView) mToyPlayControl.findViewById(R.id.iv_controltoy_play);
+        mIv_toyPlayControl_pause = (ImageView) mToyPlayControl.findViewById(R.id.iv_controltoy_pause);
         mIv_toyPlayControl_seekbar = (SeekBar) mToyPlayControl.findViewById(R.id.seekbar);
         mListviewtitle = inflater.inflate(R.layout.discovery_recyclerview_listview_title, null);
         LogUtil.i("timedate", "onCreateView");
@@ -193,10 +198,11 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         mToyDetails.findViewById(R.id.back_btn).setOnClickListener(this);
 //        mToyIsPlaying.setOnClickListener(this);
         mUpdate.setOnClickListener(this);
-        mTv_toyPlayControl_time.setOnClickListener(this);
+        mSetToyVolume.setOnClickListener(this);
         mIv_toyPlayControl_pre.setOnClickListener(this);
         mIv_toyPlayControl_next.setOnClickListener(this);
         mIv_toyPlayControl_play.setOnClickListener(this);
+        mIv_toyPlayControl_pause.setOnClickListener(this);
         mIv_toyPlayControl_seekbar.setOnSeekBarChangeListener(this);
         mListviewRecommand.setOnScrollListener(this);
         mRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -442,18 +448,24 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
             case R.id.tv_updatetoy:
                 updateToyVersion();
                 break;
-            case tv_toy_details_playing:
-
-                isShow = !isShow;
-                if (isShow) {
-                    mToyPlayControl.setVisibility(View.VISIBLE);
-                    mListviewRecommand.setVisibility(View.GONE);
-                } else {
-                    mToyPlayControl.setVisibility(View.GONE);
-                    mListviewRecommand.setVisibility(View.VISIBLE);
-                }
-                break;
+//            case tv_toy_details_playing:
+//
+//                isShow = !isShow;
+//                if (isShow) {
+//                    mToyPlayControl.setVisibility(View.VISIBLE);
+//                    mRefresh.setVisibility(View.GONE);
+////                    mListviewRecommand.setVisibility(View.GONE);
+//                } else {
+//                    mToyPlayControl.setVisibility(View.GONE);
+//                    mRefresh.setVisibility(View.VISIBLE);
+////                    mListviewRecommand.setVisibility(View.VISIBLE);
+//                }
+//                break;
             case iv_toy_details_call:
+                //添加新的需求: 从只能双方通话,到多方通话
+//                FrameLayout frameLayout = new FrameLayout(mContext);
+//                ListView listView = new ListView(mContext);
+//                frameLayout.addView();
                 //通话控制
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
                 alertDialog.setTitle("请选择通话对象")
@@ -553,6 +565,29 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                 mainActivity.backToTop();
 //                ToastUtil.showToast(mContext, "back");
                 break;
+            case R.id.iv_fragment_controltoy_setvolume:
+                ToastUtil.showToast(mContext, "setvolume");
+                break;
+            case R.id.iv_controltoy_prev:
+                controlToyPlay("4");//上一首 ,下一首 ,都是用的4
+                ToastUtil.showToast(mContext, "controlpre");
+                break;
+            case R.id.iv_controltoy_next:
+                controlToyPlay("4");
+                ToastUtil.showToast(mContext, "controlnext");
+                break;
+            case R.id.iv_controltoy_play:
+                controlToyPlay("1");
+                ToastUtil.showToast(mContext, "controlplay");
+                break;
+            case R.id.iv_controltoy_pause:
+                controlToyPlay("2");
+                ToastUtil.showToast(mContext, "controlpause");
+                break;
+            default:
+                break;
+            
+
         }
 
     }
@@ -620,18 +655,20 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                 LogUtil.i(TAG, "onResponse: RESPONSE" + response.message());
                 LogUtil.i(TAG, "onResponse:+response " + response.body().toString());
                 mRoomid = response.body().getRoomid();
+                if (response.body().getCode().equals("-10009")) {
+                    ToastUtil.showToast(getActivity(), "玩具未登录");
+                    return;
+                }
                 if (mRoomid == null) {
                     ToastUtil.showToast(getActivity(), "玩具正在休眠");
                     return;
                 }
+                if (response.body().getCode().equals("-10012")) {
+                    ToastUtil.showToast(getActivity(), "玩具通话中");
+                    return;
+                }
                 if (response.body().getCode().equals("-10008")) {
                     ToastUtil.showToast(getActivity(), "推送失败");
-                    return;
-                } else if (response.body().getCode().equals("-10009")) {
-                    ToastUtil.showToast(getActivity(), "玩具未登录");
-                    return;
-                } else if (response.body().getCode().equals("-10012")) {
-                    ToastUtil.showToast(getActivity(), "玩具通话中");
                     return;
                 }
                 VideoActivity.launch(mContext, mBabyimg, mBabyName, mRoomid, mToken, mToyId, null);
@@ -669,7 +706,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         LogUtil.i(TAG, "onStart went ");
 
         //TODO 查询当前玩具是否正在播放音乐 3.4.43  暂时先不查询了,因为玩具端不知道怎么上传当前播放的状态给服务器
-//        queryPlayingMusic();
+        queryPlayingMusic();
     }
 
     private void queryPlayingMusic() {
@@ -687,10 +724,11 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         Call<QueryPlayingMusicResBean> queryPlayingMusicResBeanCall = allInterface.QUERY_PLAYING_MUSIC_RES_BEAN_CALL(s);
         queryPlayingMusicResBeanCall.enqueue(new Callback<QueryPlayingMusicResBean>() {
             @Override
-            public void onResponse(Call<QueryPlayingMusicResBean> call, Response<QueryPlayingMusicResBean> response) {
+            public void onResponse(Call<QueryPlayingMusicResBean> call, final Response<QueryPlayingMusicResBean> response) {
                 LogUtil.i("55555", response.body().toString());
 
-                if (response.body().getBODY().getID().equals("")) {
+//                if (response.body().getBODY().getID().equals("")) {
+                if (!response.body().getCODE().equals("0")) {
                     ToastUtil.showToast(getContext(), "当前玩具没有正在播放的歌曲");
                     mToyIsPlaying.setVisibility(View.GONE);
                 } else {
@@ -700,11 +738,14 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                         public void onClick(View v) {
                             isShow = !isShow;
                             if (isShow) {
+                                mToyIsPlaying.setText("玩具正在播放 : " + response.body().getBODY().getNAME() + "歌曲");
                                 mToyPlayControl.setVisibility(View.VISIBLE);
-                                mListviewRecommand.setVisibility(View.GONE);
+                                mIv_toyPlayControl_play.setVisibility(View.GONE);
+                                mIv_toyPlayControl_pause.setVisibility(View.VISIBLE);
+                                mRefresh.setVisibility(View.GONE);
                             } else {
                                 mToyPlayControl.setVisibility(View.GONE);
-                                mListviewRecommand.setVisibility(View.VISIBLE);
+                                mRefresh.setVisibility(View.VISIBLE);
                             }
 
                         }
@@ -714,7 +755,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
 
             @Override
             public void onFailure(Call<QueryPlayingMusicResBean> call, Throwable t) {
-
+                ToastUtil.showToast(mContext, "请检查网络");
             }
         });
 
@@ -915,5 +956,42 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
         lastItem = firstVisibleItem + visibleItemCount;
         this.totalItemCount = totalItemCount;
+    }
+
+    public void controlToyPlay(String method) {
+        String resourseId = "";
+        String toyId = mToyId;
+
+        ControlToyPlayMusicReqBean.ParamBean paramBean = null;
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constant.baseurl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        AllInterface allInterface = retrofit.create(AllInterface.class);
+        if (method.equals("1")) {
+            paramBean = new ControlToyPlayMusicReqBean.ParamBean(toyId, method, resourseId, "0");
+        } else if (method.equals("0")) {
+            paramBean = new ControlToyPlayMusicReqBean.ParamBean(toyId, method, resourseId, "0");
+        } else if (method.equals("2")) {
+            paramBean = new ControlToyPlayMusicReqBean.ParamBean(toyId, method, resourseId, "0");
+
+        }
+        ControlToyPlayMusicReqBean controlToyPlayMusicReqBean = new ControlToyPlayMusicReqBean("control_play", paramBean, mToken);
+        Gson gson = new Gson();
+        String s = gson.toJson(controlToyPlayMusicReqBean);
+        Call<ControlToyPlayMusicResBean> controlToyPlayMusicResBeanCall = allInterface.CONTROL_TOY_PLAY_MUSIC_RES_BEAN_CALL(s);
+        controlToyPlayMusicResBeanCall.enqueue(new Callback<ControlToyPlayMusicResBean>() {
+            @Override
+            public void onResponse(Call<ControlToyPlayMusicResBean> call, Response<ControlToyPlayMusicResBean> response) {
+                if (response.body().getCode().equals("0")) {
+                    ToastUtil.showToast(mContext, "推送成功");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ControlToyPlayMusicResBean> call, Throwable t) {
+                ToastUtil.showToast(mContext, "请检查网络");
+            }
+        });
     }
 }

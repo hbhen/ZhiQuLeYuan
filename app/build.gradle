@@ -34,11 +34,14 @@ android {
         versionCode 4
         versionName "1.4"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
     }
 
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
+//            proguardFiles 'proguard-rules.pro'
+//            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), ('proguard-rules.pro')
 //            signingConfig signingConfigs.release
         }
@@ -107,6 +110,5 @@ dependencies {
     //下载的框架 liulishuo
     compile 'com.liulishuo.filedownloader:library:1.6.8'
     compile 'com.android.support:design:25.0.0'
-
     compile 'com.kyleduo.switchbutton:library:2.0.0'
 }

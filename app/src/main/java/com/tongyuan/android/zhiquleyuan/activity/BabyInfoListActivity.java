@@ -198,9 +198,7 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void initData() {
-        mBabyInfoListAdapter = new BabyInfoListAdapter(getApplicationContext(), babyInfoList);
-        mSwipeMenuListView.setAdapter(mBabyInfoListAdapter);
-        mBabyInfoListAdapter.notifyDataSetChanged();
+
 
         getBabyList(false);
     }
@@ -246,6 +244,9 @@ public class BabyInfoListActivity extends AppCompatActivity implements View.OnCl
                                 currentPage = 1;
                             }
                             babyInfoList.addAll(lst);
+                            mBabyInfoListAdapter = new BabyInfoListAdapter(getApplicationContext(), babyInfoList);
+                            mSwipeMenuListView.setAdapter(mBabyInfoListAdapter);
+//                            mBabyInfoListAdapter.notifyDataSetChanged();
                             if ("0".equals(NC)) {
                                 footerView.setVisibility(View.GONE);
                             } else {

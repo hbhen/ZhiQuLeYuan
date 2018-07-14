@@ -118,7 +118,7 @@ public class NoDisturbAdapter extends BaseAdapter {
             String beginFormat = simpleDateFormat1.format(beginParse);
             Date endParse = simpleDateFormat.parse(endSubString);
             String endFormat = simpleDateFormat1.format(endParse);
-            mNodisturbHolder.mTv_nodisturb_start.setText("(" + position + ")" + beginFormat);
+            mNodisturbHolder.mTv_nodisturb_start.setText(beginFormat);
             mNodisturbHolder.mTv_nodisturb_end.setText("-" + endFormat);
 
         } catch (ParseException e) {

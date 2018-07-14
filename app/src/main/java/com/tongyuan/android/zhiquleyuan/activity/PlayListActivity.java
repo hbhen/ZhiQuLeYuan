@@ -163,8 +163,8 @@ public class PlayListActivity extends AppCompatActivity implements View.OnClickL
                         mSwipelistview.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
                             @Override
                             public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
-                                queryMusicList.remove(position);
                                 deleteMyPlay(phoneNum, time, position, queryMusicList, token);
+                                queryMusicList.remove(position);
 //                            mPlayListAdapter.notifyDataSetChanged();
 //                                ToastUtil.showToast(getApplicationContext(), "点击删除");
                                 return false;
@@ -216,7 +216,7 @@ public class PlayListActivity extends AppCompatActivity implements View.OnClickL
             public void onResponse(Call<DeleteMyPlayResBean> call, Response<DeleteMyPlayResBean> response) {
                 footerView.setVisibility(View.GONE);
                 mPlayListAdapter.notifyDataSetChanged();
-                ToastUtil.showToast(getApplicationContext(), response.body().getMSG());
+//                ToastUtil.showToast(getApplicationContext(), response.body().getMSG());
                 LogUtil.i("555555", "recordingfragment+(deleteRecording)onResponse: " + response.body().getBODY().toString());
 
             }

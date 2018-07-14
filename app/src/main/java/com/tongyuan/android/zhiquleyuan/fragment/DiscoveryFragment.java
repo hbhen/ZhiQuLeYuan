@@ -216,7 +216,7 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
                 @Override
                 public void onFailure(Call<SuperModel<DiscoveryListResultBean.BODYBean>> call, Throwable t) {
                     ToastUtil.showToast(getActivity(), R.string.network_error);
-                    LogUtil.i(TAG,t.toString());
+                    LogUtil.i(TAG, t.toString());
                     mSwiperefresh.setRefreshing(false);
                     isLoading = false;
                 }
@@ -225,6 +225,7 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
                 public void onResponseFilter(Call<SuperModel<DiscoveryListResultBean.BODYBean>> call,
                                              Response<SuperModel<DiscoveryListResultBean.BODYBean>> response) {
                     if ("0".equals(response.body().CODE)) {
+                        LogUtil.i(TAG, "getListRaw : " + response.body().toString());
                         NC = response.body().BODY.getNC();
                         if (isLoadMore) {
                             ++currPage;
@@ -235,11 +236,14 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
                         //LogUtil.i(TAG, "onResponse: "+response.body().toString());
                         discoveryListViewList.addAll(response.body().BODY.getLST());
                         mAdapter.notifyDataSetChanged();
-                    } else if (response.body().CODE.equals("-10006")){
-                        SPUtils.putString(getActivity(),"token","");
+                    } else if (response.body().CODE.equals("-10006")) {
+                        SPUtils.putString(getActivity(), "token", "");
+                        LogUtil.i(TAG, "getListRaw : " + response.body().toString());
                         ToastUtil.showToast(getActivity(), response.body().MSG);
-                    }else{
-                        ToastUtil.showToast(getActivity(), response.body().MSG);
+                    } else {
+                        LogUtil.i(TAG, "getListRaw : " + response.body().toString());
+//                        ToastUtil.showToast(getActivity(), response.body().MSG);
+                        ToastUtil.showToast(getActivity(), "listraw response ...");
                     }
                     mSwiperefresh.setRefreshing(false);
                     isLoading = false;
@@ -259,6 +263,7 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
             public void onResponse(Call<SuperModel<DiscoveryGridItemBean>> call,
                                    Response<SuperModel<DiscoveryGridItemBean>> response) {
                 if ("0".equals(response.body().CODE)) {
+                    LogUtil.i(TAG, "getIdCol : " + response.body().toString());
                     if (response.body().BODY != null && response.body().BODY.LST != null) {
                         discoveryGridViewList.clear();
                         discoveryGridViewList.addAll(response.body().BODY.LST);
@@ -267,7 +272,9 @@ public class DiscoveryFragment extends BaseFragment implements SwipeRefreshLayou
                         getListRaw(false);
                     }
                 } else {
-                    ToastUtil.showToast(getActivity(), response.body().MSG);
+                    LogUtil.i(TAG, "getIdCol : " + response.body().toString());
+//                    ToastUtil.showToast(getActivity(), response.body().MSG);
+                    ToastUtil.showToast(getActivity(), "idcol response ...");
                     mSwiperefresh.setRefreshing(false);
                 }
             }

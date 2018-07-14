@@ -29,7 +29,7 @@ public class PlayListAdapter extends BaseAdapter implements View.OnClickListener
 
     @Override
     public int getCount() {
-        return mLSTBeen.size()-1;
+        return mLSTBeen.size();
     }
 
     @Override

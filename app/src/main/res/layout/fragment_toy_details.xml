@@ -296,7 +296,7 @@
         android:layout_marginTop="39dp"
         android:background="#ffffff"
         >
-
+        <!--toydetailsfragment页面的玩具播放控制面板-->
         <RelativeLayout
             android:id="@+id/rl_fragment_toy_playingcontrol"
             android:layout_width="match_parent"
@@ -315,17 +315,17 @@
             <!--android:textColor="#000000"-->
             <!--android:textSize="16sp"/>-->
 
-            <TextView
-                android:id="@+id/tv_fragment_recoding_time"
+            <ImageView
+                android:id="@+id/iv_fragment_controltoy_setvolume"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="@dimen/dp_10"
-                android:text="00:45"
+                android:src="@drawable/volume_big_pressed"
                 />
 
             <RelativeLayout
-                android:id="@+id/rl_fragment_recording_control"
+                android:id="@+id/rl_fragment_controltoy"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
@@ -333,7 +333,7 @@
                 >
 
                 <ImageView
-                    android:id="@+id/iv_fragment_playrecording_back"
+                    android:id="@+id/iv_fragment_controltoy_back"
                     android:layout_width="21dp"
                     android:layout_height="21dp"
                     android:layout_alignParentLeft="true"
@@ -349,7 +349,7 @@
                     >
 
                     <ImageView
-                        android:id="@+id/iv_recoding_prev"
+                        android:id="@+id/iv_controltoy_prev"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_centerInParent="true"
@@ -359,22 +359,30 @@
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:id="@+id/rl_playrecording_play"
+                    android:id="@+id/rl_controltoy_play"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     >
 
                     <ImageView
-                        android:id="@+id/iv_recoding_play"
+                        android:id="@+id/iv_controltoy_play"
                         android:layout_width="80dp"
                         android:layout_height="80dp"
                         android:layout_centerInParent="true"
                         android:src="@drawable/recording_listener_3x"
                         />
+                    <ImageView
+                        android:visibility="gone"
+                        android:id="@+id/iv_controltoy_pause"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_centerInParent="true"
+                        android:src="@drawable/play_stop_240"
+                        />
 
                     <ImageView
-                        android:id="@+id/iv_recoding_stop"
+                        android:id="@+id/iv_controltoy_stop"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
@@ -383,7 +391,7 @@
                         />
 
                     <ImageView
-                        android:id="@+id/iv_recoding_stopcircle"
+                        android:id="@+id/iv_controltoy_stopcircle"
                         android:layout_width="80dp"
                         android:layout_height="80dp"
                         android:layout_centerInParent="true"
@@ -402,7 +410,7 @@
                     >
 
                     <ImageView
-                        android:id="@+id/iv_recoding_next"
+                        android:id="@+id/iv_controltoy_next"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_centerInParent="true"
@@ -414,14 +422,14 @@
             </RelativeLayout>
 
             <RelativeLayout
-                android:id="@+id/rl_fragment_recoding_seekbar"
+                android:id="@+id/rl_fragment_controltoy_seekbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/rl_fragment_recording_control"
                 >
 
                 <TextView
-                    android:id="@+id/tv_fragment_recoding_begintime"
+                    android:id="@+id/tv_fragment_controltoy_begintime"
                     android:layout_width="56sp"
                     android:layout_height="17sp"
                     android:layout_alignParentLeft="true"
@@ -434,7 +442,7 @@
                     android:id="@+id/seekbar"
                     android:layout_width="200dp"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@id/tv_fragment_recoding_begintime"
+                    android:layout_toRightOf="@id/tv_fragment_controltoy_begintime"
                     android:focusable="true"
                     android:maxHeight="1.7dp"
                     android:minHeight="1.7dp"
@@ -443,7 +451,7 @@
                     />
 
                 <TextView
-                    android:id="@+id/tv_fragment_recoding_endtime"
+                    android:id="@+id/tv_fragment_controltoy_endtime"
                     android:layout_width="56sp"
                     android:layout_height="17sp"
                     android:layout_alignParentRight="true"
@@ -454,11 +462,12 @@
                     />
             </RelativeLayout>
         </RelativeLayout>
-
+        <!--toydetailsfragment页面的listview-->
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/swipe_toydetails"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+                android:visibility="visible"
             >
 
             <ListView
@@ -467,7 +476,6 @@
                 android:layout_height="match_parent"
                 android:footerDividersEnabled="false"
                 android:scrollbars="none"
-                android:visibility="visible"
                 />
         </android.support.v4.widget.SwipeRefreshLayout>
 

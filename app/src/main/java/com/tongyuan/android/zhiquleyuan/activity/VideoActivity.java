@@ -416,7 +416,7 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
         if (_userList.size() == 0)
             return;
         if (_watchingPeerID == 0) {
-            int peerID = _userList.get(0);
+            int peerID = _userList.get(0);//这里就是获取id的,userlist是装在房间里的用户的人数的容器.
             Session.getInstance().PlayVideo(peerID, true, mMy_video, 0, 0, 1, 1, 0, false, 1, 0);
             Session.getInstance().requestSpeaking(peerID);
             LogUtil.d("surfaceview", "surfaceview5 ");

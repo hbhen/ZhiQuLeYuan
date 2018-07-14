@@ -128,8 +128,19 @@
 -dontwarn org.msgpack.**
 #-dontwarn retrofit2.Platform$Java8
 -dontwarn java.lang.invoke.**
+-keepattributes Annotation
+#Android不需要preverify，去掉这一步可加快混淆速度
+-dontpreverify
+#避免混淆泛型，这在JSON实体映射时非常重要，比如fastJson
+-keepattributes Signature
+## 保留所有的本地native方法不被混淆
+-keepclasseswithmembernames class * {
+    native <methods>;
+}
+# 保留Parcelable序列化的类不被混淆
+-keep class * implements android.os.Parcelable {
+    public static final android.os.Parcelable$Creator *;
 
-
-
+}
 
 

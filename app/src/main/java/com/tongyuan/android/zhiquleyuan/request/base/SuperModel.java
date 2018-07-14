@@ -3,7 +3,7 @@ package com.tongyuan.android.zhiquleyuan.request.base;
 
 /**
  * 返回数据的基类
- * Created by zgg on 2017/6/4.
+ Created by zgg on 2017/6/4.
  */
 
 public class SuperModel<T> {

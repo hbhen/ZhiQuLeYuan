@@ -505,7 +505,7 @@ public class RecordingFragment extends BaseRecordingFragment implements View.OnC
         switch (v.getId()) {
             //录音
             case R.id.iv_recoding_tool_startrecoding:
-//                ToastUtil.showToast(getContext(), "点击了recoding");
+                ToastUtil.showToast(getContext(), "开始录音");
                 startRecoding();
                 break;
             //分享
@@ -522,7 +522,7 @@ public class RecordingFragment extends BaseRecordingFragment implements View.OnC
                         .setPlatform(SHARE_MEDIA.WEIXIN).setCallback(mShareListener)
                         .open();
 
-//                ToastUtil.showToast(getContext(), "点击了share");
+                ToastUtil.showToast(getContext(), "准备分享");
 
                 break;
             //推送到玩具
@@ -539,7 +539,7 @@ public class RecordingFragment extends BaseRecordingFragment implements View.OnC
                     return;
                 }
                 sendRecordingToToy(ToySelectorFragment.mToyId);
-//                ToastUtil.showToast(getContext(), "点击了send2toy");
+                ToastUtil.showToast(getContext(), "已经推送到玩具");
 
                 break;
 

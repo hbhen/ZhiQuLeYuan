@@ -205,8 +205,7 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
         GetSmsCodeReqBean.BODYBean bodyBean = new GetSmsCodeReqBean.BODYBean(phoneNum);
-        GetSmsCodeReqBean getSmsCodeReqBean = new GetSmsCodeReqBean("REQ", "SMSA", "", new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date())
-                , bodyBean, "", "", "1");
+        GetSmsCodeReqBean getSmsCodeReqBean = new GetSmsCodeReqBean("REQ", "SMSA", "", new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()), bodyBean, "", "", "1");
         Gson gson = new Gson();
         String s = gson.toJson(getSmsCodeReqBean);
         retrofit2.Call<GetSmsCodeResBean> getSmsCodeResBeanCall = allInterface.GET_SMSCODE_RES_BEAN_CALL(s);
@@ -222,7 +221,7 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
 
             @Override
             public void onFailure(retrofit2.Call<GetSmsCodeResBean> call, Throwable t) {
-
+                LogUtil.i(TAG,t.toString());
             }
         });
 
@@ -237,9 +236,9 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
-        //test 为1时,是不发送信息给手机 正式环境不用1,用""代替
-//        GetSmsCodeValueReqBean.BODYBean bodyBean = new GetSmsCodeValueReqBean.BODYBean("REG", phoneNum, agreeno, "");
-        GetSmsCodeValueReqBean.BODYBean bodyBean = new GetSmsCodeValueReqBean.BODYBean("REG", phoneNum, agreeno, "1");
+        //TODO test为1时,是不发送信息给手机 正式环境不用1,用""代替
+        GetSmsCodeValueReqBean.BODYBean bodyBean = new GetSmsCodeValueReqBean.BODYBean("REG", phoneNum, agreeno, "");
+//        GetSmsCodeValueReqBean.BODYBean bodyBean = new GetSmsCodeValueReqBean.BODYBean("REG", phoneNum, agreeno, "1");
         GetSmsCodeValueReqBean getSmsCodeValueReqBean = new GetSmsCodeValueReqBean("REQ", "SMS", "", new SimpleDateFormat("yyyyMMddHHmmssSSS")
                 .format(new Date()), bodyBean, "", "", "1");
         Gson gson = new Gson();
@@ -259,10 +258,9 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
                 * 选第一个
                 * */
                 //TODO 别忘了删,正式上线的时候
-//                et_login_smscode.setText(mSmsCode);
+                et_login_smscode.setText(mSmsCode);
                 //点击了获取验证码以后,再删除验证码,点击"确认登录"仍然能登录的原因就错在这了 ,不应该在这里
 //                getToken(smsCode, idx, phoneNum);
-
             }
 
             @Override
@@ -409,8 +407,6 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
                 }
                 if (response.body().getCODE().equals("-10006")) {
                     SPUtils.putString(getApplicationContext(), "token", "");
-                    ToastUtil.showToast(getApplicationContext(), response.body().getMSG());
-                } else {
                     ToastUtil.showToast(getApplicationContext(), response.body().getMSG());
                 }
             }
