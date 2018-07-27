@@ -28,8 +28,10 @@ import com.tongyuan.android.zhiquleyuan.bean.DiscoveryGridSecondaryResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.GetInstantStateInfoRes;
 import com.tongyuan.android.zhiquleyuan.bean.GetNewestVersionResBean;
+import com.tongyuan.android.zhiquleyuan.bean.GetRoomIdResBean;
 import com.tongyuan.android.zhiquleyuan.bean.GetSmsCodeResBean;
 import com.tongyuan.android.zhiquleyuan.bean.GetSmsCodeValueResBean;
+import com.tongyuan.android.zhiquleyuan.bean.JonToyResBean;
 import com.tongyuan.android.zhiquleyuan.bean.LocalPlayApplyResBean;
 import com.tongyuan.android.zhiquleyuan.bean.ModifyRecordingResBean;
 import com.tongyuan.android.zhiquleyuan.bean.NodisturbTimeResBean;
@@ -43,6 +45,7 @@ import com.tongyuan.android.zhiquleyuan.bean.QueryPlayingMusicResBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryRecordingResBean;
 import com.tongyuan.android.zhiquleyuan.bean.QuerySingleUserInfoReSBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryToyMemberReSBean;
+import com.tongyuan.android.zhiquleyuan.bean.QuitToyResBean;
 import com.tongyuan.android.zhiquleyuan.bean.RegistAndLoginResBean;
 import com.tongyuan.android.zhiquleyuan.bean.SearchResBean;
 import com.tongyuan.android.zhiquleyuan.bean.SetNodisturbTimeResBean;
@@ -302,4 +305,16 @@ public interface AllInterface {
     @GET("jpush")
     Call<UpdateToyVersionResBean> UPDATE_TOY_VERSION_RES_BEAN_CALL(@Query("params") String params);
 
+    //添加一对多的通话功能
+    //1.获取房间roomid
+    @GET("busi")
+    Call<GetRoomIdResBean> GET_ROOM_ID_RES_BEAN_CALL(@Query("params") String params);
+
+    //2.添加玩具进入房间
+    @GET("busi")
+    Call<JonToyResBean> JON_TOY_RES_BEAN_CALL(@Query("params") String params);
+
+    //3.从会议室踢出玩具
+    @GET("busi")
+    Call<QuitToyResBean> QUIT_TOY_RES_BEAN_CALL(@Query("params") String params);
 }

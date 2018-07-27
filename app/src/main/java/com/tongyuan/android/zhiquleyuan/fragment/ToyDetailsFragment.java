@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -23,6 +24,7 @@ import com.google.gson.Gson;
 import com.tongyuan.android.zhiquleyuan.R;
 import com.tongyuan.android.zhiquleyuan.activity.BindBabyActivity;
 import com.tongyuan.android.zhiquleyuan.activity.MainActivity;
+import com.tongyuan.android.zhiquleyuan.activity.MultiVideoActivity;
 import com.tongyuan.android.zhiquleyuan.activity.MyPlayActivity;
 import com.tongyuan.android.zhiquleyuan.activity.UnBindBabyActivity;
 import com.tongyuan.android.zhiquleyuan.activity.VideoActivity;
@@ -36,10 +38,16 @@ import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListRequsetBean;
 import com.tongyuan.android.zhiquleyuan.bean.DiscoveryListResultBean;
 import com.tongyuan.android.zhiquleyuan.bean.GetInstantStateInfoReq;
 import com.tongyuan.android.zhiquleyuan.bean.GetInstantStateInfoRes;
+import com.tongyuan.android.zhiquleyuan.bean.GetRoomIdReqBean;
+import com.tongyuan.android.zhiquleyuan.bean.GetRoomIdResBean;
+import com.tongyuan.android.zhiquleyuan.bean.JonToyReqBean;
+import com.tongyuan.android.zhiquleyuan.bean.JonToyResBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListFromToyIdReq;
 import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListFromToyIdRes;
 import com.tongyuan.android.zhiquleyuan.bean.QueryPlayingMusicReqBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryPlayingMusicResBean;
+import com.tongyuan.android.zhiquleyuan.bean.QuitToyReqBean;
+import com.tongyuan.android.zhiquleyuan.bean.QuitToyResBean;
 import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoRESBean;
 import com.tongyuan.android.zhiquleyuan.bean.UpdateToyVersionReqBean;
 import com.tongyuan.android.zhiquleyuan.bean.UpdateToyVersionResBean;
@@ -124,7 +132,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     String[] mStrings = new String[]{"与玩具通话", "与电视,玩具通话"};
     private boolean isShow = false;
     private RelativeLayout mToyPlayControl;
-    private TextView mUpdate;
+    private Button mUpdate;
     private ImageView mIv_toyPlayControl_pre;
     private ImageView mIv_toyPlayControl_next;
     private ImageView mIv_toyPlayControl_play;
@@ -136,6 +144,9 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     private boolean isToyPlaying = false;//从网络获取正在播放的
     private ImageView mSetToyVolume;
     private ImageView mIv_toyPlayControl_pause;
+    private Button mMultiCall;
+    ArrayList<String> codeList;
+    ArrayList<String> idList;
 
     public void setBabyImage(String babyImage) {
         this.mBabyimg = babyImage;
@@ -167,7 +178,8 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         //TODO 动态设置布局的位置:mIsPlaying 显示,mListviewRecommand在它下面; 不显示,mListviewRecommand在Relativlayout的下面.
 //        FrameLayout framelayoutControl =  (FrameLayout) mToyDetails.findViewById(R.id
 // .fl_fragment_toy_details_playcontrol);
-        mUpdate = (TextView) mToyDetails.findViewById(R.id.tv_updatetoy);
+        mUpdate = (Button) mToyDetails.findViewById(R.id.tv_updatetoy);
+        mMultiCall = (Button) mToyDetails.findViewById(R.id.multicall);
         mListviewRecommand = (ListView) mToyDetails.findViewById(R.id.lv_fragment_toy_details_recommand);
         LogUtil.i(TAG, "mLIstviewRecommand():" + mListviewRecommand.toString());
         mCall = (ImageView) mToyDetails.findViewById(iv_toy_details_call);
@@ -197,6 +209,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
         mListviewRecommand.addFooterView(footerView);
         mToyDetails.findViewById(R.id.back_btn).setOnClickListener(this);
 //        mToyIsPlaying.setOnClickListener(this);
+        mMultiCall.setOnClickListener(this);
         mUpdate.setOnClickListener(this);
         mSetToyVolume.setOnClickListener(this);
         mIv_toyPlayControl_pre.setOnClickListener(this);
@@ -304,6 +317,12 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                 }
             });
         }
+
+    }
+
+    public void setToyCodeListAndIdList(ArrayList<String> codeList, ArrayList<String> idList) {
+        this.codeList = codeList;
+        this.idList = idList;
 
     }
 
@@ -445,8 +464,15 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.multicall:
+                //添加新的需求: 从只能双方通话,到多方通话
+//                dialogMoreChoice();
+
+                getRoomId();
+                break;
             case R.id.tv_updatetoy:
-                updateToyVersion();
+//                updateToyVersion();
+                ToastUtil.showToast(mContext, "去更新");
                 break;
 //            case tv_toy_details_playing:
 //
@@ -462,18 +488,17 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
 //                }
 //                break;
             case iv_toy_details_call:
-                //添加新的需求: 从只能双方通话,到多方通话
-//                FrameLayout frameLayout = new FrameLayout(mContext);
-//                ListView listView = new ListView(mContext);
-//                frameLayout.addView();
-                //通话控制
+                //通话控制(一对一通话)
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
                 alertDialog.setTitle("请选择通话对象")
                         .setItems(mStrings, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                //
                                 if (which == 0) {
                                     CallToToy();
+
+
 //                                    ToastUtil.showToast(getActivity(), "跳转到通话界面");//是fragemnt界面
                                 } else {
                                     //去扫描二维码,获得电视端的唯一识别码,然后就直接从二维码那个页面去获取三方会议号,并申请三方会议通话
@@ -586,10 +611,198 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                 break;
             default:
                 break;
-            
+
 
         }
 
+    }
+
+    private void getToyIdList() {
+
+
+    }
+
+    private void getRoomId() {
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(Constant.baseurl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        AllInterface allInterface = retrofit.create(AllInterface.class);
+        GetRoomIdReqBean.BODYBean aTrue = new GetRoomIdReqBean.BODYBean("TRUE");
+        GetRoomIdReqBean getRoomIdReqBean = new GetRoomIdReqBean("REQ", "GETROOM", "", "", aTrue, "", mToken, "1");
+        Gson gson = new Gson();
+        String s = gson.toJson(getRoomIdReqBean);
+        Call<GetRoomIdResBean> getRoomIdResBeanCall = allInterface.GET_ROOM_ID_RES_BEAN_CALL(s);
+        getRoomIdResBeanCall.enqueue(new Callback<GetRoomIdResBean>() {
+            @Override
+            public void onResponse(Call<GetRoomIdResBean> call, Response<GetRoomIdResBean> response) {
+                if (response.body().getCODE().equals("0")) {
+                    String roomid = response.body().getBODY().getROOMID();
+                    String chiefpasswd = response.body().getBODY().getCHIEFPASSWD();
+                    ToastUtil.showToast(mContext, "   : " + roomid);
+                    //添加玩具的id去播放
+//                    joinToy(roomid);
+                    dialogMoreChoice(roomid);
+                } else {
+
+                    ToastUtil.showToast(mContext, "未获取到roomid,请检查");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetRoomIdResBean> call, Throwable t) {
+                LogUtil.i(TAG, "TOYDETAILSFRAGMENT: " + t.toString());
+            }
+        });
+    }
+
+    private void joinToy(String roomid, String toyItem) {
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(Constant.baseurl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        AllInterface allInterface = retrofit.create(AllInterface.class);
+        JonToyReqBean.BODYBean aTrue = new JonToyReqBean.BODYBean(roomid, toyItem);
+        JonToyReqBean jonToyReqBean = new JonToyReqBean("REQ", "JONTOY", "", "", aTrue, "", mToken, "1");
+        Gson gson = new Gson();
+        String s = gson.toJson(jonToyReqBean);
+        Call<JonToyResBean> jonToyResBeanCall = allInterface.JON_TOY_RES_BEAN_CALL(s);
+        jonToyResBeanCall.enqueue(new Callback<JonToyResBean>() {
+            @Override
+            public void onResponse(Call<JonToyResBean> call, Response<JonToyResBean> response) {
+                if (response.body().getCODE().equals("0")) {
+                    LogUtil.i(TAG, response.body().getBODY().toString());
+                    ToastUtil.showToast(mContext, "成功连接玩具");
+                } else {
+                    ToastUtil.showToast(mContext, response.body().getMSG());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JonToyResBean> call, Throwable t) {
+                LogUtil.i(TAG, t.toString());
+            }
+        });
+
+    }
+
+    private void dialogMoreChoice(final String roomid) {
+        final String items[] = new String[idList.size()];
+        final String[] toyItems = idList.toArray(items);
+//        final String items[] = {"student1", "student2", "student3", "student4", "student5"};
+
+        final boolean selected[] = {false, false, false, false, false};
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), 3);
+        builder.setTitle("开始上课");
+        builder.setMultiChoiceItems(toyItems, selected, new DialogInterface.OnMultiChoiceClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                if (isChecked) {
+                    CallToToy(items[which]);
+//                    joinToy(roomid, toyItems[which]);
+                    ToastUtil.showToast(mContext, items[which] + "  :true");
+                } else {
+                    quitToy(roomid, toyItems[which]);
+                    ToastUtil.showToast(mContext, items[which] + "  :false");
+
+                }
+            }
+
+            private void CallToToy(final String item) {
+                LogUtil.i(TAG, "item:" + item);
+                ToastUtil.showToast(mContext, "kkk:" + item);
+                final String token = SPUtils.getString(getActivity(), "token", "");
+                Retrofit retrofit = new Retrofit.Builder().baseUrl(Constant.baseurl)
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+                AllInterface allInterface = retrofit.create(AllInterface.class);
+                CallToToyReq.ParamBean param = new CallToToyReq.ParamBean(item, "1", "", "");
+                CallToToyReq callToToyReq = new CallToToyReq("contact_toy", param, mToken);
+                Gson gson = new Gson();
+                String s = gson.toJson(callToToyReq);
+                Call<CallToToyRes> callToToyResCall = allInterface.CALL_TO_TOY_RES_CALL(s);
+                callToToyResCall.enqueue(new Callback<CallToToyRes>() {
+                    @Override
+                    public void onResponse(Call<CallToToyRes> call, Response<CallToToyRes> response) {
+                        LogUtil.i(TAG, "onResponse: RESPONSE" + response.message());
+                        LogUtil.i(TAG, "onResponse:+response " + response.body().toString());
+                        mRoomid = response.body().getRoomid();
+                        MultiVideoActivity.launch(mContext, roomid, mToken, item, null);
+                        LogUtil.i("555555", "onResponse:+mRoomid " + mRoomid);
+
+                        //TODO 跳转到新的页面
+//                CallWaitingConnectFragment callWaitingConnectFragment = new CallWaitingConnectFragment();
+//                FragmentManager fragmentManager = getFragmentManager();
+//                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//                fragmentTransaction.replace(R.id.fl_fragmentcontainer, callWaitingConnectFragment);
+//                fragmentTransaction.addToBackStack(null);
+//                fragmentTransaction.commit();
+                    }
+
+
+                    @Override
+                    public void onFailure(Call<CallToToyRes> call, Throwable t) {
+                        LogUtil.i("111111", t.toString());
+                        ToastUtil.showToast(mContext, t.toString());
+                    }
+                });
+            }
+        });
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                MultiVideoActivity.launch(mContext, roomid, mToken, toyItems);
+                dialog.dismiss();
+                ToastUtil.showToast(mContext, "确定");
+                //TODO 写入多方通话的方法
+//                CallToToy();
+                // android会自动根据你选择的改变selected数组的值。
+//                for (int i = 0; i < selected.length; i++) {
+//                    Log.e("hongliang", "" + selected[i]);
+//                }
+            }
+        });
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+//                MultiVideoActivity.launch(mContext,roomid,mToken,toyItems);
+                dialog.dismiss();
+                ToastUtil.showToast(mContext, "取消");
+                //TODO 写入多方通话的方法
+//                CallToToy();
+                // android会自动根据你选择的改变selected数组的值。
+//                for (int i = 0; i < selected.length; i++) {
+//                    Log.e("hongliang", "" + selected[i]);
+//                }
+            }
+        });
+        builder.show();
+    }
+
+    private void quitToy(String roomid, String toyItem) {
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(Constant.baseurl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        AllInterface allInterface = retrofit.create(AllInterface.class);
+        QuitToyReqBean.BODYBean aTrue = new QuitToyReqBean.BODYBean(roomid, toyItem);
+        QuitToyReqBean quitToyReqBean = new QuitToyReqBean("REQ", "QUITTOY", "", "", aTrue, "", mToken, "1");
+        Gson gson = new Gson();
+        String s = gson.toJson(quitToyReqBean);
+        Call<QuitToyResBean> quitToyResBeanCall = allInterface.QUIT_TOY_RES_BEAN_CALL(s);
+        quitToyResBeanCall.enqueue(new Callback<QuitToyResBean>() {
+            @Override
+            public void onResponse(Call<QuitToyResBean> call, Response<QuitToyResBean> response) {
+                if (response.body().getCODE().equals("0")) {
+                    LogUtil.i(TAG, response.body().getBODY().toString());
+                    ToastUtil.showToast(mContext, "成功踢出玩具");
+                } else {
+                    ToastUtil.showToast(mContext, response.body().getMSG());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<QuitToyResBean> call, Throwable t) {
+                LogUtil.i(TAG, t.toString());
+            }
+        });
     }
 
     private void updateToyVersion() {
@@ -644,6 +857,7 @@ public class ToyDetailsFragment extends BaseFragment implements View.OnClickList
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
+        LogUtil.i(TAG, "mToyId:" + mToyId);
         CallToToyReq.ParamBean param = new CallToToyReq.ParamBean(mToyId, "1", "", "");
         CallToToyReq callToToyReq = new CallToToyReq("contact_toy", param, mToken);
         Gson gson = new Gson();

@@ -514,7 +514,10 @@ public class RecordingFragment extends BaseRecordingFragment implements View.OnC
                     ToastUtil.showToast(getContext(), "当前没有选中录音,请选择录音之后分享");
                     return;
                 }
-
+                if (ToySelectorFragment.mToyId==null){
+                    ToastUtil.showToast(getContext(),"请去玩具页面选择玩具");
+                    return;
+                }
                 mShareAction
 //                        .withText(SPUtils.getString(getContext(), "address", ""))
                         .withText(mUrl)

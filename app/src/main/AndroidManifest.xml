@@ -148,6 +148,12 @@
             android:name=".activity.VideoActivity"
             android:screenOrientation="portrait">
         </activity>
+
+        <activity
+            android:name=".activity.MultiVideoActivity"
+            android:screenOrientation="portrait">
+        </activity>
+
         <activity android:name=".activity.SetInitVolumeActivity">
         </activity>
         <activity android:name=".activity.PlayListActivity">

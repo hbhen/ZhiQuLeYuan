@@ -1,59 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-               android:layout_width="match_parent"
-               android:layout_height="match_parent">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
     <info.emm.sdk.VideoView
         android:id="@+id/surfaceView5"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp">
 
-        <!--<info.emm.sdk.VideoView-->
-        <!--android:id="@+id/surfaceView6"-->
-        <!--android:layout_width="100dp"-->
-        <!--android:layout_height="150dp"-->
-        <!--android:background="@color/translucent_white_8p"/>-->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginTop="73dp"
+            android:background="#d1d1d1"/>
+
+        <ImageView
+            android:id="@+id/fragment_videocall_babyimg"
+            android:layout_width="120dp"
+            android:layout_height="60dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="44dp"
+            android:background="@drawable/viedocalling_babyimg_3x"/>
+
+        <ImageView
+            android:id="@+id/iv_activity_videocall_babyimg"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignLeft="@+id/fragment_videocall_babyimg"
+            android:layout_alignStart="@+id/fragment_videocall_babyimg"
+            android:layout_alignTop="@+id/fragment_videocall_babyimg"/>
+
+        <TextView
+            android:id="@+id/tv_activity_videocall_babyname"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignBottom="@id/fragment_videocall_babyimg"
+            android:layout_alignEnd="@id/fragment_videocall_babyimg"
+            android:layout_alignRight="@id/fragment_videocall_babyimg"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="正正"
+            android:textSize="16sp"/>
     </RelativeLayout>
 
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_marginTop="73dp"
-        android:background="#d1d1d1"/>
-
-    <ImageView
-        android:id="@+id/fragment_videocall_babyimg"
-        android:layout_width="120dp"
-        android:layout_height="60dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="44dp"
-        android:background="@drawable/viedocalling_babyimg_3x"/>
-    <ImageView
-        android:id="@+id/iv_activity_videocall_babyimg"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_alignBottom="@id/fragment_videocall_babyimg"
-        android:layout_alignLeft="@id/fragment_videocall_babyimg"
-        android:layout_alignStart="@id/fragment_videocall_babyimg"/>
-    <TextView
-        android:id="@+id/tv_activity_videocall_babyname"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_alignBottom="@id/fragment_videocall_babyimg"
-        android:layout_alignEnd="@id/fragment_videocall_babyimg"
-        android:layout_alignRight="@id/fragment_videocall_babyimg"
-        android:gravity="center"
-        android:singleLine="true"
-        android:text="正正"
-        android:textSize="16sp"/>
 
     <RelativeLayout
         android:id="@+id/rl_fragment_videocall_stopcall"

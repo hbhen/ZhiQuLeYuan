@@ -296,7 +296,7 @@ public class ToySelectorFragment extends BaseFragment {
     }
 
     //查询单个玩具的信息
-    private void QuerySingleToyInfo(String toyid, String toycode, final int position) {
+    private void QuerySingleToyInfo(String toyid, final String toycode, final int position) {
         mCurrentPosition = position;
         SingleToyInfoREQBean.BODYBean bodyBean = new SingleToyInfoREQBean.BODYBean(toyid, toycode);
         Call<SuperModel<SingleToyInfoRESBean.BODYBean>> singleToyInfoResult = RequestManager.getInstance().getToyDetail(getContext(), bodyBean);
@@ -311,7 +311,19 @@ public class ToySelectorFragment extends BaseFragment {
                     LogUtil.i(TAG, "onResponse: +toyinfo" + response.body().BODY.toString());
                     String toyCode = response.body().BODY.getCODE();
                     MainActivity mainActivity = (MainActivity) getActivity();
+
                     mainActivity.getToyDetailsFragment().setData(response.body().BODY, toyList.get(mCurrentPosition).getBABYIMG());
+                    ArrayList<String> codeList=new ArrayList();
+                    ArrayList<String> idList=new ArrayList();
+
+                    for (int i = 0; i < toyList.size(); i++) {
+                        String code = toyList.get(i).getCODE();
+                        String id = toyList.get(i).getID();
+                        idList.add(id);
+                        codeList.add(code);
+                    }
+
+                    mainActivity.getToyDetailsFragment().setToyCodeListAndIdList(codeList,idList);
                     showFragment(ToyDetailsFragment.class.getSimpleName());
                 } else {
                     ToastUtil.showToast(getActivity(), response.body().MSG);

@@ -26,6 +26,17 @@
                 />
         </LinearLayout>
 
+        <Button
+            android:gravity="center"
+            android:id="@+id/multicall"
+            android:textColor="@color/color_e84515"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="30dp"
+            android:singleLine="true"
+            android:text="多人通话"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -36,10 +47,11 @@
             android:textSize="18sp"
             />
 
-        <TextView
+        <Button
             android:id="@+id/tv_updatetoy"
+            android:gravity="center"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
@@ -303,7 +315,7 @@
             android:layout_height="match_parent"
             android:background="@color/main_top_bg"
             android:clickable="true"
-            android:padding="10dp"
+            android:paddingTop="@dimen/dp_10"
             android:visibility="gone"
             >
 
@@ -338,6 +350,7 @@
                     android:layout_height="21dp"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
                     android:src="@drawable/arrow_left"
                     />
 
@@ -372,13 +385,14 @@
                         android:layout_centerInParent="true"
                         android:src="@drawable/recording_listener_3x"
                         />
+
                     <ImageView
-                        android:visibility="gone"
                         android:id="@+id/iv_controltoy_pause"
                         android:layout_width="80dp"
                         android:layout_height="80dp"
                         android:layout_centerInParent="true"
                         android:src="@drawable/play_stop_240"
+                        android:visibility="gone"
                         />
 
                     <ImageView
@@ -430,10 +444,10 @@
 
                 <TextView
                     android:id="@+id/tv_fragment_controltoy_begintime"
-                    android:layout_width="56sp"
-                    android:layout_height="17sp"
+                    android:layout_width="50dp"
+                    android:layout_height="17dp"
                     android:layout_alignParentLeft="true"
-                    android:layout_marginLeft="24dp"
+                    android:layout_marginLeft="20dp"
                     android:gravity="center"
                     android:text="00:00"
                     />
@@ -452,10 +466,8 @@
 
                 <TextView
                     android:id="@+id/tv_fragment_controltoy_endtime"
-                    android:layout_width="56sp"
-                    android:layout_height="17sp"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="24dp"
+                    android:layout_width="56dp"
+                    android:layout_height="17dp"
                     android:layout_toRightOf="@id/seekbar"
                     android:gravity="center"
                     android:text="00:45"
@@ -467,7 +479,7 @@
             android:id="@+id/swipe_toydetails"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-                android:visibility="visible"
+            android:visibility="visible"
             >
 
             <ListView
