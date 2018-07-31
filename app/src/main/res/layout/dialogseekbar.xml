@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <SeekBar
+        android:id="@+id/dialog_seekbar_setvolume"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:maxHeight="1.7dp"
+        android:minHeight="1.7dp"
+        android:progressDrawable="@drawable/po_seekbar"
+        android:thumb="@drawable/seekbar_bar_3x"/>
+</LinearLayout>

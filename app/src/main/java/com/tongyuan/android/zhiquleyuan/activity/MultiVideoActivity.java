@@ -150,192 +150,6 @@ public class MultiVideoActivity extends AppCompatActivity implements SessionInte
     }
 
     @Override
-    public void onClick(View v) {
-
-        switch (v.getId()) {
-            case R.id.surfaceView1:
-//                for (int i = 0; i < Session.getInstance().getM_nWatchVideoIDs().size(); i++) {
-//                    MyWatch myWatch = Session.getInstance().getM_nWatchVideoIDs().get(i);
-//                    int peerid = myWatch.getPeerid();
-//                    LogUtil.i(TAG, peerid + ";");
-//                }
-//                for (int i = 0; i < _userList.size(); i++) {
-//                    MeetingUser meetingUser = Session.getInstance().getM_thisUserMgr().getMeetingUser(_userList.get(i));
-//                    String name = meetingUser.getName();
-//                    LogUtil.i(TAG, "name : " + name + ";");
-//                }
-                final AlertDialog.Builder firstVideoBuilder = new AlertDialog.Builder(this);
-                firstVideoBuilder.setTitle("踢出玩具")
-                        .setMessage("是否要将当前玩具踢出会议室")
-                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                        })
-                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                ToastUtil.showToast(MultiVideoActivity.this, "name : " + name);
-//                                quitToy(mRoomid, mToyidArr[1]);
-                                if (_firstPeerID != -1 && _userList.size() != 0) {
-
-                                    String name = Session.getInstance().getM_thisUserMgr().getUser(_firstPeerID).getName();
-                                    StopCallServer(name);
-                                }else{
-                                    ToastUtil.showToast(MultiVideoActivity.this,"无玩具可以踢出");
-                                }
-                            }
-                        });
-                firstVideoBuilder.show();
-
-
-                break;
-            case R.id.surfaceView2:
-//                for (int i = 0; i < Session.getInstance().getM_nWatchVideoIDs().size(); i++) {
-//                    MyWatch myWatch = Session.getInstance().getM_nWatchVideoIDs().get(i);
-//                    int peerid = myWatch.getPeerid();
-//                    LogUtil.i(TAG, peerid + ";");
-//                }
-//                for (int i = 0; i < _userList.size(); i++) {
-//                    MeetingUser meetingUser = Session.getInstance().getM_thisUserMgr().getMeetingUser(_userList.get(i));
-//                    String name = meetingUser.getName();
-//                    LogUtil.i(TAG, "name : " + name + ";");
-//                }
-                final AlertDialog.Builder secondVideoBuilder = new AlertDialog.Builder(this);
-                secondVideoBuilder.setTitle("踢出玩具")
-                        .setMessage("是否要将当前玩具踢出会议室")
-                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                        })
-                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                ToastUtil.showToast(MultiVideoActivity.this, "name : " + name);
-//                                quitToy(mRoomid, mToyidArr[1]);
-                                if (_secondPeerID != -1 && _userList.size() != 0) {
-                                    String name = Session.getInstance().getM_thisUserMgr().getUser(_secondPeerID).getName();
-                                    StopCallServer(name);
-                                }else{
-                                    ToastUtil.showToast(MultiVideoActivity.this,"无玩具可以踢出");
-                                }
-                            }
-
-
-                        });
-                secondVideoBuilder.show();
-
-                break;
-            case R.id.addToy:
-                //当前的界面是真
-                ToastUtil.showToast(this, "添加");
-                dialogMoreChoice(mRoomid);
-                break;
-            case R.id.iv_fragment_videocall_stopcall:
-
-                dada();
-//                Stop();
-                //一对一视频通话关闭
-//                StopCallServer();
-//                quitToyDialogChoice()
-                if (_userList.size() > 0) {
-                    ToastUtil.showToast(MultiVideoActivity.this, "请先将玩具踢出,然后关闭会议室");
-                    return;
-                }
-                shutDownRoom(mRoomid);
-                finish();
-                break;
-            case R.id.iv_fragment_videocall_novideo:
-//                Session.getInstance().unplayVideo(_watchingPeerID, 0);
-                //Session.getInstance().unwatchOtherVideo(_watchingPeerID,0);
-
-//                Session.getInstance().PlayVideo(_myPeerID, false, mMy_video, 0, 0, 1, 1, 0, false, 1, 0);
-
-                if (isShowVideo) {
-                    isShowVideo = !isShowVideo;
-                    ToastUtil.showToast(this, "不看视频");
-//                    TODO 添加不看视频的图片变换 mNoVideo.setImageResource(R.drawable.);
-
-                    mMy_video.setBackgroundResource(R.drawable.videobackground_3x);
-                } else {
-                    isShowVideo = !isShowVideo;
-                    ToastUtil.showToast(this, "看视频");
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        mMy_video.setBackground(null);
-                    }
-                    Session.getInstance().PlayVideo(_myPeerID, true, mMy_video, 0, 0, 1, 1, 0, false, 1, 0);
-                }
-
-                break;
-            //不显示小的视频窗口了,也不让他有点击切换的事件了
-//            case R.id.surfaceView6:
-//                if (!change) {
-//                    LogUtil.d("surfaceview", "surfaceview: +change1");
-//                    Session.getInstance().PlayVideo(0, true, mOther_video, 0, 0, 1, 1, 0, false, 1, 0);
-//                    Session.getInstance().PlayVideo(_watchingPeerID, true, mMy_video, 0, 0, 1, 1, 65, false, 1, 0);
-//                    change = true;
-//                } else {
-//                    LogUtil.d("surfaceview", "surfaceview: +change2");
-//                    Session.getInstance().PlayVideo(0, true, mMy_video, 0, 0, 1, 1, 0, false, 1, 0);
-//                    Session.getInstance().PlayVideo(_watchingPeerID, true, mOther_video, 0, 0, 1, 1, 65, false, 1, 0);
-//                    change = false;
-//                }
-//                break;
-
-            case R.id.ib_volume_add:
-                //先过去seekbar的progress的值
-//                mVolumeInt = Integer.parseInt(mVolumeString);
-//                int progressreduce = mVolumeInt;
-
-                if (mVolumeInt <= 100) {
-                    mVolumeInt = mVolumeInt + 1;
-                    if (mVolumeInt > 100) {
-                        mVolumeInt = 100;
-                    }
-//                    mSeekBar.setProgress(mVolumeInt);
-                    String volumeAdd = String.valueOf(mVolumeInt);
-                    mVolume_text.setText(volumeAdd);
-                    mSeekBar.setProgress(mVolumeInt);
-                    //然后请求网络,把数据传到网络上去
-//                    pushValueToToy(volumeAdd);
-                }
-
-                break;
-            case R.id.ib_volume_reduce:
-                //先过去seekbar的progress的值
-
-                if (mVolumeInt >= 0) {
-                    mVolumeInt = mVolumeInt - 1;
-                    if (mVolumeInt < 0) {
-                        mVolumeInt = 0;
-
-                    }
-
-//                    mSeekBar.setProgress(mVolumeInt);
-//                    int secondaryProgress = mSeekBar.getSecondaryProgress();
-//                    secondaryProgress = mVolumeInt;
-                    String volumeReduce = String.valueOf(mVolumeInt);
-                    mVolume_text.setText(volumeReduce);
-                    mSeekBar.setProgress(mVolumeInt);
-                    //然后请求网络,把数据传到网络上去
-//                    pushValueToToy(volumeReduce);
-
-                }
-
-                break;
-            default:
-
-                break;
-
-        }
-
-
-    }
-
-    @Override
     protected void onCreate(Bundle arguments) {
         super.onCreate(arguments);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -443,12 +257,259 @@ public class MultiVideoActivity extends AppCompatActivity implements SessionInte
         firstVideo.setOnClickListener(this);
         secondVideo.setOnClickListener(this);
 
+        firstVideo.setOnLongClickListener(new View.OnLongClickListener() {
+            String dialogVolume = "15";
+
+            @Override
+            public boolean onLongClick(View v) {
+                if (_userList.size() != 0 && _firstPeerID != -1) {
+                    String name = Session.getInstance().getM_thisUserMgr().getUser(_firstPeerID).getName();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MultiVideoActivity.this);
+
+                    SeekBar dialogSeekbar = (SeekBar) MultiVideoActivity.this.getLayoutInflater().inflate(R.layout.dialogseekbar, null).findViewById(R.id.dialog_seekbar_setvolume);
+                    SeekBar seekBar = new SeekBar(MultiVideoActivity.this);
+                    seekBar.setProgress(15);
+                    seekBar.setMax(100);
+                    seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                        @Override
+                        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                            LogUtil.i("video", "onProgressChanged: " + progress);
+                            mVolumeString = String.valueOf(progress);
+                            mVolumeInt = Integer.parseInt(mVolumeString);
+                            LogUtil.i("video", "onProgressChanged----changelistenera: " + mVolumeString);
+                        }
+
+                        @Override
+                        public void onStartTrackingTouch(SeekBar seekBar) {
+                            int progress = seekBar.getProgress();
+                            LogUtil.i("video", "volume" + progress);
+                        }
+
+                        @Override
+                        public void onStopTrackingTouch(SeekBar seekBar) {
+                            int progress = seekBar.getProgress();
+                            dialogVolume = String.valueOf(progress);
+                            pushValueToToy(dialogVolume, Session.getInstance().getM_thisUserMgr().getUser(_firstPeerID).getName());
+                            LogUtil.i("video", "onProgressChanged:(stoptrackingtouch " + progress);
+                        }
+                    });
+                    builder.setView(seekBar);
+                    builder.setTitle("设置当前玩具音量");
+                    builder.setPositiveButton("sure", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            ToastUtil.showToast(MultiVideoActivity.this, "sure");
+                        }
+                    });
+                    builder.show();
+                }
+
+                ToastUtil.showToast(MultiVideoActivity.this, "long long long ");
+                return true;
+            }
+        });
+        secondVideo.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                return true;
+            }
+        });
+
 //        mMy_video.setOnClickListener(this);
 //        mOther_video.setOnClickListener(this);
         Session.getInstance().registerListener(this);
         Session.getInstance().registerWhiteBroad(SharePadMgr.getInstance());
 
     }
+
+    @Override
+    public void onClick(View v) {
+
+        switch (v.getId()) {
+            case R.id.surfaceView1:
+//                for (int i = 0; i < Session.getInstance().getM_nWatchVideoIDs().size(); i++) {
+//                    MyWatch myWatch = Session.getInstance().getM_nWatchVideoIDs().get(i);
+//                    int peerid = myWatch.getPeerid();
+//                    LogUtil.i(TAG, peerid + ";");
+//                }
+//                for (int i = 0; i < _userList.size(); i++) {
+//                    MeetingUser meetingUser = Session.getInstance().getM_thisUserMgr().getMeetingUser(_userList.get(i));
+//                    String name = meetingUser.getName();
+//                    LogUtil.i(TAG, "name : " + name + ";");
+//                }
+                final AlertDialog.Builder firstVideoBuilder = new AlertDialog.Builder(this);
+                firstVideoBuilder.setTitle("踢出玩具")
+                        .setMessage("是否要将当前玩具踢出会议室")
+                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        })
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                ToastUtil.showToast(MultiVideoActivity.this, "name : " + name);
+//                                quitToy(mRoomid, mToyidArr[1]);
+                                if (_firstPeerID != -1 && _userList.size() != 0) {
+
+                                    String name = Session.getInstance().getM_thisUserMgr().getUser(_firstPeerID).getName();
+                                    StopCallServer(name);
+                                } else {
+                                    ToastUtil.showToast(MultiVideoActivity.this, "无玩具可以踢出");
+                                }
+                            }
+                        });
+                firstVideoBuilder.show();
+
+
+                break;
+            case R.id.surfaceView2:
+//                for (int i = 0; i < Session.getInstance().getM_nWatchVideoIDs().size(); i++) {
+//                    MyWatch myWatch = Session.getInstance().getM_nWatchVideoIDs().get(i);
+//                    int peerid = myWatch.getPeerid();
+//                    LogUtil.i(TAG, peerid + ";");
+//                }
+//                for (int i = 0; i < _userList.size(); i++) {
+//                    MeetingUser meetingUser = Session.getInstance().getM_thisUserMgr().getMeetingUser(_userList.get(i));
+//                    String name = meetingUser.getName();
+//                    LogUtil.i(TAG, "name : " + name + ";");
+//                }
+                final AlertDialog.Builder secondVideoBuilder = new AlertDialog.Builder(this);
+                secondVideoBuilder.setTitle("踢出玩具")
+                        .setMessage("是否要将当前玩具踢出会议室")
+                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        })
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                ToastUtil.showToast(MultiVideoActivity.this, "name : " + name);
+//                                quitToy(mRoomid, mToyidArr[1]);
+                                if (_secondPeerID != -1 && _userList.size() != 0) {
+                                    String name = Session.getInstance().getM_thisUserMgr().getUser(_secondPeerID).getName();
+                                    StopCallServer(name);
+                                } else {
+                                    ToastUtil.showToast(MultiVideoActivity.this, "无玩具可以踢出");
+                                }
+                            }
+
+
+                        });
+                secondVideoBuilder.show();
+
+                break;
+            case R.id.addToy:
+                //当前的界面是真
+                ToastUtil.showToast(this, "添加");
+                dialogMoreChoice(mRoomid);
+                break;
+            case R.id.iv_fragment_videocall_stopcall:
+
+                dada();
+//                Stop();
+                //一对一视频通话关闭
+//                StopCallServer();
+//                quitToyDialogChoice()
+                if (_userList.size() > 0) {
+                    ToastUtil.showToast(MultiVideoActivity.this, "请先将玩具踢出,然后关闭会议室");
+                    return;
+                }
+                shutDownRoom(mRoomid);
+                finish();
+                break;
+            case R.id.iv_fragment_videocall_novideo:
+//                Session.getInstance().unplayVideo(_watchingPeerID, 0);
+                //Session.getInstance().unwatchOtherVideo(_watchingPeerID,0);
+
+//                Session.getInstance().PlayVideo(_myPeerID, false, mMy_video, 0, 0, 1, 1, 0, false, 1, 0);
+
+                if (isShowVideo) {
+                    isShowVideo = !isShowVideo;
+                    ToastUtil.showToast(this, "不看视频");
+//                    TODO 添加不看视频的图片变换 mNoVideo.setImageResource(R.drawable.);
+
+                    mMy_video.setBackgroundResource(R.drawable.videobackground_3x);
+                } else {
+                    isShowVideo = !isShowVideo;
+                    ToastUtil.showToast(this, "看视频");
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        mMy_video.setBackground(null);
+                    }
+                    Session.getInstance().PlayVideo(_myPeerID, true, mMy_video, 0, 0, 1, 1, 0, false, 1, 0);
+                }
+
+                break;
+            //不显示小的视频窗口了,也不让他有点击切换的事件了
+//            case R.id.surfaceView6:
+//                if (!change) {
+//                    LogUtil.d("surfaceview", "surfaceview: +change1");
+//                    Session.getInstance().PlayVideo(0, true, mOther_video, 0, 0, 1, 1, 0, false, 1, 0);
+//                    Session.getInstance().PlayVideo(_watchingPeerID, true, mMy_video, 0, 0, 1, 1, 65, false, 1, 0);
+//                    change = true;
+//                } else {
+//                    LogUtil.d("surfaceview", "surfaceview: +change2");
+//                    Session.getInstance().PlayVideo(0, true, mMy_video, 0, 0, 1, 1, 0, false, 1, 0);
+//                    Session.getInstance().PlayVideo(_watchingPeerID, true, mOther_video, 0, 0, 1, 1, 65, false, 1, 0);
+//                    change = false;
+//                }
+//                break;
+
+            case R.id.ib_volume_add:
+                //先过去seekbar的progress的值
+//                mVolumeInt = Integer.parseInt(mVolumeString);
+//                int progressreduce = mVolumeInt;
+
+                if (mVolumeInt <= 100) {
+                    mVolumeInt = mVolumeInt + 1;
+                    if (mVolumeInt > 100) {
+                        mVolumeInt = 100;
+                    }
+//                    mSeekBar.setProgress(mVolumeInt);
+
+                    String volumeAdd = String.valueOf(mVolumeInt);
+                    mVolume_text.setText(volumeAdd);
+                    mSeekBar.setProgress(mVolumeInt);
+                    //然后请求网络,把数据传到网络上去
+//                    pushValueToToy(volumeAdd);
+                }
+
+                break;
+            case R.id.ib_volume_reduce:
+                //先过去seekbar的progress的值
+
+                if (mVolumeInt >= 0) {
+                    mVolumeInt = mVolumeInt - 1;
+                    if (mVolumeInt < 0) {
+                        mVolumeInt = 0;
+
+                    }
+
+//                    mSeekBar.setProgress(mVolumeInt);
+//                    int secondaryProgress = mSeekBar.getSecondaryProgress();
+//                    secondaryProgress = mVolumeInt;
+                    String volumeReduce = String.valueOf(mVolumeInt);
+                    mVolume_text.setText(volumeReduce);
+                    mSeekBar.setProgress(mVolumeInt);
+                    //然后请求网络,把数据传到网络上去
+//                    pushValueToToy(volumeReduce);
+
+                }
+
+                break;
+            default:
+
+                break;
+
+        }
+
+
+    }
+
 
     private void EnterMeeting() {
         Start(false, 0);
@@ -750,13 +811,13 @@ public class MultiVideoActivity extends AppCompatActivity implements SessionInte
         });
     }
 
-    private void pushValueToToy(String volume) {
+    private void pushValueToToy(String volume, String toyId) {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Constant.baseurl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         AllInterface allInterface = retrofit.create(AllInterface.class);
 //        ControlToyVolumeReq.ParamBean paramBean = new ControlToyVolumeReq.ParamBean(mToyid, volume);
-        ControlToyVolumeReq.ParamBean paramBean = new ControlToyVolumeReq.ParamBean("", volume);
+        ControlToyVolumeReq.ParamBean paramBean = new ControlToyVolumeReq.ParamBean(toyId, volume);
         ControlToyVolumeReq controlToyVolumeReq = new ControlToyVolumeReq("volume", paramBean, mToken);
         Gson gson = new Gson();
         String s = gson.toJson(controlToyVolumeReq);
@@ -826,17 +887,34 @@ public class MultiVideoActivity extends AppCompatActivity implements SessionInte
             String name = Session.getInstance().getM_thisUserMgr().getUser(peerID).getName();
             LogUtil.i(TAG, "peerID (userin first) : " + peerID + "; " + "name : " + name);
             Session.getInstance().PlayVideo(_firstPeerID, true, firstVideo, 0, 0, 1, 1, 0, false, 1, 0);
+            LogUtil.i(TAG, "_watchingPeerID (1 before): " + _watchingPeerID);
+            _watchingPeerID = peerID;
+            LogUtil.i(TAG, "_watchingPeerID (1 after) : " + _watchingPeerID);
+            LogUtil.i(TAG, "firstpeerid : " + _firstPeerID);
+//            Session.getInstance().requestSpeaking(peerID);
+//            Session.getInstance().setLoudSpeaker(false);//这个是扬声器的声音
+//            Session.getInstance().playAudio(_watchingPeerID);
+//            Session.getInstance().addSpeaker(_firstPeerID);
+            Session.getInstance().cancelSpeaking(_firstPeerID);//取消某人的发言
 //            Session.getInstance().unplayAudio(_firstPeerID);
-            Session.getInstance().requestSpeaking(peerID);
+//            Session.getInstance().requestSpeaking(_watchingPeerID);
         }
         if (_secondPeerID == -1 && _userList.size() > 1) {
             peerID = _userList.get(1);
+            LogUtil.i(TAG, "_watchingPeerID (2 before) : " + _watchingPeerID);
             _secondPeerID = peerID;
+            _watchingPeerID = peerID;
+            LogUtil.i(TAG, "_watchingPeerID (2 before) : " + _watchingPeerID);
+            LogUtil.i(TAG, "_secondPeerID : " + _secondPeerID);
             String name = Session.getInstance().getM_thisUserMgr().getUser(peerID).getName();
             LogUtil.i(TAG, "peerID (userin second) : " + peerID + "; " + "name : " + name);
             Session.getInstance().PlayVideo(_secondPeerID, true, secondVideo, 0, 0, 1, 1, 0, false, 1, 0);
+            Session.getInstance().requestSpeaking(_watchingPeerID);
+            Session.getInstance().setLoudSpeaker(true);
+            Session.getInstance().playAudio(_secondPeerID);
+            Session.getInstance().addSpeaker(_secondPeerID);
 //            Session.getInstance().unplayAudio(_secondPeerID);
-            Session.getInstance().requestSpeaking(peerID);
+//            Session.getInstance().requestSpeaking(peerID);
         }
     }
 
@@ -881,7 +959,6 @@ public class MultiVideoActivity extends AppCompatActivity implements SessionInte
 
     @Override
     public void onUserIn(int peerId, boolean b) {
-        int currentPosition = 0;
         LogUtil.i(TAG, "on onUserIn go !!");
         LogUtil.i(TAG, "peerid: " + peerId + "; boolean : " + b);
         if (_userList.size() != 0) {
@@ -891,9 +968,7 @@ public class MultiVideoActivity extends AppCompatActivity implements SessionInte
         if (peerId != -1) {
             LogUtil.i(TAG, "peerid(onUserIn) : " + peerId);
         }
-        treeMap.put(peerId, Session.getInstance().getM_thisUserMgr().getUser(peerId).getName());
-        LogUtil.i(TAG, "treemap :" + treeMap.get(peerId));
-
+        Session.getInstance().playAudio(peerId);
         _userList.add(peerId);
         LogUtil.i(TAG, "userlist`s size : " + _userList.size());
         MeetingUser user = Session.getInstance().getM_thisUserMgr().getUser(peerId);
@@ -1024,6 +1099,7 @@ public class MultiVideoActivity extends AppCompatActivity implements SessionInte
         _myPeerID = 0;
         _watchingPeerID = 0;
         _userList.clear();
+
 
     }
 
