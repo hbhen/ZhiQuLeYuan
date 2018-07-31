@@ -291,7 +291,7 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                         mMy_video.setBackground(null);
                     }
-                    Session.getInstance().PlayVideo(_watchingPeerID, true, mMy_video, 0, 0, 1, 1, 0, false, 1, 0);
+                    Session.getInstance().PlayVideo(_myPeerID, true, mMy_video, 0, 0, 1, 1, 0, false, 1, 0);
                 }
 
                 break;
@@ -451,6 +451,7 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onConnect(int status, int i1) {
+        LogUtil.i(TAG,"onConnect go !!");
         if (status == 0) {
             int meetingType = Session.getInstance().getMeetingType();
             if (meetingType == 0 || meetingType == 1 || meetingType == 2 || meetingType == 3 || meetingType == 4 || meetingType == 5 || meetingType
@@ -465,6 +466,7 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onDisConnect(int i) {
+        LogUtil.i(TAG,"onDisConnect go !!");
         _myPeerID = 0;
         _watchingPeerID = 0;
         uid = 0;
@@ -473,6 +475,7 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onUserIn(int peerId, boolean b) {
+        LogUtil.i(TAG,"onUserIn go !!");
         _userList.add(peerId);
         MeetingUser user = Session.getInstance().getM_thisUserMgr().getUser(peerId);
         String name = user.getName();
@@ -490,6 +493,7 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onUserOut(MeetingUser meetingUser) {
+        LogUtil.i(TAG,"onUserOut go !!");
         _userList.remove(new Integer(meetingUser.getPeerID()));
         if (!_serverMix && hasAudio)
             Session.getInstance().unplayAudio(meetingUser.getPeerID());
@@ -500,6 +504,7 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onEnablePresence(int peerID) {
+        LogUtil.i(TAG,"onEnablePresence go !!");
         _myPeerID = peerID;
         //画中画的时候可以开启
 //        seeMe();
@@ -569,6 +574,7 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onPresentComplete() {
+        LogUtil.i(TAG,"onPresentComplete go !!");
         Session.getInstance().requestSpeaking(_myPeerID);
 
     }
@@ -611,6 +617,7 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onDestroy() {
         super.onDestroy();
+        LogUtil.i(TAG,"onDestroy go !!");
         Stop();
         //通知服务器,退出
         StopCallServer();

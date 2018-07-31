@@ -36,6 +36,7 @@ import com.tongyuan.android.zhiquleyuan.bean.LocalPlayApplyResBean;
 import com.tongyuan.android.zhiquleyuan.bean.ModifyRecordingResBean;
 import com.tongyuan.android.zhiquleyuan.bean.NodisturbTimeResBean;
 import com.tongyuan.android.zhiquleyuan.bean.PhoneHeartResBean;
+import com.tongyuan.android.zhiquleyuan.bean.QueryAllToyListResBean;
 import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListFromToyIdRes;
 import com.tongyuan.android.zhiquleyuan.bean.QueryBabyListResult;
 import com.tongyuan.android.zhiquleyuan.bean.QueryMyCollectionResBean;
@@ -49,6 +50,7 @@ import com.tongyuan.android.zhiquleyuan.bean.QuitToyResBean;
 import com.tongyuan.android.zhiquleyuan.bean.RegistAndLoginResBean;
 import com.tongyuan.android.zhiquleyuan.bean.SearchResBean;
 import com.tongyuan.android.zhiquleyuan.bean.SetNodisturbTimeResBean;
+import com.tongyuan.android.zhiquleyuan.bean.ShutDownRoomResBean;
 import com.tongyuan.android.zhiquleyuan.bean.SingleToyInfoRESBean;
 import com.tongyuan.android.zhiquleyuan.bean.TransferPermissionsResBean;
 import com.tongyuan.android.zhiquleyuan.bean.UnbindBabyToToyResBean;
@@ -134,6 +136,10 @@ public interface AllInterface {
     //查询玩具通话历史 3.4.42
     @GET("busi")
     Call<CallHistoryResultBean> getCallHistoryResult(@Query("params") String params);
+
+    //查询所有玩具
+    @GET("busi")
+    Call<QueryAllToyListResBean> QUERY_ALL_TOY_LIST_RES_BEAN_CALL(@Query("params") String params);
 
     //查询单个玩具信息 3.4.21
     @GET("busi")
@@ -317,4 +323,8 @@ public interface AllInterface {
     //3.从会议室踢出玩具
     @GET("busi")
     Call<QuitToyResBean> QUIT_TOY_RES_BEAN_CALL(@Query("params") String params);
+
+    //4.关闭房间
+    @GET("busi")
+    Call<ShutDownRoomResBean> SHUT_DOWN_ROOM_RES_BEAN_CALL(@Query("params") String params);
 }
